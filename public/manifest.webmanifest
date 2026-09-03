@@ -1,0 +1,20 @@
+{
+  "name": "پیراهن مردانه",
+  "short_name": "پیراهن مردانه",
+  "description": "فروشگاه اینترنتی پیراهن مردانه — خرید آنلاین با اعلان‌های لحظه‌ای",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0a0a",
+  "theme_color": "#1d1d1f",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    { "src": "/apple-touch-icon.webp", "sizes": "180x180", "type": "image/webp", "purpose": "any maskable" },
+    { "src": "/favicon-32.webp", "sizes": "32x32", "type": "image/webp" },
+    { "src": "/logo.webp", "sizes": "192x192", "type": "image/webp", "purpose": "any" }
+  ],
+  "categories": ["shopping", "lifestyle"],
+  "prefer_related_applications": false
+}

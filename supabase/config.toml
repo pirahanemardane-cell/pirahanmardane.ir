@@ -1,0 +1,6 @@
+# Minimal Supabase CLI config — project_id را بعد از supabase link پر کنید
+[api]
+enabled = true
+
+[db]
+major_version = 15

@@ -1,0 +1,7 @@
+node_modules/
+.next/
+*.dmg
+*.pkg
+*.zip
+.DS_Store
+.env.local

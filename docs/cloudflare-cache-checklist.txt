@@ -1,0 +1,19 @@
+Cloudflare — done checklist (pirahanmardane.ir)
+================================================
+
+Active Cache Rules (expected):
+1) bypass-api    → Bypass  (prefer: URI Path starts with /api/)
+2) bypass-panels → Bypass  (URI Path contains seller)
+3) bypass-admin  → Bypass  (URI Path contains admin)
+
+Optional fine-tune for bypass-api:
+  Edit rule → Field: URI Path | Operator: starts with | Value: /api/
+  Then: Bypass cache → Deploy
+
+Verified:
+  curl -sSI https://pirahanmardane.ir/api/health
+  → cf-cache-status: DYNAMIC (OK)
+
+Do NOT enable Cache Reserve on free plan unless needed.
+Always Use HTTPS: On (SSL/TLS → Edge Certificates)
+SSL mode: Full or Full (strict)
