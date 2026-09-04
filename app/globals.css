@@ -2067,16 +2067,6 @@ html.dark .se-text-color-swatch {
 }
 
 
-/* Header/footer logo — readable in dark */
-/* LOGO CSS RESET */
-html:not(.dark) header img[alt="پیراهن مردانه"],
-html:not(.dark) footer img[alt="پیراهن مردانه"],
-html:not(.dark) .site-logo-img {
-  opacity: 1 !important;
-  filter: none !important;
-  -webkit-filter: none !important;
-}
-
 
 /* Wishlist toolbar selects — readable chevron (light + dark) */
 .wishlist-toolbar-select {
@@ -3235,12 +3225,6 @@ html.dark button.btn-primary {
 }
 
 
-/* تضمین نمایش رنگ اصلی فیروزه‌ای لوگو بدون فیلتر */
-.site-logo,
-[data-logo],
-a[href="/"] img,
-a[href="/"] svg,
-header img,
 img[src*="PM-CHK-GRN-004.webp"],
 img[src*="PM-DEN-LBL-007.webp"],
 img[src*="PM-FLN-BRN-009.webp"],
@@ -3325,22 +3309,15 @@ img[src*="frame-069.jpg"],
 img[src*="frame-070.jpg"],
 img[src*="hero-poster.jpg"],
 img[src*="hero-poster.webp"],
-img[src*="logo"],
 img[src*="red_t_bg.webp"],
-img[src*="red_w_bg.webp"],
-nav img {
+img[src*="red_w_bg.webp"] {
   filter: none !important;
   -webkit-filter: none !important;
   opacity: 1 !important;
   mix-blend-mode: normal !important;
 }
 
-html.dark .site-logo,
-[data-logo],
-a[href="/"] img,
-a[href="/"] svg,
-header img,
-img[src*="PM-CHK-GRN-004.webp"],
+html.dark img[src*="PM-CHK-GRN-004.webp"],
 img[src*="PM-DEN-LBL-007.webp"],
 img[src*="PM-FLN-BRN-009.webp"],
 img[src*="PM-LIN-BLU-002.webp"],
@@ -3424,16 +3401,10 @@ img[src*="frame-069.jpg"],
 img[src*="frame-070.jpg"],
 img[src*="hero-poster.jpg"],
 img[src*="hero-poster.webp"],
-img[src*="logo"],
 img[src*="red_t_bg.webp"],
 img[src*="red_w_bg.webp"],
 nav img,
-.dark .site-logo,
-[data-logo],
-a[href="/"] img,
-a[href="/"] svg,
-header img,
-img[src*="PM-CHK-GRN-004.webp"],
+.dark img[src*="PM-CHK-GRN-004.webp"],
 img[src*="PM-DEN-LBL-007.webp"],
 img[src*="PM-FLN-BRN-009.webp"],
 img[src*="PM-LIN-BLU-002.webp"],
@@ -3517,10 +3488,8 @@ img[src*="frame-069.jpg"],
 img[src*="frame-070.jpg"],
 img[src*="hero-poster.jpg"],
 img[src*="hero-poster.webp"],
-img[src*="logo"],
 img[src*="red_t_bg.webp"],
-img[src*="red_w_bg.webp"],
-nav img {
+img[src*="red_w_bg.webp"] {
   filter: none !important;
   -webkit-filter: none !important;
   opacity: 1 !important;
