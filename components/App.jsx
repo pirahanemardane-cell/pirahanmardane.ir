@@ -15601,20 +15601,36 @@ const params = new URLSearchParams(window.location.search);
                           if (e.key === 'Enter') { e.preventDefault(); submitSearch(); }
                           if (e.key === 'Escape') setSearchSuggestOpen(false);
                         }}
-                        className="w-full bg-transparent text-primary-900 dark:text-white caret-primary-900 dark:caret-white py-2 sm:py-2.5 pr-9 pl-3 text-sm focus:outline-none placeholder:text-sm placeholder:text-primary-400 dark:placeholder:text-white/50"
+                        className="w-full bg-transparent text-primary-900 dark:text-white caret-primary-900 dark:caret-white py-2 sm:py-2.5 pr-9 pl-28 text-sm focus:outline-none placeholder:text-sm placeholder:text-primary-400 dark:placeholder:text-white/50"
                       />
                       <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-primary-400 pointer-events-none">
                         <Icon name="search" size={16} />
                       </div>
-                      {(searchQuery || searchColors.length > 0 || searchSizes.length > 0 || searchCategories.length > 0) && (
-                        <button
-                          onClick={clearAllSearchFilters}
-                          className="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full bg-apple-blue text-white hover:opacity-90 shadow-sm"
-                          title="پاک کردن"
-                        >
-                          <Icon name="x" size={14} />
-                        </button>
-                      )}
+                      <div className="absolute left-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 z-10">
+                        {(searchQuery || searchColors.length > 0 || searchSizes.length > 0 || searchCategories.length > 0) && (
+                          <button
+                            type="button"
+                            onClick={clearAllSearchFilters}
+                            className="w-6 h-6 flex items-center justify-center rounded-full bg-apple-blue text-white hover:opacity-90 shadow-sm flex-shrink-0"
+                            title="پاک کردن"
+                          >
+                            <Icon name="x" size={14} />
+                          </button>
+                        )}
+                        {catOpen && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCatOpen(false);
+                              openPLP();
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-[#FF0000] dark:bg-[#13ABC4] text-white text-[11px] font-medium whitespace-nowrap hover:opacity-90 active:scale-[0.98] transition flex-shrink-0 shadow-sm"
+                            title="اعمال فیلتر"
+                          >
+                            اعمال فیلتر
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -15758,18 +15774,7 @@ const params = new URLSearchParams(window.location.search);
                           );
                         })}
                       </div>
-                      <div className="border-t border-primary-200 dark:border-white/30 mt-2 px-3 py-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setCatOpen(false);
-                            openPLP();
-                          }}
-                          className="w-full bg-apple-blue text-white py-2.5 rounded-full font-medium text-xs sm:text-sm hover:opacity-90 active:scale-[0.98] transition"
-                        >
-                          اعمال فیلتر
-                        </button>
-                      </div>
+
                     </div>
                   )}
 
