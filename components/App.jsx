@@ -4967,7 +4967,8 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             const cat = params.get('دسته') || params.get('cat');
             const tag = params.get('برچسب') || params.get('tag');
             const q = params.get('ق') || params.get('q');
-            openPLP({ cat: cat || undefined, tag: tag || undefined, query: q || undefined, silent: true });
+            const sort = params.get('sort') || params.get('مرتب') || undefined;
+            openPLP({ cat: cat || undefined, tag: tag || undefined, query: q || undefined, sort: sort || undefined, silent: true, keepSort: true });
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
@@ -5912,13 +5913,15 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         }
         if (opts.query != null) setPlpQuery(opts.query);
         else if (opts.cat !== undefined && !opts.keepQuery) setPlpQuery('');
+        if (opts.sort !== undefined) setPlpSort(opts.sort || '');
+        else if (!opts.keepSort && (opts.cat !== undefined || opts.tag !== undefined || opts.query != null)) setPlpSort('');
 
         try {
           if (!opts.silent) {
             if (opts.cat && !opts.tag && !opts.query) {
               pushFaUrl(pathForCategory(opts.cat), { plp: true, cat: opts.cat });
             } else {
-              pushFaUrl(pathForShop({ cat: opts.cat, tag: opts.tag, query: opts.query }), { plp: true });
+              pushFaUrl(pathForShop({ cat: opts.cat, tag: opts.tag, query: opts.query, sort: opts.sort }), { plp: true });
             }
           }
         } catch (_) {}
@@ -15545,7 +15548,7 @@ const params = new URLSearchParams(window.location.search);
                           <div className="col-span-4 flex flex-col gap-3">
                             <h4 className="text-xs font-bold text-primary-400 dark:!text-white tracking-wide">دسترسی سریع</h4>
                             {[
-                              { label: 'پرفروش‌ترین محصولات', go: () => openPLP() },
+                              { label: 'پرفروش‌ترین محصولات', go: () => openPLP({ sort: 'popular' }) },
                               { label: 'پیشنهادات شگفت‌انگیز', go: () => openStaticPage('deals') },
                               { label: 'اخیراً دیده‌شده', go: () => openRecentPage() },
                             ].map((item) => (

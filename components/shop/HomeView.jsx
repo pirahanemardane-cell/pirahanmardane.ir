@@ -192,7 +192,7 @@ export default function HomeView() {
                   <h2 className="gsap-reveal section-title text-primary-900 dark:text-white text-lg sm:text-xl">
                     پرفروش ترین محصولات
                   </h2>
-                  <a href="#" onClick={(e) => { e.preventDefault(); openPLP(); }} className="text-xs sm:text-sm text-apple-link hover:underline flex items-center gap-1">
+                  <a href="/فروشگاه?sort=popular" onClick={(e) => { e.preventDefault(); openPLP({ sort: 'popular' }); }} className="text-xs sm:text-sm text-apple-link hover:underline flex items-center gap-1">
                     مشاهده همه
                     <Icon name="chevronLeft" size={14} />
                   </a>
