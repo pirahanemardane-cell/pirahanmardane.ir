@@ -15571,7 +15571,7 @@ const params = new URLSearchParams(window.location.search);
               <div className="flex items-center gap-2 sm:gap-3 flex-row">
                 {/* Logo — right side in RTL */}
                 <a href="#" onClick={(e) => { e.preventDefault(); setActiveSellerId(null); setShowSellersList(false); setShowPLP(false); setShowCartPage(false); setShowWishlistPage(false); setShowComparePage(false); setShowProfilePage(false); setShowSellerPanel(false); setShowAdminPanel(false); setMobileMenuOpen(false); scrollPageToTop(); }} className="flex items-center flex-shrink-0 order-1" aria-label="پیراهن مردانه — خانه">
-                  <img src={dark ? "/logo-white.webp" : "/logo-dark.webp"} alt="پیراهن مردانه" className="site-logo-img h-8 sm:h-10 md:h-11 w-auto max-w-[148px] sm:max-w-[180px] md:max-w-[200px] object-contain object-right" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }} />
+                  <img src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"} alt="پیراهن مردانه" className="site-logo-img h-8 sm:h-10 md:h-11 w-auto max-w-[148px] sm:max-w-[180px] md:max-w-[200px] object-contain object-right" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/blue_t_bg.webp'; }} />
                 </a>
 
                 {/* Search box with category tab — desktop */}
