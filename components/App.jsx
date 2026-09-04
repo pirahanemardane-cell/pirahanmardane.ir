@@ -15567,14 +15567,14 @@ const params = new URLSearchParams(window.location.search);
             </div>
 
             <div className="order-1 md:order-2 max-w-7xl mx-auto px-3 sm:px-4 py-1.5 sm:py-2.5 w-full">
-              <div className="flex items-center gap-2 sm:gap-3 flex-row">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-row">
                 {/* Logo — right side in RTL */}
                 <a href="#" onClick={(e) => { e.preventDefault(); setActiveSellerId(null); setShowSellersList(false); setShowPLP(false); setShowCartPage(false); setShowWishlistPage(false); setShowComparePage(false); setShowProfilePage(false); setShowSellerPanel(false); setShowAdminPanel(false); setMobileMenuOpen(false); scrollPageToTop(); }} className="flex items-center flex-shrink-0 order-1" aria-label="پیراهن مردانه — خانه">
                   <img src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"} alt="پیراهن مردانه" className="site-logo-img h-8 sm:h-10 md:h-11 w-auto max-w-[148px] sm:max-w-[180px] md:max-w-[200px] object-contain object-right" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/blue_t_bg.webp'; }} />
                 </a>
 
                 {/* Search box with category tab — desktop */}
-                <div className="hidden md:block flex-1 min-w-0 max-w-xl mx-auto relative order-2 z-20">
+                <div className="hidden md:block flex-1 min-w-0 max-w-2xl relative order-2 z-20">
                   <div className="flex items-stretch bg-primary-50 dark:bg-primary-900 rounded-full overflow-hidden border border-transparent dark:border-white focus-within:ring-2 focus-within:ring-primary-300 dark:focus-within:ring-white/30 transition">
                     {/* Category tab */}
                     <button
