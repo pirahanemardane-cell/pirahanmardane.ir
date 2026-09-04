@@ -15214,7 +15214,7 @@ const params = new URLSearchParams(window.location.search);
             {/* Top bar — موبایل: پایین (منو/جستجو/ورود) · دسکتاپ: بالا */}
             <div className="order-2 md:order-1 bg-primary-50 dark:bg-primary-900 text-primary-400 dark:text-white text-xs sm:text-sm py-1.5 sm:py-2 px-3 sm:px-4 border-b border-primary-200 dark:border-white/30 transition-colors relative overflow-visible">
               <div className="max-w-7xl mx-auto flex justify-between items-center gap-2">
-                {/* Phone + burger (burger next to phone on mobile) */}
+                {/* Burger (mobile) */}
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                   <button
                     type="button"
@@ -15227,10 +15227,6 @@ const params = new URLSearchParams(window.location.search);
                       <span className="absolute top-1 right-1 min-w-[8px] h-2 w-2 rounded-full bg-red-500" aria-hidden />
                     )}
                   </button>
-                  <div className="hidden md:flex items-center gap-1 text-primary-800 dark:text-[#696C71]">
-                    <Icon name="phone" size={14} />
-                    
-                  </div>
                   </div>
 
                 {/* Mobile search — between phone and login, with filters */}
