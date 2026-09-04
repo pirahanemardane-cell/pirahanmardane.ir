@@ -5833,11 +5833,21 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         const query = (q != null ? q : searchQuery).trim();
         setSearchSuggestOpen(false);
         setSearchActiveIdx(-1);
+        setCatOpen(false);
         if (query) {
           setSearchQuery(query);
           pushRecentSearch(query);
         }
-        openPLP({ query: query || undefined });
+        const cats = Array.isArray(searchCategories) ? searchCategories.filter(Boolean) : [];
+        const colors = Array.isArray(searchColors) ? searchColors.filter(Boolean) : [];
+        const sizes = Array.isArray(searchSizes) ? searchSizes.filter(Boolean) : [];
+        openPLP({
+          query: query || '',
+          cats,
+          colors,
+          sizes,
+          keepSort: true,
+        });
       };
       const didYouMean = (() => {
         const q = normalizeSearch(searchQuery);
@@ -5901,7 +5911,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           const key = normalizeCategoryKey(opts.cat);
           setPlpCats(key ? [key] : []);
           setPlpTagFilter([]);
-        } else if (!opts.query && opts.tag === undefined) {
+        } else if (!opts.query && opts.tag === undefined && opts.cats === undefined) {
           // فروشگاه عمومی بدون cat → همه محصولات
           setPlpCats([]);
           if (!opts.keepTags) setPlpTagFilter([]);
@@ -5915,6 +5925,19 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         else if (opts.cat !== undefined && !opts.keepQuery) setPlpQuery('');
         if (opts.sort !== undefined) setPlpSort(opts.sort || '');
         else if (!opts.keepSort && (opts.cat !== undefined || opts.tag !== undefined || opts.query != null)) setPlpSort('');
+
+        // فیلترهای سرچ هدر → PLP
+        if (opts.cats !== undefined) {
+          const arr = Array.isArray(opts.cats) ? opts.cats.filter(Boolean) : [];
+          setPlpCats(arr);
+          if (arr.length) setPlpTagFilter([]);
+        }
+        if (opts.colors !== undefined) {
+          setPlpColors(Array.isArray(opts.colors) ? opts.colors.filter(Boolean) : []);
+        }
+        if (opts.sizes !== undefined) {
+          setPlpSizes(Array.isArray(opts.sizes) ? opts.sizes.filter(Boolean) : []);
+        }
 
         try {
           if (!opts.silent) {
@@ -15622,7 +15645,18 @@ const params = new URLSearchParams(window.location.search);
                             type="button"
                             onClick={() => {
                               setCatOpen(false);
-                              openPLP();
+                              setSearchSuggestOpen(false);
+                              const cats = Array.isArray(searchCategories) ? searchCategories.filter(Boolean) : [];
+                              const colors = Array.isArray(searchColors) ? searchColors.filter(Boolean) : [];
+                              const sizes = Array.isArray(searchSizes) ? searchSizes.filter(Boolean) : [];
+                              const q = (typeof searchQuery === 'string' ? searchQuery : '').trim();
+                              openPLP({
+                                query: q || '',
+                                cats,
+                                colors,
+                                sizes,
+                                keepSort: true,
+                              });
                             }}
                             className="h-7 px-2.5 rounded-full bg-[#FF0000] dark:bg-[#13ABC4] text-white text-[11px] font-medium whitespace-nowrap hover:opacity-90 active:scale-[0.98] transition flex-shrink-0 shadow-sm"
                             title="اعمال فیلتر"
