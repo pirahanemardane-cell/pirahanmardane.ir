@@ -750,7 +750,7 @@ header[data-home-hero-header="1"] {
   -webkit-text-fill-color: #0A0A0A !important;
   font-family: var(--font-app) !important;
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 400;
   letter-spacing: 0.02em;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
