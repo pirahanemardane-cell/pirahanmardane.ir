@@ -15215,7 +15215,7 @@ const params = new URLSearchParams(window.location.search);
             <div className="order-2 md:order-1 bg-primary-50 dark:bg-primary-900 text-primary-400 dark:text-white text-xs sm:text-sm py-1.5 sm:py-2 px-3 sm:px-4 border-b border-primary-200 dark:border-white/30 transition-colors relative overflow-visible">
               <div className="max-w-7xl mx-auto flex justify-between items-center gap-2">
                 {/* Burger (mobile) */}
-                <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                <div className="flex md:contents items-center gap-1.5 sm:gap-2 flex-shrink-0">
                   <button
                     type="button"
                     onClick={() => { setMobileMenuOpen(v => !v); setMegaOpen(null); }}
@@ -15364,7 +15364,7 @@ const params = new URLSearchParams(window.location.search);
                 </div>
 
                 {/* Desktop mega-nav */}
-                <nav className="hidden md:flex items-center gap-1 lg:gap-2 flex-1 justify-center px-2">
+                <nav className="hidden md:flex items-center gap-1 lg:gap-2 flex-1 justify-start min-w-0">
                   <a href="/" onClick={(e) => { e.preventDefault(); try { beginPageLoad('home'); } catch(_){} try { pushFaUrl(FA_PATHS.home || '/'); } catch(_){} try { applyPathRef.current(); } catch(_){} }} className="px-2.5 py-1 rounded-md text-primary-500 dark:text-white hover:text-primary-800 dark:hover:text-white hover:bg-primary-100/60 dark:hover:bg-primary-800/60 transition whitespace-nowrap text-xs lg:text-sm">خانه</a>
 
                   <div
