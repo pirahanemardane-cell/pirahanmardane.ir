@@ -700,7 +700,7 @@ header[data-home-hero-header="1"] {
   margin: 0;
   font-family: var(--font-app) !important;
   font-weight: 950 !important;
-  font-size: clamp(3.75rem, 6vw, 6.25rem); /* ~60px to ~100px desktop */
+  font-size: 35px; /* ~60px to ~100px desktop */
   letter-spacing: 0.02em;
   line-height: 1.25;
   color: #ffffff;
@@ -812,7 +812,7 @@ html.dark .hero-shop-btn:hover {
   margin: 0;
   font-family: var(--font-app) !important;
   font-weight: 950;
-  font-size: clamp(3.75rem, 6vw, 6.25rem); /* same range as title ~60–100px desktop */
+  font-size: 35px; /* same range as title ~60–100px desktop */
   letter-spacing: 0.02em;
   line-height: 1.35;
   color: #ffffff;
@@ -965,7 +965,7 @@ html.dark .hero-shop-btn:hover {
   }
 
   .hero-title-main {
-    font-size: clamp(2.5rem, 10vw, 3.75rem); /* ~40px to ~60px mobile */
+    font-size: 35px; /* ~40px to ~60px mobile */
   }
 
   .hero-title-url {
@@ -973,14 +973,14 @@ html.dark .hero-shop-btn:hover {
   }
 
   .hero-body-text {
-    font-size: clamp(2.5rem, 10vw, 3.75rem); /* ~40–60px mobile, same as title */
+    font-size: 35px; /* ~40–60px mobile, same as title */
     max-width: 16ch;
     white-space: normal;
   }
 
   /* Body1: «مرکز تخصصی فروش» یک خط — فونت کمی کوچک‌تر تا جا شود */
   .hero-body-text--split {
-    font-size: clamp(1.35rem, 5.8vw, 1.85rem);
+    font-size: 35px;
     max-width: 100%;
     line-height: 1.45;
     white-space: normal;
