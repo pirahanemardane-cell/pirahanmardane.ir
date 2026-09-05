@@ -3194,7 +3194,7 @@ html:not(.dark) .hero-accent-word {
 .hero-title-url {
   margin: 0;
   font-family: "IRANYekanX", sans-serif !important;
-  font-size: 75px !important;
+  font-size: clamp(20px, 4.5vw, 75px) !important;
   font-weight: 400 !important;
   line-height: 1.2;
   letter-spacing: 0.06em;
@@ -3245,9 +3245,9 @@ html.dark .hero-title-first {
 .hero-title-main {
   margin: 0;
   font-family: "IRANYekanX", sans-serif !important;
-  font-size: 120px !important;
+  font-size: clamp(50px, 7.5vw, 120px) !important;
   font-weight: 800 !important;
-  line-height: 1.25;
+  line-height: 1.2;
   letter-spacing: 0;
   text-align: center;
   color: #FF0000 !important;
@@ -3268,22 +3268,26 @@ html.dark .hero-title-main {
 
 
 .hero-title-divider {
-  width: 5rem;
-  height: 2px;
-  margin-top: 0.85rem;
-  margin-bottom: 0.85rem;
+  width: clamp(2.5rem, 8vw, 5rem);
+  height: clamp(2px, 0.25vw, 3px);
+  margin-top: clamp(0.5rem, 1.2vw, 0.85rem);
+  margin-bottom: clamp(0.5rem, 1.2vw, 0.85rem);
   border-radius: 9999px;
   background: #ffffff !important;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 
-/* Hero title sizes — mobile */
-@media (max-width: 768px) {
-  .hero-title-main {
-    font-size: 50px !important;
-  }
+
   .hero-title-url {
     font-size: 20px !important;
+  }
+}
+
+
+/* Hero title — موبایل: stroke نازک‌تر */
+@media (max-width: 768px) {
+  .hero-title-main {
+    -webkit-text-stroke: 1.25px #ffffff;
   }
 }
