@@ -3244,12 +3244,19 @@ html.dark .hero-title-first {
   margin: 0;
   font-family: "IRANYekanX", sans-serif !important;
   font-size: 80px !important;
-  font-weight: 800 !important; /* سنگین‌ترین فایل واقعی فونت: Heavy */
+  font-weight: 800 !important;
   line-height: 1.25;
   letter-spacing: 0;
   text-align: center;
   color: #FF0000 !important;
   -webkit-text-fill-color: #FF0000 !important;
+  -webkit-text-stroke: 2px #ffffff;
+  paint-order: stroke fill;
+  text-shadow:
+    -1px -1px 0 #fff,
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff;
 }
 
 html.dark .hero-title-main {
