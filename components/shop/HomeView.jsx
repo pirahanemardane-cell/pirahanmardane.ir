@@ -80,7 +80,7 @@ export default function HomeView() {
               <div className="max-w-7xl mx-auto px-3 sm:px-4 w-full">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-6 w-full">
                   {features.map((f, i) => (
-                    <div key={i} className="flex items-center gap-2 sm:gap-2.5 min-w-0 w-full">
+                    <div key={i} className="flex items-center justify-center gap-2 sm:gap-2.5 min-w-0 w-full">
                       <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white dark:bg-primary-800 text-primary-800 dark:text-white flex items-center justify-center flex-shrink-0 border border-primary-200 dark:border-white/30">
                         <Icon name={f.icon} size={16} />
                       </div>
