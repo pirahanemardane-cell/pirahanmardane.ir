@@ -3534,3 +3534,29 @@ div.role-gate-backdrop,
   text-decoration: underline;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+
+/* آفرتایم — دکمه مشاهده همه: متن همیشه مشکی (عادی + هاور + اکتیو) */
+html a.offer-view-all-btn,
+html a.offer-view-all-btn:hover,
+html a.offer-view-all-btn:focus,
+html a.offer-view-all-btn:active,
+html:not(.dark) a.offer-view-all-btn,
+html:not(.dark) a.offer-view-all-btn:hover,
+html:not(.dark) a.offer-view-all-btn:focus,
+html:not(.dark) a.offer-view-all-btn:active,
+html.dark a.offer-view-all-btn,
+html.dark a.offer-view-all-btn:hover,
+html.dark a.offer-view-all-btn:focus,
+html.dark a.offer-view-all-btn:active {
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+html a.offer-view-all-btn svg,
+html a.offer-view-all-btn:hover svg,
+html a.offer-view-all-btn:focus svg,
+html a.offer-view-all-btn:active svg {
+  color: #0A0A0A !important;
+  stroke: #0A0A0A !important;
+}
+
