@@ -3092,6 +3092,8 @@ html:not(.dark) .hero-accent-word {
 .hero-title-url {
   text-align: center;
   width: 100%;
+  text-align: center;
+  width: 100%;
   font-weight: 400 !important;
 }
 
