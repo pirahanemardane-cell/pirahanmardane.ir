@@ -16160,9 +16160,14 @@ const params = new URLSearchParams(window.location.search);
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" dir="rtl" role="dialog" aria-modal="true">
           <div role="button" tabIndex={0} className="role-gate-backdrop absolute inset-0 bg-black/50 backdrop-blur-[2px] border-0 cursor-default" aria-label="بستن" onClick={() => setRoleGateOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') setRoleGateOpen(false); }} />
           <div className="role-gate-modal relative z-10 w-full max-w-md rounded-3xl border border-primary-200 dark:border-white/15 bg-white dark:bg-[#1a1c20] shadow-2xl p-6 sm:p-8">
-            <button type="button" onClick={() => setRoleGateOpen(false)} className="absolute top-3 left-3 w-9 h-9 rounded-full text-primary-500 hover:bg-primary-100 dark:hover:bg-white/10 text-lg leading-none" aria-label="بستن">×</button>
-            <h2 className="text-lg font-bold text-primary-900 dark:text-white text-center">ورود / ثبت‌نام</h2>
-            <p className="text-xs text-primary-500 dark:text-white/55 text-center mt-1 mb-6">حساب مورد نظر را انتخاب کنید</p>
+            <div className="relative flex items-start justify-center mb-1">
+              <div className="w-9 shrink-0" aria-hidden />
+              <div className="flex-1 text-center px-1">
+                <h2 className="text-lg font-bold text-primary-900 dark:text-white">ورود / ثبت‌نام</h2>
+                <p className="text-xs text-primary-500 dark:text-white/55 mt-1 mb-6">حساب مورد نظر را انتخاب کنید</p>
+              </div>
+              <button type="button" onClick={() => setRoleGateOpen(false)} className="w-9 h-9 shrink-0 rounded-full text-primary-500 hover:bg-primary-100 dark:hover:bg-white/10 text-lg leading-none flex items-center justify-center" aria-label="بستن">×</button>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button type="button" onClick={() => { setRoleGateOpen(false); openAuth(); }} className="group flex flex-col items-center gap-2 rounded-2xl border border-primary-200 dark:border-white/15 px-4 py-6 hover:border-apple-blue transition bg-primary-50/70 dark:bg-white/5">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="role-gate-cart-icon text-primary-800 dark:text-white" aria-hidden="true"><circle cx="8" cy="21" r="1" className="role-gate-cart-wheel" /><circle cx="19" cy="21" r="1" className="role-gate-cart-wheel" /><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" className="role-gate-cart-body" /></svg>
