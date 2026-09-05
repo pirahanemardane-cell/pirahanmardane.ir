@@ -3062,42 +3062,13 @@ html.dark .hero-body-line1 {
   border-radius: 0 !important;
 }
 
-/* پیراهن مردانه (body1) — کادر سفید گرد فقط دارک */
-.hero-accent-word {
-  display: inline-block !important;
-  border-radius: 0.5rem;
-  padding: 0.08em 0.4em;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  
-  box-shadow: none !important;
-  border: none !important;
-  background: transparent;
-}
-html.dark .hero-accent-word {
-  background-color: #ffffff !important;
-  /* رنگ متن فیروزه‌ای روی سفید */
-  color: #13ABC4 !important;
-  -webkit-text-fill-color: #13ABC4 !important;
-}
+
 /* لایت: بدون کادر، فقط قرمز */
 html:not(.dark) .hero-accent-word {
   background: transparent !important;
   color: #FF0000 !important;
   -webkit-text-fill-color: #FF0000 !important;
 }
-
-
-/* hero URL thin weight only */
-.hero-title-url {
-  text-align: center;
-  width: 100%;
-  text-align: center;
-  width: 100%;
-  font-weight: 400 !important;
-}
-
-
 /* پیراهن مردانه — رنگ + سایه سفید دور */
 .hero-accent-word {
   color: #FF0000 !important;
@@ -3157,26 +3128,12 @@ html.dark .hero-body-line1 {
   color: #FF0000 !important;
   -webkit-text-fill-color: #FF0000 !important;
   font-weight: 950 !important;
-  text-shadow:
-    0 0 2px #ffffff,
-    0 0 6px #ffffff,
-    0 0 10px rgba(255, 255, 255, 0.85),
-    1px 0 0 #ffffff,
-    -1px 0 0 #ffffff,
-    0 1px 0 #ffffff,
-    0 -1px 0 #ffffff;
+  
 }
 html.dark .hero-accent-word {
   color: #13ABC4 !important;
   -webkit-text-fill-color: #13ABC4 !important;
-  text-shadow:
-    0 0 2px #ffffff,
-    0 0 6px #ffffff,
-    0 0 10px rgba(255, 255, 255, 0.85),
-    1px 0 0 #ffffff,
-    -1px 0 0 #ffffff,
-    0 1px 0 #ffffff,
-    0 -1px 0 #ffffff;
+  
 }
 
 .hero-weight-thin {
@@ -3205,5 +3162,33 @@ html.dark .hero-body-line1 {
 }
 .hero-body-space {
   display: inline !important;
+}
+
+/* hero-title-url size+weight only */
+.hero-title-url {
+  font-size: 20px !important;
+  font-weight: 400 !important;
+}
+
+/* hero-accent-word: no white border; white pill only in dark */
+.hero-accent-word {
+  display: inline-block !important;
+  border-radius: 0.5rem;
+  padding: 0.08em 0.4em;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+  font-weight: 950 !important;
+}
+html.dark .hero-accent-word {
+  background-color: #ffffff !important;
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
