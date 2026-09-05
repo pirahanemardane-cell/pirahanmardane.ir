@@ -3475,3 +3475,17 @@ div.role-gate-backdrop,
   transform-box: fill-box;
   transform-origin: center;
 }
+
+
+/* role-gate-store-icon animation */
+@keyframes role-gate-store-pop {
+  0%, 100% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-3px) scale(1.06); }
+  70% { transform: translateY(-1px) scale(1.02); }
+}
+.group:hover .role-gate-store-icon {
+  animation: role-gate-store-pop 0.9s ease-in-out 1;
+}
+.group:hover .role-gate-store-door {
+  stroke: currentColor;
+}

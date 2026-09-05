@@ -16159,7 +16159,7 @@ const params = new URLSearchParams(window.location.search);
       {roleGateOpen ? (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" dir="rtl" role="dialog" aria-modal="true">
           <div role="button" tabIndex={0} className="role-gate-backdrop absolute inset-0 bg-black/50 backdrop-blur-[2px] border-0 cursor-default" aria-label="بستن" onClick={() => setRoleGateOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') setRoleGateOpen(false); }} />
-          <div className="role-gate-modal relative z-10 w-full max-w-md rounded-3xl border border-primary-200 dark:border-white/15 bg-white dark:bg-[#1a1c20] shadow-2xl p-6 sm:p-8" style={{ borderRadius: 0, borderRadius: "0px" }}>
+          <div className="role-gate-modal relative z-10 w-full max-w-md rounded-3xl border border-primary-200 dark:border-white/15 bg-white dark:bg-[#1a1c20] shadow-2xl p-6 sm:p-8">
             <button type="button" onClick={() => setRoleGateOpen(false)} className="absolute top-3 left-3 w-9 h-9 rounded-full text-primary-500 hover:bg-primary-100 dark:hover:bg-white/10 text-lg leading-none" aria-label="بستن">×</button>
             <h2 className="text-lg font-bold text-primary-900 dark:text-white text-center">ورود / ثبت‌نام</h2>
             <p className="text-xs text-primary-500 dark:text-white/55 text-center mt-1 mb-6">حساب مورد نظر را انتخاب کنید</p>
@@ -16169,8 +16169,8 @@ const params = new URLSearchParams(window.location.search);
                 <span className="text-sm font-bold text-primary-900 dark:text-white">خریدار</span>
                 <span className="text-[11px] text-primary-500 dark:text-white/50 text-center">خرید و پیگیری سفارش</span>
               </button>
-              <button type="button" onClick={() => { setRoleGateOpen(false); openSellerAuth(); }} className="flex flex-col items-center gap-2 rounded-2xl border border-primary-200 dark:border-white/15 px-4 py-6 hover:border-apple-blue transition bg-primary-50/70 dark:bg-white/5">
-                <span className="text-2xl" aria-hidden>🏪</span>
+              <button type="button" onClick={() => { setRoleGateOpen(false); openSellerAuth(); }} className="group flex flex-col items-center gap-2 rounded-2xl border border-primary-200 dark:border-white/15 px-4 py-6 hover:border-apple-blue transition bg-primary-50/70 dark:bg-white/5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="role-gate-store-icon text-primary-800 dark:text-white" aria-hidden="true"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" className="role-gate-store-roof" /><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" className="role-gate-store-body" /><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" className="role-gate-store-door" /><path d="M2 7h20" className="role-gate-store-base" /><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" className="role-gate-store-awning" /></svg>
                 <span className="text-sm font-bold text-primary-900 dark:text-white">فروشنده</span>
                 <span className="text-[11px] text-primary-500 dark:text-white/50 text-center">پنل فروشگاه و محصولات</span>
               </button>
