@@ -7,3 +7,4 @@ node_modules/
 .env.local
 # Vercel local
 .vercel/
+public/blue_t_bg.png
