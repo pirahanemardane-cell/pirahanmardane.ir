@@ -3097,6 +3097,48 @@ html:not(.dark) .hero-accent-word {
   font-weight: 400 !important;
 }
 
+
+/* پیراهن مردانه — رنگ + سایه سفید دور */
+.hero-accent-word {
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+  font-weight: 950 !important;
+  
+}
+html.dark .hero-accent-word {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+  
+}
+
+.hero-weight-thin {
+  font-weight: 400 !important;
+}
+
+/* فقط کلمه «تنوع» — کادر گرد */
+.hero-body-line1 {
+  display: inline-block !important;
+  background-color: #FF0000;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 950 !important;
+  border-radius: 0.5rem;
+  padding: 0.12em 0.45em;
+  line-height: 1.25;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+html.dark .hero-body-line1 {
+  background-color: #13ABC4;
+}
+
+.hero-body-line2 {
+  display: inline !important;
+}
+.hero-body-space {
+  display: inline !important;
+}
+
 /* Hero body1/body2 layout, accent glow, تنوع badge */
 .hero-body1-line1 {
   display: block !important;
@@ -3115,12 +3157,26 @@ html:not(.dark) .hero-accent-word {
   color: #FF0000 !important;
   -webkit-text-fill-color: #FF0000 !important;
   font-weight: 950 !important;
-  
+  text-shadow:
+    0 0 2px #ffffff,
+    0 0 6px #ffffff,
+    0 0 10px rgba(255, 255, 255, 0.85),
+    1px 0 0 #ffffff,
+    -1px 0 0 #ffffff,
+    0 1px 0 #ffffff,
+    0 -1px 0 #ffffff;
 }
 html.dark .hero-accent-word {
   color: #13ABC4 !important;
   -webkit-text-fill-color: #13ABC4 !important;
-  
+  text-shadow:
+    0 0 2px #ffffff,
+    0 0 6px #ffffff,
+    0 0 10px rgba(255, 255, 255, 0.85),
+    1px 0 0 #ffffff,
+    -1px 0 0 #ffffff,
+    0 1px 0 #ffffff,
+    0 -1px 0 #ffffff;
 }
 
 .hero-weight-thin {
