@@ -199,13 +199,24 @@ export async function POST(req) {
         )
       }
 
-      return NextResponse.json({
+      try {
+        await supabase.auth.signOut()
+      } catch (_) {}
+
+      const res = NextResponse.json({
         ok: true,
         mfa_required: true,
         message: 'کد تأیید دو مرحله‌ای به شماره شما ارسال شد',
         phone,
-        mfa_token: data.user.id,
       })
+      res.cookies.set('pm_mfa_pending', phone, {
+        path: '/',
+        maxAge: 5 * 60,
+        sameSite: 'lax',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+      })
+      return res
     }
 
     // ===== لاگین عادی (برای buyer) =====

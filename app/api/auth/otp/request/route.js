@@ -11,13 +11,13 @@ import {
   sendMelliPatternSms,
 } from '../../../../../lib/otp'
 import { createAdminClient } from '../../../../../lib/supabase/admin'
-import { clientIp, rateLimit, RATE_POLICIES, rateLimitResponse } from '../../../../../lib/rate-limit'
+import { clientIp, rateLimitAsync, RATE_POLICIES, rateLimitResponse } from '../../../../../lib/rate-limit'
 import { logCritical } from '../../../../../lib/critical-log'
 
 export async function POST(request) {
   try {
     const ip = clientIp(request)
-    const rlIp = rateLimit(`otp_ip:${ip}`, RATE_POLICIES.otp_ip)
+    const rlIp = await rateLimitAsync(`otp_ip:${ip}`, RATE_POLICIES.otp_ip)
     if (!rlIp.ok) return rateLimitResponse(rlIp, 'تعداد درخواست از این شبکه زیاد است')
 
     const body = await request.json().catch(() => ({}))
@@ -26,7 +26,7 @@ export async function POST(request) {
       return NextResponse.json({ ok: false, error: 'شماره موبایل معتبر نیست' }, { status: 400 })
     }
 
-    const rlPhone = rateLimit(`otp:${phone}`, RATE_POLICIES.otp_phone)
+    const rlPhone = await rateLimitAsync(`otp:${phone}`, RATE_POLICIES.otp_phone)
     if (!rlPhone.ok) return rateLimitResponse(rlPhone, 'تعداد درخواست کد برای این شماره زیاد است')
 
     const purpose = String(body.purpose || body.type || body.role || 'login').toLowerCase()
