@@ -3277,21 +3277,6 @@ html.dark .hero-title-main {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-
-
-  .hero-title-url {
-    font-size: 20px !important;
-  }
-}
-
-
-/* Hero title — موبایل: stroke نازک‌تر */
-@media (max-width: 768px) {
-  .hero-title-main {
-    -webkit-text-stroke: 1.25px #ffffff;
-  }
-
-
 /* Hero title — موبایل: stroke نازک‌تر */
 @media (max-width: 768px) {
   .hero-title-main {
