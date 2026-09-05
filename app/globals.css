@@ -742,8 +742,8 @@ header[data-home-hero-header="1"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.85rem 2.35rem;
-  border-radius: 12px;
+  padding: 0.5rem 1.75rem;
+  border-radius: 10px;
   border: 2px solid #FF0000;
   background: #FF0000;
   color: #ffffff !important;
@@ -777,8 +777,8 @@ html.dark .hero-shop-btn:hover {
 }
 @media (max-width: 768px) {
   .hero-shop-btn {
-    padding: 0.75rem 1.9rem;
-    font-size: 1.05rem;
+    padding: 0.45rem 1.5rem;
+    font-size: 0.95rem;
   }
 }
 /* Product card conversion helpers — badge colors unified below */
