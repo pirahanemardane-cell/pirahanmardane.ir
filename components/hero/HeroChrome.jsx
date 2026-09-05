@@ -2,10 +2,7 @@
 
 import { HERO_COPY } from './hero.config';
 
-/**
- * Scroll + عنوان + خط سفید + URL
- */
-export default function HeroChrome({ hintRef, titleRef }) {
+export default function HeroChrome({ hintRef, titleRef, body1Ref }) {
   return (
     <>
       <div ref={hintRef} className="hero-scroll-cue" aria-hidden="true">
@@ -25,6 +22,13 @@ export default function HeroChrome({ hintRef, titleRef }) {
         <h1 className="hero-title-main">پیراهن مردانه</h1>
         <div className="hero-title-divider" aria-hidden="true" />
         <p className="hero-title-url">WWW.PIRAHANMARDANE.IR</p>
+      </div>
+
+      <div ref={body1Ref} className="hero-body-overlay hero-body1">
+        <p className="hero-body-text hero-body-text--split">
+          <span className="hero-body1-line1">مرکز فروش تخصصی</span>
+          <span className="hero-body1-line2">پیراهن مردانه</span>
+        </p>
       </div>
     </>
   );
