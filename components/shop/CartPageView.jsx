@@ -58,7 +58,7 @@ export default function CartPageView() {
                 {cart.length > 0 && (
                   clearCartConfirm ? (
                     <div className="flex items-center gap-2">
-                      <button type="button" onClick={clearCart} className="text-xs px-3 py-1.5 rounded-full bg-red-500 text-white font-medium">تأیید حذف همه</button>
+                      <button type="button" onClick={clearCart} className="btn-cta text-xs px-3 py-1.5 rounded-full bg-red-500 text-white font-medium">تأیید حذف همه</button>
                       <button type="button" onClick={() => setClearCartConfirm(false)} className="text-xs px-3 py-1.5 rounded-full border border-primary-200 dark:border-white/30 text-primary-600 dark:text-white">لغو</button>
                     </div>
                   ) : (
@@ -238,7 +238,7 @@ export default function CartPageView() {
                         <button type="button" onClick={() => { closeCartPage(); openPLP(); }} className="px-4 py-2 rounded-full text-sm font-medium border border-primary-200 dark:border-white/30 text-primary-800 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800 transition">
                           ادامه خرید
                         </button>
-                        <button type="button" onClick={openCheckout} className="px-5 py-2.5 rounded-full bg-apple-blue text-white text-sm font-bold hover:opacity-90 active:scale-[0.98] transition shadow-md">
+                        <button type="button" onClick={openCheckout} className="btn-cta px-5 py-2.5 rounded-full bg-apple-blue text-white text-sm font-bold hover:opacity-90 active:scale-[0.98] transition shadow-md">
                           ادامه و پرداخت
                         </button>
                       </div>
@@ -264,7 +264,7 @@ export default function CartPageView() {
                       <p className="text-xs text-primary-500 dark:text-white/60">قابل پرداخت</p>
                       <p className="text-base font-bold text-primary-900 dark:text-white">{formatPrice(cartTotal)} تومان</p>
                     </div>
-                    <button type="button" onClick={openCheckout} className="px-5 py-2.5 rounded-full bg-apple-blue text-white text-sm font-bold shadow-md">ادامه و پرداخت</button>
+                    <button type="button" onClick={openCheckout} className="btn-cta px-5 py-2.5 rounded-full bg-apple-blue text-white text-sm font-bold shadow-md">ادامه و پرداخت</button>
                   </div>
                 </div>
                 </>

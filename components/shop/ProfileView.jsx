@@ -47,7 +47,7 @@ function SecurityPasswordForm({ setAccountPassword, showToast }) {
       </p>
       <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} placeholder="رمز جدید (حداقل ۶ کاراکتر)" autoComplete="new-password" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
       <input type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} placeholder="تکرار رمز" autoComplete="new-password" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
-      <button type="button" disabled={loading} onClick={save} className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold disabled:opacity-60 hover:opacity-90 transition">
+      <button type="button" disabled={loading} onClick={save} className="btn-cta w-full sm:w-auto px-6 py-2.5 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold disabled:opacity-60 hover:opacity-90 transition">
         {loading ? 'در حال ذخیره...' : 'ذخیره رمز'}
       </button>
     </div>
@@ -432,7 +432,7 @@ export default function ProfileView() {
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {!pwaInstalled ? (
-                            <button type="button" onClick={installBuyerPwa} className="px-4 py-2 rounded-full bg-apple-blue text-white text-xs font-medium whitespace-nowrap">
+                            <button type="button" onClick={installBuyerPwa} className="btn-cta px-4 py-2 rounded-full bg-apple-blue text-white text-xs font-medium whitespace-nowrap">
                               نصب وب‌اپ
                             </button>
                           ) : (

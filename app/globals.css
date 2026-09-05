@@ -3506,11 +3506,9 @@ img[src*="red_w_bg.webp"] {
   mix-blend-mode: normal !important;
 }
 
-/* === SITE-WIDE BUTTON EFFECT (exclude hero) === */
-/* Uiverse-style expand — light: red | dark: turquoise | hero untouched */
-
-button:not(.hero-shop-btn):not([class*="group/btn"]):not(.header-burger-btn):not([data-no-effect="true"]),
-.btn-effect {
+/* === BODY CTA BUTTON EFFECT === */
+/* فقط کلاس .btn-cta — لایت: قرمز | دارک: فیروزه‌ای | هیرو/هدر دست‌نخورده */
+.btn-cta {
   font-weight: 700;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
@@ -3521,18 +3519,15 @@ button:not(.hero-shop-btn):not([class*="group/btn"]):not(.header-burger-btn):not
   cursor: pointer;
   overflow: hidden;
   isolation: isolate;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease;
 }
-
-button:not(.hero-shop-btn):not([class*="group/btn"]):not(.header-burger-btn):not([data-no-effect="true"])::before,
-.btn-effect::before {
+.btn-cta::before {
   content: "";
   position: absolute;
   left: 50%;
   top: 50%;
   width: 30px;
   height: 30px;
-  margin: 0;
   border-radius: 50%;
   background-color: #FF0000;
   transform: translate(-50%, -50%) scale(0);
@@ -3540,45 +3535,16 @@ button:not(.hero-shop-btn):not([class*="group/btn"]):not(.header-burger-btn):not
   z-index: -1;
   pointer-events: none;
 }
-
-button:not(.hero-shop-btn):not([class*="group/btn"]):not(.header-burger-btn):not([data-no-effect="true"]):hover::before,
-.btn-effect:hover::before {
+.btn-cta:hover::before {
   transform: translate(-50%, -50%) scale(12);
 }
-
-button:not(.hero-shop-btn):not([class*="group/btn"]):not(.header-burger-btn):not([data-no-effect="true"]):active,
-.btn-effect:active {
+.btn-cta:active {
   transform: scale(0.98);
 }
-
-/* Dark: turquoise bubble + darker base */
-html.dark button:not(.hero-shop-btn):not([class*="group/btn"]):not(.header-burger-btn):not([data-no-effect="true"]),
-html.dark .btn-effect {
+html.dark .btn-cta {
   background-color: #0a0a0a !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
 }
-
-html.dark button:not(.hero-shop-btn):not([class*="group/btn"]):not(.header-burger-btn):not([data-no-effect="true"])::before,
-html.dark .btn-effect::before {
+html.dark .btn-cta::before {
   background-color: #13ABC4;
 }
-
-/* Icon-only / chip / ghost — از افکت کامل خارج نشوند ولی اگر دایره کوچک‌اند کمتر خراب شوند */
-button.rounded-full.w-6,
-button.rounded-full.w-7,
-button.rounded-full.w-8,
-button[class*="w-6"][class*="h-6"],
-button[class*="w-7"][class*="h-7"],
-button[class*="w-8"][class*="h-8"] {
-  /* اجازه بده کلاس‌های خودشان اولویت بگیرند؛ افکت سراسری را برای این‌ها کم‌رنگ نکن — با data-no-effect روی JSX بهتر است */
-}
-
-/* هیرو صریحاً دست‌نخورده */
-.hero-shop-btn,
-button.hero-shop-btn,
-.hero-shop-btn::before,
-button.hero-shop-btn::before {
-  /* قوانین خود .hero-shop-btn / AntiMetal حاکم‌اند */
-}
-/* === END SITE-WIDE BUTTON EFFECT === */
+/* === END BODY CTA BUTTON EFFECT === */

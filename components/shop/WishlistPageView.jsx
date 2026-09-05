@@ -73,7 +73,7 @@ export default function WishlistPageView() {
                   {favorites.length > 0 && (
                     wishlistClearConfirm ? (
                       <div className="flex gap-1">
-                        <button type="button" onClick={clearFavorites} className="text-xs px-2.5 py-1.5 rounded-full bg-red-500 text-white">تأیید حذف</button>
+                        <button type="button" onClick={clearFavorites} className="btn-cta text-xs px-2.5 py-1.5 rounded-full bg-red-500 text-white">تأیید حذف</button>
                         <button type="button" onClick={() => setWishlistClearConfirm(false)} className="text-xs px-2.5 py-1.5 rounded-full border border-primary-200 dark:border-white/30">لغو</button>
                       </div>
                     ) : (

@@ -247,7 +247,7 @@ export default function StaticPagesView() {
                     <input value={contactForm.subject} onChange={e => setContactForm(f => ({ ...f, subject: e.target.value }))} placeholder="موضوع" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
                     <Textarea value={contactForm.message} onChange={(v) => { setContactForm(f => ({ ...f, message: v || '' })); setContactFormError(''); }} error={contactFormError || undefined} rows={4} placeholder="پیام *" style={{ minHeight: 120 }} />
                     <div className="flex justify-start">
-                      <button type="submit" className="px-6 sm:px-8 py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium hover:opacity-95 transition">ارسال پیام</button>
+                      <button type="submit" className="btn-cta px-6 sm:px-8 py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium hover:opacity-95 transition">ارسال پیام</button>
                     </div>
                   </form>
                 </div>
@@ -1531,7 +1531,7 @@ export default function StaticPagesView() {
                   <p className="text-xs sm:text-sm font-bold text-primary-900 dark:text-white">مقایسه · {toFa(compare.length)} از {toFa(COMPARE_MAX)}</p>
                   <p className="text-xs text-primary-500 dark:!text-white truncate">{compare.length < 2 ? 'یک کالای دیگر اضافه کنید' : 'آماده مقایسه'}</p>
                 </div>
-                <button type="button" onClick={openComparePage} className="flex-shrink-0 px-3 sm:px-4 py-2 rounded-full bg-apple-blue text-white text-xs font-bold">مقایسه کن</button>
+                <button type="button" onClick={openComparePage} className="btn-cta flex-shrink-0 px-3 sm:px-4 py-2 rounded-full bg-apple-blue text-white text-xs font-bold">مقایسه کن</button>
                 <button type="button" onClick={clearCompare} className="flex-shrink-0 p-2 rounded-full text-primary-500 hover:bg-primary-100 dark:hover:bg-primary-800" aria-label="پاک کردن">
                   <Icon name="x" size={16} />
                 </button>
@@ -1628,7 +1628,7 @@ export default function StaticPagesView() {
                     {favorites.length > 0 && (
                       wishlistClearConfirm ? (
                         <div className="flex items-center gap-1">
-                          <button type="button" onClick={clearFavorites} className="text-xs px-2 py-1 rounded-full bg-red-500 text-white">تأیید</button>
+                          <button type="button" onClick={clearFavorites} className="btn-cta text-xs px-2 py-1 rounded-full bg-red-500 text-white">تأیید</button>
                           <button type="button" onClick={() => setWishlistClearConfirm(false)} className="text-xs px-2 py-1 rounded-full border border-primary-200 dark:border-white/30">لغو</button>
                         </div>
                       ) : (

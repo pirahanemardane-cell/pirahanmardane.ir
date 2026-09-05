@@ -533,7 +533,7 @@ export default function CheckoutView() {
                             type="button"
                             onClick={placeOrder}
                             disabled={checkoutStep !== 3 || checkoutPlacing || !user}
-                            className="hidden lg:flex w-full items-center justify-center gap-2 bg-apple-blue text-white py-3.5 rounded-full font-bold hover:opacity-90 active:scale-[0.98] transition shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="btn-cta hidden lg:flex w-full items-center justify-center gap-2 bg-apple-blue text-white py-3.5 rounded-full font-bold hover:opacity-90 active:scale-[0.98] transition shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
                           >
                             {checkoutPlacing ? (
                               <>در حال ثبت…</>

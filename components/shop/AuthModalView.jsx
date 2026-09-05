@@ -228,7 +228,7 @@ export default function AuthModalView() {
                 onlyDigits(authPhone || '').length < 11 ||
                 (uiLoginMethod === 'password' && !uiPassword)
               }
-              className="w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition"
+              className="btn-cta w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition"
             >
               {authLoading
                 ? 'لطفاً صبر کنید...'
@@ -280,7 +280,7 @@ export default function AuthModalView() {
             <button
               type="submit"
               disabled={authLoading || onlyDigits(authOtp || '').length < 4}
-              className="w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition whitespace-nowrap shrink-0"
+              className="btn-cta w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition whitespace-nowrap shrink-0"
             >
               {authLoading
                 ? 'در حال بررسی...'
@@ -351,7 +351,7 @@ export default function AuthModalView() {
           <button
             type="submit"
             disabled={authLoading || onlyDigits(authOtp || '').length !== 6}
-            className="w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition"
+            className="btn-cta w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition"
           >
             {authLoading ? 'در حال بررسی...' : 'تأیید و ورود'}
           </button>
@@ -440,7 +440,7 @@ export default function AuthModalView() {
             <button
               type="submit"
               disabled={authLoading}
-              className="w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition"
+              className="btn-cta w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition"
             >
               {isSeller ? 'ثبت و ورود به پنل' : 'تکمیل ثبت‌نام'}
             </button>
