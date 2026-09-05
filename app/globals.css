@@ -3223,3 +3223,36 @@ html.dark .hero-title-first {
   color: #13ABC4 !important;
   -webkit-text-fill-color: #13ABC4 !important;
 }
+
+
+/* ========== Hero title (اسکرول اول) ========== */
+.hero-title-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.hero-title-main {
+  margin: 0;
+  font-family: "IRANYekanX", sans-serif !important;
+  font-size: 40px !important;
+  font-weight: 800 !important; /* سنگین‌ترین فایل واقعی فونت: Heavy */
+  line-height: 1.25;
+  letter-spacing: 0;
+  text-align: center;
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+}
+
+html.dark .hero-title-main {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+}

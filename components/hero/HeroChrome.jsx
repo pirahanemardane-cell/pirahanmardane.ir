@@ -3,12 +3,9 @@
 import { HERO_COPY } from './hero.config';
 
 /**
- * لایه UI روی هیرو — فقط Scroll + عنوان «پیراهن مردانه» در اسکرول اول
+ * فقط Scroll + عنوان اسکرول اول
  */
-export default function HeroChrome({
-  hintRef,
-  titleRef,
-}) {
+export default function HeroChrome({ hintRef, titleRef }) {
   return (
     <>
       <div ref={hintRef} className="hero-scroll-cue" aria-hidden="true">
@@ -25,7 +22,7 @@ export default function HeroChrome({
       </div>
 
       <div ref={titleRef} className="hero-title-overlay">
-        <h1 className="hero-title-main hero-title-first">پیراهن مردانه</h1>
+        <h1 className="hero-title-main">پیراهن مردانه</h1>
       </div>
     </>
   );
