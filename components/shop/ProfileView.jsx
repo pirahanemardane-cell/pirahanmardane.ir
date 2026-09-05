@@ -356,8 +356,6 @@ export default function ProfileView() {
   }, [user && (user.id || user.phone || user.email)]);
 
 
-
-
   const unreadNotifCount = typeof unreadNotifCountRaw === 'number'
     ? unreadNotifCountRaw
     : (notifications || []).filter((n) => n && !n.read).length;

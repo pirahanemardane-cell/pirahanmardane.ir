@@ -102,7 +102,6 @@ const StaticPagesView = dynamic(() => import('./shop/StaticPagesView'), { ssr: f
 const AuthModalView = dynamic(() => import('./shop/AuthModalView'), { ssr: false, loading: () => null });
 
 
-
 const FAQMonochrome = dynamic(() => import('./ui/faq-monochrome').then((m) => m.FAQMonochrome || m.default), {
   ssr: false,
   loading: () => null,
@@ -2566,7 +2565,6 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           clearInterval(iv);
         };
       }, []);
-
 
 
       const emptyTaxonomyForm = (type = 'category') => ({
@@ -5156,7 +5154,6 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         } catch (_) {}
       // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [catalogProducts, serverProducts, sellerProducts, adminProducts, products, initialProductCode, catalogFetchDone]);
-
 
 
       // awaitingDeepProduct timeout — اگر بعد از انتظار هنوز PDP نیست → ۴۰۴ نه خانه
@@ -8446,7 +8443,6 @@ const verifyOtp = async () => {
       }, [showAdminPanel]);
 
 
-
       const openSellerAuth = () => {
         setAuthMode('seller');
         setAuthOpen(true);
@@ -8592,7 +8588,6 @@ const verifyOtp = async () => {
       // ——— Admin Panel helpers ———
       const ADMIN_PRESET = { name: 'سوپر ادمین', role: 'Super Admin' };
       const seedAdminData = () => {
-        console.info('[admin] seedAdminData disabled — server is source of truth');
       };
 
       const collectFullSiteBackup = () => {
@@ -11476,8 +11471,6 @@ const downloadSeoFile = (filename, content, mime) => {
       }, [adminUser]);
 
 
-
-
       // شمارش معکوس OTP خریدار/فروشنده
       useEffect(() => {
         if (!(authOtpTimer > 0)) return;
@@ -13923,7 +13916,6 @@ const params = new URLSearchParams(window.location.search);
           document.body.scrollTop = 0;
         } catch (_) {}
       }, [showPLP, pdpProduct, showCartPage, showCheckout, showWishlistPage, showComparePage, showRecentPage, showProfilePage, showSellerPanel, showAdminPanel, staticPage, activeSellerId, showSellersList, showTaxonomyHub, blogPostId]);
-
 
 
       // قفل اسکرول + Escape برای مودال‌های site-modal و دیالوگ‌ها
