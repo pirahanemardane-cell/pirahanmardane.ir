@@ -3163,7 +3163,7 @@ html.dark .hero-body-line1 {
 .hero-body-space {
   display: inline !important;
 }
-/* accent پیراهن مردانه — بدون بردر سفید؛ کادر سفید فقط دارک */
+/* accent پیراهن مردانه — بدون بردر؛ کادر سفید گرد فقط دارک */
 .hero-accent-word {
   display: inline-block !important;
   border-radius: 0.5rem;
@@ -3174,6 +3174,7 @@ html.dark .hero-body-line1 {
   background: transparent !important;
   color: #FF0000 !important;
   -webkit-text-fill-color: #FF0000 !important;
+  font-weight: 950 !important;
 }
 html.dark .hero-accent-word {
   background-color: #ffffff !important;
@@ -3185,10 +3186,22 @@ html.dark .hero-accent-word {
 }
 html:not(.dark) .hero-accent-word {
   background: transparent !important;
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
 }
 
-/* hero-title-url size+weight only */
+/* hero-title-url — 20px + thinnest weight */
 .hero-title-url {
-  font-size: 20px !important;
+  margin: 0;
+  font-family: "IRANYekanX", sans-serif !important;
   font-weight: 400 !important;
+  font-size: 20px !important;
+  letter-spacing: 0.08em;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  direction: ltr;
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 1),
+    0 0 24px rgba(200, 230, 255, 0.7),
+    0 2px 12px rgba(0, 0, 0, 0.55);
 }
