@@ -44,6 +44,14 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
     useFramesRef.current = true;
     setUseFrames(true);
     setReady(true);
+    // عنوان + www + CTA در شروع هیرو حتماً دیده شوند
+    try {
+      if (titleRef.current) {
+        titleRef.current.style.opacity = "1";
+        titleRef.current.style.visibility = "visible";
+      }
+    } catch (_) {}
+
     // ⛔ Lock scroll immediately until hero assets are fully loaded — بدون دستور کاربر تغییر نده
     lockScroll();
     // Prevent ScrollTrigger from refreshing on iOS URL-bar show/hide
