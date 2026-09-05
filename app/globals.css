@@ -3277,13 +3277,6 @@ html.dark .hero-title-main {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-/* Hero title — موبایل: stroke نازک‌تر */
-@media (max-width: 768px) {
-  .hero-title-main {
-    -webkit-text-stroke: 1.25px #ffffff;
-  }
-}
-
 /* ========== Hero body1 — اسکرول دوم ========== */
 .hero-body1 .hero-body-text--split {
   display: flex;
@@ -3400,4 +3393,11 @@ html.dark .hero-body2-badge {
   text-align: center;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Hero title — موبایل: stroke نازک‌تر */
+@media (max-width: 768px) {
+  .hero-title-main {
+    -webkit-text-stroke: 1.25px #ffffff;
+  }
 }
