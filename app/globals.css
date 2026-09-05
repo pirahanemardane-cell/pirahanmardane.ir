@@ -3205,3 +3205,21 @@ html:not(.dark) .hero-accent-word {
     0 0 24px rgba(200, 230, 255, 0.7),
     0 2px 12px rgba(0, 0, 0, 0.55);
 }
+
+
+/* hero title — اسکرول اول: 40px، سنگین‌ترین وزن، قرمز لایت / فیروزه‌ای دارک */
+.hero-title-first {
+  margin: 0;
+  font-family: "IRANYekanX", sans-serif !important;
+  font-size: 40px !important;
+  font-weight: 950 !important;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-align: center;
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+}
+html.dark .hero-title-first {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+}
