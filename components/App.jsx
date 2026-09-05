@@ -3431,7 +3431,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           if (ticking) return;
           ticking = true;
           requestAnimationFrame(() => {
-            setShowTop(window.scrollY > 1200);
+            setShowTop(window.scrollY > 900);
             setScrolled(window.scrollY > 20);
             ticking = false;
           });
