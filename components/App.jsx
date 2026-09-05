@@ -73,6 +73,7 @@ import { sellerUiStore } from '@/lib/stores/sellerUiStore';
 import { formsStore } from '@/lib/stores/formsStore';
 import FocusTrap from './a11y/FocusTrap';
 import { LoadingState, ErrorState, EmptyStateBox } from './ui/async-state';
+import { ShoppingCartIcon } from './ui/ShoppingCartIcon';
 
 /* —— Code-split heavy UI (PageSpeed: smaller initial JS) —— */
 const Hero = dynamic(() => import('./Hero'), {
@@ -16166,7 +16167,7 @@ const params = new URLSearchParams(window.location.search);
             <p className="text-xs text-primary-500 dark:text-white/55 text-center mt-1 mb-6">حساب مورد نظر را انتخاب کنید</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button type="button" onClick={() => { setRoleGateOpen(false); openAuth(); }} className="flex flex-col items-center gap-2 rounded-2xl border border-primary-200 dark:border-white/15 px-4 py-6 hover:border-apple-blue transition bg-primary-50/70 dark:bg-white/5">
-                <span className="text-2xl" aria-hidden>🛒</span>
+                <ShoppingCartIcon size={28} className="text-primary-700 dark:text-white" />
                 <span className="text-sm font-bold text-primary-900 dark:text-white">خریدار</span>
                 <span className="text-[11px] text-primary-500 dark:text-white/50 text-center">خرید و پیگیری سفارش</span>
               </button>
