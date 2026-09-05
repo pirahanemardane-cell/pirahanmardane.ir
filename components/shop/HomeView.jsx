@@ -301,7 +301,7 @@ export default function HomeView() {
                         <div className="text-xs font-normal opacity-80">ثانیه</div>
                       </div>
                     </div>
-                    <a href="#" onClick={(e) => { e.preventDefault(); openPLP(); }} className="offer-view-all-btn inline-flex items-center gap-1 bg-white !text-[#0A0A0A] text-xs font-semibold px-4 py-2 rounded-full shadow-md hover:bg-[#F3F4F6] hover:!text-[#0A0A0A] active:bg-[#E5E7EB] transition border border-white">
+                    <a href="#" onClick={(e) => { e.preventDefault(); openPLP(); }} className="offer-view-all-btn inline-flex items-center gap-1 bg-white !text-[#0A0A0A] hover:!text-[#0A0A0A] active:!text-[#0A0A0A] text-xs font-semibold px-4 py-2 rounded-full shadow-md hover:bg-[#F3F4F6] active:bg-[#E5E7EB] transition border border-white">
                       مشاهده همه
                       <Icon name="chevronLeft" size={14} />
                     </a>
