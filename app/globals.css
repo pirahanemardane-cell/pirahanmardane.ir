@@ -3211,7 +3211,7 @@ html:not(.dark) .hero-accent-word {
 .hero-title-first {
   margin: 0;
   font-family: "IRANYekanX", sans-serif !important;
-  font-size: 80px !important;
+  font-size: 120px !important;
   font-weight: 950 !important;
   line-height: 1.2;
   letter-spacing: 0;
@@ -3243,7 +3243,7 @@ html.dark .hero-title-first {
 .hero-title-main {
   margin: 0;
   font-family: "IRANYekanX", sans-serif !important;
-  font-size: 80px !important;
+  font-size: 120px !important;
   font-weight: 800 !important;
   line-height: 1.25;
   letter-spacing: 0;
