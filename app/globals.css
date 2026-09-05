@@ -3472,3 +3472,14 @@ div.role-gate-backdrop,
 .group:hover .role-gate-store-door {
   stroke: currentColor;
 }
+
+
+/* Hover effect for "مشاهده همه" button in dashboard cards */
+.dashboard-card .view-all-btn {
+  transition: all 0.2s ease;
+}
+
+.dashboard-card .view-all-btn:hover {
+  color: #fff !important;
+  text-decoration: underline;
+}
