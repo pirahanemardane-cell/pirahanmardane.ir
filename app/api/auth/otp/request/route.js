@@ -38,12 +38,16 @@ export async function POST(request) {
     }
 
     if (typeof isOtpMock === 'function' && isOtpMock()) {
-      return NextResponse.json({
+      const payload = {
         ok: true,
         message: 'کد تأیید ارسال شد (حالت آزمایشی)',
         mock: true,
-        debug_code: issued.code,
-      })
+      }
+      // debug_code فقط در development محلی — هرگز در production
+      if (process.env.NODE_ENV !== 'production' && process.env.OTP_DEBUG === '1') {
+        payload.debug_code = issued.code
+      }
+      return NextResponse.json(payload)
     }
 
     let name = 'کاربر'

@@ -9,8 +9,8 @@ import {
 } from '../../../../lib/product-image-persist'
 
 /**
- * POST /api/media/upload-image — shared WebP/image upload (auth required)
- * Sharp → Storage (R2 or Supabase)
+ * POST /api/media/upload-image — auth + role gate
+ * seller/admin: آزاد | buyer: فقط folder=users
  */
 export async function POST(request) {
   try {
@@ -33,9 +33,21 @@ export async function POST(request) {
     }
 
     const admin = createAdminClient()
-    const folder = String(body.folder || body.role || 'users')
+    let role = 'buyer'
+    try {
+      const { data: prof } = await admin.from('profiles').select('role').eq('id', user.id).maybeSingle()
+      role = String(prof?.role || 'buyer').toLowerCase()
+    } catch (_) {}
+
+    let folder = String(body.folder || body.role || 'users')
       .replace(/[^a-zA-Z0-9_-]/g, '')
       .slice(0, 32) || 'users'
+
+    // خریدار فقط users؛ فروشنده/ادمین آزادتر
+    if (!['seller', 'admin', 'superadmin'].includes(role)) {
+      folder = 'users'
+    }
+
     const result = await processAndUploadProductImage(admin, parsed.buffer, {
       sellerId: folder,
       productId: String(user.id).slice(0, 12),
@@ -46,7 +58,8 @@ export async function POST(request) {
       thumbUrl: result.thumbUrl,
       bytes: result.bytes,
     })
-  } catch (e) { try { await logCritical('media-upload', e) } catch (_lc) {}
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
+  } catch (e) {
+    try { await logCritical('media-upload', e) } catch (_lc) {}
+    return NextResponse.json({ ok: false, error: 'آپلود ناموفق' }, { status: 500 })
   }
 }

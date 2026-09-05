@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { smsSuspiciousLogin } from '@/lib/sms/events'
 import { clientIp, rateLimit, RATE_POLICIES, rateLimitResponse } from '@/lib/rate-limit'
 import { logCritical } from '../../../../lib/critical-log'
+import { isAdminPhone } from '@/lib/api/admin-guard'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,8 +33,6 @@ function deviceFingerprint(req) {
   for (let i = 0; i < ua.length; i++) h = (h * 31 + ua.charCodeAt(i)) >>> 0
   return `d${h.toString(16)}`
 }
-
-const ADMIN_PHONES = new Set(['09921863063'])
 
 export async function POST(req) {
   try {
@@ -132,7 +131,6 @@ export async function POST(req) {
           ok: false,
           error:
             'شماره یا رمز اشتباه است. اگر هنوز رمز نساخته‌اید، یک‌بار با پیامک وارد شوید و در تنظیمات پنل رمز بگذارید.',
-          detail: lastErr,
         },
         { status: 401 }
       )
@@ -146,7 +144,7 @@ export async function POST(req) {
       .maybeSingle()
     profile = p
 
-    if (profile?.id && ADMIN_PHONES.has(phone)) {
+    if (profile?.id && isAdminPhone(phone)) {
       try {
         const admin = createAdminClient()
         await admin

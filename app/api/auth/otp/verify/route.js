@@ -8,7 +8,7 @@ import {
   verifyOtp,
   markPhoneVerified,
 } from '../../../../../lib/otp'
-import crypto from 'crypto'
+import { isAdminPhone } from '../../../../../lib/api/admin-guard'
 import { rateLimit, clientIp, rateLimitResponse } from "../../../../../lib/rate-limit"
 
 function phoneEmail(phone) {
@@ -88,7 +88,8 @@ export async function POST(request) {
     const body = await request.json().catch(() => ({}))
     const phone = normalizePhone(body.phone || body.mobile || '')
     const code = String(body.code || body.otp || '').trim()
-    const roleWanted = body.role === 'seller' ? 'seller' : (body.role === 'admin' ? 'admin' : 'buyer')
+    let roleWanted = body.role === 'seller' ? 'seller' : (body.role === 'admin' ? 'admin' : 'buyer')
+    if (roleWanted === 'admin' && !isAdminPhone(phone)) roleWanted = 'buyer'
 
 
   {
@@ -150,8 +151,14 @@ if (!isValidIranMobile(phone)) {
       null
 
     if (profile?.id && roleWanted === 'admin') {
-      await admin.from('profiles').update({ role: 'admin', phone, updated_at: new Date().toISOString() }).eq('id', profile.id)
-      profile = { ...profile, role: 'admin', phone }
+      // فقط شماره‌های whitelist می‌توانند ادمین شوند — جلوگیری از privilege escalation
+      if (isAdminPhone(phone)) {
+        await admin.from('profiles').update({ role: 'admin', phone, updated_at: new Date().toISOString() }).eq('id', profile.id)
+        profile = { ...profile, role: 'admin', phone }
+      } else {
+        // درخواست role=admin از کلاینت برای شماره غیرمجاز نادیده گرفته می‌شود
+        roleWanted = 'buyer'
+      }
     }
 
     if (profile?.id && profile.full_name) {
