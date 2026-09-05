@@ -3102,5 +3102,7 @@ html:not(.dark) .hero-accent-word {
 
 /* hero URL thin weight only */
 .hero-title-url {
+  text-align: center;
+  width: 100%;
   font-weight: 400 !important;
 }
