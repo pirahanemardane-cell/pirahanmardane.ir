@@ -32,16 +32,17 @@ export default function HeroChrome({
         <h1 className="hero-title-main">{HERO_COPY.title}</h1>
         <div className="hero-title-divider" />
         <p className="hero-title-url">{HERO_COPY.url}</p>
-        {typeof onShopClick === 'function' && (
-          <AntiMetalButton
-            label="فروشگاه"
-            className="hero-shop-btn pointer-events-auto"
-            accentFrom={typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "#13ABC4" : "#FF0000"}
-              accentTo={typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "#0f96ad" : "#c40000"}
-            dotColor={typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "#0f0f0f" : "#ffffff"}
-            onClick={() => { if (typeof window !== "undefined") window.location.href = "/فروشگاه"; }}
-          />
-        )}
+        <AntiMetalButton
+          label="فروشگاه"
+          className="hero-shop-btn pointer-events-auto"
+          accentFrom={typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "#13ABC4" : "#FF0000"}
+          accentTo={typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "#0f96ad" : "#c40000"}
+          dotColor={typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "#0f0f0f" : "#ffffff"}
+          onClick={() => {
+            if (typeof onShopClick === "function") onShopClick();
+            else if (typeof window !== "undefined") window.location.href = "/فروشگاه";
+          }}
+        />
       </div>
 
       <div ref={body1Ref} className="hero-body-overlay">
