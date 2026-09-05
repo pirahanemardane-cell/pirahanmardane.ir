@@ -3328,3 +3328,17 @@ html.dark .hero-body1-line2 {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
+
+/* Hero shop button — متن سفید؛ اکسنت قرمز لایت / فیروزه دارک */
+.hero-title-overlay .hero-shop-btn {
+  pointer-events: auto !important;
+  margin-top: 1rem;
+}
+.hero-title-overlay .hero-shop-btn span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+html.dark .hero-title-overlay .hero-shop-btn span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}

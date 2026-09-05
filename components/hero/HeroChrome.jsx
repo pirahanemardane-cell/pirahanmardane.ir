@@ -1,8 +1,18 @@
 'use client';
 
 import { HERO_COPY } from './hero.config';
+import AntiMetalButton from '@/components/ui/anti-metal-button';
 
-export default function HeroChrome({ hintRef, titleRef, body1Ref }) {
+export default function HeroChrome({ hintRef, titleRef, body1Ref, onShopClick }) {
+  const goShop = () => {
+    if (typeof onShopClick === 'function') onShopClick();
+    else if (typeof window !== 'undefined') window.location.href = '/فروشگاه';
+  };
+
+  const isDark =
+    typeof document !== 'undefined' &&
+    document.documentElement.classList.contains('dark');
+
   return (
     <>
       <div ref={hintRef} className="hero-scroll-cue" aria-hidden="true">
@@ -22,6 +32,14 @@ export default function HeroChrome({ hintRef, titleRef, body1Ref }) {
         <h1 className="hero-title-main">پیراهن مردانه</h1>
         <div className="hero-title-divider" aria-hidden="true" />
         <p className="hero-title-url">WWW.PIRAHANMARDANE.IR</p>
+        <AntiMetalButton
+          label="فروشگاه"
+          className="hero-shop-btn pointer-events-auto mt-4"
+          accentFrom={isDark ? '#13ABC4' : '#FF0000'}
+          accentTo={isDark ? '#0f96ad' : '#c40000'}
+          dotColor="#ffffff"
+          onClick={goShop}
+        />
       </div>
 
       <div ref={body1Ref} className="hero-body-overlay hero-body1">
