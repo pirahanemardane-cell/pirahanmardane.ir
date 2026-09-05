@@ -537,9 +537,9 @@ export default function SellersListView() {
                   <div className="hidden sm:flex flex-wrap justify-start gap-1.5 mt-3" role="group" aria-label="مرتب‌سازی">
                     {sellerSortOptionsSafe.map(({ id, label }) => {
                       const on = sellerListSort === id;
-                      
+
       return (
-        
+
                         <button
                           key={id}
                           type="button"

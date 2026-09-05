@@ -77,7 +77,7 @@ export async function GET(_request, { params }) {
     }
 
     return NextResponse.json({ ok: true, order, items: items || [] })
-  } catch (e) { try { await logCritical('app/api/orders/[id]/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/orders/[id]/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

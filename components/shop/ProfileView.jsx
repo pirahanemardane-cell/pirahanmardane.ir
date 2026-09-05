@@ -182,7 +182,7 @@ export default function ProfileView() {
     try { return await r.json(); } catch { return null; }
   };
 
-  
+
   const BuyerEmpty = ({ title, desc, actionLabel, onAction }) => (
     <div className="text-center py-10 px-4">
       <p className="text-sm font-semibold text-primary-800 dark:text-white mb-1">{title}</p>
@@ -821,8 +821,8 @@ export default function ProfileView() {
                       </div>
                     );
                   })()}
-                  
-                  
+
+
                   {profileTab === 'track' && (
                     <div className="p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-4">
                       <h2 className="text-base font-bold text-primary-900 dark:text-white">پیگیری سفارش</h2>
@@ -943,7 +943,7 @@ export default function ProfileView() {
                                 <div><label className="text-xs text-primary-500 mb-1 block">استان</label><input value={addressForm.province} onChange={e => setAddressForm(f => ({ ...f, province: e.target.value }))} className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue" /></div>
                                 <div><label className="text-xs text-primary-500 mb-1 block">شهر</label><input value={addressForm.city} onChange={e => setAddressForm(f => ({ ...f, city: e.target.value }))} className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue" /></div>
                               </div>
-                              
+
                               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div>
                                   <label className="text-xs text-primary-500 mb-1 block">خیابان <span className="text-red-500">*</span></label>

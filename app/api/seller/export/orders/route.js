@@ -294,7 +294,7 @@ export async function GET(request) {
         'Cache-Control': 'no-store',
       },
     })
-  } catch (e) { try { await logCritical('seller-export', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('seller-export', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

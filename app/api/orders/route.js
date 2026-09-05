@@ -357,7 +357,7 @@ export async function POST(request) {
       meta: { order_id: order?.id, order_number: order?.order_number },
     })
 
-    
+
     // SMS خریدار: سفارش ثبت شد (فروشنده بعد از پرداخت در payments/verify)
     try {
       const orderNo = order?.order_number || order?.id

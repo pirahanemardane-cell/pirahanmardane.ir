@@ -14,7 +14,7 @@ async function forward(request) {
     })
     const text = await res.text()
     return new NextResponse(text, { status: res.status, headers: { 'content-type': res.headers.get('content-type') || 'application/json' } })
-  } catch (e) { try { await logCritical('app/api/cron/publish-scheduled/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/cron/publish-scheduled/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

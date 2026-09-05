@@ -66,7 +66,7 @@ export async function GET(request) {
     }
     const mapped = (orders || []).map((o) => ({ ...o, items: byOrder[o.id] || [] }))
     return NextResponse.json({ ok: true, orders: mapped })
-  } catch (e) { try { await logCritical('seller-orders', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('seller-orders', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

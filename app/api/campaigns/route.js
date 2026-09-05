@@ -45,7 +45,7 @@ export async function GET(request) {
       return NextResponse.json({ ok: true, items: [], note: error.message })
     }
     return NextResponse.json({ ok: true, items: (data || []).map(mapRow) })
-  } catch (e) { try { await logCritical('app/api/campaigns/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/campaigns/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

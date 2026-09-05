@@ -92,7 +92,7 @@ export async function PATCH(request, context) {
     }
 
     return NextResponse.json({ ok: true, message: 'آدرس به‌روز شد', address: data })
-  } catch (e) { try { await logCritical('app/api/addresses/[id]/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/addresses/[id]/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

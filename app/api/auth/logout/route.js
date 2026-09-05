@@ -10,7 +10,7 @@ export async function POST() {
     }
     await supabase.auth.signOut()
     return NextResponse.json({ ok: true, message: 'خروج انجام شد' })
-  } catch (e) { try { await logCritical('app/api/auth/logout/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/auth/logout/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

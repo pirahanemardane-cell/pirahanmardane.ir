@@ -25,7 +25,7 @@ export async function PATCH(request, { params }) {
     const { data, error } = await admin.from('coupons').update(patch).eq('id', id).select('*').maybeSingle()
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
     return NextResponse.json({ ok: true, coupon: data })
-  } catch (e) { try { await logCritical('app/api/coupons/[id]/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/coupons/[id]/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

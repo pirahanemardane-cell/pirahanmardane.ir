@@ -90,7 +90,7 @@ export async function POST(request) {
     const code = String(body.code || body.otp || '').trim()
     const roleWanted = body.role === 'seller' ? 'seller' : (body.role === 'admin' ? 'admin' : 'buyer')
 
-    
+
   {
     const ip = clientIp(request)
     const digits = String(phone || "").replace(/\D/g, "")

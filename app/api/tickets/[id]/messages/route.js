@@ -68,7 +68,7 @@ export async function POST(request, { params }) {
     })
     if (!msg) return NextResponse.json({ ok: false, error: 'ارسال ناموفق' }, { status: 400 })
     return NextResponse.json({ ok: true, message: msg })
-  } catch (e) { try { await logCritical('app/api/tickets/[id]/messages/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/tickets/[id]/messages/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

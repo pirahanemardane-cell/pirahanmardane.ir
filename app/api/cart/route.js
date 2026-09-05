@@ -100,7 +100,7 @@ export async function GET() {
       subtotal,
       count: list.reduce((s, it) => s + (it.qty || 0), 0),
     })
-  } catch (e) { try { await logCritical('app/api/cart/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/cart/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

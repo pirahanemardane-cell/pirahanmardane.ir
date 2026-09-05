@@ -643,10 +643,10 @@ header[data-home-hero-header="1"] {
   letter-spacing: 0.42em;
   text-transform: uppercase;
   color: #ffffff;
-  
-  
+
+
   direction: ltr;
-  
+
   -webkit-text-fill-color: #ffffff !important;
   font-family: var(--font-app) !important;
   font-size: 1.125rem;
@@ -716,7 +716,7 @@ html.dark .hero-shop-btn:hover {
   letter-spacing: 0.02em;
   line-height: 1.35;
   color: #ffffff;
-  
+
   -webkit-text-fill-color: #ffffff !important;
   border-color: #1d1d1f !important;
   pointer-events: auto !important;
@@ -2998,12 +2998,12 @@ html.dark .hero-accent-word {
   color: #FF0000 !important;
   -webkit-text-fill-color: #FF0000 !important;
   font-weight: 950 !important;
-  
+
 }
 html.dark .hero-accent-word {
   color: #13ABC4 !important;
   -webkit-text-fill-color: #13ABC4 !important;
-  
+
 }
 
 .hero-weight-thin {
@@ -3067,12 +3067,12 @@ html:not(.dark) .hero-accent-word {
   color: #FF0000 !important;
   -webkit-text-fill-color: #FF0000 !important;
   font-weight: 950 !important;
-  
+
 }
 html.dark .hero-accent-word {
   color: #13ABC4 !important;
   -webkit-text-fill-color: #13ABC4 !important;
-  
+
 }
 
 .hero-weight-thin {
@@ -3121,12 +3121,12 @@ html.dark .hero-body-line1 {
   color: #FF0000 !important;
   -webkit-text-fill-color: #FF0000 !important;
   font-weight: 950 !important;
-  
+
 }
 html.dark .hero-accent-word {
   color: #13ABC4 !important;
   -webkit-text-fill-color: #13ABC4 !important;
-  
+
 }
 
 .hero-weight-thin {

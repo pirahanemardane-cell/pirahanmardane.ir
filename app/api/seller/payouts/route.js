@@ -37,7 +37,7 @@ export async function GET(request) {
       .order('created_at', { ascending: false })
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
     return NextResponse.json({ ok: true, items: data || [] })
-  } catch (e) { try { await logCritical('seller-payouts', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('seller-payouts', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

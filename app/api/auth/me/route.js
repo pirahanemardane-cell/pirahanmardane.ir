@@ -25,7 +25,7 @@ export async function GET() {
       user: { id: user.id, email: user.email },
       profile,
     })
-  } catch (e) { try { await logCritical('app/api/auth/me/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/auth/me/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

@@ -38,7 +38,7 @@ export async function GET() {
 
     const ids = (data || []).map((r) => r.seller_id).filter(Boolean)
     return NextResponse.json({ ok: true, ids, items: data || [] })
-  } catch (e) { try { await logCritical('app/api/seller-follows/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/seller-follows/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e), ids: [] }, { status: 500 })
   }
 }

@@ -71,7 +71,7 @@ async function notifyDisputeOpened(admin, ticket) {
       seen.add(t.phone)
       await smsDisputeOpened({ phone: t.phone, name: t.name, orderNumber: orderNo })
     }
-  } catch (e) { try { await logCritical('app/api/tickets/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/tickets/route.js', e) } catch (_lc) {}
     console.warn('[tickets] dispute sms', e?.message || e)
   }
 }

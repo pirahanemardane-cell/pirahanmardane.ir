@@ -219,7 +219,7 @@ export async function POST(request) {
         })
         if (!vErr && s?.user) sign = s
       }
-    } catch (e) { try { await logCritical('app/api/auth/otp/complete/route.js', e) } catch (_lc) {} 
+    } catch (e) { try { await logCritical('app/api/auth/otp/complete/route.js', e) } catch (_lc) {}
       console.warn('otp/complete magiclink', e?.message || e)
     }
     if (!sign?.user && sessionPassword) {

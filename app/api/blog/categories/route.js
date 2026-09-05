@@ -18,7 +18,7 @@ export async function GET() {
       .order('sort_order', { ascending: true })
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
     return NextResponse.json({ ok: true, items: data || [] })
-  } catch (e) { try { await logCritical('app/api/blog/categories/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/blog/categories/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

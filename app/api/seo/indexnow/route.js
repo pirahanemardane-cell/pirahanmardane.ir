@@ -47,7 +47,7 @@ export async function POST(request) {
       status: res.status,
       body: text.slice(0, 500),
     });
-  } catch (e) { try { await logCritical('app/api/seo/indexnow/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/seo/indexnow/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: e?.message }, { status: 500 });
   }
 }

@@ -54,7 +54,7 @@ export async function GET(request) {
       .limit(50)
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
     return NextResponse.json({ ok: true, items: data || [] })
-  } catch (e) { try { await logCritical('app/api/coupons/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/coupons/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

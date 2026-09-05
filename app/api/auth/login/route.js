@@ -38,7 +38,7 @@ export async function POST(request) {
       user: data.user ? { id: data.user.id, email: data.user.email } : null,
       profile,
     })
-  } catch (e) { try { await logCritical('app/api/auth/login/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/auth/login/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

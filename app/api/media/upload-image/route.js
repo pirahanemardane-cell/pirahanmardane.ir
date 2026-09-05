@@ -46,7 +46,7 @@ export async function POST(request) {
       thumbUrl: result.thumbUrl,
       bytes: result.bytes,
     })
-  } catch (e) { try { await logCritical('media-upload', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('media-upload', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

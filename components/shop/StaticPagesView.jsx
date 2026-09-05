@@ -383,7 +383,7 @@ export default function StaticPagesView() {
                       </div>
                     ))}
                   </div>
-                
+
                   <FAQMonochrome
                     compact
                     title="سوالات فروشندگان"
@@ -926,7 +926,7 @@ export default function StaticPagesView() {
           )}
 
           {/* Footer — در تمام صفحات بدون استثنا */}
-          
+
           <footer className="bg-primary-50 dark:bg-primary-950 text-primary-800 dark:text-white pt-10 sm:pt-14 pb-6 sm:pb-8 border-t border-primary-200 dark:border-white/30 transition-colors">
             <div className="max-w-7xl mx-auto px-3 sm:px-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 mb-8 sm:mb-12 items-start">
@@ -1072,7 +1072,7 @@ export default function StaticPagesView() {
                       <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-apple-blue text-white text-xs font-bold flex items-center justify-center">{toFa(Math.min(recentlyViewed.length, 9))}</span>
                     )}
                   </button>
-                
+
                 </div>
               </div>
               <div className="flex-shrink-0 px-3.5 py-2 border-b border-primary-100 dark:border-white/10 sm:hidden">

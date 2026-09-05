@@ -32,7 +32,7 @@ export async function GET(request) {
     const map = {}
     for (const row of data || []) map[row.key] = row.value
     return NextResponse.json({ ok: true, settings: map })
-  } catch (e) { try { await logCritical('app/api/site-settings/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/site-settings/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

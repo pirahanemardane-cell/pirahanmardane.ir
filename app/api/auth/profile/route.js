@@ -36,7 +36,7 @@ export async function GET() {
       profile,
       needs_phone: needsPhone,
     })
-  } catch (e) { try { await logCritical('app/api/auth/profile/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/auth/profile/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

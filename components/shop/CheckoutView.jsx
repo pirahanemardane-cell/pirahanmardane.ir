@@ -214,7 +214,7 @@ export default function CheckoutView() {
                       {/* Main form — ستون اصلی */}
                       <div className="checkout-main-col space-y-4 min-w-0">
                         {/* Contact */}
-                        
+
                       {/* ناوبری مرحله‌ای */}
                       <div className="checkout-step-nav sticky top-0 z-30 mb-4 py-2 bg-white/90 dark:bg-primary-950/90 backdrop-blur-md border-b border-primary-100 dark:border-white/10">
                         <div className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -337,9 +337,9 @@ export default function CheckoutView() {
                                   <input type="text" dir="ltr" value={checkoutNewAddress.postal} onChange={e => setCheckoutNewAddress(a => ({ ...a, postal: onlyDigits(e.target.value).slice(0, 10) }))} className={`w-full px-3 py-2.5 rounded-xl border bg-transparent text-sm ${checkoutErrors.postal ? 'border-red-400' : 'border-primary-200 dark:border-white/20'}`} />
                                   {checkoutErrors.postal && <p className="text-xs text-red-500 mt-1">{checkoutErrors.postal}</p>}
                                 </div>
-                                
+
                               </div>
-                              
+
                               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div className="sm:col-span-1">
                                   <label className="block text-xs font-medium text-primary-700 dark:text-white/80 mb-1">
@@ -470,7 +470,7 @@ export default function CheckoutView() {
                       </div>
 
 
-                      
+
 
                       {/* Sidebar summary ~35% — موبایل: اول | دسکتاپ: sticky (ستون باید کشیده شود تا sticky جا داشته باشد) */}
                       <aside className="checkout-summary-col order-summary-col">

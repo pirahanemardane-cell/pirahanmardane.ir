@@ -57,7 +57,7 @@ export async function POST(request) {
       message: 'ثبت‌نام موفق بود',
       user: data.user ? { id: data.user.id, email: data.user.email } : null,
     })
-  } catch (e) { try { await logCritical('app/api/auth/signup/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/auth/signup/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

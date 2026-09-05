@@ -451,7 +451,7 @@ export default function PlpView() {
                     {/* تب‌ها */}
                     <div className="flex border-b border-primary-100 dark:border-white/10 px-2 gap-1 overflow-x-auto">
                       {[
-                        
+
                         { id: 'price', label: 'قیمت' },
                         { id: 'color', label: 'رنگ و سایز' },
                         { id: 'more', label: 'سایر' },

@@ -118,9 +118,9 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 });
 
 
-    
 
-    
+
+
     const toFa = (n) => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
     /** ارقام فارسی/عربی → انگلیسی */
     const toEnDigits = (s) => String(s ?? '')
@@ -129,7 +129,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
     const onlyDigits = (v) => toEnDigits(v).replace(/\D/g, '');
     const ADMIN_ALLOWED_PHONES = ['09921863063'];
     const isAdminPhone = (raw) => ADMIN_ALLOWED_PHONES.includes(onlyDigits(raw));
-    
+
     /** ممنوعیت لینک برای خریدار و فروشنده */
     const USER_LINK_RE = /(?:https?:\/\/|www\.|\/\/)|(?:\b[a-z0-9][a-z0-9-]{0,61}[a-z0-9]?\.(?:com|ir|net|org|io|co|me|info|app|dev|shop|store|xyz|online|site|link|blog|cloud|pro|tv|cc|biz|ai|eu|uk|de|fr|ca|us)\b)|(?:\b(?:t\.me|telegram\.me|instagram\.com|ig\.me|wa\.me|chat\.whatsapp\.com|youtu\.be|youtube\.com|twitter\.com|x\.com|linkedin\.com|facebook\.com|fb\.me|tiktok\.com|threads\.net|bit\.ly|cutt\.ly|rb\.gy|goo\.gl|eitaa\.com|splus\.ir|ble\.ir|rubika\.ir)\/[^\s]*)|(?:\[url\b|href\s*=|src\s*=)|(?:@\w{3,})/i;
     const textContainsForbiddenLink = (text) => {
@@ -300,7 +300,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
 
       const [dark, setDark] = useStoreField(shopUiStore, 'dark');
-      
+
       // Clean legacy ?view= query from URLs (site-wide)
       try {
         if (typeof window !== 'undefined') {
@@ -3253,7 +3253,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         if (topSellersTab === 'new') return list.sort((a, b) => String(b.joinDate || '').localeCompare(String(a.joinDate || ''), 'fa')).slice(0, 20);
         return list.sort((a, b) => smartScore(b) - smartScore(a)).slice(0, 20);
       })();
-      
+
 
 
       const toggleSearchCategory = (c) => {
@@ -4434,7 +4434,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         });
       };
 
-      
+
       const clearCart = () => {
         if (isServerCartEnabled() || user?.supabase) {
           clearCartServer().catch(() => {});
@@ -4446,7 +4446,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         setClearCartConfirm(false);
         pushLiveToast('سبد خرید خالی شد', { type: 'cart' });
       };
-      
+
       const getUsedPromoCodes = () => {
         try { return JSON.parse(localStorage.getItem('usedPromoCodes') || '[]'); } catch { return []; }
       };
@@ -4618,7 +4618,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         return letters.toUpperCase();
       };
       /** کد یکتا: ۴حرف فروشگاه + ۹ رقم — بدون هم‌پوشانی بین همه فروشگاه‌ها */
-      
+
       /** کد یکتای تیکت: TK + 9 رقم — بدون هم‌پوشانی بین خریدار/فروشنده/ادمین */
       const generateTicketCode = () => {
         const collect = () => {
@@ -4768,7 +4768,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         }
       };
 
-      
+
       const approveAdminProductOnServer = async (productId, status = 'active') => {
         const res = await fetch('/api/admin/products/' + encodeURIComponent(productId), {
           method: 'PATCH',
@@ -5666,7 +5666,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           if (page === 'blog-post' && opts.blogId) {
             const post = (typeof blogPosts !== 'undefined' ? blogPosts : [])?.find?.(b => b.id === opts.blogId);
             pushFaUrl(pathForBlogPost(post?.slug || post?.title || opts.blogId), { staticPage: page, blogId: opts.blogId });
-          
+
         try { applyPathRef.current(); } catch (_) {}} else {
             pushFaUrl(pathForStaticPage(page), { staticPage: page });
           }
@@ -5698,7 +5698,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           ['plp','cat','seller','sellers','cart','wishlist','recent','tag'].forEach(k => url.searchParams.delete(k));
           url.searchParams.set('compare', compare.map(p => p.id).join(',') || '1');
           pushFaUrl(FA_PATHS.compare, { compare: true });
-        
+
         try { applyPathRef.current(); } catch (_) {}} catch (_) {}
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
@@ -6044,7 +6044,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           ['plp','cat','seller','sellers','recent','wishlist','compare','profile','sellerPanel'].forEach(k => url.searchParams.delete(k));
           url.searchParams.set('cart', '1');
           pushFaUrl(FA_PATHS.cart, { cart: true });
-        
+
         try { applyPathRef.current(); } catch (_) {}} catch (_) {}
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
@@ -6192,7 +6192,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         if (!checkoutContact.firstName?.trim()) errs.firstName = 'نام الزامی است';
         if (!checkoutContact.phone || !/^09\d{9}$/.test(onlyDigits(checkoutContact.phone))) errs.phone = 'موبایل معتبر (۱۱ رقم با ۰۹) الزامی است';
         if (checkoutUseNewAddress || !(addresses || []).length) {
-          
+
       const buildAddressLine = (addr) => {
         const parts = [];
         if (addr?.street?.trim()) parts.push('خیابان ' + addr.street.trim());
@@ -6605,7 +6605,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           ['plp','cat','seller','sellers','cart','compare','recent','tag'].forEach(k => url.searchParams.delete(k));
           url.searchParams.set('wishlist', '1');
           pushFaUrl(FA_PATHS.wishlist, { wishlist: true });
-        
+
         try { applyPathRef.current(); } catch (_) {}} catch (_) {}
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
@@ -6632,7 +6632,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           ['plp','cat','seller','sellers','cart','compare','wishlist','tag'].forEach(k => url.searchParams.delete(k));
           url.searchParams.set('recent', '1');
           pushFaUrl(FA_PATHS.recent, { recent: true });
-        
+
         try { applyPathRef.current(); } catch (_) {}} catch (_) {}
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
@@ -7271,8 +7271,8 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         }
       };
 
-      
-      
+
+
       const setAccountPassword = async (password) => {
         const res = await fetch('/api/auth/password', {
           method: 'POST',
@@ -7925,9 +7925,9 @@ const verifyOtp = async () => {
     }
 
 
-      
+
       /** S0: فروشنده فقط از سرور — بدون اتکا به localStorage به‌عنوان منبع حقیقت */
-      
+
       const mapServerProductToSellerUi = (p) => {
         if (!p) return null;
         const payload = p.payload && typeof p.payload === 'object' ? p.payload : {};
@@ -8221,7 +8221,7 @@ const verifyOtp = async () => {
         return null;
       };
 
-      
+
       useEffect(() => {
         if (!showSellerPanel) return
         let cancelled = false
@@ -8250,7 +8250,7 @@ const verifyOtp = async () => {
         return () => { cancelled = true; document.removeEventListener('visibilitychange', onVis) }
       }, [showSellerPanel])
 
-      
+
       // ——— Live: وضعیت فروشنده بدون رفرش ———
       useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -11275,7 +11275,7 @@ const verifyOtp = async () => {
         return `<?xml version="1.0" encoding="UTF-8"?>\\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\\n${body}\\n</urlset>\\n`;
       };
 
-      
+
       const buildSitemapIndexXml = () => {
         const s = seoCfg();
         const base = (s.canonicalBase || 'https://pirahanemardane.ir').replace(/\/$/, '');
@@ -11387,7 +11387,7 @@ const downloadSeoFile = (filename, content, mime) => {
         setMobileMenuOpen(false);
       };
 
-      
+
       // فوتر: باز کردن مودال/پنل ادمین بدون reload
       useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -11412,7 +11412,7 @@ const downloadSeoFile = (filename, content, mime) => {
         return () => window.removeEventListener('open-admin-panel', onEvt);
       }, [adminUser]);
 
-      
+
       useEffect(() => {
         if (typeof window === 'undefined') return;
         window.__openAdminAuth = () => {
@@ -11686,7 +11686,7 @@ const downloadSeoFile = (filename, content, mime) => {
           setAdminAuthLoading(false);
         }
       };
-      
+
 
 
       const resendMfa = async () => {
@@ -11976,7 +11976,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         }
       }
 
-      
+
       // SELLER_ROUTE_GUARD — با بازیابی session از localStorage + سرور (جلوگیری از مودال روی ریلود)
       useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -15880,7 +15880,7 @@ const params = new URLSearchParams(window.location.search);
           <div className="site-header-spacer flex-shrink-0" aria-hidden="true" />
 
 
-          
+
           {/* Breadcrumbs — فقط صفحات داخلی؛ در صفحه خانه هرگز نمایش داده نشود */}
           {!pdpProduct && (() => {
             const isHome = !showPLP && !activeSellerId && !showSellersList && !showCartPage && !showCheckout
@@ -15944,12 +15944,12 @@ const params = new URLSearchParams(window.location.search);
           })()}
 
 
-          
+
           {/* FAQ سراسری در صفحه اصلی */}
-          
+
 
 {/* ===================== PLP — لیست محصولات ===================== */}
-          
+
           {/* ===================== PDP — صفحه جزئیات محصول ===================== */}
           <ClientErrorBoundary><PdpView /></ClientErrorBoundary>
 
@@ -15972,7 +15972,7 @@ const params = new URLSearchParams(window.location.search);
 
 
           {/* ===================== ADMIN PANEL ===================== */}
-          
+
       {adminAuthOpen && (
         <div className="site-modal-root" role="dialog" aria-modal="true" style={{ zIndex: 10050 }}>
           <div className="site-modal-backdrop" onClick={() => { try { closeAdminAuth(); } catch (_) {} }} />
@@ -16147,7 +16147,7 @@ const params = new URLSearchParams(window.location.search);
           <HomeView />
           <ClientErrorBoundary><StaticPagesView /></ClientErrorBoundary>
           {/* ========== Auth Modal (OTP) ========== */}
-          
+
       {roleGateOpen ? (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" dir="rtl" role="dialog" aria-modal="true">
           <div role="button" tabIndex={0} className="role-gate-backdrop absolute inset-0 bg-black/50 backdrop-blur-[2px] border-0 cursor-default" aria-label="بستن" onClick={() => setRoleGateOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') setRoleGateOpen(false); }} />
@@ -16177,7 +16177,7 @@ const params = new URLSearchParams(window.location.search);
       ) : null}
 
       <AuthModalView />
-          
+
       {publicTrackOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40" role="dialog" aria-modal="true" onClick={() => setPublicTrackOpen(false)}>
           <div className="w-full max-w-md rounded-2xl bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 p-5 shadow-xl" onClick={(e) => e.stopPropagation()} dir="ltr">
@@ -16579,7 +16579,7 @@ const params = new URLSearchParams(window.location.search);
             </div>
           )}
 
-          
+
 
 
           {siteDialog && (

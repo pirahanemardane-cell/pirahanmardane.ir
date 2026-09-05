@@ -108,7 +108,7 @@ export async function PATCH(request, { params }) {
       entityId: id,
       after: data,
     })
-    
+
     try {
       if (data?.owner_id) {
         const st = data.status || ''

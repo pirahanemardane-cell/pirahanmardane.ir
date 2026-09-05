@@ -311,7 +311,7 @@ export default function AuthModalView() {
           </form>
         )}
 
-  
+
       {/* مرحله MFA: کد دو مرحله‌ای بعد از ورود با رمز */}
       {authStep === 'mfa' && (
         <form

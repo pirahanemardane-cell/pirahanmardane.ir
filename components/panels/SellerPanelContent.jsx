@@ -1162,7 +1162,7 @@ export default function SellerPanelContent() {
     wishlistView,
     wrap,
     yes
-  
+
 } = api;
 
   const [sellerLogoUrl, setSellerLogoUrl] = useState(() => sellerUser?.logoUrl || sellerUser?.logo_url || sellerUser?.logo || '');
@@ -1358,7 +1358,7 @@ export default function SellerPanelContent() {
 
                       {sellerTab === 'dashboard' && !sellerOrderDetailId && (
                     <div className="space-y-6">
-                      
+
                       {String(sellerUser?.status||'').toLowerCase()==='archived' && (
                         <div className="mb-3 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300 leading-relaxed">
                           فروشگاه شما توسط مدیریت <strong>تعلیق شده</strong> است. برای فعال‌سازی مجدد با پشتیبانی تماس بگیرید.
@@ -1840,7 +1840,7 @@ export default function SellerPanelContent() {
                                 <input value={productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || '')} readOnly disabled dir="ltr" placeholder="خودکار از نام محصول و فروشگاه" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-900/50 text-sm text-left font-latin text-primary-500 dark:!text-white cursor-not-allowed shadow-none" />
                                 <p className="text-xs text-primary-400 mt-1">نامک به‌صورت خودکار از نام محصول و نام فروشگاه ساخته می‌شود و قابل ویرایش نیست.</p>
                               </div>
-                              
+
                               <div className="rounded-xl border border-primary-200 dark:border-white/15 bg-primary-50/50 dark:bg-primary-950/40 p-3">
                                 <label className="flex items-start gap-2.5 cursor-pointer">
                                   <input
@@ -2008,7 +2008,7 @@ export default function SellerPanelContent() {
 
                               </div>
                               )}
-                              
+
                               {sellerProductStep === 5 && (
                               <div className="space-y-4">
                               <p className="text-sm font-bold text-primary-900 dark:text-white mb-3">۵. انتخاب برند</p>
@@ -2768,7 +2768,7 @@ export default function SellerPanelContent() {
                                   pushLiveToast('حداقل یک سایز انتخاب کنید', { type: 'error' });
                                   return;
                                 }
-                                  
+
                                   if (sellerProductStep === 10) {
                                   /* واریانت اختیاری — اگر خالی بود رد شو */
                                   const hasColor = (sellerProductForm.colorIds || []).length > 0;
@@ -3100,7 +3100,7 @@ export default function SellerPanelContent() {
                       )}
 
                       {/* مودال انتخاب دسته / برچسب */}
-                      
+
       {sellerScheduleOpen && (
         <div className="site-modal-root" role="dialog" aria-modal="true" style={{ zIndex: 80 }}>
           <div className="site-modal-backdrop" onClick={() => setSellerScheduleOpen(false)} />

@@ -61,7 +61,7 @@ export async function PATCH(request, { params }) {
       entityId: id,
       after: data,
     })
-    
+
     try {
       if (data && (data.status === 'active' || data.status === 'rejected' || data.status === 'pending')) {
         let ownerId = null

@@ -130,7 +130,7 @@ export async function POST(request) {
     await admin.from('carts').update({ updated_at: new Date().toISOString() }).eq('id', cart.id)
 
     return NextResponse.json({ ok: true, message: 'به سبد اضافه شد', item })
-  } catch (e) { try { await logCritical('app/api/cart/items/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/cart/items/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

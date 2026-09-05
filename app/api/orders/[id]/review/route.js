@@ -53,7 +53,7 @@ export async function POST(request, { params }) {
 
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
     return NextResponse.json({ ok: true, message: 'امتیاز ثبت شد', review: data })
-  } catch (e) { try { await logCritical('app/api/orders/[id]/review/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/orders/[id]/review/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

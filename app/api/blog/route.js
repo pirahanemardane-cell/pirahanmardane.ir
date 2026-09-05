@@ -45,7 +45,7 @@ export async function GET(request) {
       { ok: true, posts: data || [] },
       { headers: { 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' } },
     )
-  } catch (e) { try { await logCritical('app/api/blog/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/blog/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

@@ -95,7 +95,7 @@ async function notifyDisputeStatus(admin, ticket, status) {
         })
       }
     }
-  } catch (e) { try { await logCritical('app/api/tickets/[id]/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/tickets/[id]/route.js', e) } catch (_lc) {}
     console.warn('[tickets/id] dispute sms', e?.message || e)
   }
 }

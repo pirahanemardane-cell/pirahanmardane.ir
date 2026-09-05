@@ -42,7 +42,7 @@ export async function GET() {
     }
 
     return NextResponse.json({ ok: true, items: data || [] })
-  } catch (e) { try { await logCritical('app/api/wishlist/route.js', e) } catch (_lc) {} 
+  } catch (e) { try { await logCritical('app/api/wishlist/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }
