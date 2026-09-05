@@ -3194,16 +3194,18 @@ html:not(.dark) .hero-accent-word {
 .hero-title-url {
   margin: 0;
   font-family: "IRANYekanX", sans-serif !important;
+  font-size: 75px !important;
   font-weight: 400 !important;
-  font-size: 20px !important;
-  letter-spacing: 0.08em;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-align: center;
+  direction: ltr;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
-  direction: ltr;
   text-shadow:
-    0 0 10px rgba(255, 255, 255, 1),
-    0 0 24px rgba(200, 230, 255, 0.7),
-    0 2px 12px rgba(0, 0, 0, 0.55);
+    0 0 8px rgba(255, 255, 255, 0.55),
+    0 0 18px rgba(255, 255, 255, 0.35),
+    0 2px 10px rgba(0, 0, 0, 0.25);
 }
 
 
@@ -3262,4 +3264,15 @@ html.dark .hero-title-first {
 html.dark .hero-title-main {
   color: #13ABC4 !important;
   -webkit-text-fill-color: #13ABC4 !important;
+}
+
+
+.hero-title-divider {
+  width: 5rem;
+  height: 2px;
+  margin-top: 0.85rem;
+  margin-bottom: 0.85rem;
+  border-radius: 9999px;
+  background: #ffffff !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }

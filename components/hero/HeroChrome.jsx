@@ -3,7 +3,7 @@
 import { HERO_COPY } from './hero.config';
 
 /**
- * فقط Scroll + عنوان اسکرول اول
+ * Scroll + عنوان + خط سفید + URL
  */
 export default function HeroChrome({ hintRef, titleRef }) {
   return (
@@ -23,6 +23,8 @@ export default function HeroChrome({ hintRef, titleRef }) {
 
       <div ref={titleRef} className="hero-title-overlay">
         <h1 className="hero-title-main">پیراهن مردانه</h1>
+        <div className="hero-title-divider" aria-hidden="true" />
+        <p className="hero-title-url">WWW.PIRAHANMARDANE.IR</p>
       </div>
     </>
   );
