@@ -3276,3 +3276,14 @@ html.dark .hero-title-main {
   background: #ffffff !important;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
+
+
+/* Hero title sizes — mobile */
+@media (max-width: 768px) {
+  .hero-title-main {
+    font-size: 50px !important;
+  }
+  .hero-title-url {
+    font-size: 40px !important;
+  }
+}
