@@ -46,9 +46,9 @@ export default function HeroChrome({
 
       <div ref={body1Ref} className="hero-body-overlay">
         <p className="hero-body-text hero-body-text--split">
-          <span className="hero-body1-line1">{HERO_COPY.body1Line1}</span>
+          <span className="hero-body1-line1 hero-weight-thin">{HERO_COPY.body1Line1}</span>
           <span className="hero-body1-space"> </span>
-          <span className="hero-body1-line2">{HERO_COPY.body1Line2}</span>
+          <span className="hero-body1-line2 hero-accent-word">{HERO_COPY.body1Line2}</span>
         </p>
       </div>
 
@@ -56,7 +56,7 @@ export default function HeroChrome({
         <p className="hero-body-text">
           <span className="hero-body-line1">{HERO_COPY.body2Line1}</span>
           <span className="hero-body-space"> </span>
-          <span className="hero-body-line2">{HERO_COPY.body2Line2}</span>
+          <span className="hero-body-line2 hero-weight-thin">{HERO_COPY.body2Line2}</span>
         </p>
       </div>
     </>

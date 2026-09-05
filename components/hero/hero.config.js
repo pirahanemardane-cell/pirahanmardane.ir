@@ -10,10 +10,10 @@ export const HERO_COPY = {
   title: 'پیراهن مردانه',
   url: 'WWW.PIRAHANMARDANE.IR',
   shop: 'فروشگاه',
-  body1Line1: 'مرکز تخصصی فروش',
+  body1Line1: 'مرکز فروش',
   body1Line2: 'پیراهن مردانه',
-  body2Line1: 'تنوع در',
-  body2Line2: 'قیمت و کیفیت',
+  body2Line1: 'تنوع',
+  body2Line2: 'در قیمت و کیفیت',
   scrollCue: 'Scroll',
   alt: 'پیراهن مردانه',
 };
