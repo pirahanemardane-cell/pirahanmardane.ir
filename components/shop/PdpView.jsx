@@ -487,7 +487,7 @@ export default function PdpView() {
                               <input type="number" placeholder="قد (سانتی‌متر)" value={pdpHeight} onChange={e => setPdpHeight(e.target.value)} className="flex-1 px-3 py-2 rounded-lg border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white" />
                               <input type="number" placeholder="وزن (کیلو)" value={pdpWeight} onChange={e => setPdpWeight(e.target.value)} className="flex-1 px-3 py-2 rounded-lg border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white" />
                             </div>
-                            <button type="button" onClick={suggestSizeFromBody} className="w-full py-2 rounded-lg bg-primary-800 dark:bg-[#13ABC4] text-white dark:text-white text-xs font-medium">محاسبه سایز</button>
+                            <button type="button" onClick={suggestSizeFromBody} className="btn-cta w-full py-2 rounded-lg bg-primary-800 dark:bg-[#13ABC4] text-white dark:text-white text-xs font-medium">محاسبه سایز</button>
                             {pdpSizeRec && <p className="text-xs text-center text-emerald-700 dark:text-emerald-400">سایز پیشنهادی: <strong>{pdpSizeRec}</strong></p>}
                           </div>
                         )}

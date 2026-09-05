@@ -1273,7 +1273,7 @@ export default function AdminPanelContent() {
                             <label className="text-xs text-primary-500 space-y-1 sm:col-span-2"><span>توضیحات</span><textarea name="description" defaultValue={p.description || ''} rows={4} className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm" /></label>
                           </div>
                           <div className="flex flex-wrap gap-2 pt-2">
-                            <button type="submit" className="text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-medium">ذخیره تغییرات</button>
+                            <button type="submit" className="btn-cta text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-medium">ذخیره تغییرات</button>
                             {p.status === 'pending' && (<button type="button" onClick={() => patchAdminProductStatus(p.id, 'active')} className="text-xs px-3 py-2 rounded-full bg-emerald-600 text-white">تأیید و انتشار</button>)}
                             {p.status === 'active' && (<button type="button" onClick={() => patchAdminProductStatus(p.id, 'inactive')} className="text-xs px-3 py-2 rounded-full border border-primary-200 text-primary-600">غیرفعال</button>)}
                             {p.status === 'inactive' && (<button type="button" onClick={() => patchAdminProductStatus(p.id, 'active')} className="text-xs px-3 py-2 rounded-full border border-emerald-200 text-emerald-600">فعال‌سازی</button>)}
@@ -1442,7 +1442,7 @@ export default function AdminPanelContent() {
                         <h2 className="text-base font-bold text-primary-900 dark:text-white">کدهای تخفیف</h2>
                         <button
                           type="button"
-                          className="text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white font-bold"
+                          className="btn-cta text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white font-bold"
                           onClick={async () => {
                             const code = window.prompt('کد تخفیف (مثلاً SUMMER20)');
                             if (!code) return;
@@ -1505,7 +1505,7 @@ export default function AdminPanelContent() {
                         <h2 className="text-base font-bold text-primary-900 dark:text-white">لاگ اقدامات ادمین</h2>
                         <button
                           type="button"
-                          className="text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white"
+                          className="btn-cta text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white"
                           onClick={async (e) => {
                             const box = e.currentTarget.closest('[data-audit-root]') || e.currentTarget.parentElement?.parentElement;
                             const listEl = box?.querySelector('[data-audit-list]');
@@ -2311,7 +2311,7 @@ export default function AdminPanelContent() {
                         <button
                           type="button"
                           onClick={openNewShippingMethod}
-                          className="text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white font-medium flex items-center gap-1"
+                          className="btn-cta text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white font-medium flex items-center gap-1"
                         >
                           <Icon name="plus" size={14} /> افزودن روش ارسال
                         </button>
@@ -2396,7 +2396,7 @@ export default function AdminPanelContent() {
                               </div>
                             </div>
                             <div className="flex gap-2 mt-5">
-                              <button type="button" onClick={saveShippingMethodForm} className="flex-1 py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium">ذخیره</button>
+                              <button type="button" onClick={saveShippingMethodForm} className="btn-cta flex-1 py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium">ذخیره</button>
                               <button type="button" onClick={() => setShippingMethodFormOpen(false)} className="px-5 py-2.5 rounded-full border border-primary-200 dark:border-white/30 text-sm">لغو</button>
                             </div>
                           </div>
@@ -2711,7 +2711,7 @@ export default function AdminPanelContent() {
                                           setStep(step + 1);
                                         }} className="text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-medium">مرحله بعد</button>
                                       ) : (
-                                        <button type="button" onClick={saveTaxonomy} className="text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-medium">ذخیره نهایی</button>
+                                        <button type="button" onClick={saveTaxonomy} className="btn-cta text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-medium">ذخیره نهایی</button>
                                       )}
                                     </div>
                                   </div>
@@ -3798,7 +3798,7 @@ export default function AdminPanelContent() {
                       <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-3">
                         <div className="flex items-center justify-between gap-2 flex-wrap">
                           <h3 className="text-sm font-bold text-primary-900 dark:text-white">رصد برند در AI (Brand Visibility)</h3>
-                          <button type="button" onClick={simulateBrandScan} className="text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white">اسکن شبیه‌سازی</button>
+                          <button type="button" onClick={simulateBrandScan} className="btn-cta text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white">اسکن شبیه‌سازی</button>
                         </div>
                         <p className="text-xs text-primary-500">ChatGPT / Perplexity / Gemini — ثبت دستی یا اسکن نمونه. داده واقعی نیاز به سرویس رصد دارد.</p>
                         <input
@@ -4767,7 +4767,7 @@ export default function AdminPanelContent() {
                         <p className="text-xs text-primary-500">خروجی جداول اصلی از Supabase — فقط ادمین.</p>
                         <button
                           type="button"
-                          className="text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white font-bold"
+                          className="btn-cta text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white font-bold"
                           onClick={async () => {
                             try {
                               const res = await fetch('/api/admin/backup', { credentials: 'include' });
@@ -4836,7 +4836,7 @@ export default function AdminPanelContent() {
 
                       <p className="text-xs text-primary-500 dark:!text-white">شامل محصولات، دسته‌ها، برندها، فروشندگان، خریداران، سفارش‌ها، تیکت‌ها، تنظیمات، بلاگ، کمپین و سایر داده‌های local. </p>
                       <div className="flex flex-wrap gap-2">
-                        <button type="button" onClick={downloadFullSiteBackup} className="px-4 py-2 rounded-full bg-apple-blue text-white text-xs font-medium flex items-center gap-1"><Icon name="download" size={14} /> دانلود بک‌آپ کامل JSON</button>
+                        <button type="button" onClick={downloadFullSiteBackup} className="btn-cta px-4 py-2 rounded-full bg-apple-blue text-white text-xs font-medium flex items-center gap-1"><Icon name="download" size={14} /> دانلود بک‌آپ کامل JSON</button>
                         <label className="px-4 py-2 rounded-full border border-primary-200 dark:border-white/30 text-xs font-medium flex items-center gap-1 cursor-pointer">
                           <Icon name="upload" size={14} /> بازگردانی از فایل
                           <input type="file" accept="application/json,.json" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) restoreFullSiteBackup(f); e.target.value=''; }} />
@@ -4903,7 +4903,7 @@ export default function AdminPanelContent() {
                         <input type="password" id="admin-new-pw2" placeholder="تکرار رمز" autoComplete="new-password" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
                         <button
                           type="button"
-                          className="w-full py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium"
+                          className="btn-cta w-full py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium"
                           onClick={async () => {
                             const a = String(document.getElementById('admin-new-pw')?.value || '');
                             const b = String(document.getElementById('admin-new-pw2')?.value || '');

@@ -16,7 +16,7 @@ export function ErrorState({ title = 'خطایی رخ داد', description = '',
       <p className="text-2xl font-bold text-primary-900 dark:text-white">{title}</p>
       {description ? <p className="text-xs text-primary-500 dark:text-white/60 mt-1.5">{description}</p> : null}
       {typeof onRetry === 'function' ? (
-        <button type="button" onClick={onRetry} className="mt-4 text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-medium">
+        <button type="button" onClick={onRetry} className="btn-cta mt-4 text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-medium">
           تلاش دوباره
         </button>
       ) : null}
@@ -30,7 +30,7 @@ export function EmptyStateBox({ title = 'موردی نیست', description = '',
       <p className="text-2xl font-bold text-primary-900 dark:text-white">{title}</p>
       {description ? <p className="text-xs text-primary-500 dark:text-white/60 mt-1.5 max-w-sm mx-auto leading-6">{description}</p> : null}
       {actionLabel && typeof onAction === 'function' ? (
-        <button type="button" onClick={onAction} className="mt-4 text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-medium">
+        <button type="button" onClick={onAction} className="btn-cta mt-4 text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-medium">
           {actionLabel}
         </button>
       ) : null}

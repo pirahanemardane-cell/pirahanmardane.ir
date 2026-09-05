@@ -3189,7 +3189,7 @@ export default function SellerPanelContent() {
               <button type="button" onClick={() => setSellerScheduleOpen(false)} className="px-4 py-2 rounded-full border border-primary-200 dark:border-white/30 text-sm">انصراف</button>
               <button
                 type="button"
-                className="px-4 py-2 rounded-full bg-apple-blue text-white text-sm font-medium"
+                className="btn-cta px-4 py-2 rounded-full bg-apple-blue text-white text-sm font-medium"
                 onClick={() => {
                   try {
                     const iso = jalaliTehranToIso(
@@ -4564,7 +4564,7 @@ export default function SellerPanelContent() {
                         <h3 className="text-sm font-bold text-primary-900 dark:text-white">درخواست مالی (غیرفعال)</h3>
                         <button
                           type="button"
-                          className="text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white font-bold"
+                          className="btn-cta text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white font-bold"
                           onClick={async () => {
                             const raw = window.prompt('مبلغ (تومان)', '100000');
                             const amount = parseInt(String(raw || '').replace(/,/g, ''), 10);
@@ -4613,7 +4613,7 @@ export default function SellerPanelContent() {
                         <input type="password" id="seller-new-pw2" placeholder="تکرار رمز" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
                         <button
                           type="button"
-                          className="text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-bold"
+                          className="btn-cta text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-bold"
                           onClick={async () => {
                             const a = document.getElementById('seller-new-pw')?.value || '';
                             const b = document.getElementById('seller-new-pw2')?.value || '';

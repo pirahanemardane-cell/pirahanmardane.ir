@@ -3507,27 +3507,28 @@ img[src*="red_w_bg.webp"] {
 }
 
 /* === BODY CTA BUTTON EFFECT === */
-/* فقط کلاس .btn-cta — لایت: قرمز | دارک: فیروزه‌ای | هیرو/هدر دست‌نخورده */
 .btn-cta {
-  font-weight: 700;
+  font-weight: 700 !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   background-color: #171717 !important;
+  background-image: none !important;
   border: none !important;
-  border-radius: 0.6rem;
-  position: relative;
+  border-radius: 0.6rem !important;
+  position: relative !important;
   cursor: pointer;
-  overflow: hidden;
+  overflow: hidden !important;
   isolation: isolate;
   transition: transform 0.15s ease;
+  z-index: 0;
 }
 .btn-cta::before {
   content: "";
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background-color: #FF0000;
   transform: translate(-50%, -50%) scale(0);
@@ -3536,7 +3537,7 @@ img[src*="red_w_bg.webp"] {
   pointer-events: none;
 }
 .btn-cta:hover::before {
-  transform: translate(-50%, -50%) scale(12);
+  transform: translate(-50%, -50%) scale(14);
 }
 .btn-cta:active {
   transform: scale(0.98);
@@ -3548,3 +3549,4 @@ html.dark .btn-cta::before {
   background-color: #13ABC4;
 }
 /* === END BODY CTA BUTTON EFFECT === */
+

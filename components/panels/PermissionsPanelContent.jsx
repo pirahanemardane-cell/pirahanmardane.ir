@@ -71,7 +71,7 @@ export default function PermissionsPanelContent({ adminSettings, setAdminSetting
           <input value={enamadCode} onChange={(e) => setEnamadCode(e.target.value)} className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm" placeholder="Code از پنل اینماد" dir="ltr" />
         </div>
       </div>
-      <button type="button" disabled={saving} onClick={save} className="px-5 py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium disabled:opacity-60">
+      <button type="button" disabled={saving} onClick={save} className="btn-cta px-5 py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium disabled:opacity-60">
         {saving ? '...' : 'ذخیره'}
       </button>
     </div>
