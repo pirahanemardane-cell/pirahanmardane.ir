@@ -284,7 +284,7 @@ export default function HomeView() {
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                     </div>
                     <h3 className="font-bold text-base sm:text-lg mb-1">آفرتایم</h3>
-                    <p className="text-xs sm:text-xs text-white/85 mb-4">تخفیف‌های ویژه در مدتی</p>
+                    <p className="offer-time-sub text-xs sm:text-xs text-white/85 mb-4 pointer-events-none select-none">تخفیف‌های ویژه در مدتی</p>
                     <div className="flex gap-1.5 mb-4 font-mono text-sm sm:text-base font-bold tracking-wider" dir="ltr">
                       <div className="bg-white/20 rounded-md px-1.5 py-1 min-w-[2rem]">
                         <span>۰۵</span>
