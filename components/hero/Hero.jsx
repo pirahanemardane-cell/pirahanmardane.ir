@@ -210,7 +210,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
         pin: true,
         // fixed pin is more stable on iOS than transform pin for full-viewport heroes
         pinType: useFramesRef.current ? 'fixed' : 'transform',
-        scrub: useFramesRef.current ? 0.15 : 0.4,
+        scrub: useFramesRef.current ? true : 0.35,
         anticipatePin: 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
@@ -349,11 +349,10 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
       targetFrameRef.current = 0;
       lastDrawnFrameRef.current = -1;
 
-      // PageSpeed mobile: load every Nth frame (~14 imgs) instead of all 70
-      const FRAME_STEP = 5;
+      // همهٔ ۷۰ فریم برای اسکراب نرم و کامل
+      const FRAME_STEP = 1;
       const indices = [];
       for (let i = 1; i <= FRAME_COUNT; i += FRAME_STEP) indices.push(i);
-      if (indices[indices.length - 1] !== FRAME_COUNT) indices.push(FRAME_COUNT);
 
       let loaded = 0;
       const total = indices.length;
@@ -389,7 +388,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
 
       if (cancelled) return;
 
-      const scrollDistance = Math.max(FRAME_COUNT * 20, 1600);
+      const scrollDistance = Math.max(FRAME_COUNT * 48, 3200);
       setupScrollTrigger(scrollDistance, (progress) => {
         const raw = Math.min(
           FRAME_COUNT - 1,
@@ -425,7 +424,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
       const ensureST = () => {
         if (stReady || cancelled) return;
         stReady = true;
-        setupScrollTrigger(2800, (progress) => {
+        setupScrollTrigger(3600, (progress) => {
           targetTimeRef.current = progress * durationRef.current;
         });
       };
