@@ -2208,9 +2208,9 @@ html:not(.dark) button.bg-apple-blue:hover *,
 html:not(.dark) a.bg-apple-blue:hover,
 html:not(.dark) a.bg-apple-blue:hover *,
 html:not(.dark) [class*="bg-[#FF0000]"]:hover,
-html:not(.dark) [class*="bg-[#FF0000]"]:hover *,
+html:not(.dark) [class*="bg-[#FF0000]"]:hover *:not(.offer-view-all-btn):not(.offer-view-all-btn *),
 html:not(.dark) [class*="bg-[#AF0404]"]:hover,
-html:not(.dark) [class*="bg-[#AF0404]"]:hover *,
+html:not(.dark) [class*="bg-[#AF0404]"]:hover *:not(.offer-view-all-btn):not(.offer-view-all-btn *),
 html:not(.dark) .plp-chip--on,
 html:not(.dark) .plp-chip--on *,
 html:not(.dark) .search-filter-chip--on,
@@ -3536,7 +3536,7 @@ div.role-gate-backdrop,
 }
 
 
-/* آفرتایم — دکمه مشاهده همه: متن همیشه مشکی (عادی + هاور + اکتیو) */
+/* آفرتایم — دکمه مشاهده همه: متن و آیکون همیشه مشکی (حتی وقتی روی کارت قرمز هاور می‌شود) */
 html a.offer-view-all-btn,
 html a.offer-view-all-btn:hover,
 html a.offer-view-all-btn:focus,
@@ -3548,15 +3548,23 @@ html:not(.dark) a.offer-view-all-btn:active,
 html.dark a.offer-view-all-btn,
 html.dark a.offer-view-all-btn:hover,
 html.dark a.offer-view-all-btn:focus,
-html.dark a.offer-view-all-btn:active {
+html.dark a.offer-view-all-btn:active,
+html:not(.dark) [class*="bg-[#FF0000]"] a.offer-view-all-btn,
+html:not(.dark) [class*="bg-[#FF0000]"]:hover a.offer-view-all-btn,
+html:not(.dark) [class*="bg-[#FF0000]"] a.offer-view-all-btn:hover,
+html:not(.dark) [class*="bg-[#FF0000]"]:hover a.offer-view-all-btn:hover {
   color: #0A0A0A !important;
   -webkit-text-fill-color: #0A0A0A !important;
 }
 html a.offer-view-all-btn svg,
 html a.offer-view-all-btn:hover svg,
 html a.offer-view-all-btn:focus svg,
-html a.offer-view-all-btn:active svg {
+html a.offer-view-all-btn:active svg,
+html:not(.dark) [class*="bg-[#FF0000]"] a.offer-view-all-btn svg,
+html:not(.dark) [class*="bg-[#FF0000]"]:hover a.offer-view-all-btn svg,
+html:not(.dark) [class*="bg-[#FF0000]"] a.offer-view-all-btn:hover svg {
   color: #0A0A0A !important;
   stroke: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
 }
 
