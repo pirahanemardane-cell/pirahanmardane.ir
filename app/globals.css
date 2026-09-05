@@ -3420,30 +3420,11 @@ html.dark .hero-body2-badge {
 }
 
 
-/* FORCE: role-gate login modal sharp corners */
-div.fixed.inset-0[class*="z-[300]"] > div.relative.z-10.max-w-md,
-div[role="dialog"].fixed.inset-0 > div.relative.z-10.max-w-md {
-  border-radius: 0 !important;
-  corner-shape: initial !important;
-}
 
 
 
-/* role-gate-modal FORCE sharp */
-.role-gate-modal,
-.role-gate-modal * {
-  /* keep children free; only the box itself must be sharp */
-}
-.role-gate-modal {
-  border-radius: 0 !important;
-  -webkit-border-radius: 0 !important;
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-  corner-shape: initial !important;
-  overflow: hidden !important;
-}
+
+
 
 
 
@@ -3457,5 +3438,19 @@ div.role-gate-backdrop,
   border-top-right-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
+}
+
+
+
+/* role-gate: backdrop sharp, white modal rounded */
+.role-gate-backdrop,
+div.role-gate-backdrop,
+[role="button"].role-gate-backdrop {
+  border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+}
+.role-gate-modal {
+  border-radius: 1.5rem !important;
+  -webkit-border-radius: 1.5rem !important;
 }
 

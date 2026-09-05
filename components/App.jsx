@@ -16160,7 +16160,7 @@ const params = new URLSearchParams(window.location.search);
       {roleGateOpen ? (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" dir="rtl" role="dialog" aria-modal="true">
           <div role="button" tabIndex={0} className="role-gate-backdrop absolute inset-0 bg-black/50 backdrop-blur-[2px] border-0 cursor-default" aria-label="بستن" onClick={() => setRoleGateOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') setRoleGateOpen(false); }} />
-          <div className="role-gate-modal relative z-10 w-full max-w-md border border-primary-200 dark:border-white/15 bg-white dark:bg-[#1a1c20] shadow-2xl p-6 sm:p-8" style={{ borderRadius: 0, borderRadius: "0px" }}>
+          <div className="role-gate-modal relative z-10 w-full max-w-md rounded-3xl border border-primary-200 dark:border-white/15 bg-white dark:bg-[#1a1c20] shadow-2xl p-6 sm:p-8" style={{ borderRadius: 0, borderRadius: "0px" }}>
             <button type="button" onClick={() => setRoleGateOpen(false)} className="absolute top-3 left-3 w-9 h-9 rounded-full text-primary-500 hover:bg-primary-100 dark:hover:bg-white/10 text-lg leading-none" aria-label="بستن">×</button>
             <h2 className="text-lg font-bold text-primary-900 dark:text-white text-center">ورود / ثبت‌نام</h2>
             <p className="text-xs text-primary-500 dark:text-white/55 text-center mt-1 mb-6">حساب مورد نظر را انتخاب کنید</p>
