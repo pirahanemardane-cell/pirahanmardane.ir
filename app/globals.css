@@ -3170,25 +3170,27 @@ html.dark .hero-body-line1 {
   font-weight: 400 !important;
 }
 
-/* hero-accent-word: no white border; white pill only in dark */
+/* accent پیراهن مردانه — بدون بردر سفید؛ کادر سفید فقط دارک */
 .hero-accent-word {
   display: inline-block !important;
   border-radius: 0.5rem;
   padding: 0.08em 0.4em;
-  text-shadow: none !important;
-  box-shadow: none !important;
   border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
   background: transparent !important;
   color: #FF0000 !important;
   -webkit-text-fill-color: #FF0000 !important;
-  font-weight: 950 !important;
 }
 html.dark .hero-accent-word {
   background-color: #ffffff !important;
   color: #13ABC4 !important;
   -webkit-text-fill-color: #13ABC4 !important;
-  text-shadow: none !important;
-  box-shadow: none !important;
   border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+html:not(.dark) .hero-accent-word {
+  background: transparent !important;
 }
 
