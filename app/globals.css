@@ -965,37 +965,61 @@ html.dark .hero-shop-btn:hover {
   }
 
   .hero-title-main {
-    font-size: 35px; /* ~40px to ~60px mobile */
+    font-size: 40px;
+    text-align: right;
+    width: 100%;
+    max-width: 100%;
+    text-justify: kashida;
+    text-align-last: right;
   }
 
   .hero-title-url {
-    font-size: clamp(1.25rem, 5vw, 2.1875rem); /* ~20px to ~35px mobile */
+    font-size: clamp(1.25rem, 5vw, 2.1875rem); /* ~20px to ~35px mobile — بدون تغییر */
   }
 
   .hero-body-text {
-    font-size: 35px; /* ~40–60px mobile, same as title */
-    max-width: 16ch;
+    font-size: 40px;
+    max-width: 100%;
+    width: 100%;
     white-space: normal;
+    text-align: justify;
+    text-align-last: right;
+    text-justify: kashida;
+    direction: rtl;
   }
 
-  /* Body1: «مرکز تخصصی فروش» یک خط — فونت کمی کوچک‌تر تا جا شود */
+  /* Body1: «مرکز تخصصی فروش» */
   .hero-body-text--split {
-    font-size: 35px;
+    font-size: 40px;
     max-width: 100%;
+    width: 100%;
     line-height: 1.45;
     white-space: normal;
+    text-align: justify;
+    text-align-last: right;
+    text-justify: kashida;
+    direction: rtl;
   }
   .hero-body1-line1 {
     display: block;
-    white-space: nowrap;
+    white-space: normal;
+    text-align: justify;
+    text-align-last: right;
+    text-justify: kashida;
   }
   .hero-body1-line2 {
     display: block;
+    text-align: justify;
+    text-align-last: right;
+    text-justify: kashida;
   }
 
   .hero-body-line1,
   .hero-body-line2 {
     display: block;
+    text-align: justify;
+    text-align-last: right;
+    text-justify: kashida;
   }
 
   .hero-body-space {
