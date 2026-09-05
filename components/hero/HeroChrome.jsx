@@ -38,7 +38,7 @@ export default function HeroChrome({
             className="hero-shop-btn pointer-events-auto"
             accentFrom={typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "#13ABC4" : "#FF0000"}
               accentTo={typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "#0f96ad" : "#c40000"}
-            dotColor="#0f0f0f"
+            dotColor={typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "#0f0f0f" : "#ffffff"}
             onClick={() => { if (typeof window !== "undefined") window.location.href = "/فروشگاه"; }}
           />
         )}

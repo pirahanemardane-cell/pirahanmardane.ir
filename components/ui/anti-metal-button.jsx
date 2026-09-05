@@ -34,7 +34,7 @@ export const AntiMetalButton = React.forwardRef(function AntiMetalButton(props, 
     label,
     accentFrom = "#FF0000",
     accentTo = "#c40000",
-    dotColor = "#0f0f0f",
+    dotColor = "#ffffff",
     ...rest
   } = props;
   const content = label ?? children ?? "فروشگاه";
