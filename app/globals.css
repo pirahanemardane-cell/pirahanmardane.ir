@@ -3418,3 +3418,12 @@ html.dark .hero-body2-badge {
     border-radius: 0 !important;
   }
 }
+
+
+/* FORCE: role-gate login modal sharp corners */
+div.fixed.inset-0[class*="z-[300]"] > div.relative.z-10.max-w-md,
+div[role="dialog"].fixed.inset-0 > div.relative.z-10.max-w-md {
+  border-radius: 0 !important;
+  corner-shape: initial !important;
+}
+
