@@ -1592,7 +1592,7 @@ html.dark .wishlist-toolbar-select,
 
 /* Site form/step modals — always above sticky header (z-100) & drawers; 90% width
    Applies to buyer / seller / admin form dialogs (not side drawers). */
-.site-modal-root-DELETED-DELETED {
+.site-modal-root {
   position: fixed !important;
   inset: 0 !important;
   z-index: 20000 !important;
@@ -1604,20 +1604,20 @@ html.dark .wishlist-toolbar-select,
   pointer-events: auto !important;
 }
 @media (max-width: 639px) {
-  .site-modal-root-DELETED-DELETED {
+  .site-modal-root {
     align-items: flex-end !important;
     padding: 0 !important;
   }
 }
-.site-modal-root-DELETED-DELETED > .site-modal-backdrop-DELETED-DELETED-DELETED-DELETED {
+.site-modal-root > .site-modal-backdrop {
   position: absolute !important;
   inset: 0 !important;
   background: rgba(0, 0, 0, 0.45);
   z-index: 0 !important;
 }
 /* Panel width: mobile full, desktop 40% of viewport */
-.site-modal-panel-DELETED-DELETED,
-.site-modal-root-DELETED-DELETED > div:not(.site-modal-backdrop-DELETED-DELETED-DELETED-DELETED):not([class*="inset-0"]) {
+.site-modal-panel,
+.site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
   position: relative !important;
   z-index: 1 !important;
   width: 40vw !important;
@@ -1630,8 +1630,8 @@ html.dark .wishlist-toolbar-select,
   box-sizing: border-box !important;
 }
 @media (max-width: 639px) {
-  .site-modal-panel-DELETED-DELETED,
-  .site-modal-root-DELETED-DELETED > div:not(.site-modal-backdrop-DELETED-DELETED-DELETED-DELETED):not([class*="inset-0"]) {
+  .site-modal-panel,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
     width: 100% !important;
     max-width: 100% !important;
     max-height: 92dvh !important;
@@ -1639,22 +1639,22 @@ html.dark .wishlist-toolbar-select,
   }
 }
 /* Explicit quick-add force (same 40%) */
-.site-modal-root-DELETED-DELETED > .quick-add-popup,
+.site-modal-root > .quick-add-popup,
 div.quick-add-popup {
   width: 40vw !important;
   max-width: 40vw !important;
 }
 @media (max-width: 639px) {
-  .site-modal-root-DELETED-DELETED > .quick-add-popup,
+  .site-modal-root > .quick-add-popup,
   div.quick-add-popup {
     width: 100% !important;
     max-width: 100% !important;
   }
 }
 
-/* Normalize non-standard backdrops inside site-modal-root-DELETED-DELETED */
-.site-modal-root-DELETED-DELETED > div.absolute.inset-0,
-.site-modal-root-DELETED-DELETED > .absolute.inset-0 {
+/* Normalize non-standard backdrops inside site-modal-root */
+.site-modal-root > div.absolute.inset-0,
+.site-modal-root > .absolute.inset-0 {
   position: absolute !important;
   inset: 0 !important;
   width: auto !important;
@@ -1746,7 +1746,7 @@ img.img-broken {
 }
 
 /* Site modal panel keyboard scroll */
-.site-modal-panel-DELETED-DELETED {
+.site-modal-panel {
   overscroll-behavior: contain;
 }
 
@@ -1785,19 +1785,19 @@ html:not(.dark) a:not([class*="bg-"]):not(.social-icon-btn) {
 
 /* ===== FORCE: product / site popups = 40% viewport on desktop ===== */
 @media (min-width: 640px) {
-  .site-modal-root-DELETED-DELETED > div:not(.site-modal-backdrop-DELETED-DELETED-DELETED-DELETED):not([class*="inset-0"]),
-  .site-modal-root-DELETED-DELETED > .quick-add-popup,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+  .site-modal-root > .quick-add-popup,
   .quick-add-popup,
-  .site-modal-panel-DELETED-DELETED {
+  .site-modal-panel {
     width: 40vw !important;
     max-width: 40vw !important;
   }
 }
 @media (max-width: 639px) {
-  .site-modal-root-DELETED-DELETED > div:not(.site-modal-backdrop-DELETED-DELETED-DELETED-DELETED):not([class*="inset-0"]),
-  .site-modal-root-DELETED-DELETED > .quick-add-popup,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+  .site-modal-root > .quick-add-popup,
   .quick-add-popup,
-  .site-modal-panel-DELETED-DELETED {
+  .site-modal-panel {
     width: 100% !important;
     max-width: 100% !important;
   }
@@ -2652,8 +2652,8 @@ html.dark button.btn-primary {
 
 /* C3: modal bottom sheet handle affordance on mobile */
 @media (max-width: 639px) {
-  .site-modal-panel-DELETED-DELETED::before,
-  .site-modal-root-DELETED-DELETED > div:not(.site-modal-backdrop-DELETED-DELETED-DELETED-DELETED):not([class*="inset-0"])::before {
+  .site-modal-panel::before,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"])::before {
     content: "";
     display: block;
     width: 2.5rem;
@@ -2663,8 +2663,8 @@ html.dark button.btn-primary {
     background: color-mix(in srgb, var(--pm-fg, #252525) 22%, transparent);
     flex-shrink: 0;
   }
-  html.dark .site-modal-panel-DELETED-DELETED::before,
-  html.dark .site-modal-root-DELETED-DELETED > div:not(.site-modal-backdrop-DELETED-DELETED-DELETED-DELETED):not([class*="inset-0"])::before {
+  html.dark .site-modal-panel::before,
+  html.dark .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"])::before {
     background: color-mix(in srgb, var(--pm-fg, #EBFFFB) 28%, transparent);
   }
 }
@@ -3403,18 +3403,18 @@ html.dark .hero-body2-badge {
 }
 
 /* Modal — گوشه‌های تیز (backdrop + panel) */
-.site-modal-root-DELETED-DELETED > .site-modal-backdrop-DELETED-DELETED-DELETED-DELETED,
-.site-modal-backdrop-DELETED-DELETED-DELETED-DELETED,
-.site-modal-backdrop-DELETED-DELETED-DELETED-DELETED.open {
+.site-modal-root > .site-modal-backdrop,
+.site-modal-backdrop,
+.site-modal-backdrop.open {
   border-radius: 0 !important;
 }
-.site-modal-panel-DELETED-DELETED,
-.site-modal-root-DELETED-DELETED > div:not(.site-modal-backdrop-DELETED-DELETED-DELETED-DELETED):not([class*="inset-0"]) {
+.site-modal-panel,
+.site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
   border-radius: 0 !important;
 }
 @media (max-width: 639px) {
-  .site-modal-panel-DELETED-DELETED,
-  .site-modal-root-DELETED-DELETED > div:not(.site-modal-backdrop-DELETED-DELETED-DELETED-DELETED):not([class*="inset-0"]) {
+  .site-modal-panel,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
     border-radius: 0 !important;
   }
 }
