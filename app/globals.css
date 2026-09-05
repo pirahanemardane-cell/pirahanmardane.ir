@@ -3427,3 +3427,21 @@ div[role="dialog"].fixed.inset-0 > div.relative.z-10.max-w-md {
   corner-shape: initial !important;
 }
 
+
+
+/* role-gate-modal FORCE sharp */
+.role-gate-modal,
+.role-gate-modal * {
+  /* keep children free; only the box itself must be sharp */
+}
+.role-gate-modal {
+  border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  corner-shape: initial !important;
+  overflow: hidden !important;
+}
+
