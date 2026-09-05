@@ -3069,7 +3069,7 @@ html.dark .hero-body-line1 {
   padding: 0.08em 0.4em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  text-shadow: none !important;
+  
   box-shadow: none !important;
   border: none !important;
   background: transparent;
@@ -3113,26 +3113,12 @@ html:not(.dark) .hero-accent-word {
   color: #FF0000 !important;
   -webkit-text-fill-color: #FF0000 !important;
   font-weight: 950 !important;
-  text-shadow:
-    0 0 2px #ffffff,
-    0 0 6px #ffffff,
-    0 0 10px rgba(255, 255, 255, 0.85),
-    1px 0 0 #ffffff,
-    -1px 0 0 #ffffff,
-    0 1px 0 #ffffff,
-    0 -1px 0 #ffffff;
+  
 }
 html.dark .hero-accent-word {
   color: #13ABC4 !important;
   -webkit-text-fill-color: #13ABC4 !important;
-  text-shadow:
-    0 0 2px #ffffff,
-    0 0 6px #ffffff,
-    0 0 10px rgba(255, 255, 255, 0.85),
-    1px 0 0 #ffffff,
-    -1px 0 0 #ffffff,
-    0 1px 0 #ffffff,
-    0 -1px 0 #ffffff;
+  
 }
 
 .hero-weight-thin {
