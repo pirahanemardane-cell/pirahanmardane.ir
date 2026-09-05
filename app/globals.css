@@ -3445,3 +3445,17 @@ div[role="dialog"].fixed.inset-0 > div.relative.z-10.max-w-md {
   overflow: hidden !important;
 }
 
+
+
+/* role-gate-backdrop sharp — must override global button radius */
+.role-gate-backdrop,
+div.role-gate-backdrop,
+[role="button"].role-gate-backdrop {
+  border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
