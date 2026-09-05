@@ -11,11 +11,11 @@
 
 export function isTouchOrMobile() {
   if (typeof window === 'undefined') return false;
+  // فقط موبایل/تبلت واقعی — لپ‌تاپ لمسی را موبایل حساب نکن
   const coarse = window.matchMedia('(pointer: coarse)').matches;
   const noHover = window.matchMedia('(hover: none)').matches;
-  const narrow = window.matchMedia('(max-width: 1024px)').matches;
-  const touchPoints = navigator.maxTouchPoints > 0;
-  return coarse || noHover || touchPoints || narrow;
+  const narrow = window.matchMedia('(max-width: 768px)').matches;
+  return (coarse && noHover) || narrow;
 }
 
 export function lockScroll() {

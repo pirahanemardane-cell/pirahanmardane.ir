@@ -214,8 +214,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
         anticipatePin: 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          // progress: اسکرول پایین 0→1 | اسکرول بالا 1→0 (اسکراب معکوس)
-          const progress = Math.min(1, Math.max(0, self.progress));
+          const progress = self.progress;
           onProgress(progress);
           try { onHeroProgress?.(progress >= 0.999 ? 1 : progress); } catch (_) {}
 
@@ -289,13 +288,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
           targetFrameRef.current = 0;
           targetTimeRef.current = 0;
           // هدر بعد از اولین پایان هیرو دیگر مخفی نمی‌شود — progress صفر به والد نفرست
-        },
-        // اسکرول به بالا: ورود مجدد از انتهای پین → اسکراب از انتها به ابتدا
-        onEnterBack: (self) => {
-          const progress = Math.min(1, Math.max(0, self.progress));
-          onProgress(progress);
-          if (progressFillRef.current) {
-            progressFillRef.current.style.height = `${progress * 100}%`;
+        },%`;
           }
         },
       });
@@ -359,7 +352,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
       lastDrawnFrameRef.current = -1;
 
       // PageSpeed mobile: load every Nth frame (~14 imgs) instead of all 70
-      const FRAME_STEP = 5;
+      const FRAME_STEP = 2;
       const indices = [];
       for (let i = 1; i <= FRAME_COUNT; i += FRAME_STEP) indices.push(i);
       if (indices[indices.length - 1] !== FRAME_COUNT) indices.push(FRAME_COUNT);
