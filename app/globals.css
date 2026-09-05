@@ -3163,13 +3163,6 @@ html.dark .hero-body-line1 {
 .hero-body-space {
   display: inline !important;
 }
-
-/* hero-title-url size+weight only */
-.hero-title-url {
-  font-size: 20px !important;
-  font-weight: 400 !important;
-}
-
 /* accent پیراهن مردانه — بدون بردر سفید؛ کادر سفید فقط دارک */
 .hero-accent-word {
   display: inline-block !important;
@@ -3194,3 +3187,8 @@ html:not(.dark) .hero-accent-word {
   background: transparent !important;
 }
 
+/* hero-title-url size+weight only */
+.hero-title-url {
+  font-size: 20px !important;
+  font-weight: 400 !important;
+}
