@@ -3,7 +3,7 @@
 import { HERO_COPY } from './hero.config';
 import AntiMetalButton from '@/components/ui/anti-metal-button';
 
-export default function HeroChrome({ hintRef, titleRef, body1Ref, onShopClick }) {
+export default function HeroChrome({ hintRef, titleRef, body1Ref, body2Ref, onShopClick }) {
   const goShop = () => {
     if (typeof onShopClick === 'function') onShopClick();
     else if (typeof window !== 'undefined') window.location.href = '/فروشگاه';
@@ -46,6 +46,16 @@ export default function HeroChrome({ hintRef, titleRef, body1Ref, onShopClick })
         <p className="hero-body-text hero-body-text--split">
           <span className="hero-body1-line1">مرکز فروش تخصصی</span>
           <span className="hero-body1-line2">پیراهن مردانه</span>
+        </p>
+      </div>
+
+      <div ref={body2Ref} className="hero-body-overlay hero-body2">
+        <p className="hero-body-text hero-body-text--split">
+          <span className="hero-body2-line1">
+            <span className="hero-body2-badge">تنوع</span>
+            <span className="hero-body2-suffix"> در</span>
+          </span>
+          <span className="hero-body2-line2">قیمت و کیفیت و برند</span>
         </p>
       </div>
     </>
