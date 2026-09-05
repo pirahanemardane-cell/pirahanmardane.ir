@@ -13,8 +13,9 @@ export function isTouchOrMobile() {
   if (typeof window === 'undefined') return false;
   const coarse = window.matchMedia('(pointer: coarse)').matches;
   const noHover = window.matchMedia('(hover: none)').matches;
-  const narrow = window.matchMedia('(max-width: 768px)').matches;
-  return (coarse && noHover) || narrow;
+  const narrow = window.matchMedia('(max-width: 1024px)').matches;
+  const touchPoints = navigator.maxTouchPoints > 0;
+  return coarse || noHover || touchPoints || narrow;
 }
 
 export function lockScroll() {

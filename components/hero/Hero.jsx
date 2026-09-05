@@ -41,9 +41,8 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
   const [loadPct, setLoadPct] = useState(0);
 
   useLayoutEffect(() => {
-    const mobile = isTouchOrMobile();
-    useFramesRef.current = mobile;
-    setUseFrames(mobile);
+    useFramesRef.current = true;
+    setUseFrames(true);
     setReady(true);
     // ⛔ Lock scroll immediately until hero assets are fully loaded — بدون دستور کاربر تغییر نده
     lockScroll();
@@ -61,12 +60,14 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
       let idx = targetFrameRef.current;
 
       if (!frames[idx] || !frames[idx].complete || !frames[idx].naturalWidth) {
-        for (let i = idx; i >= 0; i--) {
-          if (frames[i] && frames[i].complete && frames[i].naturalWidth > 0) {
-            idx = i;
-            break;
-          }
+        let found = -1;
+        for (let d = 0; d < frames.length; d++) {
+          const a = idx - d;
+          const b = idx + d;
+          if (a >= 0 && frames[a] && frames[a].complete && frames[a].naturalWidth > 0) { found = a; break; }
+          if (b < frames.length && frames[b] && frames[b].complete && frames[b].naturalWidth > 0) { found = b; break; }
         }
+        if (found >= 0) idx = found;
       }
 
       if (
@@ -210,7 +211,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
         pin: true,
         // fixed pin is more stable on iOS than transform pin for full-viewport heroes
         pinType: useFramesRef.current ? 'fixed' : 'transform',
-        scrub: useFramesRef.current ? true : 0.35,
+        scrub: true,
         anticipatePin: 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
@@ -349,14 +350,13 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
       targetFrameRef.current = 0;
       lastDrawnFrameRef.current = -1;
 
-      // همهٔ ۷۰ فریم برای اسکراب نرم و کامل
-      const FRAME_STEP = 1;
+      // PageSpeed mobile: load every Nth frame (~14 imgs) instead of all 70
       const indices = [];
-      for (let i = 1; i <= FRAME_COUNT; i += FRAME_STEP) indices.push(i);
+      for (let i = 1; i <= FRAME_COUNT; i++) indices.push(i);
 
       let loaded = 0;
       const total = indices.length;
-      const BATCH = 4;
+      const BATCH = 8;
       for (let b = 0; b < indices.length; b += BATCH) {
         if (cancelled) return;
         const slice = indices.slice(b, b + BATCH);
@@ -388,7 +388,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
 
       if (cancelled) return;
 
-      const scrollDistance = Math.max(FRAME_COUNT * 48, 3200);
+      const scrollDistance = Math.max(FRAME_COUNT * 56, 4000);
       setupScrollTrigger(scrollDistance, (progress) => {
         const raw = Math.min(
           FRAME_COUNT - 1,
@@ -424,7 +424,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
       const ensureST = () => {
         if (stReady || cancelled) return;
         stReady = true;
-        setupScrollTrigger(3600, (progress) => {
+        setupScrollTrigger(2800, (progress) => {
           targetTimeRef.current = progress * durationRef.current;
         });
       };
