@@ -3402,10 +3402,19 @@ html.dark .hero-body2-badge {
   }
 }
 
-/* Modal backdrop — گوشه تیز (ضروری برای Tailwind) */
+/* Modal — گوشه‌های تیز (backdrop + panel) */
+.site-modal-root > .site-modal-backdrop,
 .site-modal-backdrop,
-.site-modal-backdrop.open,
+.site-modal-backdrop.open {
+  border-radius: 0 !important;
+}
+.site-modal-panel,
 .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
   border-radius: 0 !important;
 }
-
+@media (max-width: 639px) {
+  .site-modal-panel,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
+    border-radius: 0 !important;
+  }
+}
