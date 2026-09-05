@@ -288,8 +288,6 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
           targetFrameRef.current = 0;
           targetTimeRef.current = 0;
           // هدر بعد از اولین پایان هیرو دیگر مخفی نمی‌شود — progress صفر به والد نفرست
-        },%`;
-          }
         },
       });
 
