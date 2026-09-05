@@ -350,7 +350,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
       lastDrawnFrameRef.current = -1;
 
       // PageSpeed mobile: load every Nth frame (~14 imgs) instead of all 70
-      const FRAME_STEP = 2;
+      const FRAME_STEP = 5;
       const indices = [];
       for (let i = 1; i <= FRAME_COUNT; i += FRAME_STEP) indices.push(i);
       if (indices[indices.length - 1] !== FRAME_COUNT) indices.push(FRAME_COUNT);
