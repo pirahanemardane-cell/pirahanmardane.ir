@@ -73,8 +73,6 @@ import { sellerUiStore } from '@/lib/stores/sellerUiStore';
 import { formsStore } from '@/lib/stores/formsStore';
 import FocusTrap from './a11y/FocusTrap';
 import { LoadingState, ErrorState, EmptyStateBox } from './ui/async-state';
-import { ShoppingCartIcon } from './ui/ShoppingCartIcon';
-
 /* —— Code-split heavy UI (PageSpeed: smaller initial JS) —— */
 const Hero = dynamic(() => import('./Hero'), {
   ssr: false,
@@ -16166,8 +16164,8 @@ const params = new URLSearchParams(window.location.search);
             <h2 className="text-lg font-bold text-primary-900 dark:text-white text-center">ورود / ثبت‌نام</h2>
             <p className="text-xs text-primary-500 dark:text-white/55 text-center mt-1 mb-6">حساب مورد نظر را انتخاب کنید</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button type="button" onClick={() => { setRoleGateOpen(false); openAuth(); }} className="flex flex-col items-center gap-2 rounded-2xl border border-primary-200 dark:border-white/15 px-4 py-6 hover:border-apple-blue transition bg-primary-50/70 dark:bg-white/5">
-                <ShoppingCartIcon size={28} className="text-primary-700 dark:text-white" />
+              <button type="button" onClick={() => { setRoleGateOpen(false); openAuth(); }} className="group flex flex-col items-center gap-2 rounded-2xl border border-primary-200 dark:border-white/15 px-4 py-6 hover:border-apple-blue transition bg-primary-50/70 dark:bg-white/5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="role-gate-cart-icon text-primary-800 dark:text-white" aria-hidden="true"><circle cx="8" cy="21" r="1" className="role-gate-cart-wheel" /><circle cx="19" cy="21" r="1" className="role-gate-cart-wheel" /><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" className="role-gate-cart-body" /></svg>
                 <span className="text-sm font-bold text-primary-900 dark:text-white">خریدار</span>
                 <span className="text-[11px] text-primary-500 dark:text-white/50 text-center">خرید و پیگیری سفارش</span>
               </button>
