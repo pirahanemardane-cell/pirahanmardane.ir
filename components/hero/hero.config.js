@@ -13,7 +13,7 @@ export const HERO_COPY = {
   body1Line1: 'مرکز فروش',
   body1Line2: 'پیراهن مردانه',
   body2Line1: 'تنوع',
-  body2Line2: 'در قیمت و کیفیت',
+  body2Line2: 'در قیمت و کیفیت و برند',
   scrollCue: 'Scroll',
   alt: 'پیراهن مردانه',
 };
