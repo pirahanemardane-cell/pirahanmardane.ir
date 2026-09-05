@@ -3401,3 +3401,11 @@ html.dark .hero-body2-badge {
     -webkit-text-stroke: 1.25px #ffffff;
   }
 }
+
+/* Modal backdrop — گوشه تیز (ضروری برای Tailwind) */
+.site-modal-backdrop,
+.site-modal-backdrop.open,
+.site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
+  border-radius: 0 !important;
+}
+
