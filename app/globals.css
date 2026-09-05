@@ -3290,4 +3290,11 @@ html.dark .hero-title-main {
   .hero-title-main {
     -webkit-text-stroke: 1.25px #ffffff;
   }
+
+
+/* Hero title — موبایل: stroke نازک‌تر */
+@media (max-width: 768px) {
+  .hero-title-main {
+    -webkit-text-stroke: 1.25px #ffffff;
+  }
 }
