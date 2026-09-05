@@ -3073,3 +3073,29 @@ html.dark .hero-body-line1 {
   padding-right: 0 !important;
   border-radius: 0 !important;
 }
+
+/* پیراهن مردانه (body1) — کادر سفید گرد فقط دارک */
+.hero-accent-word {
+  display: inline-block !important;
+  border-radius: 0.5rem;
+  padding: 0.08em 0.4em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent;
+}
+html.dark .hero-accent-word {
+  background-color: #ffffff !important;
+  /* رنگ متن فیروزه‌ای روی سفید */
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+}
+/* لایت: بدون کادر، فقط قرمز */
+html:not(.dark) .hero-accent-word {
+  background: transparent !important;
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+}
+
