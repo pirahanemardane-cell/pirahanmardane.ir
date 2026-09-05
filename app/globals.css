@@ -2208,9 +2208,9 @@ html:not(.dark) button.bg-apple-blue:hover *,
 html:not(.dark) a.bg-apple-blue:hover,
 html:not(.dark) a.bg-apple-blue:hover *,
 html:not(.dark) [class*="bg-[#FF0000]"]:hover,
-html:not(.dark) [class*="bg-[#FF0000]"]:hover *:not(.offer-view-all-btn):not(.offer-view-all-btn *),
+html:not(.dark) [class*="bg-[#FF0000]"]:hover *:not(.offer-view-all-btn):not(.offer-view-all-btn *):not(.offer-time-sub),
 html:not(.dark) [class*="bg-[#AF0404]"]:hover,
-html:not(.dark) [class*="bg-[#AF0404]"]:hover *:not(.offer-view-all-btn):not(.offer-view-all-btn *),
+html:not(.dark) [class*="bg-[#AF0404]"]:hover *:not(.offer-view-all-btn):not(.offer-view-all-btn *):not(.offer-time-sub),
 html:not(.dark) .plp-chip--on,
 html:not(.dark) .plp-chip--on *,
 html:not(.dark) .search-filter-chip--on,
@@ -3569,26 +3569,16 @@ html:not(.dark) [class*="bg-[#FF0000]"] a.offer-view-all-btn:hover svg {
 }
 
 
-/* آفرتایم — زیرعنوان ثابت، بدون هیچ هاور */
-html p.offer-time-sub,
-html p.offer-time-sub:hover,
-html p.offer-time-sub:focus,
-html p.offer-time-sub:active,
-html:not(.dark) p.offer-time-sub,
-html:not(.dark) p.offer-time-sub:hover,
-html.dark p.offer-time-sub,
-html.dark p.offer-time-sub:hover,
-html:not(.dark) [class*="bg-[#FF0000]"] p.offer-time-sub,
-html:not(.dark) [class*="bg-[#FF0000]"]:hover p.offer-time-sub,
-html:not(.dark) [class*="bg-[#FF0000]"] p.offer-time-sub:hover,
-html:not(.dark) [class*="bg-[#FF0000]"]:hover p.offer-time-sub:hover,
-html:not(.dark) [class*="bg-[#FF0000]"]:hover *:is(p.offer-time-sub),
-html:not(.dark) [class*="bg-[#AF0404]"]:hover p.offer-time-sub {
+/* آفرتایم — زیرعنوان ثابت، بدون هیچ هاور (specificity بالا) */
+html:not(.dark) [class*="bg-[#FF0000]"]:hover p.offer-time-sub.offer-time-sub,
+html:not(.dark) [class*="bg-[#FF0000]"] p.offer-time-sub.offer-time-sub,
+html:not(.dark) p.offer-time-sub.offer-time-sub,
+html p.offer-time-sub.offer-time-sub,
+html.dark p.offer-time-sub.offer-time-sub {
   color: rgba(255, 255, 255, 0.85) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
   opacity: 1 !important;
   filter: none !important;
-  text-shadow: none !important;
   pointer-events: none !important;
   cursor: default !important;
   transition: none !important;
