@@ -3053,3 +3053,23 @@ html.dark .hero-body-line1 {
   display: inline !important;
 }
 
+/* SCROLL cue — no border/shadow/chip */
+.hero-scroll-cue,
+.hero-scroll-cue *,
+.hero-scroll-cue-text,
+.hero-scroll-cue-label,
+.hero-scroll-wheel,
+.hero-scroll-chevron {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  filter: none !important;
+}
+.hero-scroll-cue-text {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  border-radius: 0 !important;
+}
