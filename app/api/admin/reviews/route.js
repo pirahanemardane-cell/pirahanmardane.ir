@@ -67,8 +67,22 @@ export async function POST(request) {
     const title = String(body.title || '').trim().slice(0, 120)
     const display_name = String(body.display_name || '').trim().slice(0, 80)
     const display_avatar_url = String(body.display_avatar_url || '').trim() || null
-    const seller_id = body.seller_id || null
+    let seller_id = body.seller_id || null
+    const seller_name = String(body.seller_name || '').trim().slice(0, 120)
     const product_id = body.product_id || null
+
+    // اگر نام فروشنده داده شده و seller_id نیست، از روی نام فروشگاه پیدا کن
+    if (!seller_id && seller_name) {
+      try {
+        const { data: found } = await gate.admin
+          .from('sellers')
+          .select('id')
+          .ilike('shop_name', seller_name)
+          .limit(1)
+          .maybeSingle()
+        if (found?.id) seller_id = found.id
+      } catch (_) {}
+    }
     const is_featured = !!body.is_featured
     const publish = body.publish !== false
 

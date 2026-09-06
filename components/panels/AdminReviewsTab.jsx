@@ -20,7 +20,7 @@ export default function AdminReviewsTab({ showToast }) {
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState({
     rating: 5, title: '', body: '', display_name: '', display_avatar_url: '',
-    seller_id: '', is_featured: true, publish: true,
+    seller_id: '', seller_name: '', is_featured: true, publish: true,
   })
   const [avatars, setAvatars] = useState([])
   const [avatarsLoading, setAvatarsLoading] = useState(false)
@@ -100,7 +100,7 @@ export default function AdminReviewsTab({ showToast }) {
       if (data?.ok) {
         toast('نظر ذخیره شد', 'success')
         setFormOpen(false)
-        setForm({ rating: 5, title: '', body: '', display_name: '', display_avatar_url: '', seller_id: '', is_featured: true, publish: true })
+        setForm({ rating: 5, title: '', body: '', display_name: '', display_avatar_url: '', seller_id: '', seller_name: '', is_featured: true, publish: true })
         setFilter('approved')
         loadReviews('approved')
       } else toast(data?.error || 'خطا', 'error')
@@ -229,6 +229,16 @@ export default function AdminReviewsTab({ showToast }) {
           <div>
             <label className="text-xs mb-1 block">متن نظر *</label>
             <SimpleEditor value={form.body} onChange={(html) => setForm((f) => ({ ...f, body: html }))} placeholder="متن نظر مشتری..." />
+          </div>
+          <div>
+            <label className="text-xs mb-1 block">نام فروشنده</label>
+            <input
+              type="text"
+              placeholder="مثال: فروشگاه پیراهن مردانه"
+              value={form.seller_name || ''}
+              onChange={(e) => setForm((f) => ({ ...f, seller_name: e.target.value }))}
+              className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm"
+            />
           </div>
           <div className="flex flex-wrap gap-4 text-xs">
             <label className="flex items-center gap-2 cursor-pointer">
