@@ -36,7 +36,7 @@ export async function GET(request) {
 
     const { data, error } = await db
       .from('blog_posts')
-      .select('id, slug, title, excerpt, cover_image, status, published_at, created_at')
+      .select('id, slug, title, excerpt, body, cover_image, cover_url, status, published_at, created_at, category_id')
       .eq('status', 'published')
       .order('published_at', { ascending: false })
       .limit(limit)

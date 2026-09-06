@@ -1117,6 +1117,39 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         return () => clearInterval(t);
       }, [staticPage]);
       const [blogPosts, setBlogPosts] = useStoreField(shopUiStore, 'blogPosts');
+      // hydratePublicBlogPosts — مطالب منتشرشده برای صفحه تکی و فهرست
+      useEffect(() => {
+        let cancelled = false;
+        (async () => {
+          try {
+            const res = await fetch('/api/blog?limit=50', { cache: 'no-store' });
+            const json = await res.json().catch(() => ({}));
+            const list = json?.posts || json?.items || [];
+            if (cancelled || !json?.ok || !Array.isArray(list) || !list.length) return;
+            const mapped = list.map((p) => ({
+              id: p.id,
+              title: p.title,
+              slug: p.slug,
+              excerpt: p.excerpt,
+              body: p.body,
+              status: p.status || 'published',
+              cover: p.cover_image || p.cover_url || p.cover,
+              image: p.cover_image || p.cover_url || p.cover,
+              date: p.published_at || p.created_at,
+              published_at: p.published_at,
+              category: p.category || p.category_name || '',
+              author: p.author || p.author_name || 'پیراهن مردانه',
+            }));
+            setBlogPosts((prev) => {
+              const prevArr = Array.isArray(prev) ? prev : [];
+              if (prevArr.length && prevArr.some((x) => x && (x.body || x.excerpt))) return prevArr;
+              return mapped;
+            });
+          } catch (_) {}
+        })();
+        return () => { cancelled = true; };
+      }, []);
+
       const saveBlogPosts = (list) => {
         setBlogPosts(list);
         try { localStorage.setItem('siteBlogPosts', JSON.stringify(list)); } catch (_) {}
@@ -5049,10 +5082,23 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             return;
           }
           if (parsed.type === 'blog' && parsed.blogSlug) {
+            const slug = String(parsed.blogSlug || '');
             const posts = blogPosts || [];
-            const post = posts.find((b) => slugifyFa(b.slug || b.title || '') === slugifyFa(parsed.blogSlug) || String(b.id) === parsed.blogSlug);
-            if (post) { setBlogPostId(post.id); setStaticPage('blog-post'); }
-            else setStaticPage('blog');
+            const post = posts.find((b) =>
+              String(b.id) === slug ||
+              slugifyFa(b.slug || b.title || '') === slugifyFa(slug)
+            );
+            if (post) {
+              setBlogPostId(post.id);
+              setStaticPage('blog-post');
+            } else if (slug) {
+              // از کارت خانه با id آمده — حتی اگر لیست هنوز hydrate نشده
+              setBlogPostId(slug);
+              setStaticPage('blog-post');
+            } else {
+              setStaticPage('blog');
+              setBlogPostId(null);
+            }
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
@@ -5676,10 +5722,13 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         setMegaOpen(null);
         try {
           if (page === 'blog-post' && opts.blogId) {
-            const post = (typeof blogPosts !== 'undefined' ? blogPosts : [])?.find?.(b => b.id === opts.blogId);
-            pushFaUrl(pathForBlogPost(post?.slug || post?.title || opts.blogId), { staticPage: page, blogId: opts.blogId });
-
-        try { applyPathRef.current(); } catch (_) {}} else {
+            const bid = String(opts.blogId);
+            setBlogPostId(bid);
+            const post = (Array.isArray(blogPosts) ? blogPosts : []).find((b) => String(b?.id) === bid);
+            // URL با id تا وابسته به لود بودن blogPosts نباشد
+            pushFaUrl(`/بلاگ/${encodeURIComponent(bid)}`, { staticPage: 'blog-post', blogId: bid });
+            // عمداً applyPath صداده نمی‌شود — وگرنه با لیست خالی به صفحه فهرست می‌افتد
+          } else {
             pushFaUrl(pathForStaticPage(page), { staticPage: page });
           }
         } catch (_) {}
