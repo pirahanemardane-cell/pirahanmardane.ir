@@ -98,6 +98,7 @@ export async function POST(request) {
       status: publish ? 'approved' : 'pending',
       is_featured, is_admin_created: true,
       display_name, display_avatar_url,
+      seller_display_name: seller_name || null,
       approved_at: publish ? new Date().toISOString() : null,
       approved_by: publish ? gate.user.id : null,
       updated_at: new Date().toISOString(),
@@ -143,6 +144,17 @@ export async function PATCH(request) {
     }
     if (body.seller_id !== undefined) patch.seller_id = body.seller_id || null
     if (body.product_id !== undefined) patch.product_id = body.product_id || null
+    if (body.seller_name !== undefined) {
+      const sn = String(body.seller_name || '').trim().slice(0, 120)
+      patch.seller_display_name = sn || null
+      if (sn && patch.seller_id === undefined) {
+        try {
+          const { data: found } = await gate.admin
+            .from('sellers').select('id').ilike('shop_name', sn).limit(1).maybeSingle()
+          if (found?.id) patch.seller_id = found.id
+        } catch (_) {}
+      }
+    }
 
     const { data, error } = await gate.admin.from('reviews').update(patch).eq('id', id).select('*').single()
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })

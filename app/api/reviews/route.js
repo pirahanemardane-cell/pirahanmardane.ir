@@ -40,7 +40,7 @@ export async function GET(request) {
         .from('reviews')
         .select(`
           id, rating, title, body, display_name, display_avatar_url,
-          seller_id, city, is_featured, status, created_at
+          seller_id, seller_display_name, city, is_featured, status, created_at
         `)
         .eq('status', 'approved')
         .eq('is_featured', true)
@@ -53,7 +53,7 @@ export async function GET(request) {
           .from('reviews')
           .select(`
             id, rating, title, body, display_name, display_avatar_url,
-            seller_id, is_featured, status, created_at
+            seller_id, seller_display_name, is_featured, status, created_at
           `)
           .eq('status', 'approved')
           .eq('is_featured', true)
@@ -85,9 +85,9 @@ export async function GET(request) {
         text: stripHtml(r.body || r.title || ''),
         body: r.body || '',
         seller_id: r.seller_id || null,
-        seller: smap[r.seller_id] || r.seller_name || null,
+        seller: smap[r.seller_id] || r.seller_display_name || r.seller_name || null,
         city: r.city || '',
-      }))
+      })).filter((r) => r.text)
 
       return NextResponse.json(
         { ok: true, reviews },
