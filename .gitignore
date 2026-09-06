@@ -5,6 +5,10 @@ node_modules/
 *.zip
 .DS_Store
 .env.local
+.env
+.env.*
+!.env.example
+!.env*.example
 # Vercel local
 .vercel/
 public/blue_t_bg.png
