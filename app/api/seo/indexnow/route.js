@@ -1,11 +1,29 @@
 import { NextResponse } from 'next/server';
+import { requireAdmin } from '../../../../lib/api/admin-guard';
 
 /**
- * پروکسی IndexNow سمت سرور (P0)
+ * پروکسی IndexNow سمت سرور
+ * فقط ادمین لاگین‌شده یا هدر Authorization: Bearer CRON_SECRET
  * body: { host, key, keyLocation?, urlList: string[] }
  */
+function authorizedCron(request) {
+  const secret = process.env.CRON_SECRET || process.env.SMS_CRON_SECRET || '';
+  if (!secret) return false;
+  const auth = request.headers.get('authorization') || '';
+  if (auth === `Bearer ${secret}`) return true;
+  try {
+    const url = new URL(request.url);
+    if (url.searchParams.get('secret') === secret) return true;
+  } catch (_) {}
+  return false;
+}
+
 export async function POST(request) {
   try {
+    if (!authorizedCron(request)) {
+      const gate = await requireAdmin();
+      if (gate.error) return gate.error;
+    }
     const body = await request.json();
     const host = String(body.host || '').replace(/^https?:\/\//, '').replace(/\/$/, '');
     const key = String(body.key || process.env.INDEXNOW_KEY || '').trim();

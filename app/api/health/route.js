@@ -16,10 +16,9 @@ export async function GET() {
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  const service = process.env.SUPABASE_SERVICE_ROLE_KEY
 
   if (url && anon) checks.supabase_env = 'ok'
-  checks.service_role = service ? 'ok' : 'missing'
+  // وضعیت service_role عمداً به بیرون اعلام نمی‌شود
 
   try {
     const supabase = await createClient()
