@@ -104,6 +104,39 @@ export default function HomeView() {
     setPublicTrackCode,
     publicTrackOpen,
   } = useAppApi(); /* setPublicTrackOpen from context */
+  const [homeBlogs, setHomeBlogs] = useState([]);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/blog?limit=12', { cache: 'no-store' });
+        const data = await res.json().catch(() => ({}));
+        const list = Array.isArray(data?.posts) ? data.posts : (Array.isArray(data?.items) ? data.items : []);
+        const mapped = list
+          .filter((p) => p && (p.status == null || p.status === 'published'))
+          .map((p) => ({
+            id: p.id,
+            title: p.title || 'بدون عنوان',
+            image: p.cover_image || p.cover_url || p.cover || '/default-avatar.svg',
+            category: p.category || p.category_name || 'مجله',
+            author: p.author || p.author_name || 'پیراهن مردانه',
+            date: (() => {
+              const raw = p.published_at || p.date || p.created_at;
+              if (!raw) return '';
+              try {
+                return new Date(raw).toLocaleDateString('fa-IR');
+              } catch (_) {
+                return String(raw).slice(0, 10);
+              }
+            })(),
+            slug: p.slug || '',
+          }));
+        if (!cancelled) setHomeBlogs(mapped);
+      } catch (_) {}
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   const displayReviews = (liveReviews.length ? liveReviews : (reviews || []))
     .filter((r) => String(r?.text || '').trim().length > 0);
 
@@ -487,29 +520,56 @@ export default function HomeView() {
               </div>
             </section>
 
-            {/* Blog — carousel like other product sliders */}
+            {/* Blog — از /api/blog (منتشرشده) */}
+            {homeBlogs.length > 0 && (
             <section className="py-8 sm:py-12 bg-primary-50 dark:bg-primary-950 transition-colors">
               <div className="max-w-7xl mx-auto px-3 sm:px-4">
                 <div className="flex items-center justify-between mb-5 sm:mb-8 gap-3">
-                  <h2 className="text-lg sm:text-xl font-bold leading-tight text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.95),0_1px_3px_rgba(0,0,0,1)]">مجله پیراهن مردانه</h2>
-                  <a href="#" onClick={(e) => e.preventDefault()} className="text-xs sm:text-sm text-apple-link hover:underline flex items-center gap-1 flex-shrink-0">
+                  <h2 className="text-lg sm:text-xl font-bold leading-tight text-primary-900 dark:text-white">مجله پیراهن مردانه</h2>
+                  <button
+                    type="button"
+                    onClick={() => { try { openStaticPage('blog'); } catch (_) {} }}
+                    className="text-xs sm:text-sm text-apple-link hover:underline flex items-center gap-1 flex-shrink-0"
+                  >
                     مشاهده همه
                     <Icon name="chevronLeft" size={14} />
-                  </a>
+                  </button>
                 </div>
                 <div className="relative">
                   <CarouselArrows trackRef={blogsTrackRef} />
                   <div ref={blogsTrackRef} className="carousel-track flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar pb-2 scroll-smooth snap-x px-0 sm:px-10" style={{ WebkitOverflowScrolling: 'touch' }}>
-                    {blogs.map((b, i) => (
-                      <article key={i} className="gsap-blog flex-shrink-0 w-[78%] min-[400px]:w-[70%] sm:w-[42%] md:w-[calc((100%-2.5rem)/3.3)] lg:w-[calc((100%-3.5rem)/4.3)] bg-white dark:bg-black rounded-xl sm:rounded-2xl overflow-hidden border border-primary-200 dark:border-white shadow-sm hover:shadow-md transition group snap-start">
-                        <div className="aspect-video overflow-hidden">
-                          <img src={b.image} alt={b.title} loading="lazy" decoding="async" referrerPolicy="no-referrer" className="w-full h-full object-cover group-hover:opacity-95 transition duration-500" />
+                    {homeBlogs.map((b) => (
+                      <article
+                        key={b.id || b.slug || b.title}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          try {
+                            if (b.id) openStaticPage('blog-post', { blogId: b.id });
+                            else openStaticPage('blog');
+                          } catch (_) {
+                            try { openStaticPage('blog'); } catch (__) {}
+                          }
+                        }}
+                        onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.click(); }}
+                        className="gsap-blog flex-shrink-0 w-[78%] min-[400px]:w-[70%] sm:w-[42%] md:w-[calc((100%-2.5rem)/3.3)] lg:w-[calc((100%-3.5rem)/4.3)] bg-white dark:bg-black rounded-xl sm:rounded-2xl overflow-hidden border border-primary-200 dark:border-white shadow-sm hover:shadow-md transition group snap-start cursor-pointer text-right"
+                      >
+                        <div className="aspect-video overflow-hidden bg-primary-100 dark:bg-primary-800">
+                          <img
+                            src={b.image}
+                            alt={b.title}
+                            loading="lazy"
+                            decoding="async"
+                            referrerPolicy="no-referrer"
+                            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/default-avatar.svg'; }}
+                            className="w-full h-full object-cover group-hover:opacity-95 transition duration-500"
+                          />
                         </div>
                         <div className="p-3.5 sm:p-5">
-                          <button type="button" className="text-xs sm:text-sm text-apple-link font-medium hover:underline cursor-pointer">{b.category}</button>
+                          <span className="text-xs sm:text-sm text-apple-link font-medium">{b.category}</span>
                           <h3 className="text-base font-bold text-primary-900 dark:text-white mt-1 mb-1.5 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-white transition" title={b.title}>{b.title}</h3>
-                          <p className="text-xs sm:text-xs text-primary-500 dark:text-white mb-1">{b.author}</p>
-                          <time className="text-xs sm:text-xs text-primary-400 dark:text-white">{b.date}</time>
+                          <p className="text-xs text-primary-500 dark:text-white mb-1">{b.author}</p>
+                          {b.date ? <time className="text-xs text-primary-400 dark:text-white/70">{b.date}</time> : null}
                         </div>
                       </article>
                     ))}
@@ -517,6 +577,7 @@ export default function HomeView() {
                 </div>
               </div>
             </section>
+            )}
 
             {/* Become a seller CTA — photo + text, palette only */}
             <section className="py-6 sm:py-8 bg-white dark:bg-primary-900 transition-colors">
