@@ -127,8 +127,19 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06F0))
       .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660));
     const onlyDigits = (v) => toEnDigits(v).replace(/\D/g, '');
-    const ADMIN_ALLOWED_PHONES = []; // فقط سرور: ADMIN_PHONES در Vercel
-    const isAdminPhone = (raw) => ADMIN_ALLOWED_PHONES.includes(onlyDigits(raw));
+    /** یکسان‌سازی موبایل ایران: +98... / 98... / 9... → 09xxxxxxxxx */
+    const normalizeIranMobile = (v) => {
+      let d = onlyDigits(v);
+      if (d.startsWith('0098')) d = d.slice(4);
+      if (d.startsWith('98') && d.length >= 12) d = '0' + d.slice(2);
+      if (d.length === 10 && d.startsWith('9')) d = '0' + d;
+      return d;
+    };
+    // لیست ادمین فقط روی سرور (ADMIN_PHONES). کلاینت فقط فرمت را چک می‌کند.
+    const isAdminPhone = (raw) => {
+      const p = normalizeIranMobile(raw);
+      return p.length === 11 && p.startsWith('09');
+    };
 
     /** ممنوعیت لینک برای خریدار و فروشنده */
     const USER_LINK_RE = /(?:https?:\/\/|www\.|\/\/)|(?:\b[a-z0-9][a-z0-9-]{0,61}[a-z0-9]?\.(?:com|ir|net|org|io|co|me|info|app|dev|shop|store|xyz|online|site|link|blog|cloud|pro|tv|cc|biz|ai|eu|uk|de|fr|ca|us)\b)|(?:\b(?:t\.me|telegram\.me|instagram\.com|ig\.me|wa\.me|chat\.whatsapp\.com|youtu\.be|youtube\.com|twitter\.com|x\.com|linkedin\.com|facebook\.com|fb\.me|tiktok\.com|threads\.net|bit\.ly|cutt\.ly|rb\.gy|goo\.gl|eitaa\.com|splus\.ir|ble\.ir|rubika\.ir)\/[^\s]*)|(?:\[url\b|href\s*=|src\s*=)|(?:@\w{3,})/i;
@@ -11614,13 +11625,9 @@ const downloadSeoFile = (filename, content, mime) => {
 
       /** ورود ادمین فقط با OTP واقعی (شماره‌های مجاز) */
       const sendAdminOtp = async (phoneOverride) => {
-        const phone = onlyDigits(phoneOverride != null ? phoneOverride : adminAuthPhone);
+        const phone = normalizeIranMobile(phoneOverride != null ? phoneOverride : adminAuthPhone);
         if (phone.length !== 11 || !phone.startsWith('09')) {
-          setAdminAuthError('شماره موبایل معتبر وارد کنید');
-          return;
-        }
-        if (!isAdminPhone(phone)) {
-          setAdminAuthError('این شماره به عنوان ادمین تعریف نشده است');
+          setAdminAuthError('شماره موبایل معتبر وارد کنید (مثال: 09921863063)');
           return;
         }
         setAdminAuthPhone(phone);
@@ -11654,12 +11661,8 @@ const downloadSeoFile = (filename, content, mime) => {
       };
 
       const verifyAdminOtp = async (phoneOverride, codeOverride) => {
-        const phone = onlyDigits(phoneOverride != null ? phoneOverride : adminAuthPhone);
+        const phone = normalizeIranMobile(phoneOverride != null ? phoneOverride : adminAuthPhone);
         const code = onlyDigits(codeOverride != null ? codeOverride : adminAuthOtp);
-        if (!isAdminPhone(phone)) {
-          setAdminAuthError('این شماره به عنوان ادمین تعریف نشده است');
-          return;
-        }
         if (code.length < 4) {
           setAdminAuthError('کد تأیید را وارد کنید');
           return;
@@ -11676,6 +11679,12 @@ const downloadSeoFile = (filename, content, mime) => {
           const data = await res.json();
           if (!data.ok) {
             setAdminAuthError(data.error || 'کد نادرست است');
+            setAdminAuthLoading(false);
+            return;
+          }
+          const role = String(data?.profile?.role || '').toLowerCase();
+          if (role !== 'admin' && role !== 'superadmin') {
+            setAdminAuthError('این شماره دسترسی ادمین ندارد');
             setAdminAuthLoading(false);
             return;
           }
@@ -11848,10 +11857,10 @@ const downloadSeoFile = (filename, content, mime) => {
       };
 
       const adminLoginWithPassword = async () => {
-        const phone = onlyDigits(adminAuthPhone);
+        const phone = normalizeIranMobile(adminAuthPhone);
         const password = String(adminAuthPassword || '');
-        if (!isAdminPhone(phone)) {
-          setAdminAuthError('این شماره به عنوان ادمین تعریف نشده است');
+        if (phone.length !== 11 || !phone.startsWith('09')) {
+          setAdminAuthError('شماره موبایل معتبر وارد کنید (مثال: 09921863063)');
           return;
         }
         if (password.length < 6) {
