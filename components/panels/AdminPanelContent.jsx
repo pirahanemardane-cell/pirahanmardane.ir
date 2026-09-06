@@ -3055,8 +3055,8 @@ export default function AdminPanelContent() {
                     <div className="space-y-4">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div>
-                          <h2 className="text-base font-bold text-primary-900 dark:text-white">افزودن بلاگ</h2>
-                          <p className="text-xs text-primary-500 dark:!text-white mt-0.5">فقط نوشتن مقاله / مطلب جدید</p>
+                          <h2 className="text-base font-bold text-primary-900 dark:text-white">افزودن مطلب مجله</h2>
+                          <p className="text-xs text-primary-500 dark:!text-white mt-0.5">عنوان، دسته، خلاصه و متن مطلب</p>
                         </div>
                         <button type="button" onClick={() => { setBlogForm(null); setAdminTab('blog'); }} className="text-xs px-3 py-1.5 rounded-full border border-primary-200 dark:border-white/30 text-primary-700 dark:text-white">مشاهده مطالب</button>
                       </div>
@@ -3080,16 +3080,30 @@ export default function AdminPanelContent() {
                             />
                             <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">/بلاگ/{(bf.slug || 'از-عنوان').toString()}</p>
                           </div>
-                          <div className="grid grid-cols-2 gap-2">
-                            <select value={bf.cat} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), cat: e.target.value, id: '' }))} className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white">
-                              {(adminBlogCategories || []).filter(c => c.active !== false).map(c => <option key={c.id || c.name} value={c.name}>{c.name}</option>)}
+                          <div>
+                            <label className="text-xs text-primary-500 mb-1 block">دسته‌بندی *</label>
+                            <select
+                              value={bf.cat || ''}
+                              onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), cat: e.target.value, id: '' }))}
+                              className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white"
+                            >
+                              <option value="">انتخاب دسته…</option>
+                              {(adminBlogCategories || []).filter(c => c.active !== false).map(c => (
+                                <option key={c.id || c.name} value={c.name}>{c.name}</option>
+                              ))}
                             </select>
-                            <select value={bf.status} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), status: e.target.value, id: '' }))} className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white">
-                              <option value="published">منتشر</option>
-                              <option value="draft">پیش‌نویس</option>
-                              <option value="scheduled">زمان‌بندی‌شده</option>
-                            </select>
+                            {!(adminBlogCategories || []).some(c => c.active !== false) && (
+                              <p className="text-[10px] text-amber-600 mt-1">
+                                هنوز دسته فعالی نیست.{' '}
+                                <button type="button" className="underline" onClick={() => setAdminTab('blog-categories')}>تعریف دسته مجله</button>
+                              </p>
+                            )}
                           </div>
+                          <select value={bf.status} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), status: e.target.value, id: '' }))} className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white">
+                            <option value="published">منتشر</option>
+                            <option value="draft">پیش‌نویس</option>
+                            <option value="scheduled">زمان‌بندی‌شده</option>
+                          </select>
                           {bf.status === 'scheduled' && (
                             <div className="grid sm:grid-cols-2 gap-3 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-primary-50/50 dark:bg-primary-900/30">
                               <div>
@@ -3149,6 +3163,7 @@ export default function AdminPanelContent() {
                             <button type="button" onClick={() => {
                               const cur = (blogForm && !blogForm.id) ? blogForm : bf;
                               if (!cur.title.trim()) { showToast({ message: 'عنوان الزامی است', variant: 'error', duration: 4500, position: 'top-center' }); return; }
+                              if (!String(cur.cat || '').trim()) { showToast({ message: 'دسته‌بندی را انتخاب کنید', variant: 'error', duration: 4500, position: 'top-center' }); return; }
                               if (cur.status === 'scheduled' && !cur.publishAtMs) {
                                 showToast({ message: 'برای انتشار زمان‌بندی‌شده تاریخ و ساعت را مشخص کنید', variant: 'error', duration: 4500, position: 'top-center' });
                                 return;
@@ -3158,6 +3173,8 @@ export default function AdminPanelContent() {
                               const post = {
                                 ...cur, id,
                                 slug: String(cur.slug || '').trim() || autoSlug,
+                                cat: String(cur.cat || '').trim(),
+                                category: String(cur.cat || '').trim(),
                                 date: cur.status === 'scheduled' && cur.publishAtFa ? String(cur.publishAtFa).split(' ')[0] : new Date().toLocaleDateString('fa-IR'),
                                 read: cur.read || '۵ دقیقه',
                                 publishAtMs: cur.status === 'scheduled' ? cur.publishAtMs : null,
@@ -3178,7 +3195,7 @@ export default function AdminPanelContent() {
                     <div className="space-y-4">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div>
-                          <h2 className="text-base font-bold text-primary-900 dark:text-white">مطالب بلاگ</h2>
+                          <h2 className="text-base font-bold text-primary-900 dark:text-white">مطالب مجله</h2>
                           <p className="text-xs text-primary-500 dark:!text-white mt-0.5">لیست مطالب — انتخاب برای ویرایش</p>
                         </div>
                         <button type="button" onClick={() => {
@@ -3213,16 +3230,24 @@ export default function AdminPanelContent() {
                             />
                             <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">/بلاگ/{(blogForm.slug || 'از-عنوان').toString()}</p>
                           </div>
-                          <div className="grid grid-cols-2 gap-2">
-                            <select value={blogForm.cat} onChange={e => setBlogForm(f => ({ ...f, cat: e.target.value }))} className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white">
-                              {(adminBlogCategories || []).filter(c => c.active !== false).map(c => <option key={c.id || c.name} value={c.name}>{c.name}</option>)}
-                            </select>
-                            <select value={blogForm.status} onChange={e => setBlogForm(f => ({ ...f, status: e.target.value }))} className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white">
-                              <option value="published">منتشر</option>
-                              <option value="draft">پیش‌نویس</option>
-                              <option value="scheduled">زمان‌بندی‌شده</option>
+                          <div>
+                            <label className="text-xs text-primary-500 mb-1 block">دسته‌بندی *</label>
+                            <select
+                              value={blogForm.cat || ''}
+                              onChange={e => setBlogForm(f => ({ ...f, cat: e.target.value }))}
+                              className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white"
+                            >
+                              <option value="">انتخاب دسته…</option>
+                              {(adminBlogCategories || []).filter(c => c.active !== false).map(c => (
+                                <option key={c.id || c.name} value={c.name}>{c.name}</option>
+                              ))}
                             </select>
                           </div>
+                          <select value={blogForm.status} onChange={e => setBlogForm(f => ({ ...f, status: e.target.value }))} className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white">
+                            <option value="published">منتشر</option>
+                            <option value="draft">پیش‌نویس</option>
+                            <option value="scheduled">زمان‌بندی‌شده</option>
+                          </select>
                           {blogForm.status === 'scheduled' && (
                             <div className="grid sm:grid-cols-2 gap-3 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-primary-50/50 dark:bg-primary-900/30">
                               <div>
@@ -3276,6 +3301,7 @@ export default function AdminPanelContent() {
                           <div className="flex gap-2">
                             <button type="button" onClick={() => {
                               if (!blogForm.title.trim()) { showToast({ message: 'عنوان الزامی است', variant: 'error', duration: 4500, position: 'top-center' }); return; }
+                              if (!String(blogForm.cat || '').trim()) { showToast({ message: 'دسته‌بندی را انتخاب کنید', variant: 'error', duration: 4500, position: 'top-center' }); return; }
                               if (blogForm.status === 'scheduled' && !blogForm.publishAtMs) {
                                 showToast({ message: 'برای انتشار زمان‌بندی‌شده تاریخ و ساعت را مشخص کنید', variant: 'error', duration: 4500, position: 'top-center' });
                                 return;
@@ -3285,6 +3311,8 @@ export default function AdminPanelContent() {
                               const post = {
                                 ...blogForm, id,
                                 slug: String(blogForm.slug || '').trim() || autoSlug,
+                                cat: String(blogForm.cat || '').trim(),
+                                category: String(blogForm.cat || '').trim(),
                                 date: blogForm.status === 'scheduled' && blogForm.publishAtFa ? String(blogForm.publishAtFa).split(' ')[0] : (blogForm.date || new Date().toLocaleDateString('fa-IR')),
                                 read: blogForm.read || '۵ دقیقه',
                                 publishAtMs: blogForm.status === 'scheduled' ? blogForm.publishAtMs : null,
