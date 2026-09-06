@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAppApi } from '../AppApiContext';
 import Hero from '../Hero';
+import Avatar from '../ui/Avatar';
 
 /** HomeView — code-split from App.jsx */
 export default function HomeView() {
@@ -32,7 +33,7 @@ export default function HomeView() {
         if (!cancelled && data?.ok && Array.isArray(data.reviews)) {
           setLiveReviews(data.reviews.map((r) => ({
             name: r.name || r.display_name || 'خریدار',
-            image: r.image || r.display_avatar_url || '/default-avatar.svg',
+            image: r.image || r.display_avatar_url || '',
             rating: r.rating || 0,
             text: r.text || r.body || '',
             seller: r.seller || null,
@@ -450,7 +451,7 @@ export default function HomeView() {
                 <h2 className="section-title text-right text-primary-900 dark:text-white mb-6 sm:mb-8 text-lg sm:text-xl">برترین‌های پیراهن</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-5">
                   {homeBrands.slice(0, 12).map((item) => {
-                    const img = item.logo_url || item.logoUrl || item.image || '/default-avatar.svg';
+                    const img = item.logo_url || item.logoUrl || item.image || '';
                     const name = item.name || 'برند';
                     return (
                     <a
@@ -463,14 +464,7 @@ export default function HomeView() {
                       className="group relative rounded-2xl overflow-hidden bg-primary-50 dark:bg-primary-800 aspect-[4/5] flex flex-col items-center justify-center p-3 sm:p-4 transition hover:shadow-lg top-brand-card border border-transparent dark:border-white/15"
                     >
                       <div className="relative w-full flex-1 flex items-center justify-center">
-                        <img
-                          src={img}
-                          alt={name}
-                          loading="lazy" decoding="async"
-                          referrerPolicy="no-referrer"
-                          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/default-avatar.svg'; }}
-                          className="max-h-[85%] w-auto object-contain drop-shadow-md group-hover:opacity-95 transition duration-500 rounded-xl dark:brightness-110 dark:contrast-110"
-                        />
+                        <Avatar name={name} src={img} size={88} shape="rounded" className="shadow-sm" />
                       </div>
                       <span className="mt-2 text-sm sm:text-base font-bold text-primary-900 dark:!text-white">{name}</span>
                     </a>

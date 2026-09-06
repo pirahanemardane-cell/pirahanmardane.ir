@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/client'
+import Avatar from '../ui/Avatar';
 
 const SimpleEditor = dynamic(() => import('../SimpleEditor'), { ssr: false })
 
@@ -234,7 +235,7 @@ export default function AdminReviewsTab({ showToast }) {
           <div className="flex flex-wrap gap-3">
             {avatars.map((p) => (
               <div key={p.id} className="flex items-center gap-3 p-2 rounded-xl border border-primary-100 dark:border-white/10">
-                <img src={p.avatar_pending_url || '/default-avatar.svg'} alt="" className="w-12 h-12 rounded-full object-cover" />
+                <Avatar name={p.full_name || p.phone || 'U'} src={p.avatar_pending_url || ''} size={48} />
                 <div className="min-w-0">
                   <p className="text-xs font-bold truncate">{p.full_name || p.phone || p.id.slice(0, 8)}</p>
                   <div className="flex gap-1 mt-1">
@@ -341,10 +342,7 @@ export default function AdminReviewsTab({ showToast }) {
           <div className="divide-y divide-primary-100 dark:divide-white/10">
             {list.map((r) => (
               <div key={r.id} className="p-4 flex flex-col sm:flex-row gap-3">
-                <img
-                  src={r.display_avatar_url || (r.profiles?.avatar_status === 'approved' ? r.profiles?.avatar_url : null) || '/default-avatar.svg'}
-                  alt="" className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                />
+                <Avatar name={r.display_name || r.profiles?.full_name || 'خریدار'} src={r.display_avatar_url || r.profiles?.avatar_url || ''} size={48} />
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-bold text-sm">{r.display_name || r.profiles?.full_name || 'خریدار'}</span>

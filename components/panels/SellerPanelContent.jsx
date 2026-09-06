@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { LoadingState, ErrorState, EmptyStateBox } from '../ui/async-state';
 import EmptyState from '../EmptyState';
 import { showToast } from '../ui/toast';
+import Avatar from '../ui/Avatar';
 
 const SimpleEditor = dynamic(() => import('../SimpleEditor'), { ssr: false });
 
@@ -1248,14 +1249,11 @@ export default function SellerPanelContent() {
             <div className="panel-content-wrap w-full max-w-none mx-auto px-2 sm:px-4 py-4 sm:py-10 pb-24">
               <div className="mb-6 p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 space-y-3">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-800 flex-shrink-0 overflow-hidden">
-                  <img
-                    src={sellerLogoUrl || sellerUser?.logoUrl || sellerUser?.logo_url || sellerUser?.logo || "/default-avatar.svg"}
-                    alt=""
-                    className="w-full h-full object-cover"
-                    onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
-                  />
-                </div>
+                <Avatar
+                  name={sellerUser?.shop_name || sellerUser?.shopName || sellerUser?.name || 'فروشگاه'}
+                  src={sellerLogoUrl || sellerUser?.logoUrl || sellerUser?.logo_url || sellerUser?.logo || ''}
+                  size={56}
+                />
                 <div className="min-w-0 flex-1">
                   <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white truncate">{sellerUser.shopName}</h1>
                   <p className="text-xs text-primary-500 dark:!text-white truncate">{sellerUser.ownerName || sellerUser.name || ''}</p>
@@ -4650,7 +4648,7 @@ export default function SellerPanelContent() {
                             <div className="flex items-center gap-3">
                               <div className="w-20 h-20 rounded-full border border-primary-200 dark:border-white/20 overflow-hidden bg-primary-50 dark:bg-primary-800 flex items-center justify-center flex-shrink-0">
                                 <img
-                                  src={sellerLogoUrl || "/default-avatar.svg"}
+                                  src={sellerLogoUrl || ""}
                                   alt=""
                                   className="w-full h-full object-cover"
                                   onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
