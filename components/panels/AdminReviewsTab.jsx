@@ -18,7 +18,12 @@ export default function AdminReviewsTab({ showToast }) {
   const [busyId, setBusyId] = useState(null)
   const [formOpen, setFormOpen] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState({
+    rating: 5, title: '', body: '', display_name: '', display_avatar_url: '',
+    seller_id: '', seller_name: '', is_featured: true, publish: true,
+  })
+  const emptyForm = () => ({
     rating: 5, title: '', body: '', display_name: '', display_avatar_url: '',
     seller_id: '', seller_name: '', is_featured: true, publish: true,
   })
@@ -86,24 +91,69 @@ export default function AdminReviewsTab({ showToast }) {
     finally { setBusyId(null) }
   }
 
+  const openEdit = (r) => {
+    setEditingId(r.id)
+    setForm({
+      rating: r.rating || 5,
+      title: r.title || '',
+      body: r.body || '',
+      display_name: r.display_name || r.profiles?.full_name || '',
+      display_avatar_url: r.display_avatar_url || '',
+      seller_id: r.seller_id || '',
+      seller_name: r.sellers?.shop_name || '',
+      is_featured: !!r.is_featured,
+      publish: r.status === 'approved',
+    })
+    setFormOpen(true)
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }) } catch (_) {}
+  }
+
+  const closeForm = () => {
+    setFormOpen(false)
+    setEditingId(null)
+    setForm(emptyForm())
+  }
+
   const saveManual = async () => {
     if (!form.display_name.trim()) { toast('نام نمایشی الزامی است', 'error'); return }
     if (!form.body.trim()) { toast('متن نظر الزامی است', 'error'); return }
     setSaving(true)
     try {
-      const res = await fetch('/api/admin/reviews', {
-        method: 'POST', credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-      const data = await res.json().catch(() => ({}))
-      if (data?.ok) {
-        toast('نظر ذخیره شد', 'success')
-        setFormOpen(false)
-        setForm({ rating: 5, title: '', body: '', display_name: '', display_avatar_url: '', seller_id: '', seller_name: '', is_featured: true, publish: true })
-        setFilter('approved')
-        loadReviews('approved')
-      } else toast(data?.error || 'خطا', 'error')
+      if (editingId) {
+        const res = await fetch('/api/admin/reviews', {
+          method: 'PATCH', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: editingId,
+            rating: form.rating,
+            title: form.title,
+            body: form.body,
+            display_name: form.display_name,
+            display_avatar_url: form.display_avatar_url || null,
+            is_featured: form.is_featured,
+            status: form.publish ? 'approved' : 'pending',
+          }),
+        })
+        const data = await res.json().catch(() => ({}))
+        if (data?.ok) {
+          toast('نظر ویرایش شد', 'success')
+          closeForm()
+          loadReviews(filter)
+        } else toast(data?.error || 'خطا', 'error')
+      } else {
+        const res = await fetch('/api/admin/reviews', {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        })
+        const data = await res.json().catch(() => ({}))
+        if (data?.ok) {
+          toast('نظر ذخیره شد', 'success')
+          closeForm()
+          setFilter('approved')
+          loadReviews('approved')
+        } else toast(data?.error || 'خطا', 'error')
+      }
     } catch (e) { toast(String(e?.message || e), 'error') }
     finally { setSaving(false) }
   }
@@ -195,14 +245,21 @@ export default function AdminReviewsTab({ showToast }) {
             </button>
           ))}
         </div>
-        <button type="button" onClick={() => setFormOpen((v) => !v)} className="text-sm px-4 py-2 rounded-full bg-apple-blue text-white font-bold">
+        <button
+          type="button"
+          onClick={() => {
+            if (formOpen) closeForm()
+            else { setEditingId(null); setForm(emptyForm()); setFormOpen(true) }
+          }}
+          className="text-sm px-4 py-2 rounded-full bg-apple-blue text-white font-bold"
+        >
           {formOpen ? 'بستن فرم' : '+ افزودن نظر دستی'}
         </button>
       </div>
 
       {formOpen && (
         <div className="rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 p-4 space-y-3">
-          <h3 className="text-sm font-bold">نظر دستی (برای نمایش در صفحه اصلی)</h3>
+          <h3 className="text-sm font-bold">{editingId ? 'ویرایش نظر' : 'نظر دستی (برای نمایش در صفحه اصلی)'}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input type="text" placeholder="نام نمایشی خریدار *" value={form.display_name}
               onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
@@ -252,7 +309,7 @@ export default function AdminReviewsTab({ showToast }) {
           </div>
           <button type="button" disabled={saving} onClick={saveManual}
             className="px-5 py-2.5 rounded-full bg-emerald-600 text-white text-sm font-bold disabled:opacity-60">
-            {saving ? 'در حال ذخیره...' : 'ذخیره نظر'}
+            {saving ? 'در حال ذخیره...' : (editingId ? 'ذخیره تغییرات' : 'ذخیره نظر')}
           </button>
         </div>
       )}
@@ -300,6 +357,8 @@ export default function AdminReviewsTab({ showToast }) {
                     className="text-[11px] px-2.5 py-1 rounded-full border border-primary-300 text-primary-700">
                     {r.is_featured ? 'حذف از ویژه' : 'ویژه کردن'}
                   </button>
+                  <button type="button" disabled={busyId === r.id} onClick={() => openEdit(r)}
+                    className="text-[11px] px-2.5 py-1 rounded-full border border-apple-blue text-apple-blue">ویرایش</button>
                   <button type="button" disabled={busyId === r.id} onClick={() => deleteReview(r.id)}
                     className="text-[11px] px-2.5 py-1 rounded-full border border-red-300 text-red-600">حذف</button>
                 </div>
