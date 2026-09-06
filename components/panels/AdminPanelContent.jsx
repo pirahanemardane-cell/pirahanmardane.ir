@@ -12,6 +12,7 @@ import { LoadingState, ErrorState, EmptyStateBox } from '../ui/async-state';
 import EmptyState from '../EmptyState';
 import { showToast } from '../ui/toast';
 import PermissionsPanelContent from './PermissionsPanelContent';
+import AdminReviewsTab from './AdminReviewsTab';
 
 const SimpleEditor = dynamic(() => import('../SimpleEditor'), { ssr: false });
 
@@ -362,6 +363,7 @@ export default function AdminPanelContent() {
                       { id: 'audit', label: 'لاگ ادمین', icon: 'shield' },
                       { id: 'tickets', label: 'تیکت‌ها', icon: 'message' },
                       { id: 'buyers', label: 'خریداران', icon: 'user' },
+                      { id: 'reviews', label: 'نظرات مشتریان', icon: 'message' },
                       { id: 'seo', label: 'سئو و ایندکس', icon: 'settings' },
                       { id: 'redirects', label: 'ریدایرکت', icon: 'share' },
                       { id: 'analytics', label: 'آنالیتیکس', icon: 'grid' },
@@ -3313,6 +3315,14 @@ export default function AdminPanelContent() {
 
 
                   {/* SEO & Indexing */}
+                  
+                  {!adminLoading && adminTab === 'reviews' && (
+                    <div className="space-y-4">
+                      <h2 className="text-lg font-bold text-primary-900 dark:text-white">نظرات مشتریان واقعی</h2>
+                      <AdminReviewsTab showToast={typeof showToast === 'function' ? showToast : undefined} />
+                    </div>
+                  )}
+
                   {!adminLoading && adminTab === 'seo' && (
                     <div className="space-y-6 max-w-3xl">
                       <div>
