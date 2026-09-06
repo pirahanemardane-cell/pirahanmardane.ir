@@ -3371,7 +3371,7 @@ html.dark .hero-body2-badge {
 }
 
 .hero-body2-suffix {
-  font-weight: 800 !important;
+  font-weight: 100 !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
