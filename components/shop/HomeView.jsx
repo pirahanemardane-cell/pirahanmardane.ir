@@ -66,6 +66,7 @@ export default function HomeView() {
     openSellerPanel,
     openSellersList,
     openStaticPage,
+    setFaqQuery,
     pdpProduct,
     awaitingDeepProduct,
     products,
@@ -560,7 +561,18 @@ export default function HomeView() {
                           />
                         </div>
                         <div className="p-3.5 sm:p-5">
-                          <span className="text-xs sm:text-sm text-apple-link font-medium">{b.category}</span>
+                          {b.category ? (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                try { if (typeof setFaqQuery === 'function') setFaqQuery(b.category); } catch (_) {}
+                                try { openStaticPage('blog'); } catch (_) {}
+                              }}
+                              className="text-xs sm:text-sm text-apple-link font-medium inline-flex px-2.5 py-0.5 rounded-full bg-apple-blue/10 hover:bg-apple-blue/20"
+                            >{b.category}</button>
+                          ) : null}
                           <h3 className="text-base font-bold text-primary-900 dark:text-white mt-1 mb-1.5 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-white transition" title={b.title}>{b.title}</h3>
                           <p className="text-xs text-primary-500 dark:text-white mb-1">{b.author}</p>
                           {b.date ? <time className="text-xs text-primary-400 dark:text-white/70">{b.date}</time> : null}

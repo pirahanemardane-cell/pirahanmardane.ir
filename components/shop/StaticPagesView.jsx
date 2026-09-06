@@ -512,7 +512,7 @@ export default function StaticPagesView() {
                     <div>
                       <h2 className="font-bold mb-2 text-primary-900 dark:text-white">اطلاعات</h2>
                       <ul className="space-y-1.5">
-                        {[['about','درباره ما'],['contact','تماس'],['faq','FAQ'],['size-guide','راهنمای سایز'],['terms','قوانین'],['returns','مرجوعی'],['privacy','حریم خصوصی'],['blog','بلاگ'],['become-seller','فروشنده شوید']].map(([id,l]) => (
+                        {[['about','درباره ما'],['contact','تماس'],['faq','FAQ'],['size-guide','راهنمای سایز'],['terms','قوانین'],['returns','مرجوعی'],['privacy','حریم خصوصی'],['blog','مجله'],['become-seller','فروشنده شوید']].map(([id,l]) => (
                           <li key={id}><button type="button" onClick={() => openStaticPage(id)} className="text-apple-blue hover:underline">{l}</button></li>
                         ))}
                       </ul>
@@ -526,23 +526,31 @@ export default function StaticPagesView() {
                 <div className="w-full space-y-8">
                   <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                     <div>
-                      <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white">بلاگ</h1>
+                      <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white">مجله</h1>
                       <p className="text-sm text-primary-500 dark:!text-white mt-1">راهنمای خرید، استایل و مراقبت از پیراهن مردانه</p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {['همه', ...Array.from(new Set(blogPosts.map(p => p.cat)))].map(cat => (
+                      {['همه', ...Array.from(new Set(blogPosts.map(p => p.cat || p.category).filter(Boolean)))].map(cat => (
                         <button key={cat} type="button" onClick={() => setFaqQuery(cat === 'همه' ? '' : cat)} className={`text-xs px-3.5 py-1.5 rounded-full font-medium transition ${(!faqQuery && cat==='همه') || faqQuery===cat ? 'bg-apple-blue text-white shadow-md' : 'bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 text-primary-600 dark:text-white/70 hover:border-apple-blue/40'}`}>{cat}</button>
                       ))}
                     </div>
                   </div>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {blogPosts.filter(p => (p.status === 'published' || (p.status === 'scheduled' && p.publishAtMs && Number(p.publishAtMs) <= Date.now())) && (!faqQuery || p.cat === faqQuery || p.title.includes(faqQuery))).map(p => (
-                      <button key={p.id} type="button" onClick={() => openStaticPage('blog-post', { blogId: p.id })} className="group text-right rounded-3xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 overflow-hidden hover:shadow-xl hover:border-apple-blue/30 transition flex flex-col">
+                    {blogPosts.filter(p => (p.status === 'published' || (p.status === 'scheduled' && p.publishAtMs && Number(p.publishAtMs) <= Date.now())) && (!faqQuery || (p.cat || p.category) === faqQuery || (p.title || '').includes(faqQuery))).map(p => (
+                      <button key={p.id} type="button" onClick={() => openStaticPage('blog-post', { blogId: p.id, slug: p.slug || '' })} className="group text-right rounded-3xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 overflow-hidden hover:shadow-xl hover:border-apple-blue/30 transition flex flex-col">
                         <div className="aspect-[16/9] overflow-hidden bg-primary-100 dark:bg-primary-900">
                           <img src={p.image || 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=800&h=450&fit=crop&q=80'} alt="" className="w-full h-full object-cover group-hover:opacity-95 transition duration-500" loading="lazy" />
                         </div>
                         <div className="p-4 sm:p-5 flex-1 flex flex-col">
-                          <span className="text-xs font-bold text-apple-blue uppercase tracking-wide">{p.cat}</span>
+                          {(p.cat || p.category) ? (
+                            <span
+                              role="link"
+                              tabIndex={0}
+                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setFaqQuery(p.cat || p.category); }}
+                              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); setFaqQuery(p.cat || p.category); } }}
+                              className="text-xs font-bold text-apple-blue tracking-wide inline-flex self-start px-2.5 py-0.5 rounded-full bg-apple-blue/10 hover:bg-apple-blue/20"
+                            >{p.cat || p.category}</span>
+                          ) : null}
                           <p className="font-bold text-sm sm:text-base text-primary-900 dark:text-white mt-1.5 leading-snug line-clamp-2">{p.title}</p>
                           <p className="text-xs text-primary-500 dark:!text-white mt-2 line-clamp-2 flex-1">{p.excerpt}</p>
                           <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-primary-50 dark:border-white/10 text-xs text-primary-400 dark:!text-white">
@@ -567,7 +575,7 @@ export default function StaticPagesView() {
               {/* بلاگ تکی */}
               {staticPage === 'blog-post' && (() => {
                 const isLive = (p) => p && (p.status === 'published' || (p.status === 'scheduled' && p.publishAtMs && Number(p.publishAtMs) <= Date.now()));
-                const post = blogPosts.find(p => p.id === blogPostId) || blogPosts.find(isLive) || blogPosts[0];
+                const post = blogPosts.find(p => String(p.id) === String(blogPostId)) || blogPosts.find(isLive) || blogPosts[0];
                 if (!post) return <p className="text-center text-sm text-primary-500">مطلبی یافت نشد</p>;
                 const related = blogPosts.filter(p => p.id !== post.id && isLive(p)).slice(0, 3);
                 const isHtmlBody = /<[a-z][\s\S]*>/i.test(post.body || '');
@@ -575,12 +583,18 @@ export default function StaticPagesView() {
                 const paragraphs = isHtmlBody ? [] : (post.body || '').split('\n\n');
                 return (
                   <article className="w-full space-y-6">
-                    <button type="button" onClick={() => openStaticPage('blog')} className="text-xs text-apple-blue hover:underline flex items-center gap-1"><Icon name="arrowRight" size={14} /> بازگشت به بلاگ</button>
+                    <button type="button" onClick={() => openStaticPage('blog')} className="text-xs text-apple-blue hover:underline flex items-center gap-1"><Icon name="arrowRight" size={14} /> بازگشت به مجله</button>
                     <div className="rounded-3xl overflow-hidden aspect-[21/9] sm:aspect-[2.4/1] bg-primary-100 dark:bg-primary-900 border border-primary-100 dark:border-white/10">
                       <img src={post.image || 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=1200&h=500&fit=crop&q=80'} alt="" className="w-full h-full object-cover" />
                     </div>
                     <div className="flex flex-wrap items-center gap-2 text-xs">
-                      <span className="px-2.5 py-1 rounded-full bg-apple-blue/10 text-apple-blue font-bold text-white">{post.cat}</span>
+                      {(post.cat || post.category) ? (
+                        <button
+                          type="button"
+                          onClick={() => { setFaqQuery(post.cat || post.category); openStaticPage('blog'); }}
+                          className="px-2.5 py-1 rounded-full bg-apple-blue/10 text-apple-blue font-bold hover:bg-apple-blue/20"
+                        >{post.cat || post.category}</button>
+                      ) : null}
                       {(post.tags || []).map(t => <span key={t} className="px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-white/70">#{t}</span>)}
                     </div>
                     <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white leading-snug">{post.title}</h1>
@@ -679,7 +693,7 @@ export default function StaticPagesView() {
                         <p className="text-sm font-bold text-primary-900 dark:text-white mb-4">مطالب مرتبط</p>
                         <div className="grid sm:grid-cols-3 gap-3">
                           {related.map(r => (
-                            <button key={r.id} type="button" onClick={() => openStaticPage('blog-post', { blogId: r.id })} className="text-right rounded-2xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 overflow-hidden hover:border-apple-blue/40 transition">
+                            <button key={r.id} type="button" onClick={() => openStaticPage('blog-post', { blogId: r.id, slug: r.slug || '' })} className="text-right rounded-2xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 overflow-hidden hover:border-apple-blue/40 transition">
                               <div className="aspect-video bg-primary-100 dark:bg-primary-900">
                                 <img src={r.image || 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400&h=225&fit=crop'} alt="" className="w-full h-full object-cover" loading="lazy" />
                               </div>

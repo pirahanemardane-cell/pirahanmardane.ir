@@ -41,8 +41,23 @@ export async function GET(request) {
       .order('published_at', { ascending: false })
       .limit(limit)
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+    let catMap = {}
+    try {
+      const { data: cats } = await db.from('blog_categories').select('id, name, slug, active')
+      for (const c of cats || []) catMap[c.id] = c
+    } catch (_) {}
+    const posts = (data || []).map((p) => {
+      const c = p.category_id ? catMap[p.category_id] : null
+      return {
+        ...p,
+        category: c?.name || null,
+        category_name: c?.name || null,
+        category_slug: c?.slug || null,
+        cat: c?.name || null,
+      }
+    })
     return NextResponse.json(
-      { ok: true, posts: data || [] },
+      { ok: true, posts },
       { headers: { 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' } },
     )
   } catch (e) { try { await logCritical('app/api/blog/route.js', e) } catch (_lc) {}

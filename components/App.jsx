@@ -1126,24 +1126,31 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             const json = await res.json().catch(() => ({}));
             const list = json?.posts || json?.items || [];
             if (cancelled || !json?.ok || !Array.isArray(list) || !list.length) return;
-            const mapped = list.map((p) => ({
-              id: p.id,
-              title: p.title,
-              slug: p.slug,
-              excerpt: p.excerpt,
-              body: p.body,
-              status: p.status || 'published',
-              cover: p.cover_image || p.cover_url || p.cover,
-              image: p.cover_image || p.cover_url || p.cover,
-              date: (() => {
-                const raw = p.published_at || p.created_at;
-                if (!raw) return '';
-                try { return new Date(raw).toLocaleDateString('fa-IR'); } catch (_) { return ''; }
-              })(),
-              published_at: p.published_at,
-              category: p.category || p.category_name || '',
-              author: p.author || p.author_name || 'پیراهن مردانه',
-            }));
+                        const mapped = list.map((p) => {
+              const catName = p.cat || p.category || p.category_name || '';
+              let dateFa = '';
+              const raw = p.published_at || p.date || p.created_at;
+              if (raw) {
+                try { dateFa = new Date(raw).toLocaleDateString('fa-IR'); } catch (_) { dateFa = ''; }
+              }
+              return {
+                id: p.id,
+                title: p.title,
+                slug: p.slug,
+                excerpt: p.excerpt,
+                body: p.body,
+                status: p.status || 'published',
+                cover: p.cover_image || p.cover_url || p.cover,
+                image: p.cover_image || p.cover_url || p.cover,
+                date: dateFa,
+                published_at: p.published_at,
+                cat: catName,
+                category: catName,
+                category_slug: p.category_slug || '',
+                author: p.author || p.author_name || 'پیراهن مردانه',
+                read: p.read || '۵ دقیقه',
+              };
+            });
             setBlogPosts((prev) => {
               const prevArr = Array.isArray(prev) ? prev : [];
               if (prevArr.length && prevArr.some((x) => x && (x.body || x.excerpt))) return prevArr;
@@ -15991,7 +15998,7 @@ const params = new URLSearchParams(window.location.search);
                 label: ({
                   about: 'درباره ما', contact: 'تماس با ما', faq: 'سوالات متداول', 'size-guide': 'راهنمای سایز',
                   'become-seller': 'فروشنده شوید', terms: 'قوانین و شرایط', returns: 'شرایط بازگشت',
-                  privacy: 'حریم خصوصی', cookies: 'کوکی‌ها', sitemap: 'نقشه سایت', blog: 'بلاگ',
+                  privacy: 'حریم خصوصی', cookies: 'کوکی‌ها', sitemap: 'نقشه سایت', blog: 'مجله',
                   'blog-post': (typeof blogPostId !== 'undefined' && blogPosts?.find?.(b => b.id === blogPostId)?.title) || 'مطلب',
                   brands: 'برندها', campaigns: 'کمپین‌ها', deals: 'شگفت‌انگیز',
                   'error-404': 'صفحه یافت نشد', 'error-500': 'خطای سرور', maintenance: 'تعمیرات',
