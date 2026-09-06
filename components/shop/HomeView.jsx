@@ -27,7 +27,6 @@ export default function HomeView() {
     })();
     return () => { cancelled = true; };
   }, []);
-  const displayReviews = liveReviews.length ? liveReviews : (reviews || []);
   const {
     CarouselArrows,
     Icon,
@@ -88,6 +87,7 @@ export default function HomeView() {
     setPublicTrackCode,
     publicTrackOpen,
   } = useAppApi(); /* setPublicTrackOpen from context */
+  const displayReviews = liveReviews.length ? liveReviews : (reviews || []);
 
   return (
     <>
