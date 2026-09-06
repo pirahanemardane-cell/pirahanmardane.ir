@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useAppApi } from '../AppApiContext';
 import Hero from '../Hero';
 
@@ -27,7 +28,6 @@ export default function HomeView() {
     return () => { cancelled = true; };
   }, []);
   const displayReviews = liveReviews.length ? liveReviews : (reviews || []);
-
   const {
     CarouselArrows,
     Icon,
