@@ -1661,6 +1661,16 @@ div.quick-add-popup {
   z-index: 0 !important;
 }
 
+/* Admin login modal — گوشه‌های گرد (بقیه مودال‌ها دست نخورند) */
+.site-modal-panel.admin-auth-modal {
+  border-radius: 1rem !important;
+}
+@media (max-width: 639px) {
+  .site-modal-panel.admin-auth-modal {
+    border-radius: 1rem 1rem 0 0 !important;
+  }
+}
+
 /* Product card image badges — equal width, flush right */
 .product-card-badges {
   width: max-content;

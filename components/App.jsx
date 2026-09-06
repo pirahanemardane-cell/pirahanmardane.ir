@@ -15976,7 +15976,7 @@ const params = new URLSearchParams(window.location.search);
       {adminAuthOpen && (
         <div className="site-modal-root" role="dialog" aria-modal="true" style={{ zIndex: 10050 }}>
           <div className="site-modal-backdrop" onClick={() => { try { closeAdminAuth(); } catch (_) {} }} />
-          <div className="site-modal-panel bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 p-5 max-w-sm mx-auto rounded-2xl">
+          <div className="site-modal-panel admin-auth-modal bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 p-5 max-w-sm mx-auto rounded-2xl">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-base font-bold text-primary-900 dark:text-white">ورود ادمین</h3>
               <button type="button" onClick={() => { try { closeAdminAuth(); } catch (_) {} }} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-primary-100 dark:hover:bg-primary-800" aria-label="بستن">
