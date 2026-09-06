@@ -1135,7 +1135,11 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               status: p.status || 'published',
               cover: p.cover_image || p.cover_url || p.cover,
               image: p.cover_image || p.cover_url || p.cover,
-              date: p.published_at || p.created_at,
+              date: (() => {
+                const raw = p.published_at || p.created_at;
+                if (!raw) return '';
+                try { return new Date(raw).toLocaleDateString('fa-IR'); } catch (_) { return ''; }
+              })(),
               published_at: p.published_at,
               category: p.category || p.category_name || '',
               author: p.author || p.author_name || 'پیراهن مردانه',
@@ -5725,9 +5729,12 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             const bid = String(opts.blogId);
             setBlogPostId(bid);
             const post = (Array.isArray(blogPosts) ? blogPosts : []).find((b) => String(b?.id) === bid);
-            // URL با id تا وابسته به لود بودن blogPosts نباشد
-            pushFaUrl(`/بلاگ/${encodeURIComponent(bid)}`, { staticPage: 'blog-post', blogId: bid });
-            // عمداً applyPath صداده نمی‌شود — وگرنه با لیست خالی به صفحه فهرست می‌افتد
+            // URL فقط slug — هرگز تاریخ و ترجیحاً نه UUID
+            const fromOpts = String(opts.slug || '').trim();
+            const fromPost = String(post?.slug || '').trim();
+            const fromTitle = (typeof slugifyFa === 'function' ? slugifyFa(post?.title || '') : '') || '';
+            const slug = fromOpts || fromPost || fromTitle || bid;
+            pushFaUrl(`/بلاگ/${encodeURIComponent(slug)}`, { staticPage: 'blog-post', blogId: bid });
           } else {
             pushFaUrl(pathForStaticPage(page), { staticPage: page });
           }

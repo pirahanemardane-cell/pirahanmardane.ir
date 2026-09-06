@@ -3028,7 +3028,7 @@ export default function AdminPanelContent() {
 {!adminLoading && adminTab === 'blog-new' && (() => {
                     const emptyBlog = () => {
                       const defCat = ((adminBlogCategories || []).find(c => c.active !== false) || {}).name || 'راهنمای خرید';
-                      return { id: '', title: '', cat: defCat, excerpt: '', body: '', status: 'published', author: 'تحریریه', read: '۵ دقیقه', publishAtDate: '', publishAtTime: '10:00', publishAtMs: null, publishAtFa: '', seoTitle: '', seoDescription: '', seoFocusKeywords: '', seoCanonical: '', seoOgImage: '', imageAlt: '', image: '', seoNoindex: false, seoFaq: [] };
+                      return { id: '', title: '', slug: '', cat: defCat, excerpt: '', body: '', status: 'published', author: 'تحریریه', read: '۵ دقیقه', publishAtDate: '', publishAtTime: '10:00', publishAtMs: null, publishAtFa: '', seoTitle: '', seoDescription: '', seoFocusKeywords: '', seoCanonical: '', seoOgImage: '', imageAlt: '', image: '', seoNoindex: false, seoFaq: [] };
                     };
                     const form = (blogForm && !blogForm.id) ? blogForm : (blogForm && blogForm.id ? blogForm : null);
                     /* فقط مقاله جدید در این تب — اگر فرم ویرایش باشد به مطالب هدایت می‌شود */
@@ -3048,6 +3048,24 @@ export default function AdminPanelContent() {
                       </div>
                       <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-2">
                           <input value={bf.title} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), title: e.target.value, id: '' }))} placeholder="عنوان *" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
+                          <div>
+                            <input
+                              value={bf.slug || ''}
+                              onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), slug: e.target.value, id: '' }))}
+                              onBlur={() => {
+                                const cur = (blogForm && !blogForm.id) ? blogForm : bf;
+                                if (String(cur.slug || '').trim()) return;
+                                const t = String(cur.title || '').trim();
+                                if (!t) return;
+                                const auto = (typeof slugifyTaxonomy === 'function' ? slugifyTaxonomy(t) : t.replace(/\s+/g, '-'));
+                                setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), slug: auto, id: '' }));
+                              }}
+                              placeholder="آدرس URL (slug) — خالی بماند از عنوان ساخته می‌شود"
+                              className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white font-latin"
+                              dir="ltr"
+                            />
+                            <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">/بلاگ/{(bf.slug || 'از-عنوان').toString()}</p>
+                          </div>
                           <div className="grid grid-cols-2 gap-2">
                             <select value={bf.cat} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), cat: e.target.value, id: '' }))} className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white">
                               {(adminBlogCategories || []).filter(c => c.active !== false).map(c => <option key={c.id || c.name} value={c.name}>{c.name}</option>)}
@@ -3122,8 +3140,10 @@ export default function AdminPanelContent() {
                                 return;
                               }
                               const id = 'b' + Date.now();
+                              const autoSlug = (typeof slugifyTaxonomy === 'function' ? slugifyTaxonomy(cur.title) : String(cur.title || '').trim().replace(/\s+/g, '-'));
                               const post = {
                                 ...cur, id,
+                                slug: String(cur.slug || '').trim() || autoSlug,
                                 date: cur.status === 'scheduled' && cur.publishAtFa ? String(cur.publishAtFa).split(' ')[0] : new Date().toLocaleDateString('fa-IR'),
                                 read: cur.read || '۵ دقیقه',
                                 publishAtMs: cur.status === 'scheduled' ? cur.publishAtMs : null,
@@ -3162,6 +3182,23 @@ export default function AdminPanelContent() {
                             <button type="button" onClick={() => setBlogForm(null)} className="text-xs px-2.5 py-1 rounded-full border border-primary-200 dark:border-white/25">بستن</button>
                           </div>
                           <input value={blogForm.title} onChange={e => setBlogForm(f => ({ ...f, title: e.target.value }))} placeholder="عنوان *" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
+                          <div>
+                            <input
+                              value={blogForm.slug || ''}
+                              onChange={e => setBlogForm(f => ({ ...f, slug: e.target.value }))}
+                              onBlur={() => {
+                                if (String(blogForm.slug || '').trim()) return;
+                                const t = String(blogForm.title || '').trim();
+                                if (!t) return;
+                                const auto = (typeof slugifyTaxonomy === 'function' ? slugifyTaxonomy(t) : t.replace(/\s+/g, '-'));
+                                setBlogForm(f => ({ ...f, slug: auto }));
+                              }}
+                              placeholder="آدرس URL (slug) — خالی بماند از عنوان ساخته می‌شود"
+                              className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white font-latin"
+                              dir="ltr"
+                            />
+                            <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">/بلاگ/{(blogForm.slug || 'از-عنوان').toString()}</p>
+                          </div>
                           <div className="grid grid-cols-2 gap-2">
                             <select value={blogForm.cat} onChange={e => setBlogForm(f => ({ ...f, cat: e.target.value }))} className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white">
                               {(adminBlogCategories || []).filter(c => c.active !== false).map(c => <option key={c.id || c.name} value={c.name}>{c.name}</option>)}
@@ -3230,8 +3267,10 @@ export default function AdminPanelContent() {
                                 return;
                               }
                               const id = blogForm.id;
+                              const autoSlug = (typeof slugifyTaxonomy === 'function' ? slugifyTaxonomy(blogForm.title) : String(blogForm.title || '').trim().replace(/\s+/g, '-'));
                               const post = {
                                 ...blogForm, id,
+                                slug: String(blogForm.slug || '').trim() || autoSlug,
                                 date: blogForm.status === 'scheduled' && blogForm.publishAtFa ? String(blogForm.publishAtFa).split(' ')[0] : (blogForm.date || new Date().toLocaleDateString('fa-IR')),
                                 read: blogForm.read || '۵ دقیقه',
                                 publishAtMs: blogForm.status === 'scheduled' ? blogForm.publishAtMs : null,

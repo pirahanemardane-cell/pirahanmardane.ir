@@ -67,11 +67,14 @@ export async function POST(request) {
     const body = await request.json().catch(() => ({}))
     const title = String(body.title || '').trim()
     if (!title) return NextResponse.json({ ok: false, error: 'عنوان لازم است' }, { status: 400 })
+    const rawSlugSrc = String(body.slug || body.title || '').trim()
     const slug =
-      String(body.slug || '')
-        .trim()
+      rawSlugSrc
         .toLowerCase()
-        .replace(/\s+/g, '-') || `post-${Date.now().toString(36)}`
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9\u0600-\u06ff\-]/gi, '')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '') || `post-${Date.now().toString(36)}`
     const row = {
       title,
       slug,

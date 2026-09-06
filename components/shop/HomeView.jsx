@@ -539,7 +539,7 @@ export default function HomeView() {
                         tabIndex={0}
                         onClick={() => {
                           try {
-                            if (b.id) openStaticPage('blog-post', { blogId: b.id });
+                            if (b.id) openStaticPage('blog-post', { blogId: b.id, slug: b.slug || '' });
                             else openStaticPage('blog');
                           } catch (_) {
                             try { openStaticPage('blog'); } catch (__) {}
