@@ -35,7 +35,10 @@ export async function POST(request) {
       String(body.slug || name)
         .trim()
         .toLowerCase()
-        .replace(/\s+/g, '-') || `cat-${Date.now().toString(36)}`
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9\u0600-\u06ff\-]/gi, '')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '') || `cat-${Date.now().toString(36)}`
     const { data, error } = await admin
       .from('blog_categories')
       .insert({ name, slug, active: body.active !== false, sort_order: parseInt(body.sort_order, 10) || 0 })

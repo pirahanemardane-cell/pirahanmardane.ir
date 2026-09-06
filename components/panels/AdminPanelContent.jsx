@@ -2262,8 +2262,8 @@ export default function AdminPanelContent() {
                     <div className="space-y-4">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                          <h2 className="text-base font-bold text-primary-900 dark:text-white">دسته‌بندی بلاگ</h2>
-                          <p className="text-xs text-primary-500 dark:!text-white mt-0.5">دسته‌های مطالب بلاگ برای انتخاب در افزودن مطلب</p>
+                          <h2 className="text-base font-bold text-primary-900 dark:text-white">دسته‌بندی مجله</h2>
+                          <p className="text-xs text-primary-500 dark:!text-white mt-0.5">دسته‌های مجله — URL دستی یا خودکار از نام</p>
                         </div>
                         <button
                           type="button"
@@ -2276,7 +2276,10 @@ export default function AdminPanelContent() {
                       <div className="space-y-2">
                         {(adminBlogCategories || []).map((c) => (
                           <div key={c.id} className="flex flex-wrap items-center gap-2 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                            <p className="flex-1 text-sm font-medium text-primary-900 dark:text-white">{c.name}</p>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-primary-900 dark:text-white">{c.name}</p>
+                              {c.slug ? <p className="text-[10px] text-primary-400 font-latin mt-0.5" dir="ltr">/بلاگ?cat={c.slug}</p> : null}
+                            </div>
                             <button type="button" onClick={() => saveAdminBlogCategories((adminBlogCategories || []).map((x) => x.id === c.id ? { ...x, active: x.active === false } : x))} className={`text-xs px-2 py-1 rounded-full border ${c.active === false ? 'border-amber-300 text-amber-700' : 'border-emerald-300 text-emerald-700'}`}>{c.active === false ? 'غیرفعال' : 'فعال'}</button>
                             <button type="button" onClick={() => openTaxonomyWizard('blog-category', c)} className="p-1.5 rounded-full hover:bg-primary-50 text-primary-500"><Icon name="pencil" size={14} /></button>
                             <button type="button" onClick={() => { siteConfirm('حذف این دسته بلاگ؟').then((ok) => { if (ok) saveAdminBlogCategories((adminBlogCategories || []).filter((x) => x.id !== c.id)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
@@ -2441,7 +2444,7 @@ export default function AdminPanelContent() {
                                 { n: 12, title: '۱۲. پیشنهاد هوشمند (AI محلی)' },
                               ];
                               const seoPartMap = { 5: 'keywords', 6: 'title', 7: 'desc', 8: 'faq', 9: 'index', 10: 'canonical', 11: 'social', 12: 'ai' };
-                              const prefix = t === 'category' ? '/' : t === 'tag' ? '/shop?tag=' : t === 'brand' ? '/brands/' : t === 'blog-category' ? '/blog?cat=' : '/blog?tag=';
+                              const prefix = t === 'category' ? '/' : t === 'tag' ? '/shop?tag=' : t === 'brand' ? '/brands/' : t === 'blog-category' ? '/بلاگ?cat=' : '/بلاگ?tag=';
                               const images = Array.isArray(taxonomyForm.images) ? taxonomyForm.images : (taxonomyForm.image ? [taxonomyForm.image] : []);
                               const imageAlts = Array.isArray(taxonomyForm.imageAlts) ? taxonomyForm.imageAlts : images.map(() => '');
                               const setStep = (n) => setTaxonomyForm(f => ({ ...f, step: n }));
@@ -2451,8 +2454,12 @@ export default function AdminPanelContent() {
                                   setStep(1);
                                   return;
                                 }
-                                if (!taxonomyForm.slug.trim()) {
-                                  showToast({ message: 'نامک الزامی است', variant: 'error', duration: 4000, position: 'top-center' });
+                                const autoSlug = (typeof slugifyTaxonomy === 'function'
+                                  ? slugifyTaxonomy(taxonomyForm.name.trim())
+                                  : taxonomyForm.name.trim().replace(/\s+/g, '-'));
+                                const finalSlug = String(taxonomyForm.slug || '').trim() || autoSlug;
+                                if (!finalSlug) {
+                                  showToast({ message: 'نامک ساخته نشد — نام را بررسی کنید', variant: 'error', duration: 4000, position: 'top-center' });
                                   setStep(2);
                                   return;
                                 }
@@ -2460,8 +2467,8 @@ export default function AdminPanelContent() {
                                 const item = {
                                   id: taxonomyForm.id || `${t}-${Date.now()}`,
                                   name: taxonomyForm.name.trim(),
-                                  slug: taxonomyForm.slug.trim(),
-                                  url: (taxonomyForm.url || '').trim() || `${prefix}${taxonomyForm.slug.trim()}`,
+                                  slug: finalSlug,
+                                  url: (taxonomyForm.url || '').trim() || `${prefix}${finalSlug}`,
                                   image: featured,
                                   images,
                                   imageAlts,
@@ -2570,6 +2577,7 @@ export default function AdminPanelContent() {
                                         className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-left font-latin text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue"
                                       />
                                       <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">{taxonomyForm.url || `${prefix}${taxonomyForm.slug}`}</p>
+                                      <p className="text-[10px] text-primary-500 mt-1">اختیاری: خالی بماند از روی نام ساخته می‌شود. می‌توانید دستی تغییر دهید.</p>
                                     </div>
                                   )}
 
@@ -2714,9 +2722,15 @@ export default function AdminPanelContent() {
                                             showToast({ message: 'نام را وارد کنید', variant: 'error', duration: 3000, position: 'top-center' });
                                             return;
                                           }
-                                          if (step === 2 && !taxonomyForm.slug.trim()) {
-                                            showToast({ message: 'نامک را وارد کنید', variant: 'error', duration: 3000, position: 'top-center' });
-                                            return;
+                                          if (step === 2 && !String(taxonomyForm.slug || '').trim()) {
+                                            const auto = (typeof slugifyTaxonomy === 'function'
+                                              ? slugifyTaxonomy(taxonomyForm.name || '')
+                                              : String(taxonomyForm.name || '').trim().replace(/\s+/g, '-'));
+                                            if (!auto) {
+                                              showToast({ message: 'نامک را وارد کنید یا نام را پر کنید', variant: 'error', duration: 3000, position: 'top-center' });
+                                              return;
+                                            }
+                                            setTaxonomyForm(f => ({ ...f, slug: auto, url: `${prefix}${auto}` }));
                                           }
                                           setStep(step + 1);
                                         }} className="text-xs px-4 py-2 rounded-full bg-apple-blue text-white font-medium">مرحله بعد</button>
