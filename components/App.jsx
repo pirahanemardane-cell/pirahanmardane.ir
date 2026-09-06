@@ -127,7 +127,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06F0))
       .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660));
     const onlyDigits = (v) => toEnDigits(v).replace(/\D/g, '');
-    const ADMIN_ALLOWED_PHONES = ['09921863063'];
+    const ADMIN_ALLOWED_PHONES = []; // فقط سرور: ADMIN_PHONES در Vercel
     const isAdminPhone = (raw) => ADMIN_ALLOWED_PHONES.includes(onlyDigits(raw));
 
     /** ممنوعیت لینک برای خریدار و فروشنده */
