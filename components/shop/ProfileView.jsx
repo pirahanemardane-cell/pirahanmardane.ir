@@ -368,7 +368,14 @@ export default function ProfileView() {
             <div className="panel-content-wrap w-full max-w-none mx-auto px-2 sm:px-4 py-4 sm:py-10 flex-1">
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6 p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900">
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-full bg-apple-blue text-white flex items-center justify-center text-xl font-bold">{(user.firstName || 'ک')[0]}</div>
+                  <div className="w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-800 overflow-hidden flex-shrink-0">
+                    <img
+                      src={user.avatarUrl || user.avatar_url || user.image || "/default-avatar.svg"}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
+                    />
+                  </div>
                   <div>
                     <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white">{user.firstName} {user.lastName}</h1>
                     <p className="text-xs text-primary-500 dark:!text-white" dir="ltr">{String(user.phone).replace(/(\d{4})(\d{3})(\d{4})/, '$1***$3')}</p>

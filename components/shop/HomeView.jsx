@@ -16,7 +16,7 @@ export default function HomeView() {
         if (!cancelled && data?.ok && Array.isArray(data.reviews)) {
           setLiveReviews(data.reviews.map((r) => ({
             name: r.name || r.display_name || 'خریدار',
-            image: r.image || r.display_avatar_url || '/logo.webp',
+            image: r.image || r.display_avatar_url || '/default-avatar.svg',
             rating: r.rating || 0,
             text: r.text || r.body || '',
             seller: r.seller || null,
@@ -351,7 +351,7 @@ export default function HomeView() {
                   {displayReviews.map((r, i) => (
                     <div key={i} className="flex-shrink-0 w-[78%] min-[400px]:w-[70%] sm:w-[42%] md:w-[calc((100%-2.5rem)/3.3)] lg:w-[calc((100%-3.5rem)/4.3)] bg-white dark:bg-black rounded-xl sm:rounded-2xl p-4 sm:p-5 border border-primary-200 dark:border-white shadow-sm flex flex-col snap-start">
                       <div className="flex items-center gap-3 mb-2">
-                        <img src={r.image} alt={r.name} loading="lazy" decoding="async" referrerPolicy="no-referrer" className="w-12 h-12 rounded-full object-cover" />
+                        <img src={r.image} alt={r.name} loading="lazy" decoding="async" referrerPolicy="no-referrer" className="w-12 h-12 rounded-full object-cover" onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src="/default-avatar.svg"; }} />
                         <div className="min-w-0">
                           <p className="font-bold text-sm text-primary-900 dark:text-white">{r.name}</p>
                           <p className="text-xs text-primary-400 dark:text-white">{r.city}</p>

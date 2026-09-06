@@ -234,7 +234,7 @@ export default function AdminReviewsTab({ showToast }) {
           <div className="flex flex-wrap gap-3">
             {avatars.map((p) => (
               <div key={p.id} className="flex items-center gap-3 p-2 rounded-xl border border-primary-100 dark:border-white/10">
-                <img src={p.avatar_pending_url || '/logo.webp'} alt="" className="w-12 h-12 rounded-full object-cover" />
+                <img src={p.avatar_pending_url || '/default-avatar.svg'} alt="" className="w-12 h-12 rounded-full object-cover" />
                 <div className="min-w-0">
                   <p className="text-xs font-bold truncate">{p.full_name || p.phone || p.id.slice(0, 8)}</p>
                   <div className="flex gap-1 mt-1">
@@ -342,7 +342,7 @@ export default function AdminReviewsTab({ showToast }) {
             {list.map((r) => (
               <div key={r.id} className="p-4 flex flex-col sm:flex-row gap-3">
                 <img
-                  src={r.display_avatar_url || (r.profiles?.avatar_status === 'approved' ? r.profiles?.avatar_url : null) || '/logo.webp'}
+                  src={r.display_avatar_url || (r.profiles?.avatar_status === 'approved' ? r.profiles?.avatar_url : null) || '/default-avatar.svg'}
                   alt="" className="w-12 h-12 rounded-full object-cover flex-shrink-0"
                 />
                 <div className="flex-1 min-w-0 space-y-1">

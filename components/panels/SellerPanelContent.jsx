@@ -1248,12 +1248,13 @@ export default function SellerPanelContent() {
             <div className="panel-content-wrap w-full max-w-none mx-auto px-2 sm:px-4 py-4 sm:py-10 pb-24">
               <div className="mb-6 p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 space-y-3">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-14 h-14 rounded-full bg-apple-blue text-white flex items-center justify-center text-xl font-bold flex-shrink-0 overflow-hidden">
-                  {(sellerLogoUrl || sellerUser?.logoUrl || sellerUser?.logo_url || sellerUser?.logo) ? (
-                    <img src={sellerLogoUrl || sellerUser?.logoUrl || sellerUser?.logo_url || sellerUser?.logo} alt="" className="w-full h-full object-cover" onError={(e)=>{ e.currentTarget.style.display='none'; }} />
-                  ) : (
-                    <span>{(sellerUser.shopName || 'ف')[0]}</span>
-                  )}
+                <div className="w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-800 flex-shrink-0 overflow-hidden">
+                  <img
+                    src={sellerLogoUrl || sellerUser?.logoUrl || sellerUser?.logo_url || sellerUser?.logo || "/default-avatar.svg"}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
+                  />
                 </div>
                 <div className="min-w-0 flex-1">
                   <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white truncate">{sellerUser.shopName}</h1>
@@ -4648,11 +4649,12 @@ export default function SellerPanelContent() {
                             <label className="text-xs text-primary-500 mb-1.5 block">عکس پروفایل فروشگاه</label>
                             <div className="flex items-center gap-3">
                               <div className="w-20 h-20 rounded-full border border-primary-200 dark:border-white/20 overflow-hidden bg-primary-50 dark:bg-primary-800 flex items-center justify-center flex-shrink-0">
-                                {sellerLogoUrl ? (
-                                  <img src={sellerLogoUrl} alt="" className="w-full h-full object-cover" />
-                                ) : (
-                                  <span className="text-2xl font-bold text-primary-400">{(sellerUser?.shopName || 'ف')[0]}</span>
-                                )}
+                                <img
+                                  src={sellerLogoUrl || "/default-avatar.svg"}
+                                  alt=""
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
+                                />
                               </div>
                               <div className="flex flex-col gap-1.5">
                                 <input ref={sellerLogoInputRef} type="file" accept="image/*" className="hidden" onChange={async (e) => {
