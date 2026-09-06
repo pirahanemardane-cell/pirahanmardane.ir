@@ -88,7 +88,8 @@ export default function HomeView() {
     setPublicTrackCode,
     publicTrackOpen,
   } = useAppApi(); /* setPublicTrackOpen from context */
-  const displayReviews = liveReviews.length ? liveReviews : (reviews || []);
+  const displayReviews = (liveReviews.length ? liveReviews : (reviews || []))
+    .filter((r) => String(r?.text || '').trim().length > 0);
 
   return (
     <>
