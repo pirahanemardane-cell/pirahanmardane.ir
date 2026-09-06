@@ -19,7 +19,8 @@ export default function HomeView() {
             image: r.image || r.display_avatar_url || '/logo.webp',
             rating: r.rating || 0,
             text: r.text || r.body || '',
-            seller: r.seller || 'فروشگاه',
+            seller: r.seller || null,
+            sellerId: r.seller_id || null,
             city: r.city || '',
           })));
         }
@@ -355,9 +356,26 @@ export default function HomeView() {
                           <p className="text-xs text-primary-400 dark:text-white">{r.city}</p>
                         </div>
                       </div>
-                      <span className="product-seller-badge inline-flex self-start items-center h-6 px-2 rounded-md bg-primary-100 dark:bg-primary-700 text-primary-900 dark:text-white text-xs sm:text-xs font-medium mb-2">
-                        {r.seller}
-                      </span>
+                      {r.seller ? (
+                        r.sellerId ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveSellerId(r.sellerId);
+                              setSellerCat('همه');
+                              setSellerSort('newest');
+                              window.scrollTo({ top: 0, behavior: 'instant' });
+                            }}
+                            className="product-seller-badge inline-flex self-start items-center h-6 px-2 rounded-md bg-primary-100 dark:bg-primary-700 text-primary-900 dark:text-white text-xs sm:text-xs font-medium mb-2 hover:bg-primary-200 dark:hover:bg-primary-600 transition cursor-pointer"
+                          >
+                            {r.seller}
+                          </button>
+                        ) : (
+                          <span className="product-seller-badge inline-flex self-start items-center h-6 px-2 rounded-md bg-primary-100 dark:bg-primary-700 text-primary-900 dark:text-white text-xs sm:text-xs font-medium mb-2">
+                            {r.seller}
+                          </span>
+                        )
+                      ) : null}
                       <div className="flex gap-0.5 text-primary-400 mb-3">
                         {[...Array(5)].map((_, j) => (
                           <Icon key={j} name="star" size={14} className={j < r.rating ? "text-primary-400 fill-primary-400" : "text-primary-200 dark:text-primary-700"} />

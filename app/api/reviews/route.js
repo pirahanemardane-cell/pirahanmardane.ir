@@ -84,7 +84,8 @@ export async function GET(request) {
         rating: r.rating || 0,
         text: stripHtml(r.body || r.title || ''),
         body: r.body || '',
-        seller: smap[r.seller_id] || r.seller_name || 'فروشگاه',
+        seller_id: r.seller_id || null,
+        seller: smap[r.seller_id] || r.seller_name || null,
         city: r.city || '',
       }))
 
