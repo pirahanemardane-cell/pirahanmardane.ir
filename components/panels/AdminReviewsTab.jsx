@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
+import { createClient } from '@/lib/supabase/client'
 
 const SimpleEditor = dynamic(() => import('../SimpleEditor'), { ssr: false })
 
@@ -63,6 +64,23 @@ export default function AdminReviewsTab({ showToast }) {
     loadReviews(filter)
     loadAvatars()
   }, [filter, loadReviews, loadAvatars])
+
+  // Realtime: هر تغییر روی جدول reviews لیست را تازه می‌کند
+  useEffect(() => {
+    const supabase = createClient()
+    if (!supabase) return
+    const channel = supabase
+      .channel('admin-reviews-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'reviews' },
+        () => { loadReviews(filter) },
+      )
+      .subscribe()
+    return () => {
+      try { supabase.removeChannel(channel) } catch (_) {}
+    }
+  }, [filter, loadReviews])
 
   const patchReview = async (id, patch) => {
     setBusyId(id)
@@ -335,8 +353,7 @@ export default function AdminReviewsTab({ showToast }) {
                     {r.is_admin_created && <span className="text-[11px] px-2 py-0.5 rounded-full bg-primary-100 text-primary-600">دستی</span>}
                     <span className="text-xs text-primary-400">{'★'.repeat(r.rating || 0)}{'☆'.repeat(5 - (r.rating || 0))}</span>
                   </div>
-                  {r.sellers?.shop_name && <p className="text-xs text-primary-500">فروشگاه: {r.sellers.shop_name}</p>}
-                  {r.products?.name && <p className="text-xs text-primary-500">محصول: {r.products.name || r.products.title}</p>}
+                                    {r.products?.name && <p className="text-xs text-primary-500">محصول: {r.products.name || r.products.title}</p>}
                   <div className="text-sm text-primary-800 dark:text-white/90 line-clamp-3" dangerouslySetInnerHTML={{ __html: r.body || r.title || '' }} />
                   <p className="text-[11px] text-primary-400">{r.created_at ? new Date(r.created_at).toLocaleString('fa-IR') : ''}</p>
                 </div>
