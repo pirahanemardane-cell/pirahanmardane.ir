@@ -382,7 +382,12 @@ export default function HomeView() {
                           <Icon key={j} name="star" size={14} className={j < r.rating ? "text-primary-400 fill-primary-400" : "text-primary-200 dark:text-primary-700"} />
                         ))}
                       </div>
-                      <p className="text-sm text-primary-600 dark:text-white leading-relaxed flex-1">«{r.text}»</p>
+                      {(() => {
+                        const t = String(r.text || '').trim()
+                        const s = String(r.seller || '').trim()
+                        if (!t || (s && t === s)) return null
+                        return <p className="text-sm text-primary-600 dark:text-white leading-relaxed flex-1">«{t}»</p>
+                      })()}
                     </div>
                   ))}
                 </div>
