@@ -1824,6 +1824,14 @@ export default function AdminPanelContent() {
                                 <p className="text-sm font-medium text-primary-900 dark:text-white">{b.name}</p>
                                 {b.seoTitle && <p className="text-[10px] text-primary-400 truncate">SEO: {b.seoTitle}</p>}
                               </div>
+                              <label className="flex items-center gap-1.5 text-[11px] text-primary-700 dark:text-white cursor-pointer select-none px-2 py-1 rounded-full border border-primary-200 dark:border-white/20">
+                                <input
+                                  type="checkbox"
+                                  checked={!!(b.show_on_home ?? b.showOnHome)}
+                                  onChange={() => saveAdminCatalogBrands((adminCatalogBrands || []).map(x => x.id === b.id ? { ...x, show_on_home: !(x.show_on_home ?? x.showOnHome) } : x))}
+                                />
+                                صفحه اصلی
+                              </label>
                               <button type="button" onClick={() => saveAdminCatalogBrands((adminCatalogBrands || []).map(x => x.id === b.id ? { ...x, active: x.active === false } : x))} className={`text-xs px-2 py-1 rounded-full border ${b.active === false ? 'border-amber-300 text-amber-700' : 'border-emerald-300 text-emerald-700'}`}>{b.active === false ? 'غیرفعال' : 'فعال'}</button>
                               <button type="button" onClick={() => openTaxonomyWizard('brand', b)} className="p-1.5 rounded-full hover:bg-primary-50 text-primary-500"><Icon name="pencil" size={14} /></button>
                               <button type="button" onClick={() => { siteConfirm('حذف این برند؟').then(ok=>{ if(ok) saveAdminCatalogBrands((adminCatalogBrands || []).filter(x => x.id !== b.id)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>

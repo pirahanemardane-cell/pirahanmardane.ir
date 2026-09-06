@@ -7,6 +7,22 @@ import Hero from '../Hero';
 /** HomeView — code-split from App.jsx */
 export default function HomeView() {
   const [liveReviews, setLiveReviews] = useState([]);
+  const [homeBrands, setHomeBrands] = useState([]);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/catalog/brands', { cache: 'no-store' });
+        const data = await res.json().catch(() => ({}));
+        const list = Array.isArray(data?.brands) ? data.brands : [];
+        const picked = list
+          .filter((b) => b && b.active !== false && (b.show_on_home === true || b.showOnHome === true))
+          .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
+        if (!cancelled) setHomeBrands(picked);
+      } catch (_) {}
+    })();
+    return () => { cancelled = true; };
+  }, []);
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -394,39 +410,43 @@ export default function HomeView() {
               </div>
             </section>
 
-            {/* Top products / برترین‌ها */}
+            {/* Top brands — فقط show_on_home از پنل ادمین */}
+            {homeBrands.length > 0 && (
             <section className="py-8 sm:py-12 bg-white dark:bg-primary-900 transition-colors">
               <div className="max-w-7xl mx-auto px-3 sm:px-4">
                 <h2 className="section-title text-right text-primary-900 dark:text-white mb-6 sm:mb-8 text-lg sm:text-xl">برترین‌های پیراهن</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-5">
-                  {[
-                    { name: 'پولو', img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&h=400&fit=crop&q=80&fm=webp', bg: 'bg-primary-50' },
-                    { name: 'تامی', img: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400&h=400&fit=crop&q=80&fm=webp', bg: 'bg-primary-50' },
-                    { name: 'هوگو باس', img: 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=400&h=400&fit=crop&q=80&fm=webp', bg: 'bg-primary-50' },
-                    { name: 'لاکوست', img: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&h=400&fit=crop&q=80&fm=webp', bg: 'bg-primary-50' },
-                    { name: 'سی‌کی', img: 'https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?w=400&h=400&fit=crop&q=80&fm=webp', bg: 'bg-slate-100' },
-                    { name: 'ارو', img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&h=400&fit=crop&q=80&fm=webp', bg: 'bg-primary-50' },
-                  ].map((item, i) => (
+                  {homeBrands.slice(0, 12).map((item) => {
+                    const img = item.logo_url || item.logoUrl || item.image || '/default-avatar.svg';
+                    const name = item.name || 'برند';
+                    return (
                     <a
-                      key={i}
-                      href="#" onClick={(e) => { e.preventDefault(); openPLP(); }}
-                      className={`group relative rounded-2xl overflow-hidden ${item.bg} dark:bg-primary-800 aspect-[4/5] flex flex-col items-center justify-center p-3 sm:p-4 transition hover:shadow-lg top-brand-card border border-transparent dark:border-white/15`}
+                      key={item.id || name}
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        try { openPLP({ brand: name }); } catch (_) { openPLP(); }
+                      }}
+                      className="group relative rounded-2xl overflow-hidden bg-primary-50 dark:bg-primary-800 aspect-[4/5] flex flex-col items-center justify-center p-3 sm:p-4 transition hover:shadow-lg top-brand-card border border-transparent dark:border-white/15"
                     >
                       <div className="relative w-full flex-1 flex items-center justify-center">
                         <img
-                          src={item.img}
-                          alt={item.name}
+                          src={img}
+                          alt={name}
                           loading="lazy" decoding="async"
                           referrerPolicy="no-referrer"
+                          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/default-avatar.svg'; }}
                           className="max-h-[85%] w-auto object-contain drop-shadow-md group-hover:opacity-95 transition duration-500 rounded-xl dark:brightness-110 dark:contrast-110"
                         />
                       </div>
-                      <span className="mt-2 text-sm sm:text-base font-bold text-primary-900 dark:!text-white">{item.name}</span>
+                      <span className="mt-2 text-sm sm:text-base font-bold text-primary-900 dark:!text-white">{name}</span>
                     </a>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </section>
+            )}
 
             {/* Recently Viewed */}
             <section className="py-8 sm:py-12 bg-white dark:bg-primary-900 transition-colors" data-section="recent">

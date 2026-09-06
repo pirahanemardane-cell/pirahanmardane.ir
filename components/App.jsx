@@ -2384,6 +2384,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               ? Number(b.sort_order != null ? b.sort_order : b.sortOrder)
               : i,
             logo_url: b.logo_url || b.logoUrl || b.image || null,
+            show_on_home: !!(b.show_on_home ?? b.showOnHome),
           }));
           const res = await fetch("/api/catalog/brands", {
             method: "PUT",

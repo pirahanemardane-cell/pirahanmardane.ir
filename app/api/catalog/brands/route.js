@@ -16,7 +16,7 @@ export async function GET(req) {
       const sb = createAdminClient();
       const { data, error } = await sb
         .from("catalog_brands")
-        .select("id,name,slug,active,sort_order,logo_url")
+        .select("id,name,slug,active,sort_order,logo_url,show_on_home")
         .order("sort_order")
         .order("name");
       if (error) {
@@ -66,6 +66,7 @@ export async function PUT(req) {
       active: b.active !== false,
       sort_order: Number.isFinite(Number(b.sort_order)) ? Number(b.sort_order) : i,
       logo_url: b.logo_url || b.logoUrl || b.image || null,
+      show_on_home: !!(b.show_on_home ?? b.showOnHome),
       updated_at: new Date().toISOString(),
     }));
 
