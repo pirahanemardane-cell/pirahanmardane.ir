@@ -16074,11 +16074,6 @@ const params = new URLSearchParams(window.location.search);
                 </div>
               </div>
             </div>
-                </nav>
-              </div>
-            </div>
-          )}
-
           </header>
           {/* فاصله زیر هدر fixed — ارتفاع با JS؛ در خانهٔ قبل از reveal = 0 */}
           <div className="site-header-spacer flex-shrink-0" aria-hidden="true" />
