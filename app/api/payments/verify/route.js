@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
+import { isAdminPhone } from '@/lib/api/admin-guard'
 
 export const dynamic = 'force-dynamic'
 
@@ -44,11 +46,29 @@ export async function GET(request) {
 
     const amount = Math.round(Number(order.payable ?? order.total) || 0)
 
+    // محافظت S1: فقط ادمین می‌تواند از mock استفاده کند
     if (isMock() || String(authority).startsWith('MOCK-')) {
+      const supabase = await createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        return NextResponse.redirect(site + '/?pay=failed&reason=mock_auth')
+      }
+
+      const { data: profile } = await admin
+        .from('profiles')
+        .select('phone')
+        .eq('id', user.id)
+        .maybeSingle()
+
+      if (!isAdminPhone(profile?.phone || user.phone)) {
+        return NextResponse.redirect(site + '/?pay=failed&reason=mock_forbidden')
+      }
+
       await markPaid(admin, order, 'MOCK-REF-' + Date.now())
       return NextResponse.redirect(site + '/?pay=ok&order=' + order.id + '&mock=1')
     }
 
+    // حالت واقعی زرین‌پال
     const merchant = process.env.ZARINPAL_MERCHANT_ID
     const zpRes = await fetch('https://api.zarinpal.com/pg/v4/payment/verify.json', {
       method: 'POST',
