@@ -88,3 +88,4 @@ export async function GET(request) {
     return NextResponse.redirect(site + '/?pay=failed&reason=server')
   }
 }
+
