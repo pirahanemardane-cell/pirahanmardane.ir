@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { requireAdmin } from '../../../../../lib/api/admin-guard'
-import { verifyOtp } from '../../../../../lib/otp'
+import { verifyOtp, normalizePhone } from '../../../../../lib/otp'
 import { clientIp, rateLimitAsync, rateLimitResponse } from '../../../../../lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
@@ -19,7 +19,7 @@ export async function POST(req) {
 
     const body = await req.json().catch(() => ({}))
     const code = normalizeCode(body.code || body.otp)
-    const phone = String(gate.profile?.phone || '').replace(/\D/g, '')
+    const phone = normalizePhone(gate.profile?.phone || '')
     if (!phone || code.length < 4) {
       return NextResponse.json({ ok: false, error: 'کد نامعتبر است' }, { status: 400 })
     }
@@ -41,21 +41,14 @@ export async function POST(req) {
     })
     const secure = process.env.NODE_ENV === 'production'
     res.cookies.set('pm_admin_reauth', `ok:${gate.user.id}`, {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'lax',
-      secure,
-      maxAge: 10 * 60,
+      path: '/', httpOnly: true, sameSite: 'lax', secure, maxAge: 10 * 60,
     })
     res.cookies.set('pm_admin_reauth_exp', String(exp), {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'lax',
-      secure,
-      maxAge: 10 * 60,
+      path: '/', httpOnly: true, sameSite: 'lax', secure, maxAge: 10 * 60,
     })
     return res
   } catch (e) {
+    console.error('[admin/reauth/verify]', e)
     return NextResponse.json({ ok: false, error: 'خطای سرور' }, { status: 500 })
   }
 }
