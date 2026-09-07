@@ -3973,6 +3973,90 @@ html.dark .panel-ui .seller-tabs-strip::-webkit-scrollbar-thumb {
   }
 }
 
+
+/* —— یکدستی بج / چیپ / کادر پنل —— */
+/* بدون تغییر منطق؛ فقط radius و اندازه ظاهری */
+
+.panel-ui {
+  --p-chip-radius: 8px;
+  --p-chip-h: 28px;
+  --p-badge-radius: 8px;
+  --p-card-radius: 12px;
+  --p-btn-radius: 8px;
+}
+
+/* کادر / کارت: گوشه یکسان (نه بیضی) */
+.panel-ui .rounded-2xl,
+.panel-ui .rounded-3xl,
+.panel-ui .rounded-xl,
+.panel-ui [class*="rounded-2xl"],
+.panel-ui [class*="rounded-3xl"],
+.panel-ui [class*="rounded-xl"] {
+  border-radius: var(--p-card-radius) !important;
+}
+
+/* دکمه‌ها و کنترل‌های rounded-full داخل پنل → گوشه ۸px (نه کپسول کامل) */
+.panel-ui button.rounded-full,
+.panel-ui a.rounded-full,
+.panel-ui span.rounded-full,
+.panel-ui div.rounded-full,
+.panel-ui [class*="rounded-full"] {
+  border-radius: var(--p-chip-radius) !important;
+}
+
+/* بج / چیپ وضعیت و فیلتر: ارتفاع و پدینگ یکدست */
+.panel-ui button.rounded-full,
+.panel-ui span.rounded-full,
+.panel-ui [class*="rounded-full"].text-xs,
+.panel-ui [class*="rounded-full"].text-\[10px\],
+.panel-ui [class*="rounded-full"].text-\[11px\],
+.panel-ui button.text-xs.px-3,
+.panel-ui button.text-xs.px-2\.5,
+.panel-ui button.text-xs.px-2,
+.panel-ui span.text-xs.px-2,
+.panel-ui span.text-xs.px-2\.5,
+.panel-ui span.text-xs.px-3 {
+  min-height: var(--p-chip-h);
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+  line-height: 1.25 !important;
+  box-sizing: border-box;
+  border-radius: var(--p-chip-radius) !important;
+}
+
+/* آواتار دایره‌ای بماند (استثنا) */
+.panel-ui .rounded-full[class*="w-8"][class*="h-8"],
+.panel-ui .rounded-full[class*="w-9"][class*="h-9"],
+.panel-ui .rounded-full[class*="w-10"][class*="h-10"],
+.panel-ui .rounded-full[class*="w-12"][class*="h-12"],
+.panel-ui img.rounded-full,
+.panel-ui .avatar,
+.panel-ui [class*="Avatar"] {
+  border-radius: 9999px !important;
+}
+
+/* input داخل پنل */
+.panel-ui input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.panel-ui select,
+.panel-ui textarea {
+  border-radius: var(--p-btn-radius) !important;
+}
+
+/* دکمه‌های اصلی action هم گوشه یکسان */
+.panel-ui button.bg-apple-blue,
+.panel-ui button[class*="bg-apple-blue"],
+.panel-ui button[class*="bg-red-"],
+.panel-ui button[class*="bg-emerald-"] {
+  border-radius: var(--p-btn-radius) !important;
+}
+
+
 /* === END PANEL UI SYSTEM === */
 
 
