@@ -80,12 +80,12 @@ export async function GET() {
     }
 
     if (error) {
-      return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+      return NextResponse.json({ ok: false, error: 'خطای سرور' }, { status: 400 })
     }
 
     return NextResponse.json({ ok: true, orders: data || [] })
   } catch (e) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
+    return NextResponse.json({ ok: false, error: 'خطای سرور' }, { status: 500 })
   }
 }
 
@@ -143,7 +143,7 @@ export async function POST(request) {
       .eq('cart_id', cart.id)
 
     if (cartErr) {
-      return NextResponse.json({ ok: false, error: cartErr.message }, { status: 400 })
+      return NextResponse.json({ ok: false, error: 'خطای سرور' }, { status: 400 })
     }
     if (!cartItems?.length) {
       return NextResponse.json({ ok: false, error: 'سبد خالی است' }, { status: 400 })
@@ -258,7 +258,7 @@ export async function POST(request) {
     }
 
     if (orderErr) {
-      return NextResponse.json({ ok: false, error: orderErr.message }, { status: 400 })
+      return NextResponse.json({ ok: false, error: 'خطای سرور' }, { status: 400 })
     }
     if (!order) {
       return NextResponse.json({ ok: false, error: 'ثبت سفارش ناموفق' }, { status: 500 })
@@ -293,7 +293,7 @@ export async function POST(request) {
 
     const { error: itemsErr } = await admin.from('order_items').insert(orderItemsPayload)
     if (itemsErr) {
-      return NextResponse.json({ ok: false, error: itemsErr.message }, { status: 400 })
+      return NextResponse.json({ ok: false, error: 'خطای سرور' }, { status: 400 })
     }
 
     // کم کردن موجودی واریانت
@@ -379,6 +379,6 @@ return NextResponse.json({
   } catch (e) {
     await logCritical('orders', e)
 
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
+    return NextResponse.json({ ok: false, error: 'خطای سرور' }, { status: 500 })
   }
 }
