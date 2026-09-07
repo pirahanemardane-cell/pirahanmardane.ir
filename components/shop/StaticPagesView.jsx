@@ -181,9 +181,11 @@ export default function StaticPagesView() {
       const live = post.status === 'published' || (post.status === 'scheduled' && post.publishAtMs && Number(post.publishAtMs) <= Date.now());
       if (!live) return false;
       const pcat = post.cat || post.category || '';
-      if (cat && pcat !== cat) return false;
+      const tags = Array.isArray(post.tags) ? post.tags : (Array.isArray(post.tag_names) ? post.tag_names : []);
+      // فیلتر دسته یا برچسب (هر دو از faqQuery)
+      if (cat && pcat !== cat && !tags.includes(cat)) return false;
       if (q) {
-        const hay = `${post.title || ''} ${post.excerpt || ''} ${pcat}`.toLowerCase();
+        const hay = `${post.title || ''} ${post.excerpt || ''} ${pcat} ${tags.join(' ')}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -608,9 +610,24 @@ export default function StaticPagesView() {
                             {p.read ? <span className="dark:!text-white">·</span> : null}
                             {p.read ? <span className="dark:!text-white">{p.read} مطالعه</span> : null}
                           </div>
-                          {(p.tags || []).length > 0 && (
+                          {(p.tags || p.tag_names || []).length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-2">
-                              {(p.tags || []).map(t => <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-white/70">#{t}</span>)}
+                              {(p.tags || p.tag_names || []).map(t => (
+                                <button
+                                  key={t}
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setFaqQuery(t);
+                                    try {
+                                      const slug = String(t).trim().replace(/\s+/g, '_');
+                                      window.history.pushState({}, '', '/مجله/برچسب/' + encodeURIComponent(slug));
+                                    } catch (_) {}
+                                  }}
+                                  className="text-xs px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-white/70 hover:bg-primary-100 dark:hover:bg-primary-800"
+                                >#{t}</button>
+                              ))}
                             </div>
                           )}
                         </div>
@@ -666,8 +683,20 @@ export default function StaticPagesView() {
                       {post.read ? <span className="dark:!text-white">{post.read} مطالعه</span> : null}
                       {(post.tags || []).length > 0 && (
                         <span className="flex flex-wrap gap-1 w-full sm:w-auto sm:ms-1">
-                          {(post.tags || []).map(t => (
-                            <span key={t} className="px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-white/70">#{t}</span>
+                          {(post.tags || post.tag_names || []).map(t => (
+                            <button
+                              key={t}
+                              type="button"
+                              onClick={() => {
+                                setFaqQuery(t);
+                                openStaticPage('blog');
+                                try {
+                                  const slug = String(t).trim().replace(/\s+/g, '_');
+                                  window.history.pushState({}, '', '/مجله/برچسب/' + encodeURIComponent(slug));
+                                } catch (_) {}
+                              }}
+                              className="px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-white/70 hover:bg-primary-100"
+                            >#{t}</button>
                           ))}
                         </span>
                       )}
