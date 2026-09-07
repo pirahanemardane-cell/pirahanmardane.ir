@@ -291,7 +291,7 @@ export default function HomeView() {
                 <div className="relative">
                   <CarouselArrows trackRef={bestTrackRef} />
                   <div ref={bestTrackRef} className="carousel-track flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar pb-2 scroll-smooth snap-x px-0 sm:px-10" style={{ WebkitOverflowScrolling: 'touch' }}>
-                    {catalogProducts.slice(0, 10).map(p => renderProductCard(p, 'best-'))}
+                    {catalogProducts.slice(0, 10).map(p => renderProductCard(p, 'best-');})}
                   </div>
                 </div>
               </div>
