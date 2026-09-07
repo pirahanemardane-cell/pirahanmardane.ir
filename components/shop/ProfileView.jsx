@@ -364,7 +364,7 @@ export default function ProfileView() {
   return (
     <>
           {showProfilePage && !pdpProduct && user && (
-            <div className="profile-page-shell w-full flex-1 flex flex-col bg-primary-50 dark:bg-primary-950">
+            <div className="profile-page-shell panel-ui panel-ui--buyer w-full flex-1 flex flex-col bg-primary-50 dark:bg-primary-950">
             <div className="panel-content-wrap w-full max-w-none mx-auto px-2 sm:px-4 py-4 sm:py-10 flex-1">
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6 p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900">
                 <div className="flex items-center gap-3">
@@ -389,7 +389,7 @@ export default function ProfileView() {
               <div className="flex flex-col md:flex-row gap-6">
                 <aside className="w-full md:w-48 lg:w-56 flex-shrink-0">
                   <div className="relative profile-tabs-outer">
-                  <div className="profile-tabs-strip flex flex-nowrap md:flex-col gap-1 overflow-x-auto no-scrollbar md:overflow-visible px-2 pt-2 pb-2 pe-10 md:pe-2 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 shadow-sm">
+                  <div className="profile-tabs-strip panel-nav flex flex-nowrap md:flex-col gap-0.5 overflow-x-auto md:overflow-y-auto px-3 py-3 pe-10 md:pe-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03]">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },
                       { id: 'track', label: 'پیگیری سفارش', icon: 'package' },
@@ -411,7 +411,7 @@ export default function ProfileView() {
                       <button key={t.id} type="button" onClick={() => {
                         setProfileTab(t.id); setOrderDetailId(null); setShowTracking(false);
                         try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (_) { try { window.scrollTo(0, 0); } catch (__) {} }
-                      }} className={`flex-shrink-0 flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition whitespace-nowrap md:w-full md:text-right ${active ? 'bg-apple-blue text-white' : 'text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-primary-900'}`}>
+                      }} className={`flex w-full items-center gap-2.5 px-2.5 rounded-[6px] text-[13px] font-medium transition-all duration-200 whitespace-nowrap select-none text-right ${active ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'panel-nav-item text-primary-700 dark:text-white/80 hover:bg-primary-50/90 dark:hover:bg-white/5'}`}>
                         <Icon name={t.icon} size={16} /><span>{t.label}</span>
                         {n > 0 && (
                           <span className={`text-[11px] font-bold min-w-[1.25rem] h-5 px-1.5 rounded-full inline-flex items-center justify-center ${active ? 'bg-white/25 text-white' : 'bg-apple-blue text-white'}`}>

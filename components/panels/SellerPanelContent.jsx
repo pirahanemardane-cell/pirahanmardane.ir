@@ -1337,7 +1337,7 @@ export default function SellerPanelContent() {
                           return;
                         }
                         setSellerTab(t.id); setSellerOrderDetailId(null); setSellerTicketDetailId(null); try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (_) {}
-                      }} className={`flex w-full items-center gap-2.5 px-2.5 rounded-[6px] text-right text-sm font-medium transition whitespace-nowrap ${sellerTab === t.id || (t.id === 'orders' && sellerOrderDetailId) || (t.id === 'support' && sellerTicketDetailId) ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-primary-900'}`}>
+                      }} className={`flex w-full items-center gap-2.5 px-2.5 rounded-[6px] text-[13px] font-medium transition-all duration-200 whitespace-nowrap select-none text-right ${sellerTab === t.id || (t.id === 'orders' && sellerOrderDetailId) || (t.id === 'support' && sellerTicketDetailId) ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'panel-nav-item text-primary-700 dark:text-white/80 hover:bg-primary-50/90 dark:hover:bg-white/5'}`}>
                         <Icon name={t.icon} size={16} /><span>{t.label}</span>
                         {t.badge > 0 && <span className="mr-auto text-xs bg-white/20 text-white px-1.5 py-0.5 rounded-full">{toFa(t.badge)}</span>}
                       </button>

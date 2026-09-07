@@ -4123,3 +4123,81 @@ html.dark .panel-ui button[class*="bg-[#4CCD99]"].text-xs {
   color: #0A0A0A !important;
   -webkit-text-fill-color: #0A0A0A !important;
 }
+
+/* ===== FORCE: sidebar nav unified (admin/seller/buyer) ===== */
+.panel-ui .panel-nav-item,
+.profile-tabs-strip .panel-nav-item,
+.seller-tabs-strip .panel-nav-item,
+.admin-tabs-strip .panel-nav-item {
+  color: #71717a !important;
+  -webkit-text-fill-color: #71717a !important;
+  background: transparent !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+  width: 100% !important;
+  justify-content: flex-start !important;
+  text-align: right !important;
+  box-shadow: none !important;
+}
+html.dark .panel-ui .panel-nav-item,
+html.dark .profile-tabs-strip .panel-nav-item,
+html.dark .seller-tabs-strip .panel-nav-item,
+html.dark .admin-tabs-strip .panel-nav-item {
+  color: #a1a1aa !important;
+  -webkit-text-fill-color: #a1a1aa !important;
+}
+.panel-ui .panel-nav-item:hover,
+.profile-tabs-strip .panel-nav-item:hover,
+.seller-tabs-strip .panel-nav-item:hover,
+.admin-tabs-strip .panel-nav-item:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #18181b !important;
+  -webkit-text-fill-color: #18181b !important;
+}
+html.dark .panel-ui .panel-nav-item:hover,
+html.dark .profile-tabs-strip .panel-nav-item:hover,
+html.dark .seller-tabs-strip .panel-nav-item:hover,
+html.dark .admin-tabs-strip .panel-nav-item:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #fafafa !important;
+  -webkit-text-fill-color: #fafafa !important;
+}
+
+/* فعال — مثل ادمین */
+.panel-ui .panel-nav-item--active,
+.panel-ui .panel-nav-item.panel-nav-item--active,
+.profile-tabs-strip .panel-nav-item--active,
+.seller-tabs-strip .panel-nav-item--active,
+.admin-tabs-strip .panel-nav-item--active,
+html:not(.dark) .panel-ui .panel-nav-item--active.bg-apple-blue,
+html:not(.dark) .profile-tabs-strip .panel-nav-item--active,
+html:not(.dark) .seller-tabs-strip .panel-nav-item--active {
+  background: #FF0000 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+html:not(.dark) .panel-nav-item--active *,
+html:not(.dark) .panel-nav-item--active svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.dark .panel-ui .panel-nav-item--active,
+html.dark .profile-tabs-strip .panel-nav-item--active,
+html.dark .seller-tabs-strip .panel-nav-item--active,
+html.dark .admin-tabs-strip .panel-nav-item--active {
+  background: #13ABC4 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+  font-weight: 600 !important;
+}
+html.dark .panel-nav-item--active *,
+html.dark .panel-nav-item--active svg {
+  color: #0A0A0A !important;
+  stroke: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
