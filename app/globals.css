@@ -4591,3 +4591,41 @@ html.dark .seo-page-badge--warn {
   color: #fcd34d !important;
   -webkit-text-fill-color: #fcd34d !important;
 }
+
+/* ===== seller rank period chips ===== */
+.panel-ui button.seller-rank-chip,
+button.seller-rank-chip {
+  border-radius: 9999px !important;
+  border: 1px solid #e5e7eb !important;
+  background: #ffffff !important;
+  color: #374151 !important;
+  -webkit-text-fill-color: #374151 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+html.dark .panel-ui button.seller-rank-chip,
+html.dark button.seller-rank-chip {
+  background: #2A2C30 !important;
+  border-color: rgba(255,255,255,0.35) !important;
+  color: #EBFFFB !important;
+  -webkit-text-fill-color: #EBFFFB !important;
+}
+.panel-ui button.seller-rank-chip--on,
+button.seller-rank-chip--on,
+.panel-ui button.seller-rank-chip.panel-filter-chip--on {
+  background: #FF0000 !important;
+  background-color: #FF0000 !important;
+  border-color: #FF0000 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 600 !important;
+}
+html.dark .panel-ui button.seller-rank-chip--on,
+html.dark button.seller-rank-chip--on {
+  background: #13ABC4 !important;
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}

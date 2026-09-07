@@ -557,20 +557,22 @@ export default function AdminPanelContent() {
                               { id: 'week', l: 'هفتگی' },
                               { id: 'month', l: 'ماهانه' },
                               { id: 'year', l: 'سالانه' },
-                            ].map((f) => (
+                            ].map((f) => {
+                              const on = sellerRankRange === f.id;
+                              return (
                               <button
                                 key={f.id}
                                 type="button"
                                 onClick={() => setSellerRankRange(f.id)}
-                                className={`flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-medium border transition ${
-                                  sellerRankRange === f.id
-                                    ? 'bg-primary-800 text-white border-primary-800 dark:bg-[#13ABC4] dark:border-[#13ABC4]'
-                                    : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80 bg-white dark:bg-primary-900'
+                                aria-pressed={on}
+                                className={`seller-rank-chip flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-medium transition ${
+                                  on ? 'seller-rank-chip--on panel-filter-chip--on' : 'seller-rank-chip--off'
                                 }`}
                               >
                                 {f.l}
                               </button>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
                         {(() => {
