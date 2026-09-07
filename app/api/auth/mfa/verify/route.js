@@ -19,7 +19,7 @@ export async function POST(req) {
   try {
     const body = await req.json().catch(() => ({}))
     const phone = normalizePhone(body.phone)
-    const code = String(body.code || '').replace(/\D/g, '')
+    const code = normalizeOtpCode(body.code || '')
 
     if (!phone || code.length < 4 || code.length > 8) {
       return NextResponse.json({ ok: false, error: 'کد نامعتبر است' }, { status: 400 })

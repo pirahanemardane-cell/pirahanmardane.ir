@@ -88,7 +88,7 @@ export async function POST(request) {
   try {
     const body = await request.json().catch(() => ({}))
     const phone = normalizePhone(body.phone || body.mobile || '')
-    const code = String(body.code || body.otp || '').trim()
+    const code = normalizeOtpCode(body.code || body.otp || '')
     let roleWanted = body.role === 'seller' ? 'seller' : (body.role === 'admin' ? 'admin' : 'buyer')
     if (roleWanted === 'admin' && !isAdminPhone(phone)) roleWanted = 'buyer'
 
