@@ -1,8 +1,8 @@
-import { createClient } from '../../../../../lib/supabase/server'
-import { createAdminClient } from '../../../../../lib/supabase/admin'
-import { requireAdmin } from '../../../../../lib/api/admin-guard'
+import { createClient } from '../../../../lib/supabase/server'
+import { createAdminClient } from '../../../../lib/supabase/admin'
+import { requireAdmin } from '../../../../lib/api/admin-guard'
 import { NextResponse } from 'next/server'
-import { logCritical } from '../../../../../lib/critical-log'
+import { logCritical } from '../../../../lib/critical-log'
 
 function normSlug(s, fallback) {
   const slug = String(s || '')
