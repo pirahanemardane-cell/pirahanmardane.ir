@@ -11616,6 +11616,17 @@ const downloadSeoFile = (filename, content, mime) => {
         }, 1000);
         return () => clearTimeout(id);
       }, [adminAuthOpen, adminAuthOtpTimer]);
+      useEffect(() => {
+        if (typeof document === 'undefined') return undefined;
+        const open = !!(adminAuthOpen || authOpen || roleGateOpen);
+        try {
+          document.body.classList.toggle('site-modal-open', open);
+        } catch (_) {}
+        return () => {
+          try { document.body.classList.remove('site-modal-open'); } catch (_) {}
+        };
+      }, [adminAuthOpen, authOpen, roleGateOpen]);
+
 
       // کیبورد موبایل: مودال ادمین را داخل viewport نگه دار
       useEffect(() => {
@@ -15322,6 +15333,33 @@ const params = new URLSearchParams(window.location.search);
         wishlistView,
       };
 
+      useEffect(() => {
+        if (typeof document === 'undefined') return undefined;
+        const fix = (img) => {
+          try {
+            if (!img || img.dataset.logoOk === '1') return;
+            const src = String(img.getAttribute('src') || '');
+            if (!/logo\.(webp|png|svg)?$/i.test(src) && src.indexOf('/logo') === -1) return;
+            img.onerror = null;
+            const span = document.createElement('span');
+            span.className = 'site-logo-fallback';
+            span.setAttribute('aria-hidden', 'true');
+            span.textContent = 'P';
+            if (img.parentNode) img.parentNode.replaceChild(span, img);
+          } catch (_) {}
+        };
+        const run = () => {
+          document.querySelectorAll('img[src*="logo"]').forEach((img) => {
+            img.addEventListener('error', () => fix(img), { once: true });
+            if (img.complete && img.naturalWidth === 0) fix(img);
+          });
+        };
+        run();
+        const mo = new MutationObserver(() => run());
+        mo.observe(document.body, { childList: true, subtree: true });
+        return () => mo.disconnect();
+      }, []);
+
       return (
         <AppApiProvider value={appApiValue}>
         <div className="min-h-screen flex flex-col">
@@ -15648,7 +15686,7 @@ const params = new URLSearchParams(window.location.search);
                           </div>
                           <div className="col-span-3">
                             <button type="button" onClick={() => setMegaOpen(null)} className="block w-full h-full min-h-[220px] rounded-2xl overflow-hidden relative group text-right">
-                              <img src="/logo.webp" alt="پیشنهاد ویژه" className="absolute inset-0 w-full h-full object-cover group-hover:opacity-95 transition duration-700" loading="lazy" decoding="async" />
+                              <img src="/logo.svg" alt="پیشنهاد ویژه" className="absolute inset-0 w-full h-full object-cover group-hover:opacity-95 transition duration-700" loading="lazy" decoding="async" />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                               <div className="absolute bottom-0 inset-x-0 p-4 text-white">
                                 <span className="inline-block text-xs bg-apple-blue px-2 py-0.5 rounded-full mb-2">تا ۲۹٪ تخفیف</span>
@@ -16099,7 +16137,7 @@ const params = new URLSearchParams(window.location.search);
           {/* ===================== ADMIN PANEL ===================== */}
 
       {adminAuthOpen && (
-        <div className="site-modal-root" role="dialog" aria-modal="true" style={{ zIndex: 10050 }}>
+        <div className="site-modal-root" role="dialog" aria-modal="true" style={{ zIndex: 2147483000 }}>
           <div className="site-modal-backdrop" onClick={() => { try { closeAdminAuth(); } catch (_) {} }} />
           <div className="site-modal-panel admin-auth-modal bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 p-5 max-w-sm mx-auto rounded-2xl">
             <div className="flex items-center justify-between mb-3">
