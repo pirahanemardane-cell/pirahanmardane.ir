@@ -4814,3 +4814,18 @@ img[src="/logo.png"]:not([data-logo-ok="1"]) {
   }
 }
 
+
+/* fix: force admin panel page scroll */
+html, body {
+  overflow-y: auto !important;
+  height: auto !important;
+  max-height: none !important;
+}
+.panel-ui--admin,
+.admin-panel-shell,
+[data-admin-scroll],
+[data-panel="admin"] {
+  overflow-y: auto !important;
+  max-height: none !important;
+  height: auto !important;
+}
