@@ -4629,3 +4629,23 @@ html.dark button.seller-rank-chip--on {
   color: #0A0A0A !important;
   -webkit-text-fill-color: #0A0A0A !important;
 }
+
+
+/* Sticky sidebar — all panels (admin / seller / buyer) */
+@media (min-width: 768px) {
+  .panel-ui .panel-sidebar,
+  .panel-ui aside.panel-sidebar,
+  .admin-panel-shell .panel-sidebar,
+  .seller-panel-shell .panel-sidebar,
+  .panel-ui--admin .panel-sidebar,
+  .panel-ui--seller .panel-sidebar,
+  .panel-ui--buyer .panel-sidebar {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 5rem !important;
+    align-self: flex-start !important;
+    max-height: calc(100vh - 5rem) !important;
+    overflow-y: auto !important;
+    z-index: 10 !important;
+  }
+}
