@@ -4680,34 +4680,6 @@ html.dark button.seller-rank-chip--on {
 }
 
 
-/* Admin/Seller sidebar: fixed right below header */
-@media (min-width: 768px) {
-  aside.panel-sidebar {
-    position: fixed !important;
-    top: 7rem !important;
-    right: 1rem !important;
-    left: auto !important;
-    width: 16rem !important;
-    max-height: calc(100vh - 8rem) !important;
-    overflow-y: auto !important;
-    z-index: 30 !important;
-    scrollbar-width: none !important;
-  }
-  aside.panel-sidebar::-webkit-scrollbar { display: none !important; }
-  .seller-panel-shell aside.panel-sidebar { width: 14rem !important; }
-  .panel-ui--admin .panel-main,
-  .admin-panel-shell .panel-main,
-  .panel-ui--admin .panel-admin-header,
-  .admin-panel-shell .panel-admin-header {
-    margin-right: 17rem !important;
-  }
-  .panel-ui--seller .panel-main,
-  .seller-panel-shell .panel-main {
-    margin-right: 15rem !important;
-  }
-}
-
-
 
 /* products-toolbar-order: دکمه‌ها زیر فیلتر، سرچ بالا */
 .admin-products-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; }
@@ -4777,5 +4749,50 @@ img[src="/logo.png"]:not([data-logo-ok="1"]) {
   font-size: 1.125rem !important;
   line-height: 1 !important;
   flex-shrink: 0 !important;
+}
+
+
+/* Panel sidebar: sticky until footer (not over/under footer) */
+@media (min-width: 768px) {
+  /*
+    قانون:
+    - aside داخل ردیف flex پنل sticky است
+    - وقتی انتهای همان ردیف (قبل از فوتر سایت) برسد، رها می‌شود
+    - fixed استفاده نمی‌کنیم تا روی فوتر نیاید
+  */
+  .admin-panel-shell,
+  .seller-panel-shell,
+  .panel-ui--admin,
+  .panel-ui--seller,
+  .panel-ui--buyer {
+    overflow: visible !important;
+  }
+
+  aside.panel-sidebar {
+    position: sticky !important;
+    top: 7rem !important; /* زیر هدر */
+    align-self: flex-start !important;
+    max-height: calc(100vh - 8rem) !important;
+    overflow-y: auto !important;
+    z-index: 20 !important;
+    flex-shrink: 0 !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  aside.panel-sidebar::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+  }
+
+  /* ردیف محتوا+سایدبار باید relative باشد تا sticky تا آخر همان ردیف کار کند */
+  .admin-panel-shell .flex.flex-col.md\:flex-row,
+  .seller-panel-shell .flex.flex-col.md\:flex-row,
+  .panel-ui--admin > .flex.flex-col.md\:flex-row,
+  .panel-ui--seller > .flex.flex-col.md\:flex-row {
+    position: relative !important;
+    align-items: flex-start !important;
+    overflow: visible !important;
+  }
 }
 
