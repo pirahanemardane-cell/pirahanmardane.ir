@@ -11692,7 +11692,7 @@ const downloadSeoFile = (filename, content, mime) => {
             signal: ac.signal,
           })
           .then((otp) => {
-            const code = String(otp?.code || '').replace(/\D/g, '').slice(0, 6);
+            const code = onlyDigits(otp?.code || '').slice(0, 6);
             if (code.length >= 4) {
               setAdminAuthOtp(code);
               setAdminAuthError('');
@@ -16183,7 +16183,7 @@ const params = new URLSearchParams(window.location.search);
                       } catch (_) {}
                     }}
                     onChange={(e) => {
-                      const code = String(e.target.value || '').replace(/\D/g, '').slice(0, 6);
+                      const code = onlyDigits(e.target.value).slice(0, 6);
                       setAdminAuthOtp(code);
                       setAdminAuthError('');
                     }}
