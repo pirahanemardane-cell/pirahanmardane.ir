@@ -13,6 +13,7 @@ import EmptyState from '../EmptyState';
 import { showToast } from '../ui/toast';
 import PermissionsPanelContent from './PermissionsPanelContent';
 import AdminReviewsTab from './AdminReviewsTab';
+import { downloadBackupFile as downloadClientBackupFile, importClientBackup } from '@/lib/client-storage';
 
 const SimpleEditor = dynamic(() => import('../SimpleEditor'), { ssr: false });
 
@@ -392,20 +393,35 @@ export default function AdminPanelContent() {
                       <h2 className="text-base font-bold text-primary-900 dark:text-white">داشبورد ادمین</h2>
                       <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-3">
                         <div>
-                          <p className="text-sm font-bold text-primary-900 dark:text-white">پشتیبان دادهٔ مرورگر</p>
+                          <p className="text-sm font-bold text-primary-900 dark:text-white">پشتیبان دادهٔ سرور</p>
                           <p className="text-xs text-primary-500 dark:text-white/60 mt-1 leading-6">
-                            داده‌ها از سرور خوانده و ذخیره می‌شوند.
+                            خروجی JSON جداول اصلی Supabase (فقط ادمین). بازیابی به‌صورت upsert است و جدول را خالی نمی‌کند.
                           </p>
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <button
                             type="button"
-                            onClick={() => {
+                            onClick={async () => {
                               try {
-                                downloadBackupFile(`pirahanemardane-backup-${Date.now()}.json`);
-                                showToast({ message: 'فایل پشتیبان دانلود شد', variant: 'success', duration: 3500, position: 'top-center' });
-                              } catch (_) {
-                                showToast({ message: 'دانلود پشتیبان ناموفق بود', variant: 'error', duration: 4000, position: 'top-center' });
+                                const res = await fetch('/api/admin/backup', { credentials: 'include' });
+                                const json = await res.json().catch(() => ({}));
+                                if (!res.ok || !json?.ok) {
+                                  const msg = json?.error || (res.status === 401 ? 'وارد نشده‌اید' : res.status === 403 ? 'دسترسی ادمین لازم است' : `خطا ${res.status}`);
+                                  showToast({ message: msg, variant: 'error', duration: 4500, position: 'top-center' });
+                                  return;
+                                }
+                                const blob = new Blob([JSON.stringify(json.backup, null, 2)], { type: 'application/json' });
+                                const url = URL.createObjectURL(blob);
+                                const aEl = document.createElement('a');
+                                aEl.href = url;
+                                aEl.download = 'pm-server-backup-' + Date.now() + '.json';
+                                document.body.appendChild(aEl);
+                                aEl.click();
+                                aEl.remove();
+                                setTimeout(() => URL.revokeObjectURL(url), 2000);
+                                showToast({ message: 'پشتیبان سرور دانلود شد', variant: 'success', duration: 3500, position: 'top-center' });
+                              } catch (e) {
+                                showToast({ message: 'خطای شبکه در دانلود پشتیبان', variant: 'error', duration: 4000, position: 'top-center' });
                               }
                             }}
                             className="text-xs px-3 py-2 rounded-full bg-apple-blue text-white font-medium"
@@ -418,21 +434,49 @@ export default function AdminPanelContent() {
                               type="file"
                               accept="application/json,.json"
                               className="hidden"
-                              onChange={(e) => {
+                              onChange={async (e) => {
                                 const file = e.target.files && e.target.files[0];
                                 e.target.value = '';
                                 if (!file) return;
-                                const reader = new FileReader();
-                                reader.onload = () => {
-                                  const res = importClientBackup(String(reader.result || ''));
-                                  if (res.ok) {
-                                    showToast({ message: `بازیابی شد (${res.count} کلید) — در حال رفرش…`, variant: 'success', duration: 4000, position: 'top-center' });
+                                try {
+                                  const text = await file.text();
+                                  const parsed = JSON.parse(text);
+                                  // سرور: { ok, backup: { tables } } یا خود backup
+                                  const backup = parsed?.backup || parsed;
+                                  if (backup && backup.tables && typeof backup.tables === 'object') {
+                                    const ok = typeof siteConfirm === 'function'
+                                      ? await siteConfirm('بازگردانی جداول سرور از این فایل؟ (upsert — حذف کامل نمی‌شود)', 'بازیابی سرور')
+                                      : window.confirm('بازگردانی جداول سرور؟');
+                                    if (!ok) return;
+                                    const res = await fetch('/api/admin/backup', {
+                                      method: 'POST',
+                                      credentials: 'include',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ backup }),
+                                    });
+                                    const json = await res.json().catch(() => ({}));
+                                    if (!res.ok || !json?.ok) {
+                                      showToast({ message: json?.error || 'بازیابی سرور ناموفق', variant: 'error', duration: 5000, position: 'top-center' });
+                                      return;
+                                    }
+                                    showToast({ message: 'بازیابی سرور انجام شد', variant: 'success', duration: 4000, position: 'top-center' });
+                                    try {
+                                      window.dispatchEvent(new CustomEvent('admin-products-refetch'));
+                                      window.dispatchEvent(new CustomEvent('admin-sellers-refetch'));
+                                    } catch (_) {}
+                                    return;
+                                  }
+                                  // fallback: پشتیبان localStorage مرورگر
+                                  const res = importClientBackup(parsed);
+                                  if (res && res.ok) {
+                                    showToast({ message: res.message || 'بازیابی مرورگر انجام شد', variant: 'success', duration: 4000, position: 'top-center' });
                                     setTimeout(() => { try { window.location.reload(); } catch (_) {} }, 600);
                                   } else {
-                                    showToast({ message: res.message || 'بازیابی ناموفق', variant: 'error', duration: 4500, position: 'top-center' });
+                                    showToast({ message: (res && res.message) || 'بازیابی ناموفق', variant: 'error', duration: 4500, position: 'top-center' });
                                   }
-                                };
-                                reader.readAsText(file);
+                                } catch (err) {
+                                  showToast({ message: 'فایل نامعتبر یا خطا در خواندن', variant: 'error', duration: 4000, position: 'top-center' });
+                                }
                               }}
                             />
                           </label>
