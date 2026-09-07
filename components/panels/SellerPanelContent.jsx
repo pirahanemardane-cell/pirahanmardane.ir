@@ -1315,7 +1315,7 @@ export default function SellerPanelContent() {
             </div>
             <div className="flex flex-col md:flex-row gap-6">
                 <aside className="w-full md:w-48 lg:w-56 flex-shrink-0 md:sticky md:top-24 md:self-start">
-                  <div className="seller-tabs-strip panel-nav flex md:flex-col gap-1 overflow-x-auto no-scrollbar px-2.5 pt-2.5 pb-2.5 rounded-2xl border border-primary-200/80 dark:border-white/10 bg-white/90 dark:bg-primary-900/90 backdrop-blur-md shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
+                  <div className="seller-tabs-strip panel-nav flex md:flex-col gap-1 overflow-x-auto no-scrollbar px-2 pt-2 pb-2 rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },
                       { id: 'orders', label: 'سفارش‌ها', icon: 'truck' },

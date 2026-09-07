@@ -341,8 +341,8 @@ export default function AdminPanelContent() {
                 </div>
               </div>
               <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-                <aside className="panel-sidebar w-full md:w-52 lg:w-60 flex-shrink-0 md:sticky md:top-28 md:self-start z-10">
-                  <div className="admin-tabs-strip panel-nav flex md:flex-col gap-1 overflow-x-auto no-scrollbar pb-1 md:pb-0 p-2.5 rounded-2xl border border-primary-200/80 dark:border-white/10 bg-white/90 dark:bg-primary-900/90 backdrop-blur-md shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
+                <aside className="panel-sidebar w-full md:w-64 flex-shrink-0 md:sticky md:top-0 md:h-[calc(100vh-0px)] md:self-start z-10">
+                  <div className="admin-tabs-strip panel-nav flex md:flex-col gap-1 overflow-x-auto no-scrollbar pb-1 md:pb-0 p-2 rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm md:min-h-[calc(100vh-6rem)]">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },
                       { id: 'sellers', label: 'فروشندگان', icon: 'users' },
@@ -374,7 +374,7 @@ export default function AdminPanelContent() {
                       { id: 'profile', label: 'پروفایل', icon: 'user' },
                     ].map(t => (
                       <button key={t.id} type="button" onClick={() => { setAdminTab(t.id); if (t.id === 'campaigns' && typeof hydrateCampaignsFromApi === 'function') { try { hydrateCampaignsFromApi(true); } catch(_){} } if (t.id === 'dashboard' && typeof hydrateAdminStatsFromApi === 'function') { try { hydrateAdminStatsFromApi(); } catch(_){} } if (t.id === 'coupons' && typeof hydrateAdminCoupons === 'function') { try { hydrateAdminCoupons(); } catch(_){} } if (t.id === 'blog-new') { const defCat = ((adminBlogCategories || []).find(c => c.active !== false) || {}).name || 'راهنمای خرید'; setBlogForm({ id: '', title: '', cat: defCat, excerpt: '', body: '', status: 'published', author: 'تحریریه', read: '۵ دقیقه', publishAtDate: '', publishAtTime: '10:00', publishAtMs: null, publishAtFa: '', seoTitle: '', seoDescription: '', seoFocusKeywords: '', seoCanonical: '', seoOgImage: '', imageAlt: '', image: '', seoNoindex: false, seoFaq: [] }); } else if (t.id === 'blog') { setBlogForm(null); if (typeof hydrateBlogPostsFromApi === 'function') try { hydrateBlogPostsFromApi(); } catch(_){} } setAdminSellerDetailId(null); setAdminProductDetailId(null); setAdminOrderDetailId(null); setAdminTicketDetailId(null); setAdminBuyerDetailId(null); setAdminLoading(true); setTimeout(() => setAdminLoading(false), 200); requestAnimationFrame(() => scrollAdminPanelToTop()); }}
-                        className={`flex-shrink-0 flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition whitespace-nowrap ${adminTab === t.id ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'panel-nav-item text-primary-700 dark:text-white/80 hover:bg-primary-50/90 dark:hover:bg-white/5'}`}>
+                        className={`flex-shrink-0 flex h-11 items-center gap-2 px-3 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap ${adminTab === t.id ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'panel-nav-item text-primary-700 dark:text-white/80 hover:bg-primary-50/90 dark:hover:bg-white/5'}`}>
                         <Icon name={t.icon === 'home' ? 'shield' : t.icon === 'package' ? 'shoppingBag' : t.icon === 'message' ? 'headphones' : t.icon === 'settings' ? 'pencil' : t.icon === 'percent' ? 'dollar' : t.icon} size={16} />
                         {t.label}
                         {t.id === 'tickets' && adminUnreadTickets > 0 && <span className="mr-auto text-xs bg-red-500 text-white rounded-full px-1.5 min-w-[18px] text-center">{toFa(adminUnreadTickets)}</span>}
