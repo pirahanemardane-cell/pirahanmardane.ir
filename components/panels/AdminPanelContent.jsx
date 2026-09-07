@@ -3160,7 +3160,7 @@ export default function AdminPanelContent() {
                             }),
                           })}
                           <div className="flex gap-2">
-                            <button type="button" onClick={() => {
+                            <button type="button" onClick={async () => {
                               const cur = (blogForm && !blogForm.id) ? blogForm : bf;
                               if (!cur.title.trim()) { showToast({ message: 'عنوان الزامی است', variant: 'error', duration: 4500, position: 'top-center' }); return; }
                               if (!String(cur.cat || '').trim()) { showToast({ message: 'دسته‌بندی را انتخاب کنید', variant: 'error', duration: 4500, position: 'top-center' }); return; }
@@ -3168,21 +3168,51 @@ export default function AdminPanelContent() {
                                 showToast({ message: 'برای انتشار زمان‌بندی‌شده تاریخ و ساعت را مشخص کنید', variant: 'error', duration: 4500, position: 'top-center' });
                                 return;
                               }
-                              const id = 'b' + Date.now();
                               const autoSlug = (typeof slugifyTaxonomy === 'function' ? slugifyTaxonomy(cur.title) : String(cur.title || '').trim().replace(/\s+/g, '-'));
-                              const post = {
-                                ...cur, id,
+                              const catName = String(cur.cat || '').trim();
+                              const catObj = (adminBlogCategories || []).find(c => c.name === catName && c.active !== false);
+                              const payload = {
+                                title: cur.title.trim(),
                                 slug: String(cur.slug || '').trim() || autoSlug,
-                                cat: String(cur.cat || '').trim(),
-                                category: String(cur.cat || '').trim(),
-                                date: cur.status === 'scheduled' && cur.publishAtFa ? String(cur.publishAtFa).split(' ')[0] : new Date().toLocaleDateString('fa-IR'),
-                                read: cur.read || '۵ دقیقه',
-                                publishAtMs: cur.status === 'scheduled' ? cur.publishAtMs : null,
-                                publishAtFa: cur.status === 'scheduled' ? cur.publishAtFa : null,
+                                excerpt: cur.excerpt || '',
+                                body: cur.body || '',
+                                status: cur.status === 'draft' ? 'draft' : 'published',
+                                cat: catName,
+                                category: catName,
+                                category_id: catObj?.id && !String(catObj.id).startsWith('bc-') ? catObj.id : null,
+                                cover_image: cur.image || cur.cover || null,
                               };
-                              saveBlogPosts([post, ...(blogPosts || [])]);
-                              showToast({ message: 'مطلب جدید ذخیره شد', variant: 'success', duration: 3000, position: 'top-center' });
-                              setBlogForm(emptyBlog());
+                              try {
+                                const res = await fetch('/api/blog', {
+                                  method: 'POST',
+                                  credentials: 'include',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify(payload),
+                                });
+                                const json = await res.json().catch(() => ({}));
+                                if (!res.ok || !json?.ok) {
+                                  showToast({ message: json?.error || 'خطا در ذخیره سرور', variant: 'error', duration: 4500, position: 'top-center' });
+                                  return;
+                                }
+                                const saved = json.post || {};
+                                const post = {
+                                  ...cur,
+                                  id: saved.id || ('b' + Date.now()),
+                                  slug: saved.slug || payload.slug,
+                                  cat: catName,
+                                  category: catName,
+                                  date: new Date().toLocaleDateString('fa-IR'),
+                                  read: cur.read || '۵ دقیقه',
+                                  status: payload.status,
+                                  image: saved.cover_image || saved.cover_url || cur.image,
+                                };
+                                saveBlogPosts([post, ...(blogPosts || [])]);
+                                try { if (typeof hydrateBlogPostsFromApi === 'function') hydrateBlogPostsFromApi(); } catch (_) {}
+                                showToast({ message: 'مطلب جدید ذخیره شد', variant: 'success', duration: 3000, position: 'top-center' });
+                                setBlogForm(emptyBlog());
+                              } catch (err) {
+                                showToast({ message: 'خطا در ارتباط با سرور', variant: 'error', duration: 4500, position: 'top-center' });
+                              }
                             }} className="px-4 py-2 rounded-full bg-apple-blue text-white text-xs font-medium">انتشار / ذخیره مطلب جدید</button>
                             <button type="button" onClick={() => setBlogForm(emptyBlog())} className="px-4 py-2 rounded-full border text-xs">پاک کردن فرم</button>
                           </div>
@@ -3299,7 +3329,7 @@ export default function AdminPanelContent() {
                             })),
                           })}
                           <div className="flex gap-2">
-                            <button type="button" onClick={() => {
+                            <button type="button" onClick={async () => {
                               if (!blogForm.title.trim()) { showToast({ message: 'عنوان الزامی است', variant: 'error', duration: 4500, position: 'top-center' }); return; }
                               if (!String(blogForm.cat || '').trim()) { showToast({ message: 'دسته‌بندی را انتخاب کنید', variant: 'error', duration: 4500, position: 'top-center' }); return; }
                               if (blogForm.status === 'scheduled' && !blogForm.publishAtMs) {
@@ -3308,19 +3338,47 @@ export default function AdminPanelContent() {
                               }
                               const id = blogForm.id;
                               const autoSlug = (typeof slugifyTaxonomy === 'function' ? slugifyTaxonomy(blogForm.title) : String(blogForm.title || '').trim().replace(/\s+/g, '-'));
-                              const post = {
-                                ...blogForm, id,
+                              const catName = String(blogForm.cat || '').trim();
+                              const catObj = (adminBlogCategories || []).find(c => c.name === catName && c.active !== false);
+                              const payload = {
+                                id,
+                                title: blogForm.title.trim(),
                                 slug: String(blogForm.slug || '').trim() || autoSlug,
-                                cat: String(blogForm.cat || '').trim(),
-                                category: String(blogForm.cat || '').trim(),
-                                date: blogForm.status === 'scheduled' && blogForm.publishAtFa ? String(blogForm.publishAtFa).split(' ')[0] : (blogForm.date || new Date().toLocaleDateString('fa-IR')),
-                                read: blogForm.read || '۵ دقیقه',
-                                publishAtMs: blogForm.status === 'scheduled' ? blogForm.publishAtMs : null,
-                                publishAtFa: blogForm.status === 'scheduled' ? blogForm.publishAtFa : null,
+                                excerpt: blogForm.excerpt || '',
+                                body: blogForm.body || '',
+                                status: blogForm.status === 'draft' ? 'draft' : 'published',
+                                cat: catName,
+                                category: catName,
+                                category_id: catObj?.id && !String(catObj.id).startsWith('bc-') ? catObj.id : null,
+                                cover_image: blogForm.image || blogForm.cover || null,
                               };
-                              saveBlogPosts((blogPosts || []).map(p => p.id === id ? post : p));
-                              showToast({ message: 'مطلب به‌روزرسانی شد', variant: 'success', duration: 3000, position: 'top-center' });
-                              setBlogForm(null);
+                              try {
+                                const res = await fetch('/api/blog', {
+                                  method: 'PATCH',
+                                  credentials: 'include',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify(payload),
+                                });
+                                const json = await res.json().catch(() => ({}));
+                                if (!res.ok || !json?.ok) {
+                                  showToast({ message: json?.error || 'خطا در بروزرسانی سرور', variant: 'error', duration: 4500, position: 'top-center' });
+                                  return;
+                                }
+                                const post = {
+                                  ...blogForm, id,
+                                  slug: payload.slug,
+                                  cat: catName,
+                                  category: catName,
+                                  date: blogForm.date || new Date().toLocaleDateString('fa-IR'),
+                                  read: blogForm.read || '۵ دقیقه',
+                                };
+                                saveBlogPosts((blogPosts || []).map(p => p.id === id ? post : p));
+                                try { if (typeof hydrateBlogPostsFromApi === 'function') hydrateBlogPostsFromApi(); } catch (_) {}
+                                showToast({ message: 'مطلب به‌روزرسانی شد', variant: 'success', duration: 3000, position: 'top-center' });
+                                setBlogForm(null);
+                              } catch (err) {
+                                showToast({ message: 'خطا در ارتباط با سرور', variant: 'error', duration: 4500, position: 'top-center' });
+                              }
                             }} className="px-4 py-2 rounded-full bg-apple-blue text-white text-xs font-medium">ذخیره تغییرات</button>
                             <button type="button" onClick={() => setBlogForm(null)} className="px-4 py-2 rounded-full border text-xs">انصراف</button>
                           </div>

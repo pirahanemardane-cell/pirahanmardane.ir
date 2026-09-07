@@ -90,14 +90,28 @@ export async function POST(request) {
         .replace(/[^a-z0-9\u0600-\u06ff\-]/gi, '')
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '') || `post-${Date.now().toString(36)}`
+    let categoryId = body.category_id || null
+    if (!categoryId && (body.cat || body.category)) {
+      const catName = String(body.cat || body.category).trim()
+      if (catName) {
+        const { data: catRow } = await admin
+          .from('blog_categories')
+          .select('id')
+          .eq('name', catName)
+          .maybeSingle()
+        if (catRow?.id) categoryId = catRow.id
+      }
+    }
     const row = {
       title,
       slug,
       excerpt: body.excerpt || null,
       body: body.body || body.content || null,
-      cover_image: body.cover_image || null,
+      cover_image: body.cover_image || body.cover_url || null,
+      cover_url: body.cover_url || body.cover_image || null,
       status: body.status === 'draft' ? 'draft' : 'published',
       published_at: new Date().toISOString(),
+      category_id: categoryId,
     }
     const { data, error } = await admin.from('blog_posts').insert(row).select('*').single()
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
@@ -130,7 +144,20 @@ export async function PATCH(request) {
       patch.cover_image = body.cover_image || body.cover_url
     }
     if (body.status != null) patch.status = body.status === 'draft' ? 'draft' : 'published'
-    if (body.category_id != null) patch.category_id = body.category_id
+    if (body.category_id != null) patch.category_id = body.category_id || null
+    if (body.category_id == null && (body.cat != null || body.category != null)) {
+      const catName = String(body.cat || body.category || '').trim()
+      if (catName) {
+        const { data: catRow } = await admin
+          .from('blog_categories')
+          .select('id')
+          .eq('name', catName)
+          .maybeSingle()
+        patch.category_id = catRow?.id || null
+      } else {
+        patch.category_id = null
+      }
+    }
     const { data, error } = await admin.from('blog_posts').update(patch).eq('id', id).select('*').maybeSingle()
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
     return NextResponse.json({ ok: true, post: data })
