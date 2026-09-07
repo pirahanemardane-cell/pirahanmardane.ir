@@ -167,11 +167,9 @@ export default function StaticPagesView() {
     wishlistClearConfirm,
     wishlistOpen,
     wishlistProducts,
-    setPublicTrackOpen,
-    publicTrackOpen,
-} = useAppApi();
-  // setPublicTrackOpen from context for guest order tracking
-  const [magQuery, setMagQuery] = useState('');
+    publicTrackOpen
+  } = useAppApi();
+    const [magQuery, setMagQuery] = useState('');
   const [magVisible, setMagVisible] = useState(9);
   const magSentinelRef = useRef(null);
   useEffect(() => { setMagVisible(9); }, [faqQuery, magQuery]);
