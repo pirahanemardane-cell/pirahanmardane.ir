@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useAppApi } from '../AppApiContext';
 import dynamic from 'next/dynamic';
 import EnamadFooterBadge from './EnamadFooterBadge';
@@ -168,6 +169,38 @@ export default function StaticPagesView() {
     setPublicTrackOpen,
     publicTrackOpen,
 } = useAppApi();
+  const [magQuery, setMagQuery] = useState('');
+  const [magVisible, setMagVisible] = useState(9);
+  const magSentinelRef = useRef(null);
+  useEffect(() => { setMagVisible(9); }, [faqQuery, magQuery]);
+  const magFiltered = useMemo(() => {
+    const posts = Array.isArray(blogPosts) ? blogPosts : [];
+    const q = String(magQuery || '').trim().toLowerCase();
+    const cat = String(faqQuery || '').trim();
+    return posts.filter((post) => {
+      const live = post.status === 'published' || (post.status === 'scheduled' && post.publishAtMs && Number(post.publishAtMs) <= Date.now());
+      if (!live) return false;
+      const pcat = post.cat || post.category || '';
+      if (cat && pcat !== cat) return false;
+      if (q) {
+        const hay = `${post.title || ''} ${post.excerpt || ''} ${pcat}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [blogPosts, faqQuery, magQuery]);
+  useEffect(() => {
+    const el = magSentinelRef.current;
+    if (!el) return undefined;
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting) {
+        setMagVisible((n) => (n < magFiltered.length ? n + 9 : n));
+      }
+    }, { rootMargin: '200px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [magFiltered.length]);
+
   const cartCount =
     typeof cartCountProp === 'number'
       ? cartCountProp
@@ -524,20 +557,35 @@ export default function StaticPagesView() {
               {/* بلاگ لیست */}
               {staticPage === 'blog' && (
                 <div className="w-full space-y-8">
-                  <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-                    <div>
-                      <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white">مجله</h1>
-                      <p className="text-sm text-primary-500 dark:!text-white mt-1">راهنمای خرید، استایل و مراقبت از پیراهن مردانه</p>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white">مجله</h1>
+                        <p className="text-sm text-primary-500 dark:!text-white mt-1">راهنمای خرید، استایل و مراقبت از پیراهن مردانه</p>
+                      </div>
+                      <div className="w-full sm:w-72">
+                        <input
+                          value={magQuery}
+                          onChange={(e) => setMagQuery(e.target.value)}
+                          placeholder="جستجو در مجله…"
+                          className="w-full px-4 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white"
+                        />
+                      </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {['همه', ...Array.from(new Set(blogPosts.map(p => p.cat || p.category).filter(Boolean)))].map(cat => (
-                        <button key={cat} type="button" onClick={() => setFaqQuery(cat === 'همه' ? '' : cat)} className={`text-xs px-3.5 py-1.5 rounded-full font-medium transition ${(!faqQuery && cat==='همه') || faqQuery===cat ? 'bg-apple-blue text-white shadow-md' : 'bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 text-primary-600 dark:text-white/70 hover:border-apple-blue/40'}`}>{cat}</button>
+                      {['همه', ...Array.from(new Set((blogPosts || []).map(p => p.cat || p.category).filter(Boolean)))].map(cat => (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => setFaqQuery(cat === 'همه' ? '' : cat)}
+                          className={`text-xs px-3.5 py-1.5 rounded-full font-medium transition ${(!faqQuery && cat === 'همه') || faqQuery === cat ? 'bg-primary-800 text-white dark:bg-primary-200 dark:text-primary-900 shadow-md' : 'bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 text-primary-600 dark:text-white/70 hover:border-primary-400'}`}
+                        >{cat}</button>
                       ))}
                     </div>
                   </div>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {blogPosts.filter(p => (p.status === 'published' || (p.status === 'scheduled' && p.publishAtMs && Number(p.publishAtMs) <= Date.now())) && (!faqQuery || (p.cat || p.category) === faqQuery || (p.title || '').includes(faqQuery))).map(p => (
-                      <button key={p.id} type="button" onClick={() => openStaticPage('blog-post', { blogId: p.id, slug: p.slug || '' })} className="group text-right rounded-3xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 overflow-hidden hover:shadow-xl hover:border-apple-blue/30 transition flex flex-col">
+                    {magFiltered.slice(0, magVisible).map(p => (
+                      <button key={p.id} type="button" onClick={() => openStaticPage('blog-post', { blogId: p.id, slug: p.slug || '' })} className="group text-right rounded-3xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 overflow-hidden hover:shadow-xl hover:border-primary-300 transition flex flex-col">
                         <div className="aspect-[16/9] overflow-hidden bg-primary-100 dark:bg-primary-900">
                           <img src={p.image || 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=800&h=450&fit=crop&q=80'} alt="" className="w-full h-full object-cover group-hover:opacity-95 transition duration-500" loading="lazy" />
                         </div>
@@ -548,17 +596,17 @@ export default function StaticPagesView() {
                               tabIndex={0}
                               onClick={(e) => { e.preventDefault(); e.stopPropagation(); setFaqQuery(p.cat || p.category); }}
                               onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); setFaqQuery(p.cat || p.category); } }}
-                              className="text-xs font-bold text-apple-blue tracking-wide inline-flex self-start px-2.5 py-0.5 rounded-full bg-apple-blue/10 hover:bg-apple-blue/20"
+                              className="inline-flex self-start items-center h-6 px-2 rounded-md bg-primary-100 dark:bg-primary-700 text-primary-900 dark:text-white text-xs font-medium hover:bg-primary-200 dark:hover:bg-primary-600 transition"
                             >{p.cat || p.category}</span>
                           ) : null}
                           <p className="font-bold text-sm sm:text-base text-primary-900 dark:text-white mt-1.5 leading-snug line-clamp-2">{p.title}</p>
                           <p className="text-xs text-primary-500 dark:!text-white mt-2 line-clamp-2 flex-1">{p.excerpt}</p>
                           <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-primary-50 dark:border-white/10 text-xs text-primary-400 dark:!text-white">
                             <span className="dark:!text-white">{p.author || 'تحریریه'}</span>
-                            <span className="dark:!text-white">·</span>
-                            <span className="dark:!text-white">{p.date}</span>
-                            <span className="dark:!text-white">·</span>
-                            <span className="dark:!text-white">{p.read} مطالعه</span>
+                            {p.date ? <span className="dark:!text-white">·</span> : null}
+                            {p.date ? <span className="dark:!text-white">{p.date}</span> : null}
+                            {p.read ? <span className="dark:!text-white">·</span> : null}
+                            {p.read ? <span className="dark:!text-white">{p.read} مطالعه</span> : null}
                           </div>
                           {(p.tags || []).length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-2">
@@ -568,7 +616,21 @@ export default function StaticPagesView() {
                         </div>
                       </button>
                     ))}
+                    {magFiltered.length === 0 && (
+                      <p className="col-span-full text-center text-sm text-primary-500 py-10">مطلبی با این فیلتر پیدا نشد.</p>
+                    )}
                   </div>
+                  {magVisible < magFiltered.length && (
+                    <div ref={magSentinelRef} className="flex justify-center py-6">
+                      <button
+                        type="button"
+                        onClick={() => setMagVisible((n) => n + 9)}
+                        className="text-sm px-5 py-2 rounded-full border border-primary-200 dark:border-white/20 text-primary-700 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800"
+                      >
+                        بارگذاری مطالب بیشتر
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 
