@@ -4912,7 +4912,7 @@ export default function AdminPanelContent() {
              ))}
             </div>
            </div>
-           <div className="flex gap-1 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+           <div className="admin-tabs-strip flex gap-1 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: 'touch' }}>
             {subs.map(s => (
              <button key={s.id} type="button" onClick={() => setAdminAnalyticsSub(s.id)} className={`flex-shrink-0 text-xs px-3 py-2 rounded-full border ${sub === s.id ? 'bg-primary-900 text-white dark:bg-white dark:text-primary-900 border-transparent' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80'}`}>{s.label}</button>
             ))}
