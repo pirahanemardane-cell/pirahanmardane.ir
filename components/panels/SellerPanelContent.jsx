@@ -1848,90 +1848,69 @@ export default function SellerPanelContent() {
                               <div className="space-y-4">
                               <p className="text-sm font-bold text-primary-900 dark:text-white mb-3">۱. نام محصول و کد محصول و نامک و قیمت (تومان)</p>
 
-                              <div><label className="text-xs text-primary-500 mb-1 block">نام محصول</label>                              <div className="flex items-stretch gap-2">
-                                <div className="flex-1 min-w-0"><input value={sellerProductForm.name} onChange={e =></div>
-                                <button
-                                  type="button"
-                                  title="کپی"
-                                  onClick={async () => {
-                                    const ok = await copyTextToClipboard(sellerProductForm.productCode);
-                                    try {
-                                      showToast({
-                                        message: ok ? 'کپی شد' : 'کپی نشد',
-                                        variant: ok ? 'success' : 'error',
-                                        duration: 2000,
-                                        position: 'top-center',
-                                      });
-                                    } catch (_) {}
-                                  }}
-                                  className="flex-shrink-0 inline-flex items-center justify-center min-w-[2.5rem] px-2.5 rounded-lg border border-primary-200 dark:border-white/15 text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-white/5 text-[11px] font-medium"
-                                >
-                                  کپی
-                                </button>
-                              </div> setSellerProductForm(f => ({ ...f, name: e.target.value, slug: slugifyTaxonomy(e.target.value) }))} className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue shadow-none" /></div>
+                              <div>
+                                <label className="text-xs text-primary-500 mb-1 block">نام محصول</label>
+                                <input
+                                  value={sellerProductForm.name}
+                                  onChange={e => setSellerProductForm(f => ({ ...f, name: e.target.value }))}
+                                  className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white"
+                                  placeholder="نام محصول"
+                                />
+                              </div>
+
                               <div>
                                 <label className="text-xs text-primary-500 mb-1 block">کد محصول</label>
-                                <input
-                                  value={sellerProductForm.productCode || shopCodePrefix(sellerUser?.shopName || sellerUser?.name || 'SHOP') + '·········'}
-                                  readOnly
-                                  disabled
-                                  dir="ltr"
-                                  className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-900/50 text-sm text-left font-latin text-primary-500 dark:!text-white cursor-not-allowed shadow-none"
-                                />
-                                <p className="text-xs text-primary-400 mt-1">کد یکتا: ۴ حرف اول فروشگاه + ۹ رقم · بدون هم‌پوشانی با سایر محصولات · غیرقابل ویرایش</p>
-                              </div>
-                              <div>
-                                <label className="text-xs text-primary-500 mb-1 block">نامک (Slug)</label>
-                                <div className="flex items-center gap-2">
-                                                                    <div className="flex items-stretch gap-2">
-                                    <div className="flex-1 min-w-0"><input value={productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || '')} readOnly disabled dir="ltr" placeholder="خودکار از نام محصول و فروشگاه" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-900/50 text-sm text-left font-latin text-primary-500 dark:!text-white cursor-not-allowed shadow-none" /></div>
-                                    <button
-                                      type="button"
-                                      title="کپی"
-                                      onClick={async () => {
-                                        const ok = await copyTextToClipboard(productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || ''));
-                                        try {
-                                          showToast({
-                                            message: ok ? 'کپی شد' : 'کپی نشد',
-                                            variant: ok ? 'success' : 'error',
-                                            duration: 2000,
-                                            position: 'top-center',
-                                          });
-                                        } catch (_) {}
-                                      }}
-                                      className="flex-shrink-0 inline-flex items-center justify-center min-w-[2.5rem] px-2.5 rounded-lg border border-primary-200 dark:border-white/15 text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-white/5 text-[11px] font-medium"
-                                    >
-                                      کپی
-                                    </button>
-                                  </div>
+                                <div className="flex items-stretch gap-2">
+                                  <input
+                                    value={sellerProductForm.productCode || ''}
+                                    readOnly
+                                    className="flex-1 min-w-0 px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-900/40 text-sm text-primary-900 dark:text-white font-latin"
+                                    dir="ltr"
+                                  />
                                   <button
                                     type="button"
-                                    title="کپی"
+                                    title="کپی کد محصول"
+                                    onClick={async () => {
+                                      const ok = await copyTextToClipboard(sellerProductForm.productCode || '');
+                                      try {
+                                        showToast({ message: ok ? 'کد محصول کپی شد' : 'کپی نشد', variant: ok ? 'success' : 'error', duration: 2000, position: 'top-center' });
+                                      } catch (_) {}
+                                    }}
+                                    className="flex-shrink-0 inline-flex items-center justify-center min-w-[2.75rem] px-2.5 rounded-xl border border-primary-200 dark:border-white/15 text-[11px] font-medium text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-white/5"
+                                  >
+                                    کپی
+                                  </button>
+                                </div>
+                                <p className="text-[10px] text-primary-400 mt-1">کد یکتا: ۴ حرف اول فروشگاه + ۹ رقم · بدون هم‌پوشانی با سایر محصولات · غیرقابل ویرایش</p>
+                              </div>
+
+                              <div>
+                                <label className="text-xs text-primary-500 mb-1 block">نامک (Slug)</label>
+                                <div className="flex items-stretch gap-2">
+                                  <input
+                                    value={productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || '')}
+                                    readOnly
+                                    className="flex-1 min-w-0 px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-900/40 text-sm text-primary-900 dark:text-white font-latin"
+                                    dir="ltr"
+                                  />
+                                  <button
+                                    type="button"
+                                    title="کپی نامک"
                                     onClick={async () => {
                                       const ok = await copyTextToClipboard(productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || ''));
-                                      try { showToast({ message: ok ? 'کپی شد' : 'کپی نشد', variant: ok ? 'success' : 'error', duration: 2000, position: 'top-center' }); } catch (_) {}
+                                      try {
+                                        showToast({ message: ok ? 'نامک کپی شد' : 'کپی نشد', variant: ok ? 'success' : 'error', duration: 2000, position: 'top-center' });
+                                      } catch (_) {}
                                     }}
-                                    className="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-lg border border-primary-200 dark:border-white/15 text-primary-600 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-white/5"
+                                    className="flex-shrink-0 inline-flex items-center justify-center min-w-[2.75rem] px-2.5 rounded-xl border border-primary-200 dark:border-white/15 text-[11px] font-medium text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-white/5"
                                   >
-                                    <Icon name="copy" size={16} />
+                                    کپی
                                   </button>
                                 </div>
                                 <p className="text-xs text-primary-400 mt-1">نامک به‌صورت خودکار از نام محصول و نام فروشگاه ساخته می‌شود و قابل ویرایش نیست.</p>
                               </div>
 
-                              <div className="rounded-xl border border-primary-200 dark:border-white/15 bg-primary-50/50 dark:bg-primary-950/40 p-3">
-                                <label className="flex items-start gap-2.5 cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    className="mt-1 rounded border-primary-300"
-                                    checked={!!sellerProductForm.multiVariant}
-                                    onChange={(e) => setSellerProductForm(f => ({
-                                      ...f,
-                                      multiVariant: e.target.checked,
-                                      ...(e.target.checked ? { price: '' } : {}),
-                                    }))}
-                                  />
-                                  <span>
+
                                     <span className="text-sm font-medium text-primary-900 dark:text-white">محصولات من دارای چند رنگ، سایز یا قیمت مختلف است</span>
                                     <span className="block text-xs text-primary-500 dark:text-white/60 mt-0.5">با فعال‌سازی، قیمت واحد در این مرحله مخفی می‌شود و تنظیم قیمت/موجودی در مرحله واریانت اجباری خواهد بود.</span>
                                   </span>
