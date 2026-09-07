@@ -3056,13 +3056,17 @@ export default function AdminPanelContent() {
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div>
                           <h2 className="text-base font-bold text-primary-900 dark:text-white">افزودن مطلب مجله</h2>
-                          <p className="text-xs text-primary-500 dark:!text-white mt-0.5">عنوان، دسته، خلاصه و متن مطلب</p>
+                          <p className="text-xs text-primary-500 dark:!text-white mt-0.5">عنوان، دسته، برچسب، خلاصه و متن — ظاهر حرفه‌ای، منطق بدون تغییر</p>
                         </div>
                         <button type="button" onClick={() => { setBlogForm(null); setAdminTab('blog'); }} className="text-xs px-3 py-1.5 rounded-full border border-primary-200 dark:border-white/30 text-primary-700 dark:text-white">مشاهده مطالب</button>
                       </div>
-                      <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-2">
-                          <input value={bf.title} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), title: e.target.value, id: '' }))} placeholder="عنوان *" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
+                      <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-4 p-5 sm:p-6 shadow-sm">
                           <div>
+                            <label className="text-[11px] font-medium text-primary-600 dark:text-white/70 mb-1.5 block">عنوان مطلب <span className="text-red-500">*</span></label>
+                          <input value={bf.title} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), title: e.target.value, id: '' }))} placeholder="عنوان مطلب را بنویسید…" className="w-full px-3.5 py-2.5 rounded-xl border border-primary-200/80 dark:border-white/15 bg-white dark:bg-primary-950 text-sm text-primary-900 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-400/30 focus:border-primary-400 transition" />
+                          </div>
+                          <div>
+                            <label className="text-[11px] font-medium text-primary-600 dark:text-white/70 mb-1.5 block">آدرس URL</label>
                             <input
                               value={bf.slug || ''}
                               onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), slug: e.target.value, id: '' }))}
@@ -3074,36 +3078,84 @@ export default function AdminPanelContent() {
                                 const auto = (typeof slugifyTaxonomy === 'function' ? slugifyTaxonomy(t) : t.replace(/\s+/g, '-'));
                                 setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), slug: auto, id: '' }));
                               }}
-                              placeholder="آدرس URL (slug) — خالی بماند از عنوان ساخته می‌شود"
-                              className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white font-latin"
+                              placeholder="خالی بماند → از عنوان ساخته می‌شود"
+                              className="w-full px-3.5 py-2.5 rounded-xl border border-primary-200/80 dark:border-white/15 bg-white dark:bg-primary-950 text-sm text-primary-900 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-400/30 focus:border-primary-400 transition font-latin"
                               dir="ltr"
                             />
-                            <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">/مجله/{(bf.slug || 'از-عنوان').toString()}</p>
+                            <p className="text-[10px] text-primary-400 mt-1.5 font-latin" dir="ltr">/مجله/{(bf.slug || 'از-عنوان').toString()}</p>
+                          </div>
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-[11px] font-medium text-primary-600 dark:text-white/70 mb-1.5 block">دسته‌بندی <span className="text-red-500">*</span></label>
+                              <div className="relative">
+                                <select
+                                  value={bf.cat || ''}
+                                  onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), cat: e.target.value, id: '' }))}
+                                  className="w-full appearance-none px-3.5 py-2.5 pe-10 rounded-xl border border-primary-200/80 dark:border-white/15 bg-primary-50/40 dark:bg-primary-950 text-sm text-primary-900 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-400/30 focus:border-primary-400 transition cursor-pointer"
+                                >
+                                  <option value="">انتخاب دسته…</option>
+                                  {(adminBlogCategories || []).filter(c => c.active !== false).map(c => (
+                                    <option key={c.id || c.name} value={c.name}>{c.name}</option>
+                                  ))}
+                                </select>
+                                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-primary-400 dark:text-white/50">
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+                                </span>
+                              </div>
+                              {!(adminBlogCategories || []).some(c => c.active !== false) && (
+                                <p className="text-[10px] text-amber-600 mt-1.5">
+                                  هنوز دسته فعالی نیست.{' '}
+                                  <button type="button" className="underline" onClick={() => setAdminTab('blog-categories')}>تعریف دسته مجله</button>
+                                </p>
+                              )}
+                            </div>
+                            <div>
+                              <label className="text-[11px] font-medium text-primary-600 dark:text-white/70 mb-1.5 block">وضعیت انتشار</label>
+                              <div className="relative">
+                                <select
+                                  value={bf.status}
+                                  onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), status: e.target.value, id: '' }))}
+                                  className="w-full appearance-none px-3.5 py-2.5 pe-10 rounded-xl border border-primary-200/80 dark:border-white/15 bg-primary-50/40 dark:bg-primary-950 text-sm text-primary-900 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-400/30 focus:border-primary-400 transition cursor-pointer"
+                                >
+                                  <option value="published">منتشر</option>
+                                  <option value="draft">پیش‌نویس</option>
+                                  <option value="scheduled">زمان‌بندی‌شده</option>
+                                </select>
+                                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-primary-400 dark:text-white/50">
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+                                </span>
+                              </div>
+                            </div>
                           </div>
                           <div>
-                            <label className="text-xs text-primary-500 mb-1 block">دسته‌بندی *</label>
-                            <select
-                              value={bf.cat || ''}
-                              onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), cat: e.target.value, id: '' }))}
-                              className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white"
-                            >
-                              <option value="">انتخاب دسته…</option>
-                              {(adminBlogCategories || []).filter(c => c.active !== false).map(c => (
-                                <option key={c.id || c.name} value={c.name}>{c.name}</option>
-                              ))}
-                            </select>
-                            {!(adminBlogCategories || []).some(c => c.active !== false) && (
-                              <p className="text-[10px] text-amber-600 mt-1">
-                                هنوز دسته فعالی نیست.{' '}
-                                <button type="button" className="underline" onClick={() => setAdminTab('blog-categories')}>تعریف دسته مجله</button>
-                              </p>
-                            )}
+                            <div className="flex items-center justify-between gap-2 mb-1.5">
+                              <label className="text-[11px] font-medium text-primary-600 dark:text-white/70">برچسب‌ها</label>
+                              <span className="text-[10px] text-primary-400 dark:text-white/40">ایندکس نمی‌شوند</span>
+                            </div>
+                            <div className="flex flex-wrap gap-2 p-3 min-h-[3rem] rounded-xl border border-primary-200/80 dark:border-white/15 bg-primary-50/30 dark:bg-primary-950/80">
+                              {(adminBlogTags || []).filter(t => t.active !== false).map(tg => {
+                                const selected = (bf.tags || []).includes(tg.name);
+                                return (
+                                  <button
+                                    key={tg.id || tg.name}
+                                    type="button"
+                                    onClick={() => setBlogForm(prev => {
+                                      const base = (prev && !prev.id) ? prev : emptyBlog();
+                                      const cur = Array.isArray(base.tags) ? base.tags : [];
+                                      const next = selected ? cur.filter(x => x !== tg.name) : [...cur, tg.name];
+                                      return { ...base, tags: next, id: '' };
+                                    })}
+                                    className={`text-[11px] px-3 py-1.5 rounded-full border transition ${selected ? 'bg-primary-800 text-white border-primary-800 dark:bg-primary-200 dark:text-primary-900 dark:border-primary-200 shadow-sm' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80 hover:border-primary-400 bg-white dark:bg-primary-900'}`}
+                                  >{tg.name}</button>
+                                );
+                              })}
+                              {!(adminBlogTags || []).some(t => t.active !== false) && (
+                                <span className="text-[11px] text-primary-400 self-center">ابتدا از منوی «برچسب مقالات مجله» برچسب بسازید</span>
+                              )}
+                            </div>
                           </div>
-                          <select value={bf.status} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), status: e.target.value, id: '' }))} className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white">
-                            <option value="published">منتشر</option>
-                            <option value="draft">پیش‌نویس</option>
-                            <option value="scheduled">زمان‌بندی‌شده</option>
-                          </select>
+
+
                           {bf.status === 'scheduled' && (
                             <div className="grid sm:grid-cols-2 gap-3 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-primary-50/50 dark:bg-primary-900/30">
                               <div>
@@ -3160,7 +3212,7 @@ export default function AdminPanelContent() {
                               )}
                             </div>
                           </div>
-                          <input value={bf.excerpt} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), excerpt: e.target.value, id: '' }))} placeholder="خلاصه" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
+                          <input value={bf.excerpt} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), excerpt: e.target.value, id: '' }))} placeholder="یک خلاصه کوتاه برای نمایش در کارت‌ها…" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
                           <SimpleEditor value={bf.body} onChange={(html) => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), body: html, id: '' }))} placeholder="متن کامل مطلب…" appearance="full" maxLength={50000} mode="admin" />
                           {renderContentSeoBox({
                             mode: 'article', sellerLimited: false, adminSeoLayout: true, showAdminIndexCanonical: true,
@@ -3268,7 +3320,10 @@ export default function AdminPanelContent() {
                             <p className="text-sm font-bold text-primary-900 dark:text-white">ویرایش مطلب</p>
                             <button type="button" onClick={() => setBlogForm(null)} className="text-xs px-2.5 py-1 rounded-full border border-primary-200 dark:border-white/25">بستن</button>
                           </div>
-                          <input value={blogForm.title} onChange={e => setBlogForm(f => ({ ...f, title: e.target.value }))} placeholder="عنوان *" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
+                          <div>
+                            <label className="text-[11px] font-medium text-primary-600 dark:text-white/70 mb-1.5 block">عنوان مطلب <span className="text-red-500">*</span></label>
+                            <input value={blogForm.title} onChange={e => setBlogForm(f => ({ ...f, title: e.target.value }))} placeholder="عنوان مطلب را بنویسید…" className="w-full px-3.5 py-2.5 rounded-xl border border-primary-200/80 dark:border-white/15 bg-white dark:bg-primary-950 text-sm text-primary-900 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-400/30 focus:border-primary-400 transition" />
+                          </div>
                           <div>
                             <input
                               value={blogForm.slug || ''}
@@ -3280,30 +3335,76 @@ export default function AdminPanelContent() {
                                 const auto = (typeof slugifyTaxonomy === 'function' ? slugifyTaxonomy(t) : t.replace(/\s+/g, '-'));
                                 setBlogForm(f => ({ ...f, slug: auto }));
                               }}
-                              placeholder="آدرس URL (slug) — خالی بماند از عنوان ساخته می‌شود"
-                              className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white font-latin"
+                              placeholder="خالی بماند → از عنوان ساخته می‌شود"
+                              className="w-full px-3.5 py-2.5 rounded-xl border border-primary-200/80 dark:border-white/15 bg-white dark:bg-primary-950 text-sm text-primary-900 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-400/30 focus:border-primary-400 transition font-latin"
                               dir="ltr"
                             />
-                            <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">/مجله/{(blogForm.slug || 'از-عنوان').toString()}</p>
+                            <p className="text-[10px] text-primary-400 mt-1.5 font-latin" dir="ltr">/مجله/{(blogForm.slug || 'از-عنوان').toString()}</p>
+                          </div>
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-[11px] font-medium text-primary-600 dark:text-white/70 mb-1.5 block">دسته‌بندی <span className="text-red-500">*</span></label>
+                              <div className="relative">
+                                <select
+                                  value={blogForm.cat || ''}
+                                  onChange={e => setBlogForm(f => ({ ...f, cat: e.target.value }))}
+                                  className="w-full appearance-none px-3.5 py-2.5 pe-10 rounded-xl border border-primary-200/80 dark:border-white/15 bg-primary-50/40 dark:bg-primary-950 text-sm text-primary-900 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-400/30 focus:border-primary-400 transition cursor-pointer"
+                                >
+                                  <option value="">انتخاب دسته…</option>
+                                  {(adminBlogCategories || []).filter(c => c.active !== false).map(c => (
+                                    <option key={c.id || c.name} value={c.name}>{c.name}</option>
+                                  ))}
+                                </select>
+                                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-primary-400 dark:text-white/50">
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+                                </span>
+                              </div>
+                            </div>
+                            <div>
+                              <label className="text-[11px] font-medium text-primary-600 dark:text-white/70 mb-1.5 block">وضعیت انتشار</label>
+                              <div className="relative">
+                                <select
+                                  value={blogForm.status}
+                                  onChange={e => setBlogForm(f => ({ ...f, status: e.target.value }))}
+                                  className="w-full appearance-none px-3.5 py-2.5 pe-10 rounded-xl border border-primary-200/80 dark:border-white/15 bg-primary-50/40 dark:bg-primary-950 text-sm text-primary-900 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-400/30 focus:border-primary-400 transition cursor-pointer"
+                                >
+                                  <option value="published">منتشر</option>
+                                  <option value="draft">پیش‌نویس</option>
+                                  <option value="scheduled">زمان‌بندی‌شده</option>
+                                </select>
+                                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-primary-400 dark:text-white/50">
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+                                </span>
+                              </div>
+                            </div>
                           </div>
                           <div>
-                            <label className="text-xs text-primary-500 mb-1 block">دسته‌بندی *</label>
-                            <select
-                              value={blogForm.cat || ''}
-                              onChange={e => setBlogForm(f => ({ ...f, cat: e.target.value }))}
-                              className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white"
-                            >
-                              <option value="">انتخاب دسته…</option>
-                              {(adminBlogCategories || []).filter(c => c.active !== false).map(c => (
-                                <option key={c.id || c.name} value={c.name}>{c.name}</option>
-                              ))}
-                            </select>
+                            <div className="flex items-center justify-between gap-2 mb-1.5">
+                              <label className="text-[11px] font-medium text-primary-600 dark:text-white/70">برچسب‌ها</label>
+                              <span className="text-[10px] text-primary-400 dark:text-white/40">ایندکس نمی‌شوند</span>
+                            </div>
+                            <div className="flex flex-wrap gap-2 p-3 min-h-[3rem] rounded-xl border border-primary-200/80 dark:border-white/15 bg-primary-50/30 dark:bg-primary-950/80">
+                              {(adminBlogTags || []).filter(t => t.active !== false).map(tg => {
+                                const selected = (blogForm.tags || []).includes(tg.name);
+                                return (
+                                  <button
+                                    key={tg.id || tg.name}
+                                    type="button"
+                                    onClick={() => setBlogForm(f => {
+                                      const cur = Array.isArray(f.tags) ? f.tags : [];
+                                      const next = selected ? cur.filter(x => x !== tg.name) : [...cur, tg.name];
+                                      return { ...f, tags: next };
+                                    })}
+                                    className={`text-[11px] px-3 py-1.5 rounded-full border transition ${selected ? 'bg-primary-800 text-white border-primary-800 dark:bg-primary-200 dark:text-primary-900 dark:border-primary-200 shadow-sm' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80 hover:border-primary-400 bg-white dark:bg-primary-900'}`}
+                                  >{tg.name}</button>
+                                );
+                              })}
+                              {!(adminBlogTags || []).some(t => t.active !== false) && (
+                                <span className="text-[11px] text-primary-400 self-center">ابتدا از منوی «برچسب مقالات مجله» برچسب بسازید</span>
+                              )}
+                            </div>
                           </div>
-                          <select value={blogForm.status} onChange={e => setBlogForm(f => ({ ...f, status: e.target.value }))} className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white">
-                            <option value="published">منتشر</option>
-                            <option value="draft">پیش‌نویس</option>
-                            <option value="scheduled">زمان‌بندی‌شده</option>
-                          </select>
+
                           {blogForm.status === 'scheduled' && (
                             <div className="grid sm:grid-cols-2 gap-3 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-primary-50/50 dark:bg-primary-900/30">
                               <div>
