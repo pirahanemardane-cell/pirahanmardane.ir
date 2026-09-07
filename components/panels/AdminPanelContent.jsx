@@ -831,7 +831,7 @@ export default function AdminPanelContent() {
                                     if (!ok) return;
                                     if (typeof adminPurgeSeller === 'function') await adminPurgeSeller(s.id);
                                     else if (typeof showToast === 'function') showToast({ message: 'حذف دائم در دسترس نیست', variant: 'error', duration: 4000, position: 'top-center' });
-                                  }} className="text-xs px-2.5 py-1 rounded-full border border-red-500 bg-red-50 text-red-700 font-medium">حذف برای همیشه</button>
+                                  }} className="text-xs px-2.5 py-1 rounded-full border border-red-500 bg-red-50 text-red-700 font-medium">حذف دائم</button>
                                 </>
                               ) : (
                                 <button type="button" onClick={()=>deleteSeller(s.id)} className="text-xs px-2.5 py-1 rounded-full border border-red-300 bg-red-50 text-red-700">حذف</button>
@@ -1312,7 +1312,7 @@ export default function AdminPanelContent() {
                                     }}
                                     className="text-xs px-2 py-0.5 rounded-full border border-red-500 bg-red-50 text-red-700 font-medium"
                                   >
-                                    حذف برای همیشه
+                                    حذف دائم
                                   </button>
                                 ) : (
                                   <button
