@@ -46,10 +46,11 @@ export async function GET(request) {
 
     const amount = Math.round(Number(order.payable ?? order.total) || 0)
 
-    // محافظت S1: فقط ادمین می‌تواند از mock استفاده کند
+    // حالت mock: فقط ادمین‌ها مجاز هستند
     if (isMock() || String(authority).startsWith('MOCK-')) {
       const supabase = await createClient()
       const { data: { user } } = await supabase.auth.getUser()
+      
       if (!user) {
         return NextResponse.redirect(site + '/?pay=failed&reason=mock_auth')
       }
@@ -68,7 +69,7 @@ export async function GET(request) {
       return NextResponse.redirect(site + '/?pay=ok&order=' + order.id + '&mock=1')
     }
 
-    // حالت واقعی زرین‌پال
+    // حالت واقعی (وقتی Merchant ID آمد)
     const merchant = process.env.ZARINPAL_MERCHANT_ID
     const zpRes = await fetch('https://api.zarinpal.com/pg/v4/payment/verify.json', {
       method: 'POST',
