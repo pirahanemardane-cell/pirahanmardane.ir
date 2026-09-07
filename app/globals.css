@@ -4829,3 +4829,51 @@ html, body {
   max-height: none !important;
   height: auto !important;
 }
+
+/* ===== Mobile tabs: 3 full + peek of 4th (admin / seller / buyer) ===== */
+@media (max-width: 767px) {
+  .panel-ui .panel-nav,
+  .admin-panel-shell .admin-tabs-strip,
+  .seller-panel-shell .seller-tabs-strip,
+  .profile-tabs-strip,
+  .profile-page-shell .profile-tabs-strip {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 0.25rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .panel-ui .panel-nav-item,
+  .admin-tabs-strip .panel-nav-item,
+  .seller-tabs-strip .panel-nav-item,
+  .profile-tabs-strip .panel-nav-item {
+    flex: 0 0 calc((100% - 0.75rem) / 3.25) !important;
+    width: calc((100% - 0.75rem) / 3.25) !important;
+    max-width: calc((100% - 0.75rem) / 3.25) !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding-left: 0.3rem !important;
+    padding-right: 0.3rem !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .panel-ui .panel-nav-item span,
+  .admin-tabs-strip .panel-nav-item span,
+  .seller-tabs-strip .panel-nav-item span,
+  .profile-tabs-strip .panel-nav-item span {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: 100% !important;
+  }
+}
