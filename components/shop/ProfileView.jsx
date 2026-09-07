@@ -1012,7 +1012,7 @@ export default function ProfileView() {
                         <div className="wishlist-col-products space-y-3 min-w-0" style={{ flex: '1 1 300px', minWidth: '260px', maxWidth: '100%' }}>
                           <h3 className="text-sm font-bold text-primary-900 dark:text-white">محصولات لایک‌شده ({toFa((wishlistProducts || []).length)})</h3>
                           {(wishlistProducts || []).length === 0 ? (
-                            <p className="text-sm text-primary-500 text-center py-8">کالایی در علاقه‌مندی‌ها نیست</p>
+                            <p className="text-sm text-primary-500 text-right py-4">کالایی در علاقه‌مندی‌ها نیست</p>
                           ) : (
                             <div className="space-y-3">
                               {(wishlistProducts || []).map(p => (
@@ -1051,7 +1051,7 @@ export default function ProfileView() {
                         <div className="wishlist-col-blogs space-y-3 min-w-0" style={{ flex: '1 1 300px', minWidth: '260px', maxWidth: '100%' }}>
                           <h3 className="text-sm font-bold text-primary-900 dark:text-white">بلاگ‌های لایک‌شده ({toFa(likedBlogs.length)})</h3>
                           {likedBlogs.length === 0 ? (
-                            <p className="text-sm text-primary-500 text-center py-8">هنوز مطلب بلاگی لایک نکرده‌اید</p>
+                            <p className="text-sm text-primary-500 text-right py-4">هنوز مطلب بلاگی لایک نکرده‌اید</p>
                           ) : (
                             <div className="space-y-2">
                               {likedBlogs.map(lb => {

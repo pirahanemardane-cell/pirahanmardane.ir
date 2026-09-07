@@ -5263,7 +5263,7 @@ export default function AdminPanelContent() {
 
                   {/* Admin profile */}
                   {!adminLoading && adminTab === 'profile' && (
-                    <div className="max-w-md space-y-4">
+                    <div className="w-full max-w-none space-y-4">
                       <h2 className="text-base font-bold text-primary-900 dark:text-white">پروفایل ادمین</h2>
                       <div className="p-4 rounded-2xl bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 space-y-2 text-sm">
                         <p><span className="text-primary-500">نام:</span> {adminUser.name}</p>

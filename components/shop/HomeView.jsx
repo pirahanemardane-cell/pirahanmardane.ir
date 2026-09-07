@@ -237,14 +237,27 @@ export default function HomeView() {
                 <div className="relative">
                   <CarouselArrows trackRef={sellersTrackRef} />
                   <div ref={sellersTrackRef} className="carousel-track flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar pb-2 scroll-smooth snap-x px-0 sm:px-10" style={{ WebkitOverflowScrolling: 'touch' }}>
-                  {topSellers.slice(0, 6).map((s) => (
+                  {topSellers.slice(0, 6).map((s) => {
+                    const img = String(s.image || s.logo || s.avatar || '').trim();
+                    const hasPhoto = img && !/default-avatar|logo\.webp|^\/logo/i.test(img);
+                    const letter = (() => {
+                      const t = String(s.name || s.shopName || '').trim();
+                      const m = t.match(/[\u0600-\u06FFa-zA-Z0-9]/);
+                      return (m ? m[0] : (t[0] || '؟')).toUpperCase();
+                    })();
+                    return (
                     <button
                       key={s.id}
                       type="button"
                       onClick={() => { setActiveSellerId(s.id); setSellerCat('همه'); setSellerSort('newest'); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                       className="group flex-shrink-0 w-[78%] min-[400px]:w-[70%] sm:w-[42%] md:w-[calc((100%-2.5rem)/3.3)] lg:w-[calc((100%-3.5rem)/4.3)] relative overflow-hidden rounded-xl bg-white dark:bg-primary-900 sm:rounded-2xl text-right min-h-[160px] sm:min-h-[180px] border border-primary-200 dark:border-white/30 snap-start"
                     >
-                      <img src={s.image} alt={s.name} className="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" decoding="async" />
+                      {hasPhoto ? (
+                        <img src={img} alt={s.name} className="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" decoding="async" onError={(e) => { try { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList?.remove('hidden'); } catch (_) {} }} />
+                      ) : null}
+                      <div className={`absolute inset-0 flex items-center justify-center bg-primary-200 dark:bg-primary-800 ${hasPhoto ? 'hidden' : ''}`} aria-hidden={hasPhoto ? 'true' : undefined}>
+                        <span className="text-5xl sm:text-6xl font-bold text-primary-700 dark:text-white select-none" style={{ fontFamily: 'IRANYekanX, var(--font-app), sans-serif' }}>{letter}</span>
+                      </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/25" />
                       <div className="relative z-10 flex flex-col h-full justify-end p-4 sm:p-5 min-h-[160px] sm:min-h-[180px]">
                         <h3 className="text-base font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{s.name}</h3>

@@ -49,7 +49,7 @@ export default function PermissionsPanelContent({ adminSettings, setAdminSetting
   };
 
   return (
-    <div className="space-y-6 max-w-xl">
+    <div className="space-y-6 w-full max-w-none">
       <div>
         <h2 className="text-lg font-bold text-primary-900 dark:text-white mb-1">مجوزهای سایت</h2>
         <p className="text-xs text-primary-500 dark:text-white/60">
