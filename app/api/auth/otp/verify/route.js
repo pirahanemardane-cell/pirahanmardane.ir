@@ -203,7 +203,7 @@ if (!isValidIranMobile(phone)) {
         })
       }
 
-      return NextResponse.json({
+      const res = NextResponse.json({
         ok: true,
         message: 'ورود موفق',
         needs_profile: false,
@@ -213,6 +213,19 @@ if (!isValidIranMobile(phone)) {
           : { id: profile.id },
         profile,
       })
+      // سشن ادمین: کوکی عمر نشست (پیش‌فرض ۲ ساعت)
+      if (roleWanted === 'admin' && isAdminPhone(phone)) {
+        const maxAge = Number(process.env.ADMIN_SESSION_MAX_AGE_SEC || 2 * 60 * 60)
+        const secure = process.env.NODE_ENV === 'production'
+        res.cookies.set('pm_admin_since', String(Date.now()), {
+          path: '/',
+          httpOnly: true,
+          sameSite: 'lax',
+          secure,
+          maxAge: Number.isFinite(maxAge) && maxAge > 300 ? maxAge : 2 * 60 * 60,
+        })
+      }
+      return res
     }
 
     return NextResponse.json({
