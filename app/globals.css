@@ -4673,3 +4673,26 @@ html.dark button.seller-rank-chip--on {
     overflow: visible !important;
   }
 }
+
+
+/* STICKY FIX v2 — no overflow on shells */
+.admin-panel-shell,
+.seller-panel-shell,
+.panel-ui--admin,
+.panel-ui--seller,
+.panel-ui--buyer {
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+@media (min-width: 768px) {
+  .panel-sidebar,
+  aside.panel-sidebar {
+    position: sticky !important;
+    top: 5rem !important;
+    align-self: flex-start !important;
+    max-height: calc(100vh - 5rem) !important;
+    overflow-y: auto !important;
+    z-index: 30 !important;
+  }
+}
