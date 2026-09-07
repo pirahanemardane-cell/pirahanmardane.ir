@@ -3667,27 +3667,27 @@ export default function AdminPanelContent() {
                           };
                           return (
                             <div className="space-y-3">
-                              <div className="max-h-56 overflow-y-auto rounded-xl border border-primary-100 dark:border-white/10 divide-y divide-primary-50 dark:divide-white/5">
+                              <div className="seo-page-list max-h-72 overflow-y-auto rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 divide-y divide-primary-100 dark:divide-white/10">
                                 {all.map(item => {
                                   const saved = pageSeoMap[item.key];
                                   const isOn = adminSeoHubKey === item.key;
+                                  const isNoindex = !!(saved?.indexable === false || saved?.noindex);
                                   return (
                                     <button
                                       key={item.key}
                                       type="button"
                                       onClick={() => setAdminSeoHubKey(isOn ? null : item.key)}
-                                      className={`w-full text-right px-3 py-2.5 flex items-center justify-between gap-2 text-xs transition ${isOn ? 'bg-primary-50 dark:bg-primary-800' : 'hover:bg-primary-50/60 dark:hover:bg-primary-800/50'}`}
+                                      className={`seo-page-list-row w-full text-right px-4 py-3.5 flex items-center justify-between gap-3 transition ${isOn ? 'is-active' : ''}`}
                                     >
-                                      <span className="font-medium text-primary-900 dark:text-white truncate">{item.label}</span>
+                                      <span className="text-sm font-medium text-primary-900 dark:text-white truncate">{item.label}</span>
                                       <span className="flex items-center gap-1.5 flex-shrink-0">
-                                        {saved?.indexable === false || saved?.noindex ? (
-                                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">noindex</span>
+                                        {isNoindex ? (
+                                          <span className="seo-page-badge seo-page-badge--warn">noindex</span>
                                         ) : saved ? (
-                                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200">ذخیره‌شده</span>
+                                          <span className="seo-page-badge seo-page-badge--ok">تنظیم شده</span>
                                         ) : (
-                                          <span className="text-[10px] text-primary-400">تنظیم نشده</span>
+                                          <span className="seo-page-badge seo-page-badge--muted">تنظیم نشده</span>
                                         )}
-                                        <span className="text-primary-400">{isOn ? '▲' : '▼'}</span>
                                       </span>
                                     </button>
                                   );

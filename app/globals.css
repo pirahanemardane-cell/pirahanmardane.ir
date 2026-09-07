@@ -4490,3 +4490,104 @@ html.dark .seo-page-row .seo-badge-off {
   color: #a1a1aa !important;
   -webkit-text-fill-color: #a1a1aa !important;
 }
+
+/* ===== SEO page list = pages-tab style (no brand red) ===== */
+.panel-ui .seo-page-list,
+.seo-page-list {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 1rem !important;
+}
+html.dark .panel-ui .seo-page-list,
+html.dark .seo-page-list {
+  background: #18181b !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+.panel-ui button.seo-page-list-row,
+button.seo-page-list-row,
+.seo-page-list-row {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  font-weight: 500 !important;
+  filter: none !important;
+  opacity: 1 !important;
+  min-height: 3rem !important;
+}
+html.dark .panel-ui button.seo-page-list-row,
+html.dark button.seo-page-list-row {
+  color: #f4f4f5 !important;
+  -webkit-text-fill-color: #f4f4f5 !important;
+  background: transparent !important;
+}
+.panel-ui button.seo-page-list-row:hover,
+button.seo-page-list-row:hover {
+  background: #f9fafb !important;
+  background-color: #f9fafb !important;
+}
+html.dark .panel-ui button.seo-page-list-row:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+.panel-ui button.seo-page-list-row.is-active,
+button.seo-page-list-row.is-active {
+  background: #f3f4f6 !important;
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+html.dark .panel-ui button.seo-page-list-row.is-active {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #fafafa !important;
+  -webkit-text-fill-color: #fafafa !important;
+}
+.panel-ui button.seo-page-list-row *,
+button.seo-page-list-row * {
+  color: inherit;
+}
+.seo-page-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.25rem 0.65rem !important;
+  border-radius: 9999px !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  border: 1px solid #e5e7eb !important;
+  background: #ffffff !important;
+  color: #6b7280 !important;
+  -webkit-text-fill-color: #6b7280 !important;
+  white-space: nowrap !important;
+}
+html.dark .seo-page-badge {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #a1a1aa !important;
+  -webkit-text-fill-color: #a1a1aa !important;
+}
+.seo-page-badge--ok {
+  border-color: #d1d5db !important;
+  color: #374151 !important;
+  -webkit-text-fill-color: #374151 !important;
+  background: #fff !important;
+}
+.seo-page-badge--muted {
+  border-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
+}
+.seo-page-badge--warn {
+  border-color: #fcd34d !important;
+  color: #b45309 !important;
+  -webkit-text-fill-color: #b45309 !important;
+  background: #fffbeb !important;
+}
+html.dark .seo-page-badge--warn {
+  background: rgba(245, 158, 11, 0.12) !important;
+  color: #fcd34d !important;
+  -webkit-text-fill-color: #fcd34d !important;
+}
