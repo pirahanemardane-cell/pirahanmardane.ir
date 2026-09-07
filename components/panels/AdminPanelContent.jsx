@@ -2291,8 +2291,8 @@ export default function AdminPanelContent() {
                       <div className="pt-6 border-t border-primary-100 dark:border-white/10 space-y-3">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
-                            <h2 className="text-base font-bold text-primary-900 dark:text-white">برچسب مقالات</h2>
-                            <p className="text-xs text-primary-500 mt-0.5">برچسب‌های مطالب بلاگ</p>
+                            <h2 className="text-base font-bold text-primary-900 dark:text-white">برچسب مقالات مجله</h2>
+                            <p className="text-xs text-primary-500 mt-0.5">صفحه هر برچسب هرگز ایندکس نمی‌شود (noindex دائمی)</p>
                           </div>
                           <button type="button" onClick={() => openTaxonomyWizard('blog-tag')} className="text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white font-medium flex items-center gap-1">
                             <Icon name="plus" size={14} /> افزودن برچسب
@@ -3042,7 +3042,7 @@ export default function AdminPanelContent() {
 {!adminLoading && adminTab === 'blog-new' && (() => {
                     const emptyBlog = () => {
                       const defCat = ((adminBlogCategories || []).find(c => c.active !== false) || {}).name || 'راهنمای خرید';
-                      return { id: '', title: '', slug: '', cat: defCat, excerpt: '', body: '', status: 'published', author: 'تحریریه', read: '۵ دقیقه', publishAtDate: '', publishAtTime: '10:00', publishAtMs: null, publishAtFa: '', seoTitle: '', seoDescription: '', seoFocusKeywords: '', seoCanonical: '', seoOgImage: '', imageAlt: '', image: '', seoNoindex: false, seoFaq: [] };
+                      return { id: '', title: '', slug: '', cat: defCat, tags: [], excerpt: '', body: '', status: 'published', author: 'تحریریه', read: '۵ دقیقه', publishAtDate: '', publishAtTime: '10:00', publishAtMs: null, publishAtFa: '', seoTitle: '', seoDescription: '', seoFocusKeywords: '', seoCanonical: '', seoOgImage: '', imageAlt: '', image: '', seoNoindex: false, seoFaq: [] };
                     };
                     const form = (blogForm && !blogForm.id) ? blogForm : (blogForm && blogForm.id ? blogForm : null);
                     /* فقط مقاله جدید در این تب — اگر فرم ویرایش باشد به مطالب هدایت می‌شود */
@@ -3135,6 +3135,31 @@ export default function AdminPanelContent() {
                               {bf.publishAtFa && <p className="sm:col-span-2 text-xs text-apple-blue">انتشار در: {bf.publishAtFa}</p>}
                             </div>
                           )}
+
+                          <div>
+                            <label className="text-xs text-primary-500 mb-1 block">برچسب‌ها (ایندکس نمی‌شوند)</label>
+                            <div className="flex flex-wrap gap-2 p-2 rounded-xl border border-primary-200 dark:border-white/20">
+                              {(adminBlogTags || []).filter(t => t.active !== false).map(tg => {
+                                const selected = (bf.tags || []).includes(tg.name);
+                                return (
+                                  <button
+                                    key={tg.id || tg.name}
+                                    type="button"
+                                    onClick={() => setBlogForm(prev => {
+                                      const base = (prev && !prev.id) ? prev : emptyBlog();
+                                      const cur = Array.isArray(base.tags) ? base.tags : [];
+                                      const next = selected ? cur.filter(x => x !== tg.name) : [...cur, tg.name];
+                                      return { ...base, tags: next, id: '' };
+                                    })}
+                                    className={`text-[11px] px-2.5 py-1 rounded-full border transition ${selected ? 'bg-primary-800 text-white border-primary-800 dark:bg-primary-200 dark:text-primary-900' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white'}`}
+                                  >{tg.name}</button>
+                                );
+                              })}
+                              {!(adminBlogTags || []).some(t => t.active !== false) && (
+                                <span className="text-[10px] text-primary-400">ابتدا در «برچسب مقالات» برچسب بسازید</span>
+                              )}
+                            </div>
+                          </div>
                           <input value={bf.excerpt} onChange={e => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), excerpt: e.target.value, id: '' }))} placeholder="خلاصه" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
                           <SimpleEditor value={bf.body} onChange={(html) => setBlogForm(prev => ({ ...(prev && !prev.id ? prev : emptyBlog()), body: html, id: '' }))} placeholder="متن کامل مطلب…" appearance="full" maxLength={50000} mode="admin" />
                           {renderContentSeoBox({
@@ -3180,6 +3205,7 @@ export default function AdminPanelContent() {
                                 cat: catName,
                                 category: catName,
                                 category_id: catObj?.id && !String(catObj.id).startsWith('bc-') ? catObj.id : null,
+                                tags: Array.isArray(cur.tags) ? cur.tags : [],
                                 cover_image: cur.image || cur.cover || null,
                               };
                               try {
@@ -3350,6 +3376,7 @@ export default function AdminPanelContent() {
                                 cat: catName,
                                 category: catName,
                                 category_id: catObj?.id && !String(catObj.id).startsWith('bc-') ? catObj.id : null,
+                                tags: Array.isArray(blogForm.tags) ? blogForm.tags : [],
                                 cover_image: blogForm.image || blogForm.cover || null,
                               };
                               try {

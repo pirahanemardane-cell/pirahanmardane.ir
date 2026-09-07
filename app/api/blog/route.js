@@ -27,7 +27,7 @@ export async function GET(request) {
       }
       const { data, error } = await admin
         .from('blog_posts')
-        .select('id, slug, title, excerpt, body, cover_image, cover_url, status, published_at, created_at, category_id')
+        .select('id, slug, title, excerpt, body, cover_image, cover_url, status, published_at, created_at, category_id, tag_names')
         .order('created_at', { ascending: false })
         .limit(limit)
       if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
@@ -36,7 +36,7 @@ export async function GET(request) {
 
     const { data, error } = await db
       .from('blog_posts')
-      .select('id, slug, title, excerpt, body, cover_image, cover_url, status, published_at, created_at, category_id')
+      .select('id, slug, title, excerpt, body, cover_image, cover_url, status, published_at, created_at, category_id, tag_names')
       .eq('status', 'published')
       .order('published_at', { ascending: false })
       .limit(limit)
@@ -48,12 +48,15 @@ export async function GET(request) {
     } catch (_) {}
     const posts = (data || []).map((p) => {
       const c = p.category_id ? catMap[p.category_id] : null
+      const tags = Array.isArray(p.tag_names) ? p.tag_names.filter(Boolean) : []
       return {
         ...p,
         category: c?.name || null,
         category_name: c?.name || null,
         category_slug: c?.slug || null,
         cat: c?.name || null,
+        tags,
+        tag_names: tags,
       }
     })
     return NextResponse.json(
@@ -112,6 +115,9 @@ export async function POST(request) {
       status: body.status === 'draft' ? 'draft' : 'published',
       published_at: new Date().toISOString(),
       category_id: categoryId,
+      tag_names: Array.isArray(body.tags)
+        ? body.tags.map((t) => String(t).trim()).filter(Boolean)
+        : (Array.isArray(body.tag_names) ? body.tag_names.map((t) => String(t).trim()).filter(Boolean) : []),
     }
     const { data, error } = await admin.from('blog_posts').insert(row).select('*').single()
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
@@ -157,6 +163,12 @@ export async function PATCH(request) {
       } else {
         patch.category_id = null
       }
+    }
+    if (body.tags != null || body.tag_names != null) {
+      const raw = body.tags != null ? body.tags : body.tag_names
+      patch.tag_names = Array.isArray(raw)
+        ? raw.map((t) => String(t).trim()).filter(Boolean)
+        : []
     }
     const { data, error } = await admin.from('blog_posts').update(patch).eq('id', id).select('*').maybeSingle()
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })

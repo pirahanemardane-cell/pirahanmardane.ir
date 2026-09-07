@@ -1147,6 +1147,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                 cat: catName,
                 category: catName,
                 category_slug: p.category_slug || '',
+                tags: Array.isArray(p.tags) ? p.tags : (Array.isArray(p.tag_names) ? p.tag_names : []),
                 author: p.author || p.author_name || 'پیراهن مردانه',
                 read: p.read || '۵ دقیقه',
               };
@@ -5114,6 +5115,17 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           }
           if (parsed.type === 'static' && parsed.page) {
             setStaticPage(parsed.page);
+            try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
+            return;
+          }
+          if (parsed.type === 'blog-tag') {
+            setStaticPage('blog');
+            setBlogPostId(null);
+            try {
+              const slug = String(parsed.tagSlug || '');
+              // نام برچسب را در فیلتر بگذار (slug یا نام)
+              setFaqQuery(slug ? decodeURIComponent(slug).replace(/_/g, ' ') : '');
+            } catch (_) { setFaqQuery(''); }
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
@@ -11300,7 +11312,11 @@ const verifyOtp = async () => {
           const robots = adminFrontEditForm.indexable ? 'index, follow' : 'noindex, nofollow';
           let r = document.querySelector('meta[name="robots"]');
           if (!r) { r = document.createElement('meta'); r.setAttribute('name', 'robots'); document.head.appendChild(r); }
-          r.setAttribute('content', robots);
+          // برچسب مجله: همیشه noindex حتی اگر سایت index باشد
+          const pathNow = (typeof window !== 'undefined' ? window.location.pathname : '') || '';
+          const isMagTag = pathNow.includes('/برچسب/') || pathNow.includes('%D8%A8%D8%B1%DA%86%D8%B3%D8%A8');
+          r.setAttribute('content', isMagTag ? 'noindex, nofollow' : robots);
+          /* MAGAZINE_TAG_NOINDEX */
         } catch (_) {}
       };
 
