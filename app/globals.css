@@ -2520,13 +2520,18 @@ header, .site-header {
 .pdp-shell,
 .cart-page-shell,
 .checkout-page-shell,
-.seller-panel-shell,
-.admin-panel-shell,
-.profile-page-shell,
 .sellers-list-shell,
 .static-page-shell {
   position: relative;
   z-index: 1;
+}
+/* پنل‌ها: بدون z-index پایین — وگرنه site-modal زیر هدر (z-100) می‌ماند */
+.seller-panel-shell,
+.admin-panel-shell,
+.profile-page-shell,
+.profile-panel-shell {
+  position: relative;
+  z-index: auto;
 }
 nav[aria-label="breadcrumb"] {
   position: relative;
@@ -4200,4 +4205,37 @@ html.dark .panel-nav-item--active svg {
   color: #0A0A0A !important;
   stroke: #0A0A0A !important;
   -webkit-text-fill-color: #0A0A0A !important;
+}
+
+/* ===== FORCE: modal above site header (all panels) ===== */
+/* هدر fixed z-[100] است؛ مودال داخل شل پنل بود و زیر هدر دیده می‌شد */
+.seller-panel-shell:has(.site-modal-root),
+.admin-panel-shell:has(.site-modal-root),
+.profile-page-shell:has(.site-modal-root),
+.profile-panel-shell:has(.site-modal-root),
+.panel-ui:has(.site-modal-root),
+.admin-panel-shell:has([role="dialog"]),
+.seller-panel-shell:has([role="dialog"]),
+.profile-page-shell:has([role="dialog"]) {
+  z-index: 20050 !important;
+  position: relative !important;
+}
+
+.site-modal-root {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 20000 !important;
+}
+
+/* هدر زیر مودال بماند وقتی مودال باز است */
+body:has(.site-modal-root) header.site-header,
+body:has(.site-modal-root) .site-header,
+body.site-modal-open header.site-header,
+body.site-modal-open .site-header {
+  z-index: 90 !important;
+}
+
+/* خود هدر هرگز از مودال بالاتر نیاید اگر مودال در body باشد */
+header.site-header {
+  z-index: 100;
 }
