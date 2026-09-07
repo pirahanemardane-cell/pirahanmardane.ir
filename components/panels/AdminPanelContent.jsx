@@ -343,7 +343,7 @@ export default function AdminPanelContent() {
                 </div>
               </div>
               <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-                <aside className="panel-sidebar w-full md:w-64 flex-shrink-0 md:sticky md:top-20 md:h-[calc(100vh-5rem)] md:self-start z-10 overflow-y-auto">
+                <aside className="panel-sidebar w-full md:w-64 flex-shrink-0 md:sticky md:top-20 md:h-[calc(100vh-5rem)] md:self-start z-20 overflow-y-auto">
                   <div className="admin-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto p-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03] md:min-h-[calc(100vh-6rem)]">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },
@@ -563,7 +563,7 @@ export default function AdminPanelContent() {
                                   return (
                                     <div key={s.k}>
                                       <div className="flex justify-between text-xs mb-0.5"><span>{s.l}</span><span>{toFa(n)} · {toFa(pct)}٪</span></div>
-                                      <div className="h-2 rounded-full bg-primary-100 dark:bg-primary-800 overflow-hidden"><div className={`h-full ${s.c}`} style={{ width: pct + '%' }} /></div>
+                                      <div className="h-2 rounded-full bg-primary-100 dark:bg-primary-800 overflow-visible"><div className={`h-full ${s.c}`} style={{ width: pct + '%' }} /></div>
                                     </div>
                                   );
                                 })}
@@ -583,7 +583,7 @@ export default function AdminPanelContent() {
                                 <div className="flex justify-between"><span className="text-primary-500">فروش کل</span><span className="font-bold">{toFa(rev.toLocaleString())} ت</span></div>
                                 <div className="flex justify-between"><span className="text-primary-500">کارمزد پلتفرم</span><span className="font-bold text-apple-blue">{toFa(fee.toLocaleString())} ت</span></div>
                                 <div className="flex justify-between"><span className="text-primary-500">سهم فروشندگان</span><span className="font-bold text-emerald-600">{toFa(seller.toLocaleString())} ت</span></div>
-                                <div className="h-3 rounded-full overflow-hidden flex bg-primary-100 dark:bg-primary-800">
+                                <div className="h-3 rounded-full overflow-visible flex bg-primary-100 dark:bg-primary-800">
                                   <div className="bg-apple-blue" style={{ width: (rev?Math.round(fee/rev*100):0)+'%' }} />
                                   <div className="bg-emerald-500" style={{ width: (rev?Math.round(seller/rev*100):0)+'%' }} />
                                 </div>
@@ -942,7 +942,7 @@ export default function AdminPanelContent() {
                           <div className="grid sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <p className="text-xs text-primary-500">پروفایل · {logoSt === 'pending' || pendLogo ? 'در انتظار تأیید' : logoSt === 'approved' ? 'منتشر شده' : '—'}</p>
-                              <div className="w-20 h-20 rounded-full overflow-hidden border border-primary-200 bg-primary-50 flex items-center justify-center">
+                              <div className="w-20 h-20 rounded-full overflow-visible border border-primary-200 bg-primary-50 flex items-center justify-center">
                                 {(pendLogo || pubLogo) ? (
                                   <img src={pendLogo || pubLogo} alt="" className="w-full h-full object-cover" onError={(e) => { try { e.currentTarget.removeAttribute('src'); } catch (_) {} }} />
                                 ) : <span className="text-[11px] text-primary-400">ندارد</span>}
@@ -956,7 +956,7 @@ export default function AdminPanelContent() {
                             </div>
                             <div className="space-y-2">
                               <p className="text-xs text-primary-500">کاور · {bannerSt === 'pending' || pendBanner ? 'در انتظار تأیید' : bannerSt === 'approved' ? 'منتشر شده' : '—'}</p>
-                              <div className="w-full h-20 rounded-xl overflow-hidden border border-primary-200 bg-primary-50 flex items-center justify-center">
+                              <div className="w-full h-20 rounded-xl overflow-visible border border-primary-200 bg-primary-50 flex items-center justify-center">
                                 {(pendBanner || pubBanner) ? (
                                   <img src={pendBanner || pubBanner} alt="" className="w-full h-full object-cover" onError={(e) => { try { e.currentTarget.removeAttribute('src'); } catch (_) {} }} />
                                 ) : <span className="text-[11px] text-primary-400">ندارد</span>}
@@ -2030,7 +2030,7 @@ export default function AdminPanelContent() {
                         const pageFaqs = Array.isArray(cms.faqs) ? cms.faqs : (active?.hasPageFaqs ? DEFAULT_SELLER_FAQS : []);
                         return (
                           <div className="space-y-3">
-                            <div className="rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 divide-y divide-primary-50 dark:divide-white/5 overflow-hidden">
+                            <div className="rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 divide-y divide-primary-50 dark:divide-white/5 overflow-visible">
                               {sitePages.map(item => {
                                 const saved = pageSeoMap[item.key] || getPageCms(item.cmsKey);
                                 const isOn = adminSeoHubKey === item.key;
@@ -2927,7 +2927,7 @@ export default function AdminPanelContent() {
                                   <div className="mt-2 space-y-1">
                                     <p className="text-xs text-primary-500">ویدیو آپارات (embed):</p>
                                     <p className="text-xs font-latin text-left text-primary-400 break-all" dir="ltr">{item.aparatEmbed}</p>
-                                    <div className="aspect-video max-w-sm rounded-xl overflow-hidden border border-primary-200 dark:border-white/15 bg-black">
+                                    <div className="aspect-video max-w-sm rounded-xl overflow-visible border border-primary-200 dark:border-white/15 bg-black">
                                       <iframe title="پیش‌نمایش آپارات" src={item.aparatEmbed} className="w-full h-full border-0" allowFullScreen loading="lazy" />
                                     </div>
                                   </div>
@@ -4686,7 +4686,7 @@ export default function AdminPanelContent() {
                               return (
                                 <div key={metric}>
                                   <p className="text-xs font-bold text-primary-800 dark:text-white mb-1 uppercase font-latin">{metric}</p>
-                                  <div className="flex h-3 rounded-full overflow-hidden">
+                                  <div className="flex h-3 rounded-full overflow-visible">
                                     <div className="bg-emerald-500" style={{ width: `${(m.good / total) * 100}%` }} />
                                     <div className="bg-amber-400" style={{ width: `${(m.needs / total) * 100}%` }} />
                                     <div className="bg-red-500" style={{ width: `${(m.poor / total) * 100}%` }} />
@@ -4834,7 +4834,7 @@ export default function AdminPanelContent() {
                           return (
                             <div key={i} className="flex items-center gap-2 text-xs">
                               <span className="w-28 sm:w-40 truncate text-primary-800 dark:text-white/90" title={String(label)}>{label}</span>
-                              <div className="flex-1 h-2 rounded-full bg-primary-100 dark:bg-white/10 overflow-hidden">
+                              <div className="flex-1 h-2 rounded-full bg-primary-100 dark:bg-white/10 overflow-visible">
                                 <div className="h-full rounded-full bg-apple-blue" style={{ width: `${Math.min(100, (val / max) * 100)}%` }} />
                               </div>
                               <span className="w-14 text-left tabular-nums text-primary-600 dark:text-white/70" dir="ltr">{fmt(val)}</span>
@@ -5096,7 +5096,7 @@ export default function AdminPanelContent() {
                                 return (
                                   <div key={name} className="flex items-center gap-2 text-xs">
                                     <span className="w-32 font-latin">{name}</span>
-                                    <div className="flex-1 h-3 rounded-full bg-primary-100 dark:bg-white/10 overflow-hidden">
+                                    <div className="flex-1 h-3 rounded-full bg-primary-100 dark:bg-white/10 overflow-visible">
                                       <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${(val / max) * 100}%` }} />
                                     </div>
                                     <span dir="ltr">{fmt(val)}</span>

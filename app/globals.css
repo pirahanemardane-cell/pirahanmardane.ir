@@ -4649,3 +4649,27 @@ html.dark button.seller-rank-chip--on {
     z-index: 10 !important;
   }
 }
+
+
+/* FORCE STICKY SIDEBAR ALL PANELS */
+@media (min-width: 768px) {
+  .panel-sidebar,
+  aside.panel-sidebar {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 5rem !important;
+    align-self: flex-start !important;
+    max-height: calc(100vh - 5rem) !important;
+    overflow-y: auto !important;
+    z-index: 20 !important;
+  }
+  /* والدها نباید sticky را بشکنند */
+  .panel-ui,
+  .admin-panel-shell,
+  .seller-panel-shell,
+  .panel-ui--admin,
+  .panel-ui--seller,
+  .panel-ui--buyer {
+    overflow: visible !important;
+  }
+}

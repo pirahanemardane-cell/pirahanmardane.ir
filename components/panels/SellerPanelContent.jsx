@@ -1340,7 +1340,7 @@ export default function SellerPanelContent() {
               </div>
             </div>
             <div className="flex flex-col md:flex-row gap-6">
-                <aside className="panel-sidebar w-full md:w-48 lg:w-56 flex-shrink-0 md:sticky md:top-20 md:h-[calc(100vh-5rem)] md:self-start z-10 overflow-y-auto">
+                <aside className="panel-sidebar w-full md:w-48 lg:w-56 flex-shrink-0 md:sticky md:top-20 md:h-[calc(100vh-5rem)] md:self-start z-20 overflow-y-auto">
                   <div className="seller-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto px-3 py-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03]">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },
@@ -1839,7 +1839,7 @@ export default function SellerPanelContent() {
                                 <p className="text-xs font-bold tracking-tight text-primary-800 dark:text-white">مرحله {toFa(sellerProductStep > 11 && !sellerProductForm.multiVariant ? sellerProductStep - 1 : sellerProductStep)} از {toFa(sellerProductForm.multiVariant ? 18 : 17)}</p>
                                 <p className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 text-primary-500 dark:text-white/60">{sellerProductStep <= 12 ? 'الزامی برای انتشار' : 'اختیاری · سئو'}</p>
                               </div>
-                              <div className="panel-progress h-2 rounded-full bg-primary-100/90 dark:bg-primary-800/80 overflow-hidden ring-1 ring-inset ring-primary-200/40 dark:ring-white/5">
+                              <div className="panel-progress h-2 rounded-full bg-primary-100/90 dark:bg-primary-800/80 overflow-visible ring-1 ring-inset ring-primary-200/40 dark:ring-white/5">
                                 <div className="panel-progress__bar h-full rounded-full bg-apple-blue transition-all" style={{ width: `${((sellerProductForm.multiVariant ? sellerProductStep : (sellerProductStep > 11 ? sellerProductStep - 1 : sellerProductStep)) / (sellerProductForm.multiVariant ? 18 : 17)) * 100}%` }} />
                               </div>
                             </div>
@@ -1995,7 +1995,7 @@ export default function SellerPanelContent() {
                                 <div className="flex flex-wrap gap-3 mb-2">
                                   {(sellerProductForm.images || []).map((im, idx) => (
                                     <div key={idx} className="w-[7.5rem] space-y-1.5">
-                                      <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden border border-primary-200 dark:border-white/20">
+                                      <div className="relative w-full aspect-[4/5] rounded-lg overflow-visible border border-primary-200 dark:border-white/20">
                                         <img src={im} alt={(sellerProductForm.imageAlts || [])[idx] || sellerProductForm.imageAlt || ''} className="w-full h-full object-cover" />
                                         <button type="button" onClick={() => setSellerProductForm(f => ({ ...f, featuredImageIndex: idx, imageAlt: (f.imageAlts || [])[idx] || f.imageAlt || '', seoOgImage: (f.images || [])[idx] || f.seoOgImage }))} className={`absolute top-0.5 right-0.5 text-xs px-1 rounded ${(sellerProductForm.featuredImageIndex || 0) === idx ? 'bg-apple-blue text-white' : 'bg-black/50 text-white'}`}>شاخص</button>
                                         <button type="button" onClick={() => setSellerProductForm(f => {
@@ -2400,7 +2400,7 @@ export default function SellerPanelContent() {
                                           </div>
                                           <div className="flex items-center gap-2">
                                             {row.image ? (
-                                              <div className="relative w-12 h-14 rounded-lg overflow-hidden border border-primary-200 dark:border-white/20 flex-shrink-0">
+                                              <div className="relative w-12 h-14 rounded-lg overflow-visible border border-primary-200 dark:border-white/20 flex-shrink-0">
                                                 <img src={row.image} alt="" className="w-full h-full object-cover" />
                                                 <button type="button" className="absolute inset-x-0 bottom-0 bg-black/60 text-white text-[9px] py-0.5" onClick={() => setSellerProductForm(f => {
                                                   const base = (f.variants && f.variants.length) ? f.variants : syncFormVariants(f);
@@ -3293,7 +3293,7 @@ export default function SellerPanelContent() {
       {sellerTaxonomyPicker && (
                         <div className="site-modal-root" role="dialog" aria-modal="true">
                           <div className="site-modal-backdrop" onClick={() => setSellerTaxonomyPicker(null)} />
-                          <div className="site-modal-panel bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 flex flex-col overflow-hidden">
+                          <div className="site-modal-panel bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 flex flex-col overflow-visible">
                             <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-primary-100 dark:border-white/10">
                               <h3 className="text-sm font-bold text-primary-900 dark:text-white">
                                 {sellerTaxonomyPicker === 'cats' ? 'انتخاب دسته‌بندی'
@@ -3431,7 +3431,7 @@ export default function SellerPanelContent() {
                       {sellerDescEditorOpen && (
                         <div className="site-modal-root" role="dialog" aria-modal="true">
                           <div className="site-modal-backdrop" onClick={() => setSellerDescEditorOpen(false)} />
-                          <div className="site-modal-panel bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 flex flex-col overflow-hidden">
+                          <div className="site-modal-panel bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 flex flex-col overflow-visible">
                             <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-primary-100 dark:border-white/10">
                               <div>
                                 <h3 className="text-sm font-bold text-primary-900 dark:text-white">توضیحات محصول</h3>
@@ -4251,7 +4251,7 @@ export default function SellerPanelContent() {
                                 <span className="text-primary-600 dark:text-white/70">{r.label}</span>
                                 <span className="font-medium text-primary-900 dark:text-white">{toFa(r.pct)}٪</span>
                               </div>
-                              <div className="h-2 rounded-full bg-primary-100 dark:bg-primary-900 overflow-hidden">
+                              <div className="h-2 rounded-full bg-primary-100 dark:bg-primary-900 overflow-visible">
                                 <div className={`h-full rounded-full ${r.color}`} style={{ width: `${r.pct}%` }} />
                               </div>
                             </div>
@@ -4320,11 +4320,11 @@ export default function SellerPanelContent() {
                         </div>
                       </div>
 
-                      <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-4 overflow-hidden">
+                      <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-4 overflow-visible">
                         <h3 className="text-sm font-bold text-primary-900 dark:text-white">ویرایشگر تصویر محصول</h3>
                         <p className="text-xs text-primary-500 leading-relaxed">عکس را آپلود کنید، داخل کادر جابه‌جا کنید تا از بالا/پایین برش نخورد، سپس پردازش WebP و تخصیص به یک محصول.</p>
                         {mediaToolStep === 'upload' && (
-                          <div className="w-full overflow-hidden">
+                          <div className="w-full overflow-visible">
                             <label className="flex flex-col items-center justify-center gap-2 w-full min-h-[88px] px-4 py-4 rounded-xl border-2 border-dashed border-primary-200 dark:border-white/20 bg-primary-50/50 dark:bg-primary-900/40 cursor-pointer hover:border-apple-blue transition">
                               <Icon name="plus" size={20} className="text-primary-400" />
                               <span className="text-xs font-medium text-primary-700 dark:text-white">انتخاب تصویر</span>
@@ -4344,7 +4344,7 @@ export default function SellerPanelContent() {
                         )}
                         {mediaToolStep === 'crop' && mediaToolSrc && (
                           <div className="space-y-3">
-                            <div className="relative mx-auto w-[200px] h-[250px] overflow-hidden rounded-xl border-2 border-dashed border-apple-blue bg-primary-100 dark:bg-primary-900 touch-none"
+                            <div className="relative mx-auto w-[200px] h-[250px] overflow-visible rounded-xl border-2 border-dashed border-apple-blue bg-primary-100 dark:bg-primary-900 touch-none"
                               onMouseDown={(e) => {
                                 const startX = e.clientX, startY = e.clientY;
                                 const ox = mediaToolOffset.x, oy = mediaToolOffset.y;
@@ -4716,7 +4716,7 @@ export default function SellerPanelContent() {
                           <div>
                             <label className="text-xs text-primary-500 mb-1.5 block">عکس پروفایل فروشگاه</label>
                             <div className="flex items-center gap-3">
-                              <div className="w-20 h-20 rounded-full border border-primary-200 dark:border-white/20 overflow-hidden bg-primary-50 dark:bg-primary-800 flex items-center justify-center flex-shrink-0">
+                              <div className="w-20 h-20 rounded-full border border-primary-200 dark:border-white/20 overflow-visible bg-primary-50 dark:bg-primary-800 flex items-center justify-center flex-shrink-0">
                                 <img
                                   src={sellerLogoUrl || ""}
                                   alt=""
@@ -4754,7 +4754,7 @@ export default function SellerPanelContent() {
                           <div>
                             <label className="text-xs text-primary-500 mb-1.5 block">عکس کاور فروشگاه</label>
                             <div className="space-y-2">
-                              <div className="w-full h-24 rounded-xl border border-primary-200 dark:border-white/20 overflow-hidden bg-primary-50 dark:bg-primary-800 flex items-center justify-center">
+                              <div className="w-full h-24 rounded-xl border border-primary-200 dark:border-white/20 overflow-visible bg-primary-50 dark:bg-primary-800 flex items-center justify-center">
                                 {sellerBannerUrl ? (
                                   <img src={sellerBannerUrl} alt="" className="w-full h-full object-cover" />
                                 ) : (
@@ -4821,7 +4821,7 @@ export default function SellerPanelContent() {
                             </span>
                           </div>
                           <p className="text-xs text-primary-400">پس از ثبت، ادمین باید تأیید کند تا در تسویه خریدار به‌عنوان مبدأ روی نقشه بیاید.</p>
-                          <div className="relative rounded-xl overflow-hidden border border-primary-200 dark:border-white/20 h-40 bg-primary-100 dark:bg-primary-900">
+                          <div className="relative rounded-xl overflow-visible border border-primary-200 dark:border-white/20 h-40 bg-primary-100 dark:bg-primary-900">
                             <iframe title="مبدأ فروشنده" className="w-full h-full border-0" loading="lazy"
                               src={`https://www.openstreetmap.org/export/embed.html?bbox=${(sellerUser.lng||51.389)-0.02}%2C${(sellerUser.lat||35.689)-0.015}%2C${(sellerUser.lng||51.389)+0.02}%2C${(sellerUser.lat||35.689)+0.015}&layer=mapnik&marker=${sellerUser.lat||35.689}%2C${sellerUser.lng||51.389}`} />
                           </div>
