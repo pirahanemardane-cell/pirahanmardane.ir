@@ -4696,3 +4696,30 @@ html.dark button.seller-rank-chip--on {
     z-index: 30 !important;
   }
 }
+
+
+/* FIXED SIDEBAR v3 — always pinned */
+@media (min-width: 768px) {
+  .panel-sidebar,
+  aside.panel-sidebar {
+    position: fixed !important;
+    top: 5rem !important;
+    bottom: 1rem !important;
+    width: 16rem !important; /* md:w-64 */
+    max-height: calc(100vh - 6rem) !important;
+    overflow-y: auto !important;
+    z-index: 40 !important;
+    inset-inline-end: max(1rem, calc((100vw - 80rem) / 2 + 1rem)) !important;
+  }
+  /* فضای خالی برای سایدبار تا محتوا زیرش نرود */
+  .admin-panel-shell .flex.flex-col.md\:flex-row,
+  .seller-panel-shell .flex.flex-col.md\:flex-row,
+  .panel-ui--admin .flex.flex-col.md\:flex-row,
+  .panel-ui--seller .flex.flex-col.md\:flex-row {
+    padding-inline-end: 17rem !important;
+  }
+  .seller-panel-shell .panel-sidebar,
+  .panel-ui--seller .panel-sidebar {
+    width: 14rem !important; /* lg:w-56 approx */
+  }
+}
