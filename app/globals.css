@@ -3596,54 +3596,59 @@ html.dark p.offer-time-sub.offer-time-sub {
 
 /* === PANEL UI SYSTEM (visual only — no logic) === */
 /*
- * ظاهر برگرفته از dashboard-with-collapsible-sidebar
- * (gray-50/950، سایدبار white/900، تب فعال blue-50 + border-l آبی)
- * فقط ظاهر — state، onClick، مراحل، API بدون تغییر
+ * ظاهر از dashboard-sidebar (shadcn-like):
+ * bg-card/50, border-border/50, active = black/5 | white/10,
+ * text 13px, rounded-[6px], muted-foreground
+ * فونت: همان فونت سایت (ارث‌بری) — منطق پنل دست‌نخورده
  */
 
 .panel-ui {
-  --p-bg: #f9fafb;          /* gray-50 */
-  --p-bg-elevated: #ffffff; /* white */
-  --p-bg-subtle: #f3f4f6;   /* gray-100 */
-  --p-bg-hover: #f9fafb;
-  --p-border: #e5e7eb;      /* gray-200 */
-  --p-border-strong: #d1d5db;
-  --p-text: #111827;        /* gray-900 */
-  --p-text-secondary: #4b5563; /* gray-600 */
-  --p-text-muted: #9ca3af;  /* gray-400 */
-  --p-accent: #3b82f6;      /* blue-500 */
-  --p-accent-soft: #eff6ff; /* blue-50 */
-  --p-accent-text: #1d4ed8; /* blue-700 */
-  --p-radius: 0.75rem;      /* rounded-xl */
-  --p-radius-sm: 0.5rem;    /* rounded-md */
-  --p-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
-  --p-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --p-ring: 0 0 0 2px #fff, 0 0 0 4px rgba(59, 130, 246, 0.35);
+  --p-bg: hsl(0 0% 98%);
+  --p-card: hsl(0 0% 100%);
+  --p-card-50: color-mix(in srgb, hsl(0 0% 100%) 50%, transparent);
+  --p-border: color-mix(in srgb, hsl(240 5.9% 90%) 50%, transparent);
+  --p-border-solid: hsl(240 5.9% 90%);
+  --p-fg: hsl(240 10% 3.9%);
+  --p-muted: hsl(240 3.8% 46.1%);
+  --p-muted-50: color-mix(in srgb, hsl(240 3.8% 46.1%) 50%, transparent);
+  --p-muted-70: color-mix(in srgb, hsl(240 3.8% 46.1%) 70%, transparent);
+  --p-hover: rgba(0, 0, 0, 0.05);
+  --p-active: rgba(0, 0, 0, 0.05);
+  --p-content-tint: rgba(0, 0, 0, 0.02);
+  --p-primary: hsl(240 5.9% 10%);
+  --p-primary-fg: hsl(0 0% 98%);
+  --p-primary-10: color-mix(in srgb, hsl(240 5.9% 10%) 10%, transparent);
+  --p-radius: 0.75rem;
+  --p-radius-nav: 6px;
+  --p-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --p-ring: 0 0 0 1px rgba(0, 0, 0, 0.05);
   background: var(--p-bg);
-  color: var(--p-text);
+  color: var(--p-fg);
+  /* فونت خانوادهٔ سایت حفظ می‌شود */
 }
 
 html.dark .panel-ui {
-  --p-bg: #030712;             /* gray-950 */
-  --p-bg-elevated: #111827;    /* gray-900 */
-  --p-bg-subtle: #1f2937;      /* gray-800 */
-  --p-bg-hover: #1f2937;
-  --p-border: #1f2937;         /* gray-800 */
-  --p-border-strong: #374151;
-  --p-text: #f3f4f6;           /* gray-100 */
-  --p-text-secondary: #9ca3af; /* gray-400 */
-  --p-text-muted: #6b7280;
-  --p-accent: #3b82f6;
-  --p-accent-soft: rgba(30, 58, 138, 0.5); /* blue-900/50 */
-  --p-accent-text: #93c5fd;    /* blue-300 */
-  --p-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --p-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
-  --p-ring: 0 0 0 2px #030712, 0 0 0 4px rgba(59, 130, 246, 0.45);
+  --p-bg: hsl(240 10% 3.9%);
+  --p-card: hsl(240 10% 3.9%);
+  --p-card-50: color-mix(in srgb, hsl(240 10% 8%) 50%, transparent);
+  --p-border: color-mix(in srgb, hsl(240 3.7% 15.9%) 50%, transparent);
+  --p-border-solid: hsl(240 3.7% 15.9%);
+  --p-fg: hsl(0 0% 98%);
+  --p-muted: hsl(240 5% 64.9%);
+  --p-muted-50: color-mix(in srgb, hsl(240 5% 64.9%) 50%, transparent);
+  --p-muted-70: color-mix(in srgb, hsl(240 5% 64.9%) 70%, transparent);
+  --p-hover: rgba(255, 255, 255, 0.05);
+  --p-active: rgba(255, 255, 255, 0.10);
+  --p-content-tint: rgba(255, 255, 255, 0.02);
+  --p-primary: hsl(0 0% 98%);
+  --p-primary-fg: hsl(240 5.9% 10%);
+  --p-primary-10: color-mix(in srgb, hsl(0 0% 98%) 10%, transparent);
+  --p-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.35);
+  --p-ring: 0 0 0 1px rgba(255, 255, 255, 0.05);
   background: var(--p-bg);
-  color: var(--p-text);
+  color: var(--p-fg);
 }
 
-/* —— صفحه / محتوا —— */
 .panel-ui.admin-panel-shell,
 .panel-ui.seller-panel-shell,
 .panel-ui.panel-ui--admin,
@@ -3652,129 +3657,118 @@ html.dark .panel-ui {
   background: var(--p-bg) !important;
 }
 
-.panel-ui .panel-main {
-  background: var(--p-bg) !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  backdrop-filter: none !important;
-  padding: 1.5rem !important;
-}
-
-@media (min-width: 640px) {
-  .panel-ui .panel-main {
-    padding: 1.5rem !important;
-  }
-}
-
-/* —— سایدبار (مثل <nav> نمونه) —— */
-.panel-ui .panel-sidebar {
-  /* عرض از کلاس‌های موجود؛ ظاهر sticky-like روی strip */
-}
-
+/* —— سایدبار —— */
 .panel-ui .panel-nav,
 .panel-ui .admin-tabs-strip,
 .panel-ui .seller-tabs-strip {
-  background: var(--p-bg-elevated) !important;
+  background: var(--p-card-50) !important;
   border: 1px solid var(--p-border) !important;
-  border-radius: var(--p-radius-sm) !important;
-  box-shadow: var(--p-shadow) !important;
+  border-radius: var(--p-radius) !important;
+  box-shadow: none !important;
   backdrop-filter: none !important;
-  padding: 0.5rem !important;
-  gap: 0.25rem !important;
+  padding: 0.75rem !important;
+  gap: 0.125rem !important;
 }
 
-/* آیتم ناو — مثل Option */
+/* آیتم ناو — مثل NavItem */
 .panel-ui .panel-nav-item {
   position: relative !important;
-  border-radius: var(--p-radius-sm) !important;
-  font-size: 0.875rem !important;
-  font-weight: 500 !important;
-  color: var(--p-text-secondary) !important;
+  border-radius: var(--p-radius-nav) !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em !important;
+  color: var(--p-muted) !important;
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
-  border-left: 2px solid transparent !important;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
+  border-left: none !important;
+  border-bottom: none !important;
+  transition: background 0.2s ease, color 0.2s ease !important;
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
 }
 
 .panel-ui .panel-nav-item:hover {
-  background: var(--p-bg-hover) !important;
-  color: var(--p-text) !important;
+  background: var(--p-hover) !important;
+  color: color-mix(in srgb, var(--p-fg) 90%, transparent) !important;
 }
 
-/* انتخاب‌شده — bg-blue-50 + border-l-2 border-blue-500 */
+/* فعال: bg-black/5 dark:bg-white/10 + font-medium */
 .panel-ui .panel-nav-item--active,
 .panel-ui .panel-nav-item.panel-nav-item--active,
 .panel-ui .panel-nav-item.bg-apple-blue,
 .panel-ui .panel-nav-item--active.bg-apple-blue {
-  background: var(--p-accent-soft) !important;
-  color: var(--p-accent-text) !important;
-  box-shadow: var(--p-shadow) !important;
-  border-left: 2px solid #3b82f6 !important;
-  font-weight: 600 !important;
+  background: var(--p-active) !important;
+  color: var(--p-fg) !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-left: none !important;
 }
 
 html.dark .panel-ui .panel-nav-item--active,
-html.dark .panel-ui .panel-nav-item.panel-nav-item--active,
 html.dark .panel-ui .panel-nav-item.bg-apple-blue {
-  background: var(--p-accent-soft) !important;
-  color: var(--p-accent-text) !important;
-  border-left-color: #3b82f6 !important;
+  background: var(--p-active) !important;
+  color: var(--p-fg) !important;
 }
 
-/* —— کارت‌ها (rounded-xl border gray-200 shadow-sm) —— */
+/* —— محتوای اصلی —— */
+.panel-ui .panel-main {
+  background: var(--p-content-tint) !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+}
+
+/* —— کارت‌ها —— */
 .panel-ui .rounded-2xl.border,
 .panel-ui [class*="rounded-2xl"][class*="border"],
 .panel-ui [class*="rounded-xl"][class*="border"] {
-  border-radius: 0.75rem !important;
+  border-radius: var(--p-radius) !important;
   border-color: var(--p-border) !important;
-  background-color: var(--p-bg-elevated) !important;
+  background-color: var(--p-card) !important;
   box-shadow: var(--p-shadow) !important;
-  transition: box-shadow 0.2s ease;
-}
-
-.panel-ui .rounded-2xl.border:hover,
-.panel-ui [class*="rounded-2xl"][class*="border"]:hover {
-  box-shadow: var(--p-shadow-md);
 }
 
 .panel-ui .rounded-2xl.border.bg-white,
 .panel-ui .rounded-2xl.border.bg-primary-900,
 .panel-ui [class*="rounded-2xl"][class*="border"][class*="bg-white"],
 .panel-ui [class*="rounded-2xl"][class*="border"][class*="bg-primary-900"] {
-  background-color: var(--p-bg-elevated) !important;
+  background-color: var(--p-card) !important;
   border-color: var(--p-border) !important;
+  box-shadow: var(--p-shadow) !important;
 }
 
 /* —— فرم —— */
 .panel-ui input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]),
 .panel-ui select,
 .panel-ui textarea {
-  border-radius: var(--p-radius-sm) !important;
-  border: 1px solid var(--p-border) !important;
-  background-color: var(--p-bg-elevated) !important;
-  color: var(--p-text) !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--p-border-solid) !important;
+  background-color: var(--p-card) !important;
+  color: var(--p-fg) !important;
   box-shadow: none !important;
+  font-size: 14px !important;
 }
 
 .panel-ui input::placeholder,
 .panel-ui textarea::placeholder {
-  color: var(--p-text-muted) !important;
+  color: var(--p-muted-50) !important;
 }
 
 .panel-ui input:focus,
 .panel-ui select:focus,
 .panel-ui textarea:focus {
   outline: none !important;
-  border-color: var(--p-accent) !important;
+  border-color: var(--p-fg) !important;
   box-shadow: var(--p-ring) !important;
 }
 
 .panel-ui select {
   appearance: none !important;
   -webkit-appearance: none !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='1.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
   background-position: left 0.7rem center !important;
   padding-left: 2.1rem !important;
@@ -3784,94 +3778,98 @@ html.dark .panel-ui .panel-nav-item.bg-apple-blue {
 .panel-ui label.text-xs,
 .panel-ui label.text-\[11px\],
 .panel-ui label[class*="text-xs"] {
+  font-size: 11px !important;
   font-weight: 500 !important;
-  color: var(--p-text-secondary) !important;
+  letter-spacing: 0.02em;
+  color: var(--p-muted) !important;
 }
 
 /* —— دکمه‌ها —— */
 .panel-ui button.border {
   border-color: var(--p-border) !important;
-  background: var(--p-bg-elevated);
-  color: var(--p-text-secondary);
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
+  background: transparent;
+  color: var(--p-muted);
+  border-radius: var(--p-radius-nav) !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
 }
 .panel-ui button.border:hover {
-  background: var(--p-bg-hover) !important;
-  color: var(--p-text) !important;
+  background: var(--p-hover) !important;
+  color: var(--p-fg) !important;
 }
 
 .panel-ui button.bg-apple-blue,
 .panel-ui button[class*="bg-apple-blue"] {
-  background-color: #3b82f6 !important;
-  color: #fff !important;
+  background-color: var(--p-primary) !important;
+  color: var(--p-primary-fg) !important;
   box-shadow: var(--p-shadow) !important;
   font-weight: 500 !important;
+  border-radius: var(--p-radius-nav) !important;
 }
 .panel-ui button.bg-apple-blue:hover {
   filter: brightness(1.05);
 }
 
-/* —— تیتر محتوا —— */
-.panel-ui h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--p-text);
-}
-.panel-ui h2 {
+/* —— تیتر —— */
+.panel-ui h1,
+.panel-ui h2,
+.panel-ui h3 {
+  color: var(--p-fg);
   font-weight: 600;
-  color: var(--p-text);
+  letter-spacing: -0.01em;
 }
 .panel-ui .text-primary-400,
 .panel-ui .text-primary-500,
 .panel-ui p.text-xs.text-primary-500 {
-  color: var(--p-text-secondary) !important;
+  color: var(--p-muted) !important;
 }
 
 /* —— ویزارد —— */
 .panel-ui .panel-wizard-head {
-  background: var(--p-bg-elevated) !important;
+  background: var(--p-card) !important;
   border: 1px solid var(--p-border) !important;
   border-radius: var(--p-radius) !important;
   box-shadow: var(--p-shadow) !important;
 }
 .panel-ui .panel-progress {
-  height: 0.5rem !important;
-  background: #e5e7eb !important;
+  height: 4px !important;
+  background: var(--p-hover) !important;
   border-radius: 999px !important;
   box-shadow: none !important;
 }
-html.dark .panel-ui .panel-progress {
-  background: #374151 !important;
-}
 .panel-ui .panel-progress__bar {
-  background: #3b82f6 !important;
+  background: var(--p-fg) !important;
   background-image: none !important;
   border-radius: 999px !important;
 }
 .panel-ui .panel-step--active {
-  background: #3b82f6 !important;
-  border-color: #3b82f6 !important;
-  color: #fff !important;
-  box-shadow: var(--p-shadow) !important;
+  background: var(--p-active) !important;
+  border-color: transparent !important;
+  color: var(--p-fg) !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
 }
 
 /* —— جدول —— */
 .panel-ui thead th {
-  font-size: 0.7rem !important;
-  font-weight: 500 !important;
-  color: var(--p-text-muted) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--p-muted-50) !important;
   border-bottom: 1px solid var(--p-border) !important;
 }
 .panel-ui tbody td {
   border-bottom: 1px solid var(--p-border) !important;
+  font-size: 13px;
 }
 
-/* —— اسکرول / موبایل —— */
 .panel-ui .panel-nav {
-  scrollbar-width: thin;
-  scrollbar-color: var(--p-border-strong) transparent;
+  scrollbar-width: none;
 }
+.panel-ui .panel-nav::-webkit-scrollbar {
+  display: none;
+}
+
 @media (max-width: 767px) {
   .panel-ui .panel-nav {
     flex-direction: row !important;
@@ -3880,15 +3878,11 @@ html.dark .panel-ui .panel-progress {
   }
   .panel-ui .panel-nav-item {
     flex-shrink: 0;
-    border-left-width: 0 !important;
-    border-bottom: 2px solid transparent !important;
-  }
-  .panel-ui .panel-nav-item--active {
-    border-bottom-color: #3b82f6 !important;
   }
 }
 
 /* === END PANEL UI SYSTEM === */
+
 
 
 
