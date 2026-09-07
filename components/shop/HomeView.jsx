@@ -268,7 +268,8 @@ export default function HomeView() {
                         </div>
                       </div>
                     </button>
-                  ))}
+                    );
+                  })}
                   </div>
                 </div>
               </div>
