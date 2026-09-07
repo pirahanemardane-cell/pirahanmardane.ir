@@ -602,7 +602,7 @@ export default function AdminPanelContent() {
                       </div>
                       <div className="flex gap-1 overflow-x-auto mb-4">
                         {[{id:'all',l:'همه'},{id:'pending',l:'در انتظار'},{id:'approved',l:'تأیید‌شده'},{id:'rejected',l:'رد‌شده'},{id:'suspended',l:'محدود شده'},{id:'archived',l:'آرشیو شده‌ها'}].map(f=>(
-                          <button key={f.id} type="button" onClick={()=>setAdminSellerFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition ${adminSellerFilter===f.id?'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:!text-white dark:border-[#4CCD99]':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
+                          <button key={f.id} type="button" onClick={()=>setAdminSellerFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition ${adminSellerFilter===f.id?'panel-filter-chip--on':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
                         ))}
                       </div>
                       {(adminListError && adminListError.sellers) && (
@@ -987,7 +987,7 @@ export default function AdminPanelContent() {
                       </div>
                       <div className="flex gap-1 overflow-x-auto mb-4">
                         {[{id:'all',l:'همه'},{id:'active',l:'فعال'},{id:'pending',l:'در انتظار'},{id:'rejected',l:'رد‌شده'},{id:'inactive',l:'غیرفعال'},{id:'archived',l:'آرشیو شده‌ها'}].map(f=>(
-                          <button key={f.id} type="button" onClick={()=>setAdminProductFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminProductFilter===f.id?'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:!text-white':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
+                          <button key={f.id} type="button" onClick={()=>setAdminProductFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminProductFilter===f.id?'panel-filter-chip--on':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
                         ))}
                       </div>
                       {adminSelectedProductIds.length > 0 && (
@@ -1304,7 +1304,7 @@ export default function AdminPanelContent() {
                       </div>
                       <div className="flex gap-1 overflow-x-auto mb-4">
                         {[{id:'all',l:'همه'},{id:'pending',l:'در انتظار پرداخت'},{id:'preparing',l:'آماده‌سازی'},{id:'shipped',l:'ارسال‌شده'},{id:'delivered',l:'تحویل‌شده'},{id:'cancelled',l:'لغو'},{id:'returned',l:'مرجوع'}].map(f=>(
-                          <button key={f.id} type="button" onClick={()=>setAdminOrderFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminOrderFilter===f.id?'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:!text-white':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
+                          <button key={f.id} type="button" onClick={()=>setAdminOrderFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminOrderFilter===f.id?'panel-filter-chip--on':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
                         ))}
                       </div>
                       <div className="space-y-2">
@@ -1551,7 +1551,7 @@ export default function AdminPanelContent() {
                       <h2 className="text-base font-bold text-primary-900 dark:text-white mb-4">تیکت‌های پشتیبانی</h2>
                       <div className="flex gap-1 overflow-x-auto mb-4">
                         {[{id:'all',l:'همه'},{id:'open',l:'باز'},{id:'pending',l:'در انتظار'},{id:'closed',l:'بسته'}].map(f=>(
-                          <button key={f.id} type="button" onClick={()=>setAdminTicketFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminTicketFilter===f.id?'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:!text-white':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
+                          <button key={f.id} type="button" onClick={()=>setAdminTicketFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminTicketFilter===f.id?'panel-filter-chip--on':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
                         ))}
                       </div>
                       <div className="space-y-2">
@@ -3145,7 +3145,7 @@ export default function AdminPanelContent() {
                                       const next = selected ? cur.filter(x => x !== tg.name) : [...cur, tg.name];
                                       return { ...base, tags: next, id: '' };
                                     })}
-                                    className={`text-[11px] px-3 py-1.5 rounded-full border transition ${selected ? 'bg-primary-800 text-white border-primary-800 dark:bg-primary-200 dark:text-primary-900 dark:border-primary-200 shadow-sm' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80 hover:border-primary-400 bg-white dark:bg-primary-900'}`}
+                                    className={`text-[11px] px-3 py-1.5 rounded-full border transition ${selected ? 'panel-filter-chip--on dark:bg-primary-200 dark:text-primary-900 dark:border-primary-200 shadow-sm' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80 hover:border-primary-400 bg-white dark:bg-primary-900'}`}
                                   >{tg.name}</button>
                                 );
                               })}
@@ -3203,7 +3203,7 @@ export default function AdminPanelContent() {
                                       const next = selected ? cur.filter(x => x !== tg.name) : [...cur, tg.name];
                                       return { ...base, tags: next, id: '' };
                                     })}
-                                    className={`text-[11px] px-2.5 py-1 rounded-full border transition ${selected ? 'bg-primary-800 text-white border-primary-800 dark:bg-primary-200 dark:text-primary-900' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white'}`}
+                                    className={`text-[11px] px-2.5 py-1 rounded-full border transition ${selected ? 'panel-filter-chip--on dark:bg-primary-200 dark:text-primary-900' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white'}`}
                                   >{tg.name}</button>
                                 );
                               })}
@@ -3395,7 +3395,7 @@ export default function AdminPanelContent() {
                                       const next = selected ? cur.filter(x => x !== tg.name) : [...cur, tg.name];
                                       return { ...f, tags: next };
                                     })}
-                                    className={`text-[11px] px-3 py-1.5 rounded-full border transition ${selected ? 'bg-primary-800 text-white border-primary-800 dark:bg-primary-200 dark:text-primary-900 dark:border-primary-200 shadow-sm' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80 hover:border-primary-400 bg-white dark:bg-primary-900'}`}
+                                    className={`text-[11px] px-3 py-1.5 rounded-full border transition ${selected ? 'panel-filter-chip--on dark:bg-primary-200 dark:text-primary-900 dark:border-primary-200 shadow-sm' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80 hover:border-primary-400 bg-white dark:bg-primary-900'}`}
                                   >{tg.name}</button>
                                 );
                               })}

@@ -1574,7 +1574,7 @@ export default function SellerPanelContent() {
                         <input value={sellerProductSearch} onChange={e => setSellerProductSearch(e.target.value)} placeholder="جستجوی نام..." className="w-full px-3 py-2 rounded-full border border-primary-200 dark:border-white/20 bg-transparent text-xs text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue" />
                         <div className="flex flex-wrap gap-2">
                           {['all','active','inactive','pending'].map(f => (
-                            <button key={f} type="button" onClick={() => setSellerProductFilter(f)} className={`px-3 py-1.5 rounded-full text-xs border font-medium ${sellerProductFilter === f ? 'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:border-[#4CCD99] dark:text-white' : 'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f === 'all' ? 'همه' : f === 'active' ? 'فعال' : f === 'inactive' ? 'غیرفعال' : 'در انتظار'}</button>
+                            <button key={f} type="button" onClick={() => setSellerProductFilter(f)} className={`px-3 py-1.5 rounded-full text-xs border font-medium ${sellerProductFilter === f ? 'panel-filter-chip--on' : 'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f === 'all' ? 'همه' : f === 'active' ? 'فعال' : f === 'inactive' ? 'غیرفعال' : 'در انتظار'}</button>
                           ))}
                         </div>
                       </div>
@@ -2032,7 +2032,7 @@ export default function SellerPanelContent() {
                                         ))}
                                         className={`px-3 py-1.5 rounded-full text-xs border transition ${
                                           sellerProductForm.brandId === b.id
-                                            ? 'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:border-[#4CCD99]'
+                                            ? 'panel-filter-chip--on'
                                             : 'border-primary-200 dark:border-white/25 text-primary-800 dark:text-white hover:border-apple-blue'
                                         }`}
                                       >
@@ -2097,7 +2097,7 @@ export default function SellerPanelContent() {
                                     const col = (adminCatalogColors || []).find(c => c.id === cid);
                                     if (!col) return null;
                                     return (
-                                      <button key={cid} type="button" onClick={() => setSellerProductForm(f => ({ ...f, colorIds: (f.colorIds || []).filter(id => id !== cid), variants: [] }))} className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs border bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:border-[#4CCD99]">
+                                      <button key={cid} type="button" onClick={() => setSellerProductForm(f => ({ ...f, colorIds: (f.colorIds || []).filter(id => id !== cid), variants: [] }))} className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs border panel-filter-chip--on">
                                         <span className="color-swatch w-3.5 h-3.5 rounded-full border border-white/60 flex-shrink-0" style={{ ["--swatch-color"]: col.hex || '#888', backgroundColor: col.hex || '#888' }} />
                                         {col.name} <span className="opacity-80">×</span>
                                       </button>
@@ -2120,7 +2120,7 @@ export default function SellerPanelContent() {
                                 <div className="flex flex-wrap gap-1.5 min-h-[2rem]">
                                   {(sellerProductForm.sizes || []).length === 0 && <span className="text-xs text-primary-400">سایزی انتخاب نشده</span>}
                                   {(sellerProductForm.sizes || []).map(sz => (
-                                    <button key={sz} type="button" dir="ltr" onClick={() => setSellerProductForm(f => ({ ...f, sizes: (f.sizes || []).filter(s => s !== sz), variants: [] }))} className="latin-label min-w-[2.5rem] px-2.5 py-1.5 rounded-full text-xs border font-semibold bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:border-[#4CCD99]">{sz} ×</button>
+                                    <button key={sz} type="button" dir="ltr" onClick={() => setSellerProductForm(f => ({ ...f, sizes: (f.sizes || []).filter(s => s !== sz), variants: [] }))} className="latin-label min-w-[2.5rem] px-2.5 py-1.5 rounded-full text-xs border font-semibold panel-filter-chip--on">{sz} ×</button>
                                   ))}
                                 </div>
                               </div>
@@ -2169,7 +2169,7 @@ export default function SellerPanelContent() {
                                               }
                                               return { ...f, attributes: attrs, variants: [] };
                                             })}
-                                            className="px-2.5 py-1 rounded-full text-xs border bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:border-[#4CCD99] inline-flex items-center gap-1"
+                                            className="px-2.5 py-1 rounded-full text-xs border panel-filter-chip--on inline-flex items-center gap-1"
                                           >
                                             {val} <span className="opacity-80">×</span>
                                           </button>
@@ -2204,7 +2204,7 @@ export default function SellerPanelContent() {
                                         const next = ids.includes(c.id) ? ids.filter(x => x !== c.id) : [...ids, c.id];
                                         return { ...f, colorIds: next, variants: [] };
                                       })}
-                                      className={`px-2.5 py-1 rounded-full text-xs border ${ (sellerProductForm.colorIds||[]).includes(c.id) ? 'bg-primary-800 text-white border-primary-800' : 'border-primary-200 dark:border-white/25' }`}
+                                      className={`px-2.5 py-1 rounded-full text-xs border ${ (sellerProductForm.colorIds||[]).includes(c.id) ? 'panel-filter-chip--on' : 'border-primary-200 dark:border-white/25' }`}
                                     >{c.name}</button>
                                   ))}
                                 </div>
@@ -2216,7 +2216,7 @@ export default function SellerPanelContent() {
                                         const next = sz.includes(s.name) ? sz.filter(x => x !== s.name) : [...sz, s.name];
                                         return { ...f, sizes: next, variants: [] };
                                       })}
-                                      className={`px-2.5 py-1 rounded-full text-xs border font-semibold ${ (sellerProductForm.sizes||[]).includes(s.name) ? 'bg-primary-800 text-white border-primary-800' : 'border-primary-200 dark:border-white/25' }`}
+                                      className={`px-2.5 py-1 rounded-full text-xs border font-semibold ${ (sellerProductForm.sizes||[]).includes(s.name) ? 'panel-filter-chip--on' : 'border-primary-200 dark:border-white/25' }`}
                                     >{s.name}</button>
                                   ))}
                                 </div>
@@ -3569,7 +3569,7 @@ export default function SellerPanelContent() {
                 </div>
                       <div className="flex gap-1.5 overflow-x-auto mb-4">
                         {[{ id: 'all', label: 'همه' },{ id: 'new', label: 'جدید' },{ id: 'preparing', label: 'آماده‌سازی' },{ id: 'shipped', label: 'ارسال‌شده' },{ id: 'delivered', label: 'تحویل‌شده' }].map(f => (
-                          <button key={f.id} type="button" onClick={() => setSellerOrdersFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${sellerOrdersFilter === f.id ? 'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:border-[#4CCD99] dark:text-white' : 'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.label}</button>
+                          <button key={f.id} type="button" onClick={() => setSellerOrdersFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${sellerOrdersFilter === f.id ? 'panel-filter-chip--on' : 'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.label}</button>
                         ))}
                       </div>
                       {(() => {

@@ -4057,6 +4057,38 @@ html.dark .panel-ui .seller-tabs-strip::-webkit-scrollbar-thumb {
 }
 
 
+
+/* —— فیلتر چیپ فعال (همه پنل‌ها) —— */
+/* لایت: قرمز + متن سفید | دارک: فیروزه‌ای + متن تیره */
+
+.panel-ui .panel-filter-chip--on,
+.panel-ui button.panel-filter-chip--on,
+html:not(.dark) .panel-ui button.px-3.py-1\.5.text-xs.font-medium.border.bg-primary-800,
+html:not(.dark) .panel-ui button[class*="px-3"][class*="py-1.5"][class*="text-xs"][class*="bg-primary-800"] {
+  background: #FF0000 !important;
+  border-color: #FF0000 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.dark .panel-ui .panel-filter-chip--on,
+html.dark .panel-ui button.panel-filter-chip--on,
+html.dark .panel-ui button.px-3.py-1\.5.text-xs.font-medium.border.bg-primary-800,
+html.dark .panel-ui button[class*="px-3"][class*="py-1.5"][class*="text-xs"][class*="bg-primary-800"],
+html.dark .panel-ui button[class*="bg-[#4CCD99]"][class*="text-xs"] {
+  background: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+html.dark .panel-ui .panel-filter-chip--on *,
+html.dark .panel-ui button[class*="bg-[#4CCD99]"][class*="text-xs"] * {
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+
 /* === END PANEL UI SYSTEM === */
 
 
