@@ -5732,6 +5732,33 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         try { scrollPageToTop(); } catch (_) {}
       };
 
+      /** خانه واقعی برای breadcrumb — بدون history.back */
+      const goHome = () => {
+        try {
+          setStaticPage(null);
+          setBlogPostId(null);
+          try { setBrandDetailId(null); } catch (_) {}
+          setPdpProduct(null);
+          setShowPLP(false);
+          setShowCartPage(false);
+          setShowCheckout(false);
+          setShowWishlistPage(false);
+          setShowRecentPage(false);
+          setShowComparePage(false);
+          setShowProfilePage(false);
+          setShowSellerPanel(false);
+          setShowAdminPanel(false);
+          setShowSellersList(false);
+          setShowTaxonomyHub(null);
+          setActiveSellerId(null);
+          setMobileMenuOpen(false);
+          try { setMegaOpen(null); } catch (_) {}
+          try { pushFaUrl(FA_PATHS.home || '/'); } catch (_) {}
+          try { if (applyPathRef?.current) applyPathRef.current(); } catch (_) {}
+          try { scrollPageToTop(); } catch (_) {}
+        } catch (_) {}
+      };
+
 
       // endPageLoad on view settle — پاک کردن لودینگ بعد از نشستن ویو
       useEffect(() => {
@@ -16060,19 +16087,19 @@ const params = new URLSearchParams(window.location.search);
                 { label: activePlpTag.name || activePlpTag.label || 'برچسب', current: true },
               ] : []),
               ...(showPLP && activeSeller ? [
-                { label: 'فروشندگان', onClick: () => { setShowSellersList(true); setActiveSellerId(null); } },
+                { label: 'فروشندگان', href: '/فروشندگان', onClick: () => { try { openSellersList(); } catch (_) {} } },
                 { label: activeSeller.name, current: true },
               ] : []),
               ...(showSellersList && !activeSeller && !showPLP ? [
                 { label: 'فروشندگان', current: true },
               ] : []),
               ...(activeSeller && !showPLP ? [
-                { label: 'فروشندگان', onClick: () => { setShowSellersList(true); setActiveSellerId(null); } },
+                { label: 'فروشندگان', href: '/فروشندگان', onClick: () => { try { openSellersList(); } catch (_) {} } },
                 { label: activeSeller.name, current: true },
               ] : []),
               ...(showCartPage ? [{ label: 'سبد خرید', current: true }] : []),
               ...(showCheckout ? [
-                { label: 'سبد خرید', onClick: () => { setShowCheckout(false); setShowCartPage(true); } },
+                { label: 'سبد خرید', href: '/سبد-خرید', onClick: () => { try { openCartPage(); } catch (_) {} } },
                 { label: 'ثبت سفارش', current: true },
               ] : []),
               ...(showComparePage ? [{ label: 'مقایسه', current: true }] : []),
@@ -16100,7 +16127,7 @@ const params = new URLSearchParams(window.location.search);
             return (
               <Breadcrumb
                 fullWidth={showProfilePage || showSellerPanel}
-                homeOnClick={() => { setActiveSellerId(null); setShowSellersList(false); setShowPLP(false); setShowCartPage(false); setShowCheckout(false); setShowWishlistPage(false); setShowComparePage(false); setShowRecentPage(false); setShowProfilePage(false); setShowSellerPanel(false); setShowAdminPanel(false); try { closeStaticPage(); } catch (_) {} closePLP(); scrollPageToTop(); }}
+                homeOnClick={() => { try { goHome(); } catch (_) { try { pushFaUrl("/"); } catch (__) {} } }}
                 items={crumbItems}
               />
             );

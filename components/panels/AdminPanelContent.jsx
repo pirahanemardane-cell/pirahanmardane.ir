@@ -876,7 +876,19 @@ export default function AdminPanelContent() {
               انتخاب همه در این فهرست ({visibleSellers.length})
              </label>
             )}
-            {visibleSellers.map(s=>(
+            {visibleSellers.map(s=>{
+              const pendLogo = String(s.logoPendingUrl || s.logo_pending_url || '').trim();
+              const pendBanner = String(s.bannerPendingUrl || s.banner_pending_url || '').trim();
+              const logoSt = String(s.logoStatus || s.logo_status || (pendLogo ? 'pending' : '')).toLowerCase();
+              const bannerSt = String(s.bannerStatus || s.banner_status || (pendBanner ? 'pending' : '')).toLowerCase();
+              const hasPendingMedia = !!(pendLogo || pendBanner || logoSt === 'pending' || bannerSt === 'pending');
+              const hasPendingSignup = String(s.status || '').toLowerCase() === 'pending';
+              const pendingCount = (hasPendingSignup ? 1 : 0) + ((pendLogo || logoSt === 'pending') ? 1 : 0) + ((pendBanner || bannerSt === 'pending') ? 1 : 0);
+              const pendingHints = [];
+              if (hasPendingSignup) pendingHints.push('ثبت‌نام');
+              if (pendLogo || logoSt === 'pending') pendingHints.push('عکس پروفایل');
+              if (pendBanner || bannerSt === 'pending') pendingHints.push('کاور');
+              return (
              <div key={s.id} className={`p-3 sm:p-4 rounded-2xl border bg-white dark:bg-primary-900 flex flex-col sm:flex-row sm:items-center gap-3 ${adminSelectedSellerIds.includes(String(s.id)) ? 'border-apple-blue ring-1 ring-apple-blue/30' : 'border-primary-200 dark:border-white/15'}`}>
              <input type="checkbox" checked={adminSelectedSellerIds.includes(String(s.id))} onChange={() => toggleAdminSellerSelect(s.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب فروشنده" />
               <button type="button" onClick={()=>setAdminSellerDetailId(s.id)} className="flex-1 text-right min-w-0">
