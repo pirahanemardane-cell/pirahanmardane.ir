@@ -252,11 +252,11 @@ export default function AdminReviewsTab({ showToast }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-1.5">
           {[
-            { id: 'pending', label: 'در انتظار' },
-            { id: 'approved', label: 'تأییدشده' },
-            { id: 'rejected', label: 'ردشده' },
-            { id: 'featured', label: 'ویژه (صفحه اصلی)' },
             { id: 'all', label: 'همه' },
+            { id: 'featured', label: 'ویژه (صفحه اصلی)' },
+            { id: 'rejected', label: 'ردشده' },
+            { id: 'approved', label: 'تأییدشده' },
+            { id: 'pending', label: 'در انتظار' },
           ].map((f) => (
             <button key={f.id} type="button" onClick={() => setFilter(f.id)}
               className={`text-xs px-3 py-1.5 rounded-full transition ${filter === f.id ? 'bg-apple-blue text-white' : 'bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-white'}`}>
