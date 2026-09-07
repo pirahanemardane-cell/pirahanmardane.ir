@@ -587,23 +587,28 @@ export default function StaticPagesView() {
                     <div className="rounded-3xl overflow-hidden aspect-[21/9] sm:aspect-[2.4/1] bg-primary-100 dark:bg-primary-900 border border-primary-100 dark:border-white/10">
                       <img src={post.image || 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=1200&h=500&fit=crop&q=80'} alt="" className="w-full h-full object-cover" />
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 text-xs">
+                    <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white leading-snug">{post.title}</h1>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-primary-500 dark:!text-white pb-4 border-b border-primary-100 dark:border-white/10">
                       {(post.cat || post.category) ? (
                         <button
                           type="button"
                           onClick={() => { setFaqQuery(post.cat || post.category); openStaticPage('blog'); }}
-                          className="px-2.5 py-1 rounded-full bg-apple-blue/10 text-apple-blue font-bold hover:bg-apple-blue/20"
+                          className="inline-flex items-center h-6 px-2 rounded-md bg-primary-100 dark:bg-primary-700 text-primary-900 dark:text-white text-xs font-medium hover:bg-primary-200 dark:hover:bg-primary-600 transition"
                         >{post.cat || post.category}</button>
                       ) : null}
-                      {(post.tags || []).map(t => <span key={t} className="px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-white/70">#{t}</span>)}
-                    </div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white leading-snug">{post.title}</h1>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-primary-500 dark:!text-white pb-4 border-b border-primary-100 dark:border-white/10">
-                      <span className="font-medium text-primary-800 dark:!text-white">{post.author || 'تحریریه'}</span>
-                      <span className="dark:!text-white">·</span>
-                      <span className="dark:!text-white">{post.date}</span>
-                      <span className="dark:!text-white">·</span>
-                      <span className="dark:!text-white">{post.read} مطالعه</span>
+                      {(post.cat || post.category) && post.date ? <span className="text-primary-300 dark:text-white/40">·</span> : null}
+                      {post.date ? <span className="dark:!text-white">{post.date}</span> : null}
+                      {post.date && (post.author || post.read) ? <span className="text-primary-300 dark:text-white/40">·</span> : null}
+                      {post.author ? <span className="font-medium text-primary-800 dark:!text-white">{post.author}</span> : null}
+                      {post.author && post.read ? <span className="text-primary-300 dark:text-white/40">·</span> : null}
+                      {post.read ? <span className="dark:!text-white">{post.read} مطالعه</span> : null}
+                      {(post.tags || []).length > 0 && (
+                        <span className="flex flex-wrap gap-1 w-full sm:w-auto sm:ms-1">
+                          {(post.tags || []).map(t => (
+                            <span key={t} className="px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-white/70">#{t}</span>
+                          ))}
+                        </span>
+                      )}
                     </div>
                     {headings.length > 0 && (
                       <nav className="p-4 rounded-2xl bg-primary-50 dark:bg-primary-900/50 border border-primary-100 dark:border-white/10">
