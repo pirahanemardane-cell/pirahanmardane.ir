@@ -1,9 +1,9 @@
 'use client';
 
-/** پوسته فروشگاه — مرز lazy برای بخش خریدار */
+/** پوسته فروشگاه / ناحیه خریدار */
 export default function ShopShell({ children, className = '' }) {
   return (
-    <div className={className} data-shell="shop">
+    <div className={`panel-ui panel-ui--buyer ${className}`.trim()} data-shell="shop" data-panel="buyer">
       {children}
     </div>
   );
