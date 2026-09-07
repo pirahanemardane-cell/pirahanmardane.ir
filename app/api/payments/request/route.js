@@ -99,6 +99,7 @@ export async function POST(request) {
       amount,
     })
   } catch (e) {
-    return NextResponse.json({ ok: false, error: e?.message || 'server error' }, { status: 500 })
+    console.error('[payments/request]', e)
+    return NextResponse.json({ ok: false, error: 'خطای سرور' }, { status: 500 })
   }
 }
