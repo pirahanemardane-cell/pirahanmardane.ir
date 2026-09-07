@@ -3760,5 +3760,113 @@ html.dark .panel-ui select {
   box-shadow: var(--panel-shadow);
 }
 
+
+/* --- Phase 2: nav, wizard, density --- */
+.panel-ui .panel-sidebar {
+  transition: none;
+}
+
+.panel-ui .panel-nav {
+  max-height: calc(100vh - 7.5rem);
+  overflow-y: auto;
+}
+
+.panel-ui .panel-nav-item {
+  border-radius: 0.75rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+}
+
+.panel-ui .panel-nav-item--active {
+  transform: translateZ(0);
+}
+
+.panel-ui .panel-main {
+  min-height: 60vh;
+}
+
+/* ویزارد محصول */
+.panel-ui .panel-wizard-head {
+  backdrop-filter: blur(6px);
+}
+
+.panel-ui .panel-progress {
+  height: 0.5rem;
+}
+
+.panel-ui .panel-progress__bar {
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  background-image: linear-gradient(90deg, color-mix(in srgb, #0071e3 85%, #38bdf8), #0071e3);
+}
+
+html.dark .panel-ui .panel-progress__bar {
+  background-image: linear-gradient(90deg, #38bdf8, #0071e3);
+}
+
+/* چیپ مرحله */
+.panel-ui .panel-step {
+  min-width: 1.85rem;
+  justify-content: center;
+}
+
+.panel-ui .panel-step--active {
+  box-shadow: 0 4px 12px color-mix(in srgb, #0071e3 30%, transparent);
+}
+
+/* هدر بخش‌های داخلی */
+.panel-ui .panel-main > .flex.items-center.justify-between,
+.panel-ui .panel-main > div > .flex.items-center.justify-between {
+  margin-bottom: 0.25rem;
+}
+
+/* کارت KPI / آمار */
+.panel-ui .panel-main .rounded-2xl.border.text-center {
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.panel-ui .panel-main .rounded-2xl.border.text-center:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--panel-shadow-hover);
+}
+
+/* فرم‌ها داخل پنل فشرده‌تر و خواناتر */
+.panel-ui label.text-xs,
+.panel-ui label.text-\[11px\] {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: color-mix(in srgb, #475569 92%, #0f172a);
+}
+html.dark .panel-ui label.text-xs,
+html.dark .panel-ui label.text-\[11px\] {
+  color: rgba(248, 250, 252, 0.72);
+}
+
+/* دکمه‌های پایین فرم */
+.panel-ui .panel-main .flex.gap-2 > button.rounded-full {
+  min-height: 2.4rem;
+  padding-left: 1.1rem;
+  padding-right: 1.1rem;
+}
+
+/* لیست خالی */
+.panel-ui [class*="EmptyState"],
+.panel-ui .text-center.py-8,
+.panel-ui .text-center.py-10 {
+  color: var(--panel-muted);
+}
+
+/* موبایل: ناو افقی زیباتر */
+@media (max-width: 767px) {
+  .panel-ui .panel-nav {
+    max-height: none;
+    flex-direction: row !important;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+  }
+  .panel-ui .panel-nav-item {
+    flex-shrink: 0;
+  }
+}
+
 /* === END PANEL UI SYSTEM === */
 

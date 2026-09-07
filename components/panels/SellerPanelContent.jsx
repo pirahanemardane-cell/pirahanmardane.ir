@@ -1315,7 +1315,7 @@ export default function SellerPanelContent() {
             </div>
             <div className="flex flex-col md:flex-row gap-6">
                 <aside className="w-full md:w-48 lg:w-56 flex-shrink-0 md:sticky md:top-24 md:self-start">
-                  <div className="seller-tabs-strip flex md:flex-col gap-1 overflow-x-auto no-scrollbar px-2 pt-2 pb-2 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 shadow-sm">
+                  <div className="seller-tabs-strip panel-nav flex md:flex-col gap-1 overflow-x-auto no-scrollbar px-2.5 pt-2.5 pb-2.5 rounded-2xl border border-primary-200/80 dark:border-white/10 bg-white/90 dark:bg-primary-900/90 backdrop-blur-md shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },
                       { id: 'orders', label: 'سفارش‌ها', icon: 'truck' },
@@ -1337,7 +1337,7 @@ export default function SellerPanelContent() {
                           return;
                         }
                         setSellerTab(t.id); setSellerOrderDetailId(null); setSellerTicketDetailId(null); try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (_) {}
-                      }} className={`flex-shrink-0 flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition whitespace-nowrap ${sellerTab === t.id || (t.id === 'orders' && sellerOrderDetailId) || (t.id === 'support' && sellerTicketDetailId) ? 'bg-apple-blue text-white' : 'text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-primary-900'}`}>
+                      }} className={`flex-shrink-0 flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition whitespace-nowrap ${sellerTab === t.id || (t.id === 'orders' && sellerOrderDetailId) || (t.id === 'support' && sellerTicketDetailId) ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-primary-900'}`}>
                         <Icon name={t.icon} size={16} /><span>{t.label}</span>
                         {t.badge > 0 && <span className="mr-auto text-xs bg-white/20 text-white px-1.5 py-0.5 rounded-full">{toFa(t.badge)}</span>}
                       </button>
@@ -1808,13 +1808,13 @@ export default function SellerPanelContent() {
                                 <Icon name="x" size={18} />
                               </button>
                             </div>
-                            <div className="mb-3">
-                              <div className="flex items-center justify-between gap-2 mb-1">
-                                <p className="text-xs font-semibold text-primary-700 dark:text-white">مرحله {toFa(sellerProductStep > 11 && !sellerProductForm.multiVariant ? sellerProductStep - 1 : sellerProductStep)} از {toFa(sellerProductForm.multiVariant ? 18 : 17)}</p>
-                                <p className="text-xs text-primary-400">{sellerProductStep <= 12 ? 'الزامی برای انتشار' : 'اختیاری · سئو'}</p>
+                            <div className="panel-wizard-head mb-4 p-3 sm:p-3.5 rounded-2xl border border-primary-100 dark:border-white/10 bg-primary-50/50 dark:bg-white/[0.03]">
+                              <div className="flex items-center justify-between gap-2 mb-2">
+                                <p className="text-xs font-bold tracking-tight text-primary-800 dark:text-white">مرحله {toFa(sellerProductStep > 11 && !sellerProductForm.multiVariant ? sellerProductStep - 1 : sellerProductStep)} از {toFa(sellerProductForm.multiVariant ? 18 : 17)}</p>
+                                <p className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 text-primary-500 dark:text-white/60">{sellerProductStep <= 12 ? 'الزامی برای انتشار' : 'اختیاری · سئو'}</p>
                               </div>
-                              <div className="h-1.5 rounded-full bg-primary-100 dark:bg-primary-800 overflow-hidden">
-                                <div className="h-full rounded-full bg-apple-blue transition-all" style={{ width: `${((sellerProductForm.multiVariant ? sellerProductStep : (sellerProductStep > 11 ? sellerProductStep - 1 : sellerProductStep)) / (sellerProductForm.multiVariant ? 18 : 17)) * 100}%` }} />
+                              <div className="panel-progress h-2 rounded-full bg-primary-100/90 dark:bg-primary-800/80 overflow-hidden ring-1 ring-inset ring-primary-200/40 dark:ring-white/5">
+                                <div className="panel-progress__bar h-full rounded-full bg-apple-blue transition-all" style={{ width: `${((sellerProductForm.multiVariant ? sellerProductStep : (sellerProductStep > 11 ? sellerProductStep - 1 : sellerProductStep)) / (sellerProductForm.multiVariant ? 18 : 17)) * 100}%` }} />
                               </div>
                             </div>
                             <div className="space-y-3">
