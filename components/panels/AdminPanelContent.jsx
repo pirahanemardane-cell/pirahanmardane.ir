@@ -937,7 +937,7 @@ export default function AdminPanelContent() {
                )}
               </div>
              </div>
-            ))}
+            );})}
             {!(adminListLoading && adminListLoading.sellers) && !(adminSellers||[]).length && (
              <p className="text-center text-sm text-primary-400 py-10">
               {(adminListError && adminListError.sellers) ? 'بارگذاری ناموفق بود' : 'فروشنده‌ای ثبت نشده'}
