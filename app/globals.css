@@ -4419,3 +4419,74 @@ nav[aria-label="breadcrumb"] {
   font-weight: 400;
   pointer-events: none;
 }
+
+/* ===== SEO page list rows (not brand-red buttons) ===== */
+.panel-ui button.seo-page-row,
+.panel-ui .seo-page-row,
+button.seo-page-row {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04) !important;
+  border-radius: 12px !important;
+  font-weight: 500 !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+html.dark .panel-ui button.seo-page-row,
+html.dark .panel-ui .seo-page-row,
+html.dark button.seo-page-row {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+  -webkit-text-fill-color: #f4f4f5 !important;
+}
+.panel-ui button.seo-page-row:hover,
+.panel-ui .seo-page-row:hover {
+  background: #f9fafb !important;
+  border-color: #d1d5db !important;
+}
+html.dark .panel-ui button.seo-page-row:hover {
+  background: #27272a !important;
+}
+.panel-ui button.seo-page-row.is-active,
+.panel-ui .seo-page-row.is-active {
+  border-color: #93c5fd !important;
+  background: #eff6ff !important;
+  box-shadow: 0 0 0 1px #bfdbfe !important;
+}
+html.dark .panel-ui button.seo-page-row.is-active {
+  border-color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.12) !important;
+}
+.seo-page-row .seo-badge-ok {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  -webkit-text-fill-color: #065f46 !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 2px 8px !important;
+}
+.seo-page-row .seo-badge-off {
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+  -webkit-text-fill-color: #6b7280 !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  padding: 2px 8px !important;
+}
+html.dark .seo-page-row .seo-badge-ok {
+  background: #16382c !important;
+  color: #a7f3d0 !important;
+  -webkit-text-fill-color: #a7f3d0 !important;
+}
+html.dark .seo-page-row .seo-badge-off {
+  background: #27272a !important;
+  color: #a1a1aa !important;
+  -webkit-text-fill-color: #a1a1aa !important;
+}
