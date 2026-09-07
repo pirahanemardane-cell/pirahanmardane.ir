@@ -1153,9 +1153,34 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             });
             setBlogPosts((prev) => {
               const prevArr = Array.isArray(prev) ? prev : [];
-              if (prevArr.length && prevArr.some((x) => x && (x.body || x.excerpt))) return prevArr;
-              return mapped;
+              // همیشه از API اولویت؛ فیلدهای محلی (مثل read) را روی همان id نگه دار
+              const prevById = Object.fromEntries(
+                prevArr.filter((x) => x && x.id != null).map((x) => [String(x.id), x])
+              );
+              return mapped.map((m) => {
+                const old = prevById[String(m.id)];
+                if (!old) return m;
+                return {
+                  ...old,
+                  ...m,
+                  // دسته و اسلاگ و بدنه از سرور
+                  cat: m.cat || old.cat || '',
+                  category: m.category || old.category || '',
+                  category_slug: m.category_slug || old.category_slug || '',
+                  body: m.body != null ? m.body : old.body,
+                  excerpt: m.excerpt != null ? m.excerpt : old.excerpt,
+                  slug: m.slug || old.slug,
+                  date: m.date || old.date,
+                  title: m.title || old.title,
+                  image: m.image || old.image,
+                  cover: m.cover || old.cover,
+                };
+              });
             });
+            try {
+              // کش قدیمی بدون دسته را پاک کن تا بعداً دوباره قفل نشود
+              localStorage.removeItem('siteBlogPosts');
+            } catch (_) {}
           } catch (_) {}
         })();
         return () => { cancelled = true; };
