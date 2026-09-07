@@ -4656,27 +4656,56 @@ html.dark button.seller-rank-chip--on {
 }
 
 
-/* PANEL LAYOUT v5 — sidebar RIGHT + below header + full width content */
+
+
+/* تمام‌عرض داخل پنل */
+.panel-ui .panel-main,
+.admin-panel-shell .panel-main,
+.seller-panel-shell .panel-main {
+  width: 100% !important;
+  max-width: none !important;
+}
+.panel-ui .max-w-md,
+.panel-ui .max-w-lg,
+.panel-ui .max-w-xl,
+.panel-ui .max-w-2xl,
+.panel-ui .max-w-3xl,
+.panel-ui .max-w-4xl,
+.panel-ui .max-w-5xl,
+.panel-ui .max-w-6xl,
+.panel-ui .max-w-7xl,
+.panel-ui .max-w-prose {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+
+/* PANEL LAYOUT v6 — more gap under header + hide sidebar scrollbar */
 @media (min-width: 768px) {
   .panel-sidebar,
   aside.panel-sidebar {
     position: fixed !important;
-    top: 6.5rem !important;          /* زیر هدر سایت */
+    top: 7.5rem !important;
     bottom: 1rem !important;
-    right: 1rem !important;          /* همیشه سمت راست فیزیکی */
+    right: 1rem !important;
     left: auto !important;
-    inset-inline-start: auto !important;
-    inset-inline-end: auto !important;
     width: 16rem !important;
-    max-height: calc(100vh - 7.5rem) !important;
+    max-height: calc(100vh - 8.5rem) !important;
     overflow-y: auto !important;
     z-index: 40 !important;
+    scrollbar-width: none !important;          /* Firefox */
+    -ms-overflow-style: none !important;       /* IE/Edge */
+  }
+  .panel-sidebar::-webkit-scrollbar,
+  aside.panel-sidebar::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;                  /* Chrome/Safari */
   }
   .seller-panel-shell .panel-sidebar,
   .panel-ui--seller .panel-sidebar {
     width: 14rem !important;
   }
-  /* فاصله محتوا از راست تا زیر سایدبار نرود */
   .panel-ui--admin .panel-main,
   .panel-ui--seller .panel-main,
   .admin-panel-shell .panel-main,
@@ -4691,8 +4720,6 @@ html.dark button.seller-rank-chip--on {
     margin-right: 15rem !important;
   }
 }
-
-/* تمام‌عرض داخل پنل */
 .panel-ui .panel-main,
 .admin-panel-shell .panel-main,
 .seller-panel-shell .panel-main {
