@@ -120,7 +120,7 @@ export default function HomeView() {
             id: p.id,
             title: p.title || 'بدون عنوان',
             image: p.cover_image || p.cover_url || p.cover || '/default-avatar.svg',
-            category: p.category || p.category_name || 'مجله',
+            category: p.cat || p.category || p.category_name || '',
             author: p.author || p.author_name || 'پیراهن مردانه',
             date: (() => {
               const raw = p.published_at || p.date || p.created_at;
@@ -570,7 +570,7 @@ export default function HomeView() {
                                 try { if (typeof setFaqQuery === 'function') setFaqQuery(b.category); } catch (_) {}
                                 try { openStaticPage('blog'); } catch (_) {}
                               }}
-                              className="text-xs sm:text-sm text-apple-link font-medium inline-flex px-2.5 py-0.5 rounded-full bg-apple-blue/10 hover:bg-apple-blue/20"
+                              className="inline-flex self-start items-center h-6 px-2 mb-1.5 rounded-md bg-primary-100 dark:bg-primary-700 text-primary-900 dark:text-white text-xs font-medium hover:bg-primary-200 dark:hover:bg-primary-600 transition"
                             >{b.category}</button>
                           ) : null}
                           <h3 className="text-base font-bold text-primary-900 dark:text-white mt-1 mb-1.5 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-white transition" title={b.title}>{b.title}</h3>
