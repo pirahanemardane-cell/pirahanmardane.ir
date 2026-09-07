@@ -102,7 +102,8 @@ export function Breadcrumb({
           )}
 
           {crumbs.map((item, i) => {
-            const isLast = i === crumbs.length - 1 || !!item.current;
+            const isLast = i === crumbs.length - 1;
+            const itemClass = `pm-breadcrumb-item inline-flex items-center ${isLast ? 'font-semibold text-primary-900 dark:text-white' : 'text-primary-600 dark:text-white/70 hover:text-primary-900 dark:hover:text-white'}`; // فقط آخرین آیتم current — نه چندتای همزمان
             return (
               <React.Fragment key={`${item.label}-${i}`}>
                 {isLast ? (

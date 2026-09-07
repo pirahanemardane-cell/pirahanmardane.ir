@@ -42,6 +42,17 @@ import { htmlToPlain } from '@/lib/html-plain';
 import EmptyState from './EmptyState';
 import { Textarea } from './ui/textarea';
 import { Breadcrumb } from './ui/breadcrumb';
+
+function normalizeBreadcrumbs(items) {
+  const list = (Array.isArray(items) ? items : []).filter(Boolean);
+  if (!list.length) return list;
+  return list.map((it, i) => ({
+    ...it,
+    current: i === list.length - 1,
+  }));
+}
+
+
 import Toaster, { showToast } from './ui/toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import {
@@ -16030,7 +16041,7 @@ const params = new URLSearchParams(window.location.search);
               ...(showWishlistPage ? [{ label: 'علاقه‌مندی‌ها', current: true }] : []),
               ...(showRecentPage ? [{ label: 'اخیراً دیده‌شده', current: true }] : []),
               ...(showProfilePage ? [{ label: 'حساب کاربری', current: true }] : []),
-              ...(showSellerPanel ? [{ label: 'پنل فروشنده', current: true }] : []),
+              ...(showSellerPanel ? [{ label: 'پنل فروشنده', current: !(showTaxonomyHub === 'categories' || showTaxonomyHub === 'brands' || showTaxonomyHub === 'tags'), onClick: showTaxonomyHub ? () => { try { setShowTaxonomyHub(null); } catch (_) {} } : undefined }] : []),
               // پنل ادمین: breadcrumb فقط داخل AdminPanelContent — جلوگیری از دوبل
               ...(showAdminPanel ? [] : []),
               ...(showTaxonomyHub === 'categories' ? [{ label: 'همه دسته‌بندی‌ها', current: true }] : []),

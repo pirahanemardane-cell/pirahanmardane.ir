@@ -4401,3 +4401,21 @@ html.dark button.btn-info, html.dark .btn-info {
     max-width: 100% !important;
   }
 }
+
+
+/* ===== breadcrumb separators ===== */
+nav[aria-label="breadcrumb"] ol,
+nav[aria-label="Breadcrumb"] ol,
+nav[aria-label="breadcrumb"] .flex,
+nav[aria-label="breadcrumb"] {
+  /* handled in component */
+}
+/* جداکننده بین آیتم‌های breadcrumb اگر فقط flex باشند */
+.pm-breadcrumb-item:not(:last-child)::after {
+  content: "‹";
+  display: inline-block;
+  margin-inline: 0.35rem 0.15rem;
+  opacity: 0.45;
+  font-weight: 400;
+  pointer-events: none;
+}
