@@ -3595,273 +3595,289 @@ html.dark p.offer-time-sub.offer-time-sub {
 }
 
 /* === PANEL UI SYSTEM (visual only — no logic) === */
-/* اسکوپ: پنل ادمین / فروشنده / خریدار — بدون تغییر onClick یا state */
+/*
+ * الگوی بصری: داشبوردهای مدرن Next.js (سبک Vercel / Linear)
+ * فقط ظاهر — onClick، state، مراحل، API بدون تغییر
+ */
 
 .panel-ui {
-  --panel-radius: 1.25rem;
-  --panel-radius-sm: 0.875rem;
-  --panel-border: color-mix(in srgb, var(--tw-prose-body, #94a3b8) 22%, transparent);
-  --panel-card-bg: #ffffff;
-  --panel-muted: #64748b;
-  --panel-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
-  --panel-shadow-hover: 0 2px 8px rgba(15, 23, 42, 0.06), 0 12px 32px rgba(15, 23, 42, 0.08);
-  --panel-focus: 0 0 0 3px color-mix(in srgb, #64748b 22%, transparent);
-  background:
-    radial-gradient(1200px 600px at 100% -10%, color-mix(in srgb, #94a3b8 12%, transparent), transparent 60%),
-    radial-gradient(900px 500px at -10% 20%, color-mix(in srgb, #cbd5e1 14%, transparent), transparent 55%),
-    #f8fafc;
-  color: #0f172a;
+  --p-bg: #fafafa;
+  --p-bg-elevated: #ffffff;
+  --p-bg-subtle: #f4f4f5;
+  --p-bg-hover: #f4f4f5;
+  --p-border: #e4e4e7;
+  --p-border-strong: #d4d4d8;
+  --p-text: #09090b;
+  --p-text-secondary: #71717a;
+  --p-text-muted: #a1a1aa;
+  --p-accent: #0071e3;
+  --p-accent-soft: rgba(0, 113, 227, 0.08);
+  --p-radius: 12px;
+  --p-radius-sm: 8px;
+  --p-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --p-shadow-md: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.06);
+  --p-ring: 0 0 0 2px #fff, 0 0 0 4px rgba(0, 113, 227, 0.35);
+  background: var(--p-bg);
+  color: var(--p-text);
+  font-feature-settings: "ss01" on, "cv01" on;
 }
 
 html.dark .panel-ui {
-  --panel-card-bg: #12141a;
-  --panel-muted: #94a3b8;
-  --panel-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.28);
-  --panel-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.35);
-  --panel-focus: 0 0 0 3px rgba(148, 163, 184, 0.25);
-  background:
-    radial-gradient(1000px 500px at 100% -10%, rgba(148, 163, 184, 0.08), transparent 55%),
-    radial-gradient(800px 400px at 0% 30%, rgba(71, 85, 105, 0.12), transparent 50%),
-    #0b0d11;
-  color: #f1f5f9;
+  --p-bg: #09090b;
+  --p-bg-elevated: #18181b;
+  --p-bg-subtle: #27272a;
+  --p-bg-hover: #27272a;
+  --p-border: #27272a;
+  --p-border-strong: #3f3f46;
+  --p-text: #fafafa;
+  --p-text-secondary: #a1a1aa;
+  --p-text-muted: #71717a;
+  --p-accent: #38bdf8;
+  --p-accent-soft: rgba(56, 189, 248, 0.12);
+  --p-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --p-shadow-md: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.45);
+  --p-ring: 0 0 0 2px #09090b, 0 0 0 4px rgba(56, 189, 248, 0.4);
+  background: var(--p-bg);
+  color: var(--p-text);
 }
 
-/* کارت‌های رایج داخل پنل */
+/* —— سایدبار / ناو —— */
+.panel-ui .panel-sidebar {
+  z-index: 10;
+}
+
+.panel-ui .panel-nav,
+.panel-ui .admin-tabs-strip,
+.panel-ui .seller-tabs-strip {
+  background: var(--p-bg-elevated) !important;
+  border: 1px solid var(--p-border) !important;
+  border-radius: var(--p-radius) !important;
+  box-shadow: var(--p-shadow) !important;
+  backdrop-filter: none !important;
+  padding: 0.4rem !important;
+  gap: 0.15rem !important;
+}
+
+.panel-ui .panel-nav-item {
+  border-radius: var(--p-radius-sm) !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.011em;
+  color: var(--p-text-secondary) !important;
+  transition: background 0.12s ease, color 0.12s ease !important;
+  box-shadow: none !important;
+}
+
+.panel-ui .panel-nav-item:hover {
+  background: var(--p-bg-hover) !important;
+  color: var(--p-text) !important;
+}
+
+/* حالت فعال — سبک Linear/Vercel (نه آبی پررنگ شلوغ) */
+.panel-ui .panel-nav-item--active,
+.panel-ui .panel-nav-item.panel-nav-item--active.bg-apple-blue {
+  background: var(--p-bg-subtle) !important;
+  color: var(--p-text) !important;
+  box-shadow: none !important;
+  font-weight: 600 !important;
+}
+
+html.dark .panel-ui .panel-nav-item--active,
+html.dark .panel-ui .panel-nav-item.panel-nav-item--active.bg-apple-blue {
+  background: var(--p-bg-subtle) !important;
+  color: var(--p-text) !important;
+}
+
+/* —— ناحیه محتوا —— */
+.panel-ui .panel-main {
+  background: var(--p-bg-elevated) !important;
+  border: 1px solid var(--p-border) !important;
+  border-radius: var(--p-radius) !important;
+  box-shadow: var(--p-shadow) !important;
+  backdrop-filter: none !important;
+}
+
+/* —— کارت‌ها —— */
+.panel-ui .rounded-2xl.border,
+.panel-ui [class*="rounded-2xl"][class*="border"] {
+  border-color: var(--p-border) !important;
+  box-shadow: var(--p-shadow) !important;
+  background-color: var(--p-bg-elevated);
+}
+
 .panel-ui .rounded-2xl.border.bg-white,
 .panel-ui .rounded-2xl.border.bg-primary-900,
 .panel-ui [class*="rounded-2xl"][class*="border"][class*="bg-white"],
 .panel-ui [class*="rounded-2xl"][class*="border"][class*="bg-primary-900"] {
-  box-shadow: var(--panel-shadow);
-  border-color: color-mix(in srgb, #94a3b8 28%, transparent) !important;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  background-color: var(--p-bg-elevated) !important;
+  border-color: var(--p-border) !important;
+  box-shadow: var(--p-shadow) !important;
 }
 
-html.dark .panel-ui .rounded-2xl.border.bg-white,
-html.dark .panel-ui .rounded-2xl.border.bg-primary-900,
-html.dark .panel-ui [class*="rounded-2xl"][class*="border"][class*="bg-primary-900"] {
-  border-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* اینپوت / سلکت / تکست‌اریا */
+/* —— فرم‌ها —— */
 .panel-ui input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]),
 .panel-ui select,
 .panel-ui textarea {
-  border-radius: var(--panel-radius-sm) !important;
-  border-color: color-mix(in srgb, #94a3b8 35%, transparent) !important;
-  background-color: color-mix(in srgb, #ffffff 92%, #f1f5f9) !important;
-  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  border-radius: var(--p-radius-sm) !important;
+  border: 1px solid var(--p-border) !important;
+  background-color: var(--p-bg-elevated) !important;
+  color: var(--p-text) !important;
+  box-shadow: none !important;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease !important;
 }
 
-html.dark .panel-ui input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]),
-html.dark .panel-ui select,
-html.dark .panel-ui textarea {
-  background-color: color-mix(in srgb, #0f1218 88%, #1e293b) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
-  color: #f8fafc;
+.panel-ui input::placeholder,
+.panel-ui textarea::placeholder {
+  color: var(--p-text-muted) !important;
 }
 
 .panel-ui input:not([type="checkbox"]):not([type="radio"]):focus,
 .panel-ui select:focus,
 .panel-ui textarea:focus {
   outline: none !important;
-  border-color: color-mix(in srgb, #64748b 55%, #0ea5e9) !important;
-  box-shadow: var(--panel-focus) !important;
+  border-color: var(--p-accent) !important;
+  box-shadow: var(--p-ring) !important;
 }
 
-/* select زیباتر */
 .panel-ui select {
   appearance: none !important;
   -webkit-appearance: none !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
-  background-position: left 0.75rem center !important;
-  padding-left: 2.25rem !important;
+  background-position: left 0.7rem center !important;
+  padding-left: 2.1rem !important;
   cursor: pointer;
 }
 
 html.dark .panel-ui select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
 }
 
-/* دکمه‌های ثانویه (border) نرم‌تر */
-.panel-ui button.border.rounded-full,
-.panel-ui button.border.rounded-xl,
-.panel-ui button.border.rounded-2xl {
-  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+.panel-ui label.text-xs,
+.panel-ui label.text-\[11px\],
+.panel-ui label[class*="text-xs"],
+.panel-ui label[class*="text-[11px]"] {
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em;
+  color: var(--p-text-secondary) !important;
 }
 
-.panel-ui button.border.rounded-full:hover,
-.panel-ui button.border.rounded-xl:hover {
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+/* —— دکمه‌ها —— */
+.panel-ui button.border {
+  border-color: var(--p-border) !important;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease !important;
 }
 
-/* دکمه اصلی */
+.panel-ui button.border:hover {
+  background: var(--p-bg-hover) !important;
+  border-color: var(--p-border-strong) !important;
+}
+
 .panel-ui button.bg-apple-blue,
 .panel-ui button[class*="bg-apple-blue"] {
-  box-shadow: 0 6px 16px color-mix(in srgb, #0071e3 28%, transparent);
-  transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  background-color: var(--p-accent) !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
 }
+
 .panel-ui button.bg-apple-blue:hover,
 .panel-ui button[class*="bg-apple-blue"]:hover {
-  filter: brightness(1.03);
-  box-shadow: 0 8px 20px color-mix(in srgb, #0071e3 36%, transparent);
+  filter: brightness(1.05);
+  box-shadow: none !important;
 }
 
-/* سایدبار / ناو تب‌ها — دکمه‌های نازک */
-.panel-ui aside button,
-.panel-ui nav button {
-  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-}
-
-/* چیپ مراحل ویزارد (بدون تغییر onClick) */
-.panel-ui button.text-\[10px\].rounded-full.border,
-.panel-ui button[class*="text-[10px]"][class*="rounded-full"][class*="border"] {
-  min-width: 1.75rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-}
-
-/* تیترها */
+/* —— تیتر —— */
 .panel-ui h1,
-.panel-ui h2 {
-  letter-spacing: -0.02em;
+.panel-ui h2,
+.panel-ui h3 {
+  letter-spacing: -0.025em;
+  color: var(--p-text);
+  font-weight: 600;
 }
 
-/* جدول‌ها */
+.panel-ui p.text-xs.text-primary-500,
+.panel-ui p.text-sm.text-primary-500,
+.panel-ui .text-primary-400,
+.panel-ui .text-primary-500 {
+  color: var(--p-text-secondary) !important;
+}
+
+/* —— ویزارد / پیشرفت —— */
+.panel-ui .panel-wizard-head {
+  background: var(--p-bg-subtle) !important;
+  border: 1px solid var(--p-border) !important;
+  border-radius: var(--p-radius) !important;
+  backdrop-filter: none !important;
+}
+
+.panel-ui .panel-progress {
+  height: 4px !important;
+  background: var(--p-bg-subtle) !important;
+  border-radius: 999px !important;
+  ring: none !important;
+  box-shadow: none !important;
+}
+
+.panel-ui .panel-progress__bar {
+  background: var(--p-text) !important;
+  background-image: none !important;
+  border-radius: 999px !important;
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.dark .panel-ui .panel-progress__bar {
+  background: var(--p-text) !important;
+  background-image: none !important;
+}
+
+.panel-ui .panel-step {
+  min-width: 1.75rem;
+  font-weight: 500 !important;
+}
+
+.panel-ui .panel-step--active {
+  background: var(--p-text) !important;
+  border-color: var(--p-text) !important;
+  color: var(--p-bg) !important;
+  box-shadow: none !important;
+}
+
+/* —— جدول —— */
 .panel-ui table {
   border-collapse: separate;
   border-spacing: 0;
 }
 .panel-ui thead th {
-  font-size: 0.7rem;
-  text-transform: none;
-  letter-spacing: 0.01em;
-  color: var(--panel-muted);
+  font-size: 0.6875rem !important;
+  font-weight: 500 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--p-text-muted) !important;
+  border-bottom: 1px solid var(--p-border) !important;
 }
 
-/* اسکرول سایدبار نرم */
+.panel-ui tbody td {
+  border-bottom: 1px solid var(--p-border) !important;
+}
+
+/* —— اسکرول —— */
+.panel-ui .panel-nav,
 .panel-ui aside,
 .panel-ui [class*="overflow-y-auto"] {
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, #94a3b8 45%, transparent) transparent;
+  scrollbar-color: var(--p-border-strong) transparent;
 }
 
-/* جداکننده نرم */
-.panel-ui--admin .admin-panel-shell,
-.panel-ui.admin-panel-shell,
-.panel-ui.seller-panel-shell {
-  min-height: 100vh;
-}
-
-/* حالت خریدار: کارت‌های حساب */
-.panel-ui--buyer [class*="rounded-2xl"][class*="border"] {
-  box-shadow: var(--panel-shadow);
-}
-
-
-/* --- Phase 2: nav, wizard, density --- */
-.panel-ui .panel-sidebar {
-  transition: none;
-}
-
-.panel-ui .panel-nav {
-  max-height: calc(100vh - 7.5rem);
-  overflow-y: auto;
-}
-
-.panel-ui .panel-nav-item {
-  border-radius: 0.75rem !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.01em;
-}
-
-.panel-ui .panel-nav-item--active {
-  transform: translateZ(0);
-}
-
-.panel-ui .panel-main {
-  min-height: 60vh;
-}
-
-/* ویزارد محصول */
-.panel-ui .panel-wizard-head {
-  backdrop-filter: blur(6px);
-}
-
-.panel-ui .panel-progress {
-  height: 0.5rem;
-}
-
-.panel-ui .panel-progress__bar {
-  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  background-image: linear-gradient(90deg, color-mix(in srgb, #0071e3 85%, #38bdf8), #0071e3);
-}
-
-html.dark .panel-ui .panel-progress__bar {
-  background-image: linear-gradient(90deg, #38bdf8, #0071e3);
-}
-
-/* چیپ مرحله */
-.panel-ui .panel-step {
-  min-width: 1.85rem;
-  justify-content: center;
-}
-
-.panel-ui .panel-step--active {
-  box-shadow: 0 4px 12px color-mix(in srgb, #0071e3 30%, transparent);
-}
-
-/* هدر بخش‌های داخلی */
-.panel-ui .panel-main > .flex.items-center.justify-between,
-.panel-ui .panel-main > div > .flex.items-center.justify-between {
-  margin-bottom: 0.25rem;
-}
-
-/* کارت KPI / آمار */
-.panel-ui .panel-main .rounded-2xl.border.text-center {
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-}
-.panel-ui .panel-main .rounded-2xl.border.text-center:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--panel-shadow-hover);
-}
-
-/* فرم‌ها داخل پنل فشرده‌تر و خواناتر */
-.panel-ui label.text-xs,
-.panel-ui label.text-\[11px\] {
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: color-mix(in srgb, #475569 92%, #0f172a);
-}
-html.dark .panel-ui label.text-xs,
-html.dark .panel-ui label.text-\[11px\] {
-  color: rgba(248, 250, 252, 0.72);
-}
-
-/* دکمه‌های پایین فرم */
-.panel-ui .panel-main .flex.gap-2 > button.rounded-full {
-  min-height: 2.4rem;
-  padding-left: 1.1rem;
-  padding-right: 1.1rem;
-}
-
-/* لیست خالی */
-.panel-ui [class*="EmptyState"],
-.panel-ui .text-center.py-8,
-.panel-ui .text-center.py-10 {
-  color: var(--panel-muted);
-}
-
-/* موبایل: ناو افقی زیباتر */
+/* —— موبایل —— */
 @media (max-width: 767px) {
   .panel-ui .panel-nav {
-    max-height: none;
     flex-direction: row !important;
     overflow-x: auto;
     overscroll-behavior-x: contain;
-    mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+    max-height: none;
   }
   .panel-ui .panel-nav-item {
     flex-shrink: 0;
@@ -3869,4 +3885,5 @@ html.dark .panel-ui label.text-\[11px\] {
 }
 
 /* === END PANEL UI SYSTEM === */
+
 

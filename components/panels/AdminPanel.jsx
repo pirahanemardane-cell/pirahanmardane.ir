@@ -1,8 +1,6 @@
 'use client';
 
-/**
- * مرز lazy پنل ادمین — فقط پوسته ظاهری؛ منطق در children است.
- */
+/** پوسته ظاهری پنل admin — منطق در children */
 export default function AdminPanel({ children, className = '' }) {
   return (
     <div

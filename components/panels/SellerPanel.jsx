@@ -1,6 +1,6 @@
 'use client';
 
-/** مرز lazy پنل فروشنده — فقط پوسته ظاهری */
+/** پوسته ظاهری پنل seller — منطق در children */
 export default function SellerPanel({ children, className = '' }) {
   return (
     <div

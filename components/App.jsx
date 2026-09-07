@@ -16079,7 +16079,7 @@ const params = new URLSearchParams(window.location.search);
           <ProfileView />
           {/* ========== Seller Panel ========== */}
           {showSellerPanel && sellerUser && !pdpProduct && (
-            <SellerPanelShell className="seller-panel-shell panel-ui panel-ui--seller w-full min-h-screen flex flex-col overflow-x-hidden">
+            <SellerPanelShell className="seller-panel-shell panel-ui panel-ui--seller w-full min-h-screen flex flex-col overflow-x-hidden bg-[var(--p-bg,#fafafa)]">
               <SellerPanelContent adminCategories={adminCategories || []} setAccountPassword={setAccountPassword}  adminCatalogColors={adminCatalogColors} saveAdminCatalogColors={saveAdminCatalogColors}/>
             </SellerPanelShell>
           )}
@@ -16238,7 +16238,7 @@ const params = new URLSearchParams(window.location.search);
       )}
 
       {showAdminPanel && adminUser && !pdpProduct && (
-            <AdminPanelShell className="admin-panel-shell panel-ui panel-ui--admin w-full min-h-screen flex flex-col overflow-x-hidden">
+            <AdminPanelShell className="admin-panel-shell panel-ui panel-ui--admin w-full min-h-screen flex flex-col overflow-x-hidden bg-[var(--p-bg,#fafafa)]">
               <AdminPanelContent
             hydrateAdminProducts={hydrateAdminProducts}
             hydrateAdminSellers={hydrateAdminSellers}
