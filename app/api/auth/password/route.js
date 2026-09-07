@@ -1,3 +1,4 @@
+import { normalizeOtpCode, normalizeIranPhone, otpCodesEqual } from '../../../../lib/otp-normalize';
 import { logCritical } from '@/lib/critical-log';
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';

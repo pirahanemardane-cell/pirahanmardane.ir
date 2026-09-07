@@ -327,7 +327,7 @@ export default function AdminPanelContent() {
 
   return (
     <>
-            <div className="panel-content-wrap w-full max-w-none mx-auto px-2 sm:px-4 py-4 sm:py-10 pb-24">
+            <div className="panel-content-wrap w-full max-w-none px-2 sm:px-4 py-4 sm:py-10 pb-24">
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6 p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900">
                 <div className="flex items-center gap-3">
                   <div className="w-14 h-14 rounded-full bg-primary-800 dark:bg-[#4CCD99] text-white flex items-center justify-center text-xl font-bold">{(adminUser.name || 'ا')[0]}</div>
@@ -1845,7 +1845,7 @@ export default function AdminPanelContent() {
 
 
                   {!adminLoading && adminTab === 'pages' && (
-                    <div className="space-y-4 max-w-3xl">
+                    <div className="space-y-4 max-w-none w-full">
                       <div>
                         <h2 className="text-base font-bold text-primary-900 dark:text-white">برگه‌ها</h2>
                         <p className="text-xs text-primary-500 mt-1">محتوا با ویرایشگر متن · سوالات متداول · سئو هر برگه</p>
@@ -3599,7 +3599,7 @@ export default function AdminPanelContent() {
                   )}
 
                   {!adminLoading && adminTab === 'seo' && (
-                    <div className="space-y-6 max-w-3xl">
+                    <div className="space-y-6 max-w-none w-full">
                       <div>
                         <h2 className="text-base font-bold text-primary-900 dark:text-white">سئو و ابزارهای فنی</h2>
                         <p className="text-xs text-primary-500 mt-1">سئوی هر صفحه جداگانه · اسکیما، سایت‌مپ، Search Console، GA و GTM</p>
@@ -4165,7 +4165,7 @@ export default function AdminPanelContent() {
 
 
                   {!adminLoading && adminTab === 'redirects' && (
-                    <div className="space-y-5 max-w-3xl">
+                    <div className="space-y-5 max-w-none w-full">
                       <div>
                         <h2 className="text-base font-bold text-primary-900 dark:text-white">ریدایرکت دستی</h2>
                         <p className="text-xs text-primary-500 mt-1">مسیر قدیمی را به مسیر جدید بفرستید · ۳۰۱ دائم · ۳۰۲ موقت · ۴۱۰ حذف‌شده · فقط ادمین</p>
@@ -4373,7 +4373,7 @@ export default function AdminPanelContent() {
                     const covErr = cov.filter(c => c.type === 'error').reduce((s, c) => s + c.count, 0);
                     const covEx = cov.filter(c => c.type === 'excluded').reduce((s, c) => s + c.count, 0);
                     return (
-                    <div className="space-y-4 max-w-5xl">
+                    <div className="space-y-4 max-w-none w-full">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
                           <h2 className="text-base font-bold text-primary-900 dark:text-white">سرچ کنسول (Search Console)</h2>
@@ -4709,7 +4709,7 @@ export default function AdminPanelContent() {
                     const liveEvents = (ga4Store?.events || []).filter(e => (e.ts || 0) >= liveWindow);
                     const liveUsers = new Set(liveEvents.map(e => e.user_id)).size;
                     return (
-                    <div className="space-y-4 max-w-5xl">
+                    <div className="space-y-4 max-w-none w-full">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
                           <h2 className="text-base font-bold text-primary-900 dark:text-white">آنالیتیکس (GA4-like)</h2>
@@ -5146,7 +5146,7 @@ export default function AdminPanelContent() {
               )}
 
                   {!adminLoading && adminTab === 'settings' && (
-                    <div className="max-w-lg space-y-4">
+                    <div className="max-w-none w-full space-y-4">
                       <h2 className="text-base font-bold text-primary-900 dark:text-white">تنظیمات سایت</h2>
                       <div><label className="text-xs text-primary-500 block mb-1">نام فروشگاه</label>
                         <input defaultValue={adminSettings?.siteName||''} id="adm-site" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" /></div>

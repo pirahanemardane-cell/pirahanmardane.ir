@@ -1272,7 +1272,7 @@ export default function SellerPanelContent() {
 
   return (
     <>
-            <div className="panel-content-wrap w-full max-w-none mx-auto px-2 sm:px-4 py-4 sm:py-10 pb-24">
+            <div className="panel-content-wrap w-full max-w-none px-2 sm:px-4 py-4 sm:py-10 pb-24">
               <div className="mb-6 p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 space-y-3">
               <div className="flex items-center gap-3 min-w-0">
                 <Avatar
@@ -1373,7 +1373,7 @@ export default function SellerPanelContent() {
                 <div className="flex-1 min-w-0 p-3 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 shadow-sm">
                   {/* Dashboard */}
                   {sellerTab === 'pending-approval' && (
-                        <div className="p-8 rounded-2xl border border-amber-200 dark:border-amber-900/40 bg-amber-50 dark:bg-amber-950/30 text-center max-w-lg mx-auto my-12">
+                        <div className="p-8 rounded-2xl border border-amber-200 dark:border-amber-900/40 bg-amber-50 dark:bg-amber-950/30 text-center max-w-none w-full my-12">
                           <p className="text-lg font-bold text-primary-900 dark:text-white mb-2">در انتظار تأیید ادمین</p>
                           <p className="text-sm text-primary-600 dark:text-white/70 leading-relaxed">
                             حساب فروشنده شما هنوز تأیید نشده است. پس از بررسی و تأیید توسط ادمین، پنل فروش فعال می‌شود.
@@ -3326,7 +3326,7 @@ export default function SellerPanelContent() {
                                   : 'انتخاب از لیست ادمین'}
                               </p>
                             </div>
-                            <div className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5" style={{ WebkitOverflowScrolling: 'touch' }}>
+                            <div className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5 w-full min-w-0" style={{ WebkitOverflowScrolling: 'touch' }}>
                               {(() => {
                                 const q = sellerTaxonomySearch.trim();
                                 let items = [];
@@ -3441,7 +3441,7 @@ export default function SellerPanelContent() {
                                 <Icon name="x" size={16} />
                               </button>
                             </div>
-                            <div className="flex-1 overflow-y-auto px-4 py-3 min-h-0">
+                            <div className="flex-1 overflow-y-auto px-4 py-3 min-h-0 w-full min-w-0">
                               <SimpleEditor
                                 value={sellerDescDraft}
                                 onChange={(html, plain) => {

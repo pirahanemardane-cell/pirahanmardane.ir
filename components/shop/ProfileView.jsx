@@ -365,7 +365,7 @@ export default function ProfileView() {
     <>
           {showProfilePage && !pdpProduct && user && (
             <div className="profile-page-shell panel-ui panel-ui--buyer w-full flex-1 flex flex-col bg-primary-50 dark:bg-primary-950">
-            <div className="panel-content-wrap w-full max-w-none mx-auto px-2 sm:px-4 py-4 sm:py-10 flex-1">
+            <div className="panel-content-wrap w-full max-w-none px-2 sm:px-4 py-4 sm:py-10 flex-1">
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6 p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900">
                 <div className="flex items-center gap-3">
                   <div className="w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-800 overflow-hidden flex-shrink-0">
