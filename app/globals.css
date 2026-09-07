@@ -4680,9 +4680,9 @@ html.dark button.seller-rank-chip--on {
 }
 
 
-/* Panel sidebar pin (JS toggles is-pinned / is-at-footer) */
+/* Admin/Seller sidebar: fixed right below header */
 @media (min-width: 768px) {
-  aside.panel-sidebar.is-pinned {
+  aside.panel-sidebar {
     position: fixed !important;
     top: 7rem !important;
     right: 1rem !important;
@@ -4693,18 +4693,24 @@ html.dark button.seller-rank-chip--on {
     z-index: 30 !important;
     scrollbar-width: none !important;
   }
-  aside.panel-sidebar.is-pinned::-webkit-scrollbar { display: none !important; }
-  aside.panel-sidebar.is-at-footer {
-    position: absolute !important;
-    top: auto !important;
-    bottom: 0 !important;
-    right: 1rem !important;
-    left: auto !important;
-    width: 16rem !important;
+  aside.panel-sidebar::-webkit-scrollbar { display: none !important; }
+  .seller-panel-shell aside.panel-sidebar { width: 14rem !important; }
+  .panel-ui--admin .panel-main,
+  .admin-panel-shell .panel-main,
+  .panel-ui--admin .panel-admin-header,
+  .admin-panel-shell .panel-admin-header {
+    margin-right: 17rem !important;
   }
-  .seller-panel-shell aside.panel-sidebar.is-pinned,
-  .seller-panel-shell aside.panel-sidebar.is-at-footer {
-    width: 14rem !important;
+  .panel-ui--seller .panel-main,
+  .seller-panel-shell .panel-main {
+    margin-right: 15rem !important;
   }
 }
 
+
+
+/* products-toolbar-order: دکمه‌ها زیر فیلتر، سرچ بالا */
+.admin-products-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; }
+.admin-products-actions { display: flex; flex-wrap: wrap; gap: 0.375rem; width: 100%; order: 3; margin-bottom: 1rem; }
+.admin-products-filters { order: 2; width: 100%; margin-bottom: 0.5rem; }
+.admin-products-search { order: 1; }

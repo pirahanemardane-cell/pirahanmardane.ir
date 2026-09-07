@@ -389,7 +389,7 @@ export default function AdminPanelContent() {
         </div>
        </div>
        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-        <aside data-panel-sidebar className="panel-sidebar w-full md:w-64 flex-shrink-0 z-20 overflow-y-auto">
+        <aside className="panel-sidebar w-full md:w-64 flex-shrink-0 z-20 overflow-y-auto">
          <div className="admin-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto p-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03] md:min-h-[calc(100vh-6rem)]">
           {[
            { id: 'dashboard', label: 'داشبورد', icon: 'home' },
@@ -778,11 +778,11 @@ export default function AdminPanelContent() {
          {/* Sellers management */}
          {!adminLoading && adminTab === 'sellers' && !adminSellerDetailId && (
           <div>
-           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+           <div className="admin-products-head flex flex-wrap items-center justify-between gap-3 mb-2">
             <h2 className="text-base font-bold text-primary-900 dark:text-white">مدیریت فروشندگان</h2>
             <input value={adminSellerSearch} onChange={e=>setAdminSellerSearch(e.target.value)} placeholder="جستجو نام یا موبایل…" className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm w-full sm:w-56 focus:outline-none focus:border-apple-blue" />
            </div>
-           <div className="flex gap-1 overflow-x-auto mb-4">
+           <div className="admin-products-filters flex gap-1 overflow-x-auto mb-2">
             {[{id:'all',l:'همه'},{id:'pending',l:'در انتظار'},{id:'approved',l:'تأیید‌شده'},{id:'rejected',l:'رد‌شده'},{id:'suspended',l:'محدود شده'},{id:'archived',l:'آرشیو شده‌ها'}].map(f=>(
              <button key={f.id} type="button" onClick={()=>setAdminSellerFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition ${adminSellerFilter===f.id?'panel-filter-chip--on':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
             ))}
@@ -1085,7 +1085,7 @@ export default function AdminPanelContent() {
           <div>
            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <h2 className="text-base font-bold text-primary-900 dark:text-white">مدیریت محصولات</h2>
-            <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
+            <div className="admin-products-actions flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
              <button type="button" onClick={() => { try { window.dispatchEvent(new CustomEvent('admin-products-refetch')); window.dispatchEvent(new CustomEvent('admin-sellers-refetch')); } catch(_){} }} className="text-xs px-2 py-1 rounded-full border border-primary-200 dark:border-white/20 text-primary-700 dark:text-white">بازخوانی از سرور</button>
              <button
               type="button"
@@ -1164,7 +1164,7 @@ export default function AdminPanelContent() {
                }}
               />
              </label>
-             <input value={adminProductSearch} onChange={e=>setAdminProductSearch(e.target.value)} placeholder="جستجو نام محصول…" className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm w-full sm:w-56 focus:outline-none focus:border-apple-blue" />
+             <input value={adminProductSearch} onChange={e=>setAdminProductSearch(e.target.value)} placeholder="جستجو نام محصول…" className="admin-products-search px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm w-full sm:w-56 focus:outline-none focus:border-apple-blue" />
             </div>
            </div>
            <div className="flex gap-1 overflow-x-auto mb-4">
