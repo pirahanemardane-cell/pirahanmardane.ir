@@ -1740,7 +1740,7 @@ export default function AdminPanelContent() {
          {!adminLoading && adminTab === 'tickets' && !adminTicketDetailId && (
           <div>
            <h2 className="text-base font-bold text-primary-900 dark:text-white mb-4">تیکت‌های پشتیبانی</h2>
-           <div className="flex gap-1 overflow-x-auto mb-4">
+           <div className="admin-tabs-strip flex gap-1 overflow-x-auto mb-4">
             {[{id:'all',l:'همه'},{id:'open',l:'باز'},{id:'pending',l:'در انتظار'},{id:'closed',l:'بسته'}].map(f=>(
              <button key={f.id} type="button" onClick={()=>setAdminTicketFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminTicketFilter===f.id?'panel-filter-chip--on':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
             ))}
@@ -4576,7 +4576,7 @@ export default function AdminPanelContent() {
              ))}
             </div>
            </div>
-           <div className="flex gap-1 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+           <div className="admin-tabs-strip flex gap-1 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: 'touch' }}>
             {subs.map(s => (
              <button key={s.id} type="button" onClick={() => setAdminGscSub(s.id)} className={`flex-shrink-0 text-xs px-3 py-2 rounded-full border ${sub === s.id ? 'bg-primary-900 text-white dark:bg-white dark:text-primary-900 border-transparent' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80'}`}>{s.label}</button>
             ))}
@@ -4590,7 +4590,7 @@ export default function AdminPanelContent() {
               <Kpi label="Average CTR" value={pct(agg.totals.ctr)} />
               <Kpi label="Average position" value={pos(agg.totals.position)} />
              </div>
-             <div className="flex gap-1 overflow-x-auto">
+             <div className="admin-tabs-strip flex gap-1 overflow-x-auto">
               {dims.map(d => (
                <button key={d.id} type="button" onClick={() => setAdminGscDim(d.id)} className={`flex-shrink-0 text-xs px-2.5 py-1.5 rounded-full border ${adminGscDim === d.id ? 'bg-emerald-600 text-white border-emerald-600' : 'border-primary-200 dark:border-white/20'}`}>{d.label}</button>
               ))}
