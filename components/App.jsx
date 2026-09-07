@@ -5732,8 +5732,9 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         try { scrollPageToTop(); } catch (_) {}
       };
 
-      /** خانه واقعی برای breadcrumb — بدون history.back */
+      /** خانه واقعی برای breadcrumb/لوگو — بدون history.back */
       const goHome = () => {
+        try { beginPageLoad('home'); } catch (_) {}
         try {
           setStaticPage(null);
           setBlogPostId(null);
@@ -5753,8 +5754,15 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           setActiveSellerId(null);
           setMobileMenuOpen(false);
           try { setMegaOpen(null); } catch (_) {}
-          try { pushFaUrl(FA_PATHS.home || '/'); } catch (_) {}
-          try { if (applyPathRef?.current) applyPathRef.current(); } catch (_) {}
+          try { setCartOpen(false); } catch (_) {}
+          try { setWishlistOpen(false); } catch (_) {}
+          try { setCompareOpen(false); } catch (_) {}
+          try { setRecentOpen(false); } catch (_) {}
+          // همیشه URL خانه + applyPath (نه history.back)
+          try { replaceFaUrl(FA_PATHS.home || '/'); } catch (_) {
+            try { pushFaUrl(FA_PATHS.home || '/'); } catch (__) {}
+          }
+          try { applyPathRef.current(); } catch (_) {}
           try { scrollPageToTop(); } catch (_) {}
         } catch (_) {}
       };
@@ -16079,11 +16087,11 @@ const params = new URLSearchParams(window.location.search);
             if (isHome) return null;
             const crumbItems = [
               ...(showPLP && !activeSeller && !activePlpTag ? [
-                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => openPLP() },
+                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => { try { openPLP({}); } catch (_) {} } },
                 { label: plpCats.length === 1 ? plpH1 : 'همه محصولات', current: true },
               ] : []),
               ...(showPLP && !activeSeller && activePlpTag ? [
-                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => openPLP() },
+                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => { try { openPLP({}); } catch (_) {} } },
                 { label: activePlpTag.name || activePlpTag.label || 'برچسب', current: true },
               ] : []),
               ...(showPLP && activeSeller ? [
@@ -16127,7 +16135,7 @@ const params = new URLSearchParams(window.location.search);
             return (
               <Breadcrumb
                 fullWidth={showProfilePage || showSellerPanel}
-                homeOnClick={() => { try { goHome(); } catch (_) { try { pushFaUrl("/"); } catch (__) {} } }}
+                homeOnClick={() => { try { goHome(); } catch (_) {} }}
                 items={crumbItems}
               />
             );
