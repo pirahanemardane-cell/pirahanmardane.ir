@@ -1849,15 +1849,8 @@ html:not(.dark) .plp-filter-chip--on {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
 }
-html:not(.dark) button[class*="!bg-sky-"],
-html:not(.dark) button[class*="!bg-emerald-"],
-html:not(.dark) button[class*="bg-sky-600"],
-html:not(.dark) button[class*="bg-emerald-600"] {
-  background-color: #FF0000 !important;
-  border-color: #FF0000 !important;
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
-}
+/* removed: do not force emerald/sky semantic buttons to brand red */
+
 
 
 /* text-apple-link — same as site link accent */
@@ -4238,4 +4231,157 @@ body.site-modal-open .site-header {
 /* خود هدر هرگز از مودال بالاتر نیاید اگر مودال در body باشد */
 header.site-header {
   z-index: 100;
+}
+
+/* ===== SEMANTIC PASTEL BUTTONS (toast-aligned) ===== */
+/*
+ * فقط دکمه‌های معنایی — بقیه (برند قرمز، apple-blue، فیلتر، ناو) دست نخورند
+ * success=سبز پاستیلی · error=قرمز پاستیلی · warning=نارنجی پاستیلی · info=بنفش پاستیلی
+ * پالت = components/ui/toast.jsx getPalette
+ */
+
+/* —— موفقیت / تأیید (سبز) —— */
+html:not(.dark) button[class*="bg-emerald-"]:not(.plp-filter-chip--on):not(.panel-filter-chip--on):not(.panel-nav-item),
+html:not(.dark) button[class*="bg-green-"]:not(.plp-filter-chip--on):not(.panel-filter-chip--on):not(.panel-nav-item),
+html:not(.dark) a[class*="bg-emerald-"],
+html:not(.dark) a[class*="bg-green-500"],
+html:not(.dark) a[class*="bg-green-600"] {
+  background-color: #D1FAE5 !important;
+  border-color: #34D399 !important;
+  color: #065F46 !important;
+  -webkit-text-fill-color: #065F46 !important;
+}
+html:not(.dark) button[class*="bg-emerald-"]:hover:not(.plp-filter-chip--on):not(.panel-filter-chip--on),
+html:not(.dark) button[class*="bg-green-"]:hover:not(.plp-filter-chip--on):not(.panel-filter-chip--on) {
+  background-color: #A7F3D0 !important;
+  border-color: #10B981 !important;
+  color: #064E3B !important;
+  -webkit-text-fill-color: #064E3B !important;
+}
+html.dark button[class*="bg-emerald-"]:not(.plp-filter-chip--on):not(.panel-filter-chip--on):not(.panel-nav-item),
+html.dark button[class*="bg-green-"]:not(.plp-filter-chip--on):not(.panel-filter-chip--on):not(.panel-nav-item) {
+  background-color: #16382C !important;
+  border-color: #86EFAC !important;
+  color: #ECFDF5 !important;
+  -webkit-text-fill-color: #ECFDF5 !important;
+}
+
+/* —— خطا (قرمز پاستیلی) — نه برند #FF0000 / apple-blue / فیلتر فعال —— */
+html:not(.dark) button[class*="bg-red-500"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on):not(.bg-apple-blue),
+html:not(.dark) button[class*="bg-red-600"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html:not(.dark) button[class*="bg-red-700"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html:not(.dark) button[class*="!bg-red-"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on) {
+  background-color: #FEE2E2 !important;
+  border-color: #F87171 !important;
+  color: #991B1B !important;
+  -webkit-text-fill-color: #991B1B !important;
+}
+html:not(.dark) button[class*="bg-red-500"]:hover:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html:not(.dark) button[class*="bg-red-600"]:hover:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html:not(.dark) button[class*="bg-red-700"]:hover:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on) {
+  background-color: #FECACA !important;
+  border-color: #EF4444 !important;
+  color: #7F1D1D !important;
+  -webkit-text-fill-color: #7F1D1D !important;
+}
+html.dark button[class*="bg-red-500"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html.dark button[class*="bg-red-600"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html.dark button[class*="bg-red-700"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html.dark button[class*="!bg-red-"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on) {
+  background-color: #3B1F24 !important;
+  border-color: #FCA5A5 !important;
+  color: #FEF2F2 !important;
+  -webkit-text-fill-color: #FEF2F2 !important;
+}
+
+/* —— هشدار (نارنجی پاستیلی) —— */
+html:not(.dark) button[class*="bg-amber-"]:not(.panel-nav-item):not(.panel-filter-chip--on),
+html:not(.dark) button[class*="bg-orange-"]:not(.panel-nav-item):not(.panel-filter-chip--on),
+html:not(.dark) button[class*="bg-yellow-"]:not(.panel-nav-item):not(.panel-filter-chip--on) {
+  background-color: #FFEDD5 !important;
+  border-color: #FB923C !important;
+  color: #9A3412 !important;
+  -webkit-text-fill-color: #9A3412 !important;
+}
+html:not(.dark) button[class*="bg-amber-"]:hover:not(.panel-nav-item),
+html:not(.dark) button[class*="bg-orange-"]:hover:not(.panel-nav-item) {
+  background-color: #FED7AA !important;
+  border-color: #F97316 !important;
+  color: #7C2D12 !important;
+  -webkit-text-fill-color: #7C2D12 !important;
+}
+html.dark button[class*="bg-amber-"]:not(.panel-nav-item):not(.panel-filter-chip--on),
+html.dark button[class*="bg-orange-"]:not(.panel-nav-item):not(.panel-filter-chip--on),
+html.dark button[class*="bg-yellow-"]:not(.panel-nav-item):not(.panel-filter-chip--on) {
+  background-color: #3B2A14 !important;
+  border-color: #FCD34D !important;
+  color: #FFFBEB !important;
+  -webkit-text-fill-color: #FFFBEB !important;
+}
+
+/* —— اطلاع‌رسانی (بنفش پاستیلی = toast default/info) —— */
+html:not(.dark) button[class*="bg-violet-"]:not(.panel-nav-item),
+html:not(.dark) button[class*="bg-purple-"]:not(.panel-nav-item),
+html:not(.dark) button[class*="bg-indigo-"]:not(.panel-nav-item) {
+  background-color: #EDE9FE !important;
+  border-color: #A78BFA !important;
+  color: #5B21B6 !important;
+  -webkit-text-fill-color: #5B21B6 !important;
+}
+html:not(.dark) button[class*="bg-violet-"]:hover:not(.panel-nav-item),
+html:not(.dark) button[class*="bg-purple-"]:hover:not(.panel-nav-item) {
+  background-color: #DDD6FE !important;
+  border-color: #8B5CF6 !important;
+  color: #4C1D95 !important;
+  -webkit-text-fill-color: #4C1D95 !important;
+}
+html.dark button[class*="bg-violet-"]:not(.panel-nav-item),
+html.dark button[class*="bg-purple-"]:not(.panel-nav-item),
+html.dark button[class*="bg-indigo-"]:not(.panel-nav-item) {
+  background-color: #2E2348 !important;
+  border-color: #DDD6FE !important;
+  color: #F5F3FF !important;
+  -webkit-text-fill-color: #F5F3FF !important;
+}
+
+/* کلاس‌های صریح اختیاری */
+button.btn-success, .btn-success {
+  background-color: #D1FAE5 !important;
+  border-color: #34D399 !important;
+  color: #065F46 !important;
+}
+html.dark button.btn-success, html.dark .btn-success {
+  background-color: #16382C !important;
+  border-color: #86EFAC !important;
+  color: #ECFDF5 !important;
+}
+button.btn-error, .btn-error {
+  background-color: #FEE2E2 !important;
+  border-color: #F87171 !important;
+  color: #991B1B !important;
+}
+html.dark button.btn-error, html.dark .btn-error {
+  background-color: #3B1F24 !important;
+  border-color: #FCA5A5 !important;
+  color: #FEF2F2 !important;
+}
+button.btn-warning, .btn-warning {
+  background-color: #FFEDD5 !important;
+  border-color: #FB923C !important;
+  color: #9A3412 !important;
+}
+html.dark button.btn-warning, html.dark .btn-warning {
+  background-color: #3B2A14 !important;
+  border-color: #FCD34D !important;
+  color: #FFFBEB !important;
+}
+button.btn-info, .btn-info {
+  background-color: #EDE9FE !important;
+  border-color: #A78BFA !important;
+  color: #5B21B6 !important;
+}
+html.dark button.btn-info, html.dark .btn-info {
+  background-color: #2E2348 !important;
+  border-color: #DDD6FE !important;
+  color: #F5F3FF !important;
 }

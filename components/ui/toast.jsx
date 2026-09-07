@@ -28,8 +28,10 @@ function getPalette(variant) {
     default: dark
       ? { bg: '#2E2348', border: '#DDD6FE', text: '#F5F3FF', icon: '#C4B5FD' }
       : { bg: '#EDE9FE', border: '#A78BFA', text: '#5B21B6', icon: '#7C3AED' },
+    warning: dark
+      ? { bg: '#3B2A14', border: '#FCD34D', text: '#FFFBEB', icon: '#FCD34D' }
+      : { bg: '#FFEDD5', border: '#FB923C', text: '#9A3412', icon: '#EA580C' },
   };
-  if (variant === 'warning') return map.error; // خطا و اخطار → قرمز پاستیلی
   if (variant === 'info') return map.default;
   return map[variant] || map.default;
 }
