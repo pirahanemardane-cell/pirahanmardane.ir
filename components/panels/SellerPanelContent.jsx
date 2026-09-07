@@ -4218,10 +4218,10 @@ export default function SellerPanelContent() {
                         {[
                           { l:'فروش ۳۰ روز', v:'۴۵,۲۰۰,۰۰۰' },
                           { l:'تعداد سفارش', v: toFa((sellerOrders||[]).length) },
-                          { l:'میانگین امتیاز', v:'۴.۷' },
-                          { l:'بازدید فروشگاه', v: toFa(12840) },
-                          { l:'فروش با تخفیف', v:'۸,۶۰۰,۰۰۰' },
-                          { l:'سود بالقوه ماه', v:'۱۲,۴۰۰,۰۰۰' },
+                          { l:'میانگین امتیاز', v: toFa(0) },
+                          { l:'بازدید فروشگاه', v: toFa(0) },
+                          { l:'فروش با تخفیف', v: toFa(0) },
+                          { l:'سود بالقوه ماه', v: toFa(0) },
                         ].map(s => (
                           <div key={s.l} className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900"><p className="text-xs text-primary-500">{s.l}</p><p className="text-lg font-bold text-primary-900 dark:text-white mt-1">{s.v}</p></div>
                         ))}
@@ -4230,7 +4230,7 @@ export default function SellerPanelContent() {
                       <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
                         <h3 className="text-sm font-bold text-primary-900 dark:text-white mb-3">روند فروش ۷ روز اخیر</h3>
                         <div className="flex items-end gap-1.5 h-28">
-                          {[40, 65, 45, 80, 55, 90, 70].map((h, i) => (
+                          {[0, 0, 0, 0, 0, 0, 0].map((h, i) => (
                             <div key={i} className="flex-1 flex flex-col items-center gap-1">
                               <div className="w-full rounded-t-md bg-gradient-to-t from-apple-blue to-sky-400 dark:from-[#4CCD99] dark:to-orange-300" style={{ height: `${h}%` }} />
                               <span className="text-xs text-primary-400">{toFa(i + 1)}</span>
@@ -4585,12 +4585,12 @@ export default function SellerPanelContent() {
                         <p className="text-xs text-primary-400 mb-3">۶ ماه اخیر (میلیون تومان)</p>
                         <div className="flex items-end gap-2 h-32">
                           {[
-                            { m: 'دی', v: 18 },
-                            { m: 'بهمن', v: 24 },
-                            { m: 'اسفند', v: 21 },
-                            { m: 'فروردین', v: 32 },
-                            { m: 'اردیبهشت', v: 28 },
-                            { m: 'خرداد', v: 45 },
+                            { m: 'دی', v: 0 },
+                            { m: 'بهمن', v: 0 },
+                            { m: 'اسفند', v: 0 },
+                            { m: 'فروردین', v: 0 },
+                            { m: 'اردیبهشت', v: 0 },
+                            { m: 'خرداد', v: 0 },
                           ].map((b) => (
                             <div key={b.m} className="flex-1 flex flex-col items-center gap-1">
                               <span className="text-xs font-medium text-primary-600 dark:text-white/70">{toFa(b.v)}</span>
