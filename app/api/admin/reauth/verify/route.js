@@ -5,13 +5,20 @@ import { clientIp, rateLimitAsync, rateLimitResponse } from '../../../../../lib/
 
 export const dynamic = 'force-dynamic'
 
+function normalizeCode(code) {
+  return String(code || '')
+    .replace(/[۰-۹]/g, (c) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c)))
+    .replace(/[٠-٩]/g, (c) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(c)))
+    .replace(/\D/g, '')
+}
+
 export async function POST(req) {
   try {
     const gate = await requireAdmin()
     if (gate.error) return gate.error
 
     const body = await req.json().catch(() => ({}))
-    const code = String(body.code || body.otp || '').replace(/\D/g, '')
+    const code = normalizeCode(body.code || body.otp)
     const phone = String(gate.profile?.phone || '').replace(/\D/g, '')
     if (!phone || code.length < 4) {
       return NextResponse.json({ ok: false, error: 'کد نامعتبر است' }, { status: 400 })
@@ -26,7 +33,7 @@ export async function POST(req) {
       return NextResponse.json({ ok: false, error: result.error || 'کد اشتباه است' }, { status: 401 })
     }
 
-    const exp = Date.now() + 10 * 60 * 1000 // ۱۰ دقیقه
+    const exp = Date.now() + 10 * 60 * 1000
     const res = NextResponse.json({
       ok: true,
       message: 'تأیید شد. تا ۱۰ دقیقه می‌توانید بک‌آپ بگیرید.',
