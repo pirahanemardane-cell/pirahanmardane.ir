@@ -15430,7 +15430,7 @@ const params = new URLSearchParams(window.location.search);
                 <div className="flex md:contents items-center gap-1.5 sm:gap-2 flex-shrink-0">
                   <button
                     type="button"
-                    onClick={() => { setMobileMenuOpen(v => !v); setMegaOpen(null); }}
+                    onClick={() => { setMobileMenuOpen(!mobileMenuOpen); setMegaOpen(null); }}
                     className="header-burger-btn md:hidden relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary-100 dark:hover:bg-primary-800 text-primary-600 dark:text-white"
                     aria-label="منو"
                   >
@@ -16073,6 +16073,48 @@ const params = new URLSearchParams(window.location.search);
                 </div>
               </div>
             </div>
+
+          {/* Mobile menu drawer */}
+          {mobileMenuOpen && (
+            <div className="md:hidden fixed inset-0 z-[200]" role="dialog" aria-modal="true" aria-label="منوی اصلی">
+              <button
+                type="button"
+                className="absolute inset-0 bg-black/40"
+                aria-label="بستن منو"
+                onClick={() => setMobileMenuOpen(false)}
+              />
+              <div className="mobile-menu-panel absolute top-0 right-0 bottom-0 w-[min(86vw,20rem)] bg-white dark:bg-primary-900 shadow-2xl border-l border-primary-200 dark:border-white/15 flex flex-col overflow-y-auto">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-primary-200 dark:border-white/15">
+                  <span className="text-sm font-bold text-primary-900 dark:text-white">منو</span>
+                  <button type="button" onClick={() => setMobileMenuOpen(false)} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-primary-100 dark:hover:bg-primary-800" aria-label="بستن">
+                    <Icon name="x" size={18} />
+                  </button>
+                </div>
+                <nav className="flex flex-col p-3 gap-1 text-sm">
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { beginPageLoad('home'); } catch(_){} try { pushFaUrl(FA_PATHS.home || '/'); } catch(_){} try { applyPathRef.current(); } catch(_){} }}>خانه</button>
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { openPLP({}); } catch(_){} }}>فروشگاه</button>
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { openTaxonomyHub('categories'); } catch(_){} }}>دسته‌بندی‌ها</button>
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { openSellersList(); } catch(_){} }}>فروشندگان</button>
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { openCartPage(); } catch(_){} }}>سبد خرید</button>
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { openWishlistPage(); } catch(_){} }}>علاقه‌مندی‌ها</button>
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { openComparePage(); } catch(_){} }}>مقایسه</button>
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { openStaticPage('deals'); } catch(_){} }}>شگفت‌انگیز</button>
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { openStaticPage('brands'); } catch(_){} }}>برندها</button>
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { openStaticPage('about'); } catch(_){} }}>درباره ما</button>
+                  <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white" onClick={() => { setMobileMenuOpen(false); try { openStaticPage('contact'); } catch(_){} }}>تماس با ما</button>
+                  <div className="my-2 border-t border-primary-200 dark:border-white/15" />
+                  {user ? (
+                    <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white font-medium" onClick={() => { setMobileMenuOpen(false); try { openProfilePage(); } catch(_){} }}>حساب من</button>
+                  ) : sellerUser ? (
+                    <button type="button" className="text-right px-3 py-2.5 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-900 dark:text-white font-medium" onClick={() => { setMobileMenuOpen(false); try { openSellerPanel(); } catch(_){} }}>پنل فروشنده</button>
+                  ) : (
+                    <button type="button" className="text-right px-3 py-2.5 rounded-xl bg-apple-blue text-white font-medium" onClick={() => { setMobileMenuOpen(false); try { setRoleGateOpen(true); } catch(_){} }}>ورود / ثبت‌نام</button>
+                  )}
+                </nav>
+              </div>
+            </div>
+          )}
+
           </header>
           {/* فاصله زیر هدر fixed — ارتفاع با JS؛ در خانهٔ قبل از reveal = 0 */}
           <div className="site-header-spacer flex-shrink-0" aria-hidden="true" />
