@@ -134,6 +134,7 @@ export default function AdminPanelContent() {
 
 
   const api = useAppApi();
+  const [sellerRankRange, setSellerRankRange] = useState('month'); // day|week|month|year
   const { BarList, CarouselArrows, EmptyState, EmptyStateBox, ErrorState, Icon, Kpi, LoadingState, OWN_SELLER, PRODUCT_IMG, SeoPixelBars, SimpleEditor, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Textarea, TipText, activeSellerId, activeTip, add, addBlogComment, addBrandMention, addToCart, addressDeleteConfirm, addressForm, addressFormOpen, addresses, adm, adminAnalyticsRange, adminAnalyticsSub, adminAuthError, adminAuthLoading, adminAuthOpen, adminAuthOtp, adminAuthOtpTimer, adminAuthPhone, adminAuthStep, adminBlogCategories, adminBlogTags, adminBuyerDetailId, adminBuyerSearch, adminBuyers, adminCatalogAttributes, adminCatalogBrands, adminCatalogColors, adminCatalogSizes, adminCategories, adminContentTab, adminCouponForm, adminCouponFormOpen, adminCoupons, hydrateCatalogFromApi, setAdminOrderStatus, hydrateAdminStatsFromApi, requestSellerPayout, hydrateSellerPayouts, hydrateBlogPostsFromApi, hydrateAdminCoupons, persistCampaignOnServer, hydrateCampaignsFromApi, createAdminCouponOnServer, hydrateSellerOrdersFromApi, adminFrontEditForm, adminFrontEditOpen, adminGscDim, adminGscInspectResult, adminGscInspectUrl, adminGscRange, adminGscSub, adminLoading, adminModerationQueue, adminOrderDetailId, adminOrderFilter, adminOrderNote, adminOrderSearch, adminOrders, adminPageContent, adminPageSeoStep, adminProductDetailId, adminProductFilter, adminProductSearch, adminProducts, adminRejectReason, adminSellerDetailId, adminSellerFilter, adminSellerSearch, adminSellers, adminSeoHubKey, adminSettings, adminShippingMethods, adminStatusBadge, adminStatusLabel, adminTab, adminTags, adminTicketDetailId, adminTicketFilter, adminTicketReply, adminTickets, adminUser, aiGenerateSeoMeta, aiOptimizeTextHints, aiSuggestFaq, allLists, analyzeOnPageSeo, apply, applyCoupon, applyFromUrl, applyRealtimePayload, applySellerDescFormat, approveAdminProduct, assertNoUserLinks, attrsKeyPart, attrsMatch, authError, authFailCount, authLastName, authLoading, authLockedUntil, authMode, authName, authOpen, authOtp, authOtpTimer, authPhone, authReturnTo, authStep, authTermsAccepted, backupAdminProducts, backupDestPath, backupSellerProducts, bar, blankShippingMethod, blogCommentName, blogCommentText, blogComments, blogForm, blogPostId, blogPosts, brandDetailId, brandQuery, brandsList, buildArticleSchema, buildBreadcrumbSchema, buildCheckoutOrderDraft, buildFaqSchema, buildGa4Seed, buildGscSeed, buildImageAlt, buildLlmsTxt, buildLocalBusinessSchema, buildNewsSitemapXml, buildProductSchema, buildRobotsTxt, buildSitemapIndexXml, buildSitemapXml, buildVariantMatrix, buildVideoSitemapXml, buyerGifts, buyerTicketBody, buyerTicketDetailId, buyerTicketError, buyerTicketFormOpen, buyerTicketSubject, buyerTickets, campaignForm, campaignNow, campaignsList, canonicalBase, cardQtys, carouselIndex, cart, cartItemKey, cartItemLoading, cartOpen, cartesianAttrCombos, catOpen, catalogForm, catalogProducts, changeCartColor, checkoutContact, checkoutErrors, checkoutNewAddress, checkoutNote, checkoutPaymentMethod, checkoutPlacing, checkoutSelectedAddressId, checkoutShippingMethod, checkoutStep, checkoutUseNewAddress, classifyToastVariant, clearAllSearchFilters, clearCart, clearCartConfirm, clearCompare, clearFavorites, clearPlpFilters, clearRecentSearches, clearSellerListFilters, close, closeAdminAuth, closeAdminPanel, closeAuth, closeCartPage, closeCheckout, closeComparePage, closeMobileMenuOnWide, closePDP, closePLP, closeProfilePage, closeRecentPage, closeSeller, closeSellerPanel, closeSellersList, closeSiteDialog, closeStaticPage, closeWishlistPage, collect, collectFullSiteBackup, compare, compareOnlyDiffs, compareOpen, compareReplaceOpen, compareToast, completeRegister, confirmPaymentFail, confirmPaymentSuccess, consumeSeoAiQuota, contactForm, contactFormError, contentEditorTarget, conversationChannelLabel, cookieConsent, copyShareLink, copyTextToClipboard, countFor, couponApplied, couponInput, couponMsg, dark, dealsMinDiscount, dealsSort, defaultAdminBlogCategories, defaultAdminCategories, defaultAdminTags, defaultOrganizationSchema, defaultSeoConfig, defaultShippingMethods, demoOtpCode, deriveCollar, deriveFabric, deriveSleeve, detectImportSource, didYouMean, discountMode, discountPercent, discountPickIds, discountPrices, downloadBlobFile, downloadFullSiteBackup, downloadSeoFile, editingAddressId, editingCouponId, editingSellerProductId, emptyTaxonomyForm, enqueueModeration, ensureAdminSeed, ensureProductCode, esc, existingSellerOrders, expandQuery, exportRedirectsForServer, faqCat, faqQuery, favToast, favorites, fileToImage, finalizePaidOrder, findOpenChatConversation, findProductVariant, findSlider, finishAuthSuccess, fire, fmt, fmtMoney, formatPrice, ga4Aggregate, ga4FilterEvents, ga4Store, generateGiftCode, generateProductCode, generateTicketCode, getAttrDimensions, getCheckoutShippingCost, getCheckoutTaxRate, getCheckoutTotals, getCurrentPageSeoContext, getFavEntry, getPageCms, getPageShareUrl, getProductPublicPath, getProductPublicUrl, getResolvedPageSeo, getSellerEnabledShippingIds, getSellerMaxDiscount, getSellerMinPrice, getSeoAiQuota, getShippingOptions, getShopSeoBody, getUsedPromoCodes, getVariantPrice, getVariantStock, giftCodeForm, gscAggregate, gscInspect, gscStore, has, hasMounted, headerRevealedAfterHero, htmlToPlain, imgZoom, importExternalProductsCsv, installBuyerPwa, isBlogLiked, isDealActive, isFavorite, isLive, isNumericField, isSlider, isVerticalScrollable, ix, lastAutoBackupAt, likedBlogs, list, liveToasts, loadForm, loadGa4Store, loadGscStore, logSeo404, logout, logoutAdmin, hydrateAdminProducts, hydrateAdminSellers, hydrateAdminOrders, adminPatchProductStatus, adminDeleteProduct, adminPurgeProduct, adminBulkArchiveProducts, adminBulkPurgeProducts, adminBulkArchiveSellers, adminBulkPurgeSellers, adminPatchSellerStatus, adminDeleteSeller, adminPurgeSeller, adminPatchOrderStatus, adminListLoading, adminListError, logoutAllDevices, logoutSeller, mapExternalRowToProduct, markAllNotifsRead, markNotifRead, markPromoCodeUsed, matchCatalogBrand, matchCatalogColor, matchCatalogSize, matchCategory, measureSeoPx, mediaToolAssign, mediaToolOffset, mediaToolProcessing, mediaToolResult, mediaToolScale, mediaToolSearch, mediaToolSrc, mediaToolStep, megaOpen, mirrorConversationToAdmin, mirrorSellerOrderToBuyer, mobileMenuOpen, move, nativeShare, newestTab, newsletterPhone, normKey, normalize, normalizeAttrMap, normalizeCategoryKey, normalizeSearch, notifPanelOpen, notifPulling, notifications, oldPriceOpen, onBeforeInput, onBip, onClickCapture, onDragStart, onFocusIn, onInput, onInstalled, onKey, onKeyDown, onMouseDown, onMouseMove, onMouseUp, onPointer, onPointerDown, onScroll, onStorage, onWheel, onlyDigits, openAdminAuth, openAdminFrontEdit, openAdminPanel, openAuth, openCartPage, openCategory, openCheckout, openComparePage, openNewShippingMethod, openPDP, openPLP, openProfilePage, openQuickAdd, openRecentPage, openSeller, openSellerAuth, openSellerPanel, openSellersList, openStaticPage, openTagPage, openTaxonomyHub, openTaxonomyWizard, openWishlistPage, orderDetailId, orderFailed, orderRateDraft, orderReturnOpen, orderStatusColor, orderSuccess, orders, ordersFilter, pageSeoMap, parseCsvText, parseResponseHours, pct, pdpAttrs, pdpColorIdx, pdpExpress, pdpGalleryIdx, pdpGiftWrap, pdpHeight, pdpNotifyOpen, pdpProduct, pdpQText, pdpQaFilter, pdpQty, pdpReviewFilter, pdpSize, pdpSizeRec, pdpSizeRecOpen, pdpSticky, pdpTab, pdpTouchX, pdpWeight, pdpZoom, pendingPayOrder, persistBlogComments, persistCompare, persistFavorites, persistGa4, persistGsc, persistLikedBlogs, persistSession, pickField, pingIndexNow, placeOrder, plpCats, plpCities, plpCityInput, plpCityOpen, plpColors, plpDiscountOnly, plpFabrics, plpFastShipOnly, plpFilterOpen, plpFilterTab, plpInStockOnly, plpMinDiscount, plpPriceMax, plpPriceMin, plpQuery, plpSellers, plpSidebarOpen, plpSizes, plpSkeleton, plpSort, plpSortOpen, plpTagFilter, plpView, plpVisible, poll, portalMounted, pos, prev, printOrderInvoice, processToProductWebP, processProductImageFile, productBackupPayload, productImportReport, productSlugFromNameAndShop, products, productsToCsv, profileTab, publishRealtime, pullNotifications, pushImg, pushLiveToast, pushNotification, pushRecentSearch, pushSellerNotification, pwaInstallEvent, pwaInstalled, quickAdd, quickColorIdx, quickDescOpen, quickGalleryIdx, quickQty, quickSize, readFile, readSessionUser, recentOpen, recentSearches, recentlyViewed, releaseDrag, removeCoupon, removeFavoritesBulk, removeFromCart, removeRecentSearch, renderContentSeoBox, renderList, renderProductCard, renderShareBar, replaceCompareAt, restoreAdminProductsFromFile, restoreFullSiteBackup, restoreSellerProductsFromFile, row, run, runSeoHealthCheck, same, saveAddresses, saveAdminBlogCategories, saveAdminBlogTags, saveAdminBuyers, saveAdminCatalogAttributes, saveAdminCatalogBrands, saveAdminCatalogColors, saveAdminCatalogSizes, saveAdminCategories, saveAdminCoupons, saveAdminFrontEdit, saveAdminOrders, saveAdminPageContentMap, saveAdminProducts, saveAdminSellers, saveAdminSettings, saveAdminShippingMethods, saveAdminTags, saveAdminTickets, saveBlogPosts, saveBuyerGifts, saveBuyerOrders, saveBuyerTickets, saveCampaigns, saveModerationQueue, saveNotifications, savePageSeoMap, saveSellerGifts, saveSellerOrders, saveSellerProducts, saveSellerTickets, saveSellerUser, saveSeo404Log, saveSeoPatch, saveSeoRedirects, saveShippingMethodForm, saveSiteFaqs, saveTaxonomy, saveUser, scoreProduct, scrollCarousel, scrolled, searchActiveIdx, searchCategories, searchColors, searchOpen, searchPhIdx, searchQuery, searchSizes, searchSuggestOpen, seedAddresses, seedAdminData, seedNotifications, seedOrders, seedSellerOrders, seedSellerProducts, seedSellerTickets, selectColor, selectedColors, selectedSizes, sellerBannerIdx, sellerCanSell, sellerCancelForm, sellerCancelOrder, sellerCat, sellerCatMenuOpen, sellerCityInput, sellerCityOpen, sellerConfirmOrder, sellerDescDraft, sellerDescEditorOpen, sellerDescError, sellerDiscountOnly, sellerFaqOpen, sellerFilterSheetOpen, sellerFollowed, sellerGifts, sellerListCities, sellerListMaxResponse, sellerListMinProducts, sellerListMinRating, sellerListQuery, sellerListSort, sellerMarkPackingDone, sellerMediaToolOpen, sellerNewTicket, sellerNewTicketOpen, sellerOpenOrderTicket, sellerOrderDetailId, sellerOrderStatusColor, sellerOrders, sellerOrdersFilter, sellerPriceMap, sellerProductDeleteId, sellerProductFilter, sellerProductForm, sellerProductFormOpen, sellerProductSearch, sellerProductStep, sellerProducts, sellerPromoModal, sellerReportOpen, sellerReportSent, sellerSearchOpen, sellerShareToast, sellerShipOrder, sellerShopOpen, sellerSort, sellerSortMenuOpen, sellerStickyBar, sellerTab, sellerTaxonomyPicker, sellerTaxonomySearch, sellerTicketDetailId, sellerTicketReply, sellerTickets, sellerTrackForm, sellerUser, sendAdminOtp, sendOtp, seo404Log, seoAiDaily, seoCfg, seoCharHint, seoOnChange, seoPixelReport, seoRedirectForm, seoRedirects, setActiveSellerId, setActiveTip, setAddressDeleteConfirm, setAddressForm, setAddressFormOpen, setAddresses, setAdminAnalyticsRange, setAdminAnalyticsSub, setAdminAuthError, setAdminAuthLoading, setAdminAuthOpen, setAdminAuthOtp, setAdminAuthOtpTimer, setAdminAuthPhone, setAdminAuthStep, setAdminBlogCategories, setAdminBlogTags, setAdminBuyerDetailId, setAdminBuyerSearch, setAdminBuyers, setAdminCatalogAttributes, setAdminCatalogBrands, setAdminCatalogColors, setAdminCatalogSizes, setAdminCategories, setAdminContentTab, setAdminCouponForm, setAdminCouponFormOpen, setAdminCoupons, setAdminFrontEditForm, setAdminFrontEditOpen, setAdminGscDim, setAdminGscInspectResult, setAdminGscInspectUrl, setAdminGscRange, setAdminGscSub, setAdminLoading, setAdminModerationQueue, setAdminOrderDetailId, setAdminOrderFilter, setAdminOrderNote, setAdminOrderSearch, setAdminOrders, setAdminPageContent, setAdminPageSeoStep, setAdminProductDetailId, setAdminProductFilter, setAdminProductSearch, setAdminProducts, setAdminRejectReason, setAdminSellerDetailId, setAdminSellerFilter, setAdminSellerSearch, setAdminSellers, setAdminSeoHubKey, setAdminSettings, setAdminShippingMethods, setAdminTab, setAdminTags, setAdminTicketDetailId, setAdminTicketFilter, setAdminTicketReply, setAdminTickets, setAdminUser, setAuthError, setAuthFailCount, setAuthLastName, setAuthLoading, setAuthLockedUntil, setAuthMode, setAuthName, setAuthOpen, setAuthOtp, setAuthOtpTimer, setAuthPhone, setAuthReturnTo, setAuthStep, setAuthTermsAccepted, setBackupDestPath, setBlogCommentName, setBlogCommentText, setBlogComments, setBlogForm, setBlogPostId, setBlogPosts, setBrandDetailId, setBrandQuery, setBrandsList, setBuyerGifts, setBuyerTicketBody, setBuyerTicketDetailId, setBuyerTicketError, setBuyerTicketFormOpen, setBuyerTicketSubject, setBuyerTickets, setCampaignForm, setCampaignNow, setCampaignsList, setCanonicalLink, setCardQtys, setCarouselIndex, setCart, setCartItemLoading, setCartOpen, setCatOpen, setCatalogForm, setCheckoutContact, setCheckoutErrors, setCheckoutNewAddress, setCheckoutNote, setCheckoutPaymentMethod, setCheckoutPlacing, setCheckoutSelectedAddressId, setCheckoutShippingMethod, setCheckoutStep, setCheckoutUseNewAddress, setClearCartConfirm, setCompare, setCompareOnlyDiffs, setCompareOpen, setCompareReplaceOpen, setCompareToast, setContactForm, setContactFormError, setContentEditorTarget, setCookieConsent, setCouponApplied, setCouponInput, setCouponMsg, setDark, setDealsMinDiscount, setDealsSort, setDemoOtpCode, setDiscountMode, setDiscountPercent, setDiscountPickIds, setDiscountPrices, setEditingAddressId, setEditingCouponId, setEditingSellerProductId, setFaqCat, setFaqQuery, setFavToast, setFavorites, setGa4Store, setGiftCodeForm, setGscStore, setHasMounted, setHeaderRevealedAfterHero, setImgZoom, setLastAutoBackupAt, setLikedBlogs, setLiveToasts, setMediaToolAssign, setMediaToolOffset, setMediaToolProcessing, setMediaToolResult, setMediaToolScale, setMediaToolSearch, setMediaToolSrc, setMediaToolStep, setMegaOpen, setMeta, setMobileMenuOpen, setNewestTab, setNewsletterPhone, setNotifPanelOpen, setNotifPulling, setNotifications, setOldPriceOpen, setOrCreateMeta, setOrderDetailId, setOrderFailed, setOrderRateDraft, setOrderReturnOpen, setOrderSuccess, setOrders, setOrdersFilter, setPageSeoMap, setPdpAttrs, setPdpColorIdx, setPdpExpress, setPdpGalleryIdx, setPdpGiftWrap, setPdpHeight, setPdpNotifyOpen, setPdpProduct, setPdpQText, setPdpQaFilter, setPdpQty, setPdpReviewFilter, setPdpSize, setPdpSizeRec, setPdpSizeRecOpen, setPdpSticky, setPdpTab, setPdpTouchX, setPdpWeight, setPdpZoom, setPendingPayOrder, setPlpCats, setPlpCities, setPlpCityInput, setPlpCityOpen, setPlpColors, setPlpDiscountOnly, setPlpFabrics, setPlpFastShipOnly, setPlpFilterOpen, setPlpFilterTab, setPlpInStockOnly, setPlpMinDiscount, setPlpPriceMax, setPlpPriceMin, setPlpQuery, setPlpSellers, setPlpSidebarOpen, setPlpSizes, setPlpSkeleton, setPlpSort, setPlpSortOpen, setPlpTagFilter, setPlpView, setPlpViewPersist, setPlpVisible, setPortalMounted, setProductImportReport, setProfileTab, setPwaInstallEvent, setPwaInstalled, setQuickAdd, setQuickColorIdx, setQuickDescOpen, setQuickGalleryIdx, setQuickQty, setQuickSize, setRecentOpen, setRecentSearches, setRecentlyViewed, setScrolled, setSearchActiveIdx, setSearchCategories, setSearchColors, setSearchOpen, setSearchPhIdx, setSearchQuery, setSearchSizes, setSearchSuggestOpen, setSelectedColors, setSelectedSizes, setSellerBannerIdx, setSellerCancelForm, setSellerCat, setSellerCatMenuOpen, setSellerCityInput, setSellerCityOpen, setSellerDescDraft, setSellerDescEditorOpen, setSellerDescError, setSellerDiscountOnly, setSellerFaqOpen, setSellerFilterSheetOpen, setSellerFollowed, setSellerGifts, setSellerListCities, setSellerListMaxResponse, setSellerListMinProducts, setSellerListMinRating, setSellerListQuery, setSellerListSort, setSellerMediaToolOpen, setSellerNewTicket, setSellerNewTicketOpen, setSellerOrderDetailId, setSellerOrders, setSellerOrdersFilter, setSellerProductDeleteId, setSellerProductFilter, setSellerProductForm, setSellerProductFormOpen, setSellerProductOutOfStock, setSellerProductReorderPoint, setSellerProductSearch, setSellerProductStep, setSellerProducts, setSellerPromoModal, setSellerReportOpen, setSellerReportSent, setSellerSearchOpen, setSellerShareToast, setSellerShopOpen, setSellerSort, setSellerSortMenuOpen, setSellerStickyBar, setSellerTab, setSellerTaxonomyPicker, setSellerTaxonomySearch, setSellerTicketDetailId, setSellerTicketReply, setSellerTickets, setSellerTrackForm, setSellerUser, setSeo404Log, setSeoAiDaily, setSeoRedirectForm, setSeoRedirects, setShippingMethodForm, setShippingMethodFormOpen, setShowAdminPanel, setShowCartPage, setShowCheckout, setShowComparePage, setShowPLP, setShowProfilePage, setShowRecentPage, setShowSellerPanel, setShowSellersList, setShowTaxonomyHub, setShowTop, setShowTracking, setShowWishlistPage, setSiteDialog, setSiteFaqs, setStaticPage, setStep, setStockNotifyIds, setTaxonomyForm, setTaxonomyFormOpen, setTopSellersTab, setUser, setWishlistClearConfirm, setWishlistFilter, setWishlistOpen, setWishlistSelected, setWishlistSort, setWishlistView, shareSeller, shippingMethodForm, shippingMethodFormOpen, shopCodePrefix, shouldNormalize, show, showAdminPanel, showBrowserPush, showCartPage, showCheckout, showComparePage, showCompareToast, showPLP, showProfilePage, showRecentPage, showSellerPanel, showSellersList, showTaxonomyHub, showToast, showTop, showTracking, showWishlistPage, simulateBrandScan, siteConfirm, siteDialog, siteFaqs, sitePrompt, sitePromptFields, slugifyTaxonomy, smartScore, splitList, staticPage, statusBadge, statusLabel, statusOf, stockNotifyIds, stripHtmlSeo, stripLinksForDisplay, submitSearch, suggestInternalLinks, suggestSizeFromBody, sync, syncFormVariants, takeSnap, taxonomyForm, taxonomyFormOpen, taxonomyTypeLabel, textContainsForbiddenLink, tick, ticketMessagesToChatUI, toEnDigits, toFa, toggleBlogLike, toggleCompare, toggleFavorite, toggleSearchCategory, toggleSearchColor, toggleSearchSize, toggleSellerFollow, toggleSellerListCity, top, topSellersRanked, topSellersTab, trackGa4Event, up, updatePageCms, updateQty, updateSellerOrderStatus, updateSellerProductStock, upsertJsonLd, upsertRankKeyword, user, validateCheckout, validateProductBackup, variantKey, verifyAdminOtp, verifyOtp, warnFaKeyboard, wishlistClearConfirm, wishlistFilter, wishlistOpen, wishlistProducts, wishlistSelected, wishlistSort, wishlistView, wrap, yes } = api;
 
   const [adminSelectedProductIds, setAdminSelectedProductIds] = useState([]);
@@ -548,18 +549,101 @@ export default function AdminPanelContent() {
                         </div>
                       </div>
                       <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-3">
-                        <h3 className="text-sm font-bold text-primary-900 dark:text-white">رتبه‌بندی فروشگاه‌ها (روزانه / هفتگی / ماهانه / سالانه)</h3>
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <h3 className="text-sm font-bold text-primary-900 dark:text-white">رتبه‌بندی فروشگاه‌ها</h3>
+                          <div className="flex gap-1 overflow-x-auto no-scrollbar">
+                            {[
+                              { id: 'day', l: 'روزانه' },
+                              { id: 'week', l: 'هفتگی' },
+                              { id: 'month', l: 'ماهانه' },
+                              { id: 'year', l: 'سالانه' },
+                            ].map((f) => (
+                              <button
+                                key={f.id}
+                                type="button"
+                                onClick={() => setSellerRankRange(f.id)}
+                                className={`flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-medium border transition ${
+                                  sellerRankRange === f.id
+                                    ? 'bg-primary-800 text-white border-primary-800 dark:bg-[#13ABC4] dark:border-[#13ABC4]'
+                                    : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80 bg-white dark:bg-primary-900'
+                                }`}
+                              >
+                                {f.l}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                         {(() => {
                           const sellers = adminSellers || [];
-                          const ranked = [...sellers].map(s => ({
-                            ...s,
-                            sales: Number(s.salesCount || s.ordersCount || Math.floor(Math.random()*50)+1),
-                            rating: Number(s.rating || (3.5 + Math.random()*1.5).toFixed(1)),
-                          })).sort((a,b)=>b.sales-a.sales);
-                          const top = ranked.slice(0,3);
-                          const bottom = [...ranked].sort((a,b)=>a.sales-b.sales).slice(0,3);
-                          const topR = [...ranked].sort((a,b)=>b.rating-a.rating).slice(0,3);
-                          const botR = [...ranked].sort((a,b)=>a.rating-b.rating).slice(0,3);
+                          const orders = adminOrders || [];
+                          const now = Date.now();
+                          const rangeMap = {
+                            day: 24 * 60 * 60 * 1000,
+                            week: 7 * 24 * 60 * 60 * 1000,
+                            month: 30 * 24 * 60 * 60 * 1000,
+                            year: 365 * 24 * 60 * 60 * 1000,
+                          };
+                          const since = now - (rangeMap[sellerRankRange] || rangeMap.month);
+
+                          // فروش واقعی از سفارش‌ها در بازه (پرداخت‌شده و بعد)
+                          const paidStatuses = new Set(['paid', 'preparing', 'processing', 'shipped', 'delivered']);
+                          const salesBySeller = Object.create(null);
+                          const revenueBySeller = Object.create(null);
+
+                          for (const o of orders) {
+                            const st = String(o.status || '').toLowerCase();
+                            if (!paidStatuses.has(st)) continue;
+                            const ts = new Date(o.created_at || o.createdAt || o.date || 0).getTime();
+                            if (!ts || ts < since) continue;
+
+                            const items = Array.isArray(o.items) ? o.items : (Array.isArray(o.order_items) ? o.order_items : []);
+                            if (items.length) {
+                              const seen = new Set();
+                              for (const it of items) {
+                                const sid = String(it.seller_id || it.sellerId || (it.seller && it.seller.id) || '');
+                                if (!sid) continue;
+                                const qty = Number(it.qty || it.quantity || 1) || 1;
+                                const line = Number(it.line_total ?? it.lineTotal ?? ((it.unit_price ?? it.price ?? 0) * qty)) || 0;
+                                salesBySeller[sid] = (salesBySeller[sid] || 0) + qty;
+                                revenueBySeller[sid] = (revenueBySeller[sid] || 0) + line;
+                                seen.add(sid);
+                              }
+                              // اگر فقط می‌خواهیم تعداد سفارش یکتا per seller:
+                              // for (const sid of seen) orderCount[sid] = ...
+                            } else {
+                              // سفارش بدون آیتم: seller سطح سفارش (در صورت وجود)
+                              const sid = String(o.seller_id || o.sellerId || '');
+                              if (sid) {
+                                salesBySeller[sid] = (salesBySeller[sid] || 0) + 1;
+                                revenueBySeller[sid] = (revenueBySeller[sid] || 0) + (Number(o.payable ?? o.total ?? 0) || 0);
+                              }
+                            }
+                          }
+
+                          const ranked = sellers.map((s) => {
+                            const id = String(s.id || '');
+                            return {
+                              ...s,
+                              sales: Number(salesBySeller[id] || 0),
+                              revenue: Number(revenueBySeller[id] || 0),
+                              rating: Number(s.rating ?? s.avg_rating ?? s.score ?? 0) || 0,
+                            };
+                          });
+
+                          const bySalesDesc = [...ranked].sort((a, b) => b.sales - a.sales || b.revenue - a.revenue);
+                          const bySalesAsc = [...ranked].sort((a, b) => a.sales - b.sales || a.revenue - b.revenue);
+                          const byRatingDesc = [...ranked].sort((a, b) => b.rating - a.rating);
+                          const byRatingAsc = [...ranked].sort((a, b) => a.rating - b.rating);
+
+                          // فقط فروشنده‌هایی که در بازه فروش داشته‌اند برای «بیشترین فروش»
+                          const withSales = bySalesDesc.filter((s) => s.sales > 0);
+                          const top = (withSales.length ? withSales : bySalesDesc).slice(0, 3);
+                          // کمترین فروش: بین کسانی که حداقل یک فروش دارند؛ وگرنه همه با ۰
+                          const bottomPool = withSales.length ? [...withSales].sort((a, b) => a.sales - b.sales) : bySalesAsc;
+                          const bottom = bottomPool.slice(0, 3);
+                          const topR = byRatingDesc.filter((s) => s.rating > 0).slice(0, 3);
+                          const botR = byRatingAsc.filter((s) => s.rating > 0).slice(0, 3);
+
                           const row = (list, label) => {
                             const darkBg =
                               label === 'بیشترین فروش' ? 'dark:bg-emerald-950/70 dark:border-emerald-800/50' :
@@ -567,18 +651,24 @@ export default function AdminPanelContent() {
                               label === 'بیشترین امتیاز' ? 'dark:bg-sky-950/70 dark:border-sky-800/50' :
                               'dark:bg-orange-950/50 dark:border-orange-800/40';
                             return (
-                            <div key={label}>
-                              <p className="text-xs font-bold text-primary-600 dark:text-white/70 mb-1">{label}</p>
-                              <div className="space-y-1">
-                                {list.length ? list.map((s,i)=>(
-                                  <div key={s.id||i} className={`flex justify-between text-xs p-2 rounded-lg bg-primary-50/80 border border-transparent ${darkBg} text-primary-900 dark:text-white`}>
-                                    <span className="truncate">{s.shopName||s.name}</span>
-                                    <span className="font-medium">{label.includes('امتیاز') ? toFa(Number(s.rating).toFixed(1)) : toFa(s.sales)}</span>
-                                  </div>
-                                )) : <p className="text-xs text-primary-400">داده‌ای نیست</p>}
+                              <div key={label}>
+                                <p className="text-xs font-bold text-primary-600 dark:text-white/70 mb-1">{label}</p>
+                                <div className="space-y-1">
+                                  {list.length ? list.map((s, i) => (
+                                    <div key={s.id || i} className={`flex justify-between text-xs p-2 rounded-lg bg-primary-50/80 border border-transparent ${darkBg} text-primary-900 dark:text-white`}>
+                                      <span className="truncate">{s.shopName || s.shop_name || s.name || '—'}</span>
+                                      <span className="font-medium tabular-nums">
+                                        {label.includes('امتیاز')
+                                          ? toFa(Number(s.rating || 0).toFixed(1))
+                                          : toFa(Number(s.sales || 0))}
+                                      </span>
+                                    </div>
+                                  )) : <p className="text-xs text-primary-400">داده‌ای در این بازه نیست</p>}
+                                </div>
                               </div>
-                            </div>
-                          );};
+                            );
+                          };
+
                           return (
                             <div className="grid sm:grid-cols-2 gap-3">
                               {row(top, 'بیشترین فروش')}
@@ -588,7 +678,7 @@ export default function AdminPanelContent() {
                             </div>
                           );
                         })()}
-                        <p className="text-xs text-primary-400">خلاصه بر اساس دادهٔ فعلی سفارش‌ها و فروشندگان · قابل تعمیم به بازه روزانه/هفتگی/ماهانه/سالانه</p>
+                        <p className="text-xs text-primary-400">بر اساس سفارش‌های پرداخت‌شده در بازه انتخابی و امتیاز ذخیره‌شده فروشنده · بدون دادهٔ فرضی</p>
                       </div>
                     </div>
                   )}
