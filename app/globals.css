@@ -4631,95 +4631,57 @@ html.dark button.seller-rank-chip--on {
 }
 
 
-/* Sticky sidebar — all panels (admin / seller / buyer) */
-@media (min-width: 768px) {
-  .panel-ui .panel-sidebar,
-  .panel-ui aside.panel-sidebar,
-  .admin-panel-shell .panel-sidebar,
-  .seller-panel-shell .panel-sidebar,
-  .panel-ui--admin .panel-sidebar,
-  .panel-ui--seller .panel-sidebar,
-  .panel-ui--buyer .panel-sidebar {
-    position: -webkit-sticky !important;
-    position: sticky !important;
-    top: 5rem !important;
-    align-self: flex-start !important;
-    max-height: calc(100vh - 5rem) !important;
-    overflow-y: auto !important;
-    z-index: 10 !important;
-  }
-}
-
-
-/* FORCE STICKY SIDEBAR ALL PANELS */
-@media (min-width: 768px) {
-  .panel-sidebar,
-  aside.panel-sidebar {
-    position: -webkit-sticky !important;
-    position: sticky !important;
-    top: 5rem !important;
-    align-self: flex-start !important;
-    max-height: calc(100vh - 5rem) !important;
-    overflow-y: auto !important;
-    z-index: 20 !important;
-  }
-  /* والدها نباید sticky را بشکنند */
-  .panel-ui,
-  .admin-panel-shell,
-  .seller-panel-shell,
-  .panel-ui--admin,
-  .panel-ui--seller,
-  .panel-ui--buyer {
-    overflow: visible !important;
-  }
-}
-
-
-/* STICKY FIX v2 — no overflow on shells */
-.admin-panel-shell,
-.seller-panel-shell,
-.panel-ui--admin,
-.panel-ui--seller,
-.panel-ui--buyer {
-  overflow: visible !important;
-  overflow-x: visible !important;
-  overflow-y: visible !important;
-}
-@media (min-width: 768px) {
-  .panel-sidebar,
-  aside.panel-sidebar {
-    position: sticky !important;
-    top: 5rem !important;
-    align-self: flex-start !important;
-    max-height: calc(100vh - 5rem) !important;
-    overflow-y: auto !important;
-    z-index: 30 !important;
-  }
-}
-
-
-/* FIXED SIDEBAR v3 — always pinned */
+/* PANEL LAYOUT v4 — fixed sidebar + full-width content */
 @media (min-width: 768px) {
   .panel-sidebar,
   aside.panel-sidebar {
     position: fixed !important;
     top: 5rem !important;
     bottom: 1rem !important;
-    width: 16rem !important; /* md:w-64 */
+    width: 16rem !important;
     max-height: calc(100vh - 6rem) !important;
     overflow-y: auto !important;
     z-index: 40 !important;
-    inset-inline-end: max(1rem, calc((100vw - 80rem) / 2 + 1rem)) !important;
-  }
-  /* فضای خالی برای سایدبار تا محتوا زیرش نرود */
-  .admin-panel-shell .flex.flex-col.md\:flex-row,
-  .seller-panel-shell .flex.flex-col.md\:flex-row,
-  .panel-ui--admin .flex.flex-col.md\:flex-row,
-  .panel-ui--seller .flex.flex-col.md\:flex-row {
-    padding-inline-end: 17rem !important;
+    inset-inline-end: 1rem !important;
   }
   .seller-panel-shell .panel-sidebar,
   .panel-ui--seller .panel-sidebar {
-    width: 14rem !important; /* lg:w-56 approx */
+    width: 14rem !important;
+  }
+  /* فقط خود ستون محتوا فاصله بگیرد — نه کل صفحه */
+  .panel-ui--admin .panel-main,
+  .panel-ui--seller .panel-main,
+  .admin-panel-shell .panel-main,
+  .seller-panel-shell .panel-main {
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline-end: 17rem !important;
+  }
+  .seller-panel-shell .panel-main,
+  .panel-ui--seller .panel-main {
+    margin-inline-end: 15rem !important;
   }
 }
+
+/* همه کانتینرهای داخل پنل تمام‌عرض */
+.panel-ui .panel-main,
+.panel-ui .panel-main > *,
+.admin-panel-shell .panel-main,
+.seller-panel-shell .panel-main {
+  width: 100% !important;
+  max-width: none !important;
+}
+.panel-ui .max-w-md,
+.panel-ui .max-w-lg,
+.panel-ui .max-w-xl,
+.panel-ui .max-w-2xl,
+.panel-ui .max-w-3xl,
+.panel-ui .max-w-4xl,
+.panel-ui .max-w-5xl,
+.panel-ui .max-w-6xl,
+.panel-ui .max-w-7xl,
+.panel-ui .max-w-prose {
+  max-width: none !important;
+  width: 100% !important;
+}
+

@@ -1370,7 +1370,7 @@ export default function SellerPanelContent() {
                     ))}
                   </div>
                 </aside>
-                <div className="flex-1 min-w-0 p-3 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 shadow-sm">
+                <div className="panel-main w-full max-w-none flex-1 min-w-0 flex-1 min-w-0 p-3 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 shadow-sm">
                   {/* Dashboard */}
                   {sellerTab === 'pending-approval' && (
                         <div className="p-8 rounded-2xl border border-amber-200 dark:border-amber-900/40 bg-amber-50 dark:bg-amber-950/30 text-center max-w-none w-full my-12">
