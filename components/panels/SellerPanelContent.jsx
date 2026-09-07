@@ -1270,6 +1270,52 @@ export default function SellerPanelContent() {
   const sellerUnreadTickets = (sellerTickets || []).filter((t) => t.unread).length;
 
 
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const sidebar = document.querySelector('[data-panel-sidebar]');
+    if (!sidebar) return undefined;
+    const parent = sidebar.parentElement;
+    if (parent && getComputedStyle(parent).position === 'static') {
+      parent.style.position = 'relative';
+    }
+    const footer = document.querySelector('footer') || document.querySelector('[data-site-footer]');
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      if (window.innerWidth < 768) {
+        sidebar.classList.remove('is-pinned', 'is-at-footer');
+        return;
+      }
+      const parentRect = parent ? parent.getBoundingClientRect() : null;
+      const footerTop = footer ? footer.getBoundingClientRect().top : Infinity;
+      const sideH = sidebar.offsetHeight || 0;
+      const topGap = 112;
+      if (footerTop < topGap + sideH + 24) {
+        sidebar.classList.add('is-at-footer');
+        sidebar.classList.remove('is-pinned');
+      } else if (parentRect && parentRect.top < topGap) {
+        sidebar.classList.add('is-pinned');
+        sidebar.classList.remove('is-at-footer');
+      } else {
+        sidebar.classList.remove('is-pinned', 'is-at-footer');
+      }
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+      sidebar.classList.remove('is-pinned', 'is-at-footer');
+    };
+  }, []);
+
   return (
     <>
             <div className="panel-content-wrap w-full max-w-none px-2 sm:px-4 py-4 sm:py-10 pb-24">
@@ -1340,7 +1386,7 @@ export default function SellerPanelContent() {
               </div>
             </div>
             <div className="flex flex-col md:flex-row gap-6">
-                <aside className="panel-sidebar w-full md:w-48 lg:w-56 flex-shrink-0 md:sticky md:top-28 md:self-start z-20 overflow-y-auto">
+                <aside data-panel-sidebar className="panel-sidebar w-full md:w-48 lg:w-56 flex-shrink-0 z-20 overflow-y-auto">
                   <div className="seller-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto px-3 py-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03]">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },

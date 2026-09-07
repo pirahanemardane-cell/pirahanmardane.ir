@@ -35,6 +35,52 @@ export default function AdminPanelContent() {
  const AdminProductActions = ({ product }) => {
   if (!product || !product.id) return null;
   const st = String(product.status || product.contentStatus || '');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const sidebar = document.querySelector('[data-panel-sidebar]');
+    if (!sidebar) return undefined;
+    const parent = sidebar.parentElement;
+    if (parent && getComputedStyle(parent).position === 'static') {
+      parent.style.position = 'relative';
+    }
+    const footer = document.querySelector('footer') || document.querySelector('[data-site-footer]');
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      if (window.innerWidth < 768) {
+        sidebar.classList.remove('is-pinned', 'is-at-footer');
+        return;
+      }
+      const parentRect = parent ? parent.getBoundingClientRect() : null;
+      const footerTop = footer ? footer.getBoundingClientRect().top : Infinity;
+      const sideH = sidebar.offsetHeight || 0;
+      const topGap = 112;
+      if (footerTop < topGap + sideH + 24) {
+        sidebar.classList.add('is-at-footer');
+        sidebar.classList.remove('is-pinned');
+      } else if (parentRect && parentRect.top < topGap) {
+        sidebar.classList.add('is-pinned');
+        sidebar.classList.remove('is-at-footer');
+      } else {
+        sidebar.classList.remove('is-pinned', 'is-at-footer');
+      }
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+      sidebar.classList.remove('is-pinned', 'is-at-footer');
+    };
+  }, []);
+
   return (
    <div className="flex flex-wrap gap-1.5 mt-2">
     {st !== 'active' && st !== 'approved' ? (
@@ -343,7 +389,7 @@ export default function AdminPanelContent() {
         </div>
        </div>
        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-        <aside className="panel-sidebar w-full md:w-64 flex-shrink-0 md:sticky md:top-28 md:self-start z-20 overflow-y-auto">
+        <aside data-panel-sidebar className="panel-sidebar w-full md:w-64 flex-shrink-0 z-20 overflow-y-auto">
          <div className="admin-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto p-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03] md:min-h-[calc(100vh-6rem)]">
           {[
            { id: 'dashboard', label: 'داشبورد', icon: 'home' },
