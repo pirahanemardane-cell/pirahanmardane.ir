@@ -12523,7 +12523,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
             return false;
           }
         }
-        if (typeof showToast === 'function') showToast({ message: status === 'active' ? 'محصول تأیید شد' : (status === 'rejected' ? 'محصول رد شد' : 'وضعیت محصول بروزرسانی شد'), variant: 'default', duration: 3500, position: 'top-center' });
+        if (typeof showToast === 'function') showToast({ message: status === 'active' ? 'محصول فعال شد' : (status === 'rejected' ? 'محصول رد شد' : (status === 'archived' ? 'محصول آرشیو شد' : (status === 'inactive' ? 'محصول غیرفعال شد' : 'وضعیت محصول بروزرسانی شد'))), variant: 'default', duration: 3500, position: 'top-center' });
         await hydrateAdminProducts();
         try {
           if (typeof reloadServerCatalog === 'function') await reloadServerCatalog();
