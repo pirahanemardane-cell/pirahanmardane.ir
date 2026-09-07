@@ -1854,7 +1854,7 @@ export default function SellerPanelContent() {
                                   type="button"
                                   title="کپی"
                                   onClick={async () => {
-                                    const ok = await copyTextToClipboard(sellerProductForm.name);
+                                    const ok = await copyTextToClipboard(sellerProductForm.productCode);
                                     try {
                                       showToast({
                                         message: ok ? 'کپی شد' : 'کپی نشد',
