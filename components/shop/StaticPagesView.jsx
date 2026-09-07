@@ -79,6 +79,7 @@ export default function StaticPagesView() {
     openSellerPanel,
     openSellersList,
     openStaticPage,
+    setPublicTrackOpen,
     openWishlistPage,
     orders,
     pdpProduct,
@@ -169,6 +170,7 @@ export default function StaticPagesView() {
     setPublicTrackOpen,
     publicTrackOpen,
 } = useAppApi();
+  // setPublicTrackOpen from context for guest order tracking
   const [magQuery, setMagQuery] = useState('');
   const [magVisible, setMagVisible] = useState(9);
   const magSentinelRef = useRef(null);
@@ -1058,7 +1060,7 @@ export default function StaticPagesView() {
                 <div className="min-w-0">
                   <h3 className="font-bold text-base sm:text-lg text-primary-900 dark:text-white mb-3">خدمات مشتریان</h3>
                   <ul className="space-y-2 text-sm text-primary-500 dark:text-white/80">
-                    <li><button type="button" onClick={() => { try { openStaticPage('track'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">پیگیری سفارش</button></li>
+                    <li><button type="button" onClick={() => { try { setPublicTrackOpen && setPublicTrackOpen(true); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">پیگیری سفارش</button></li>
                     <li><button type="button" onClick={() => { try { openStaticPage('faq'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">سوالات متداول</button></li>
                     <li><button type="button" onClick={() => { try { openStaticPage('size-guide'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">راهنمای سایز</button></li>
                     <li><button type="button" onClick={() => { try { openStaticPage('returns'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">شرایط بازگشت کالا</button></li>
