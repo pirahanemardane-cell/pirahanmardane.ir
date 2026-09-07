@@ -1,3 +1,4 @@
+import { normalizeOtpCode, normalizeIranPhone, otpCodesEqual } from '../../../../../lib/otp-normalize';
 /**
  * app/api/auth/otp/request/route.js
  * rate-limit + critical log
