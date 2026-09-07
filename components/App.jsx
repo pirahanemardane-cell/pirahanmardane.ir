@@ -14936,6 +14936,7 @@ const params = new URLSearchParams(window.location.search);
         sellerTicketDetailId,
         sellerTicketReply,
         sellerTickets,
+        sellerUnreadTickets,
         sellerTrackForm,
         sellerUser,
         sendAdminOtp,

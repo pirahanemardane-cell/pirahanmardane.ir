@@ -1267,7 +1267,7 @@ export default function SellerPanelContent() {
   }, [sellerTab]);
 
 
-  const sellerUnreadTickets = (sellerTickets || []).filter((t) => t.unread).length;
+  const sellerUnreadTickets = (Array.isArray(sellerTickets) ? sellerTickets : []).filter((t) => t && t.unread).length;
 
 
 

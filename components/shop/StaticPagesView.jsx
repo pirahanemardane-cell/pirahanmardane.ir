@@ -99,6 +99,7 @@ export default function StaticPagesView() {
     searchColors,
     searchSizes,
     sellerUser,
+    sellerTickets,
     setActiveSellerId,
     setBlogCommentName,
     setBlogCommentText,
@@ -169,6 +170,9 @@ export default function StaticPagesView() {
     wishlistProducts,
     publicTrackOpen
   } = useAppApi();
+  const _sellerTickets = (typeof sellerTickets !== 'undefined' ? sellerTickets : (api && api.sellerTickets)) || [];
+  const sellerUnreadTickets = (Array.isArray(sellerTickets) ? sellerTickets : []).filter((x) => x && x.unread).length;
+
     const [magQuery, setMagQuery] = useState('');
   const [magVisible, setMagVisible] = useState(9);
   const magSentinelRef = useRef(null);
