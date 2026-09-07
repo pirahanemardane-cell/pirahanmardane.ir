@@ -13,6 +13,32 @@ import EmptyState from '../EmptyState';
 import { showToast } from '../ui/toast';
 import Avatar from '../ui/Avatar';
 
+async function copyTextToClipboard(text) {
+  const v = String(text || '').trim();
+  if (!v) return false;
+  try {
+    if (navigator?.clipboard?.writeText) {
+      await navigator.clipboard.writeText(v);
+      return true;
+    }
+  } catch (_) {}
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = v;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return !!ok;
+  } catch (_) {
+    return false;
+  }
+}
+
+
 const SimpleEditor = dynamic(() => import('../SimpleEditor'), { ssr: false });
 
 /** پنل SellerPanelContent — استخراج‌شده از App.jsx (رفتار یکسان، وابستگی از AppApi) */
@@ -1836,7 +1862,20 @@ export default function SellerPanelContent() {
                               </div>
                               <div>
                                 <label className="text-xs text-primary-500 mb-1 block">نامک (Slug)</label>
-                                <input value={productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || '')} readOnly disabled dir="ltr" placeholder="خودکار از نام محصول و فروشگاه" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-900/50 text-sm text-left font-latin text-primary-500 dark:!text-white cursor-not-allowed shadow-none" />
+                                <div className="flex items-center gap-2">
+                                  <input value={productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || '')} readOnly disabled dir="ltr" placeholder="خودکار از نام محصول و فروشگاه" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-900/50 text-sm text-left font-latin text-primary-500 dark:!text-white cursor-not-allowed shadow-none" />
+                                  <button
+                                    type="button"
+                                    title="کپی"
+                                    onClick={async () => {
+                                      const ok = await copyTextToClipboard(productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || ''));
+                                      try { showToast({ message: ok ? 'کپی شد' : 'کپی نشد', variant: ok ? 'success' : 'error', duration: 2000, position: 'top-center' }); } catch (_) {}
+                                    }}
+                                    className="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-lg border border-primary-200 dark:border-white/15 text-primary-600 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-white/5"
+                                  >
+                                    <Icon name="copy" size={16} />
+                                  </button>
+                                </div>
                                 <p className="text-xs text-primary-400 mt-1">نامک به‌صورت خودکار از نام محصول و نام فروشگاه ساخته می‌شود و قابل ویرایش نیست.</p>
                               </div>
 

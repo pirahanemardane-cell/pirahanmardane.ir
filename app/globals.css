@@ -1616,8 +1616,8 @@ html.dark .wishlist-toolbar-select,
 .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
   position: relative !important;
   z-index: 1 !important;
-  width: 40vw !important;
-  max-width: 40vw !important;
+  width: min(80vw, 960px) !important;
+  max-width: min(80vw, 960px) !important;
   max-height: 90dvh !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch;
@@ -1637,8 +1637,8 @@ html.dark .wishlist-toolbar-select,
 /* Explicit quick-add force (same 40%) */
 .site-modal-root > .quick-add-popup,
 div.quick-add-popup {
-  width: 40vw !important;
-  max-width: 40vw !important;
+  width: min(80vw, 960px) !important;
+  max-width: min(80vw, 960px) !important;
 }
 @media (max-width: 639px) {
   .site-modal-root > .quick-add-popup,
@@ -1795,8 +1795,8 @@ html:not(.dark) a:not([class*="bg-"]):not(.social-icon-btn) {
   .site-modal-root > .quick-add-popup,
   .quick-add-popup,
   .site-modal-panel {
-    width: 40vw !important;
-    max-width: 40vw !important;
+    width: min(80vw, 960px) !important;
+    max-width: min(80vw, 960px) !important;
   }
 }
 @media (max-width: 639px) {
@@ -4384,4 +4384,20 @@ html.dark button.btn-info, html.dark .btn-info {
   background-color: #2E2348 !important;
   border-color: #DDD6FE !important;
   color: #F5F3FF !important;
+}
+
+/* ===== FORCE: modal panel width ~80% ===== */
+.site-modal-panel,
+.site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+.site-modal-panel.admin-auth-modal {
+  width: min(80vw, 960px) !important;
+  max-width: min(80vw, 960px) !important;
+}
+@media (max-width: 639px) {
+  .site-modal-panel,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+  .site-modal-panel.admin-auth-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 }
