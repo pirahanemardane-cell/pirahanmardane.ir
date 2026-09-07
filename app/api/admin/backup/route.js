@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { logCritical } from '../../../../lib/critical-log'
-import { requireAdmin } from '../../../../lib/api/admin-guard'
+import { requireAdminSensitive as requireAdmin } from '../../../../lib/api/admin-guard'
 
 /** جداول اصلی قابل بک‌آپ / بازگردانی (به ترتیب وابستگی برای restore) */
 const TABLES = [
