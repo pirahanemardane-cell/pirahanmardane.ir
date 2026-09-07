@@ -389,7 +389,7 @@ export default function ProfileView() {
               <div className="flex flex-col md:flex-row gap-6">
                 <aside className="w-full md:w-48 lg:w-56 flex-shrink-0">
                   <div className="relative profile-tabs-outer">
-                  <div className="profile-tabs-strip panel-nav flex flex-nowrap md:flex-col gap-0.5 overflow-x-auto md:overflow-y-auto px-3 py-3 pe-10 md:pe-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03]">
+                  <div className="buyer-tabs-strip profile-tabs-strip panel-nav flex flex-nowrap md:flex-col gap-0.5 overflow-x-auto md:overflow-y-auto px-3 py-3 pe-10 md:pe-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03]">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },
                       { id: 'track', label: 'پیگیری سفارش', icon: 'package' },

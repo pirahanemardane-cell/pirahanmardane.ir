@@ -641,7 +641,7 @@ export default function AdminPanelContent() {
            <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
              <h3 className="text-sm font-bold text-primary-900 dark:text-white">رتبه‌بندی فروشگاه‌ها</h3>
-             <div className="flex gap-1 overflow-x-auto no-scrollbar">
+             <div className="admin-tabs-strip flex gap-1 overflow-x-auto no-scrollbar">
               {[
                { id: 'day', l: 'روزانه' },
                { id: 'week', l: 'هفتگی' },
@@ -1167,7 +1167,7 @@ export default function AdminPanelContent() {
              <input value={adminProductSearch} onChange={e=>setAdminProductSearch(e.target.value)} placeholder="جستجو نام محصول…" className="admin-products-search px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm w-full sm:w-56 focus:outline-none focus:border-apple-blue" />
             </div>
            </div>
-           <div className="flex gap-1 overflow-x-auto mb-4">
+           <div className="admin-tabs-strip flex gap-1 overflow-x-auto mb-4">
             {[{id:'all',l:'همه'},{id:'active',l:'فعال'},{id:'pending',l:'در انتظار'},{id:'rejected',l:'رد‌شده'},{id:'inactive',l:'غیرفعال'},{id:'archived',l:'آرشیو شده‌ها'},{id:'purge_requested',l:'درخواست حذف'}].map(f=>(
              <button key={f.id} type="button" onClick={()=>setAdminProductFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminProductFilter===f.id?'panel-filter-chip--on':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
             ))}
@@ -1493,7 +1493,7 @@ export default function AdminPanelContent() {
             <h2 className="text-base font-bold text-primary-900 dark:text-white">مدیریت سفارش‌ها</h2>
             <input value={adminOrderSearch} onChange={e=>setAdminOrderSearch(e.target.value)} placeholder="شماره سفارش یا موبایل…" className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm w-full sm:w-56 focus:outline-none focus:border-apple-blue" />
            </div>
-           <div className="flex gap-1 overflow-x-auto mb-4">
+           <div className="admin-tabs-strip flex gap-1 overflow-x-auto mb-4">
             {[{id:'all',l:'همه'},{id:'pending',l:'در انتظار پرداخت'},{id:'preparing',l:'آماده‌سازی'},{id:'shipped',l:'ارسال‌شده'},{id:'delivered',l:'تحویل‌شده'},{id:'cancelled',l:'لغو'},{id:'returned',l:'مرجوع'}].map(f=>(
              <button key={f.id} type="button" onClick={()=>setAdminOrderFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminOrderFilter===f.id?'panel-filter-chip--on':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
             ))}

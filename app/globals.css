@@ -4752,3 +4752,65 @@ img[src="/logo.png"]:not([data-logo-ok="1"]) {
 }
 
 
+/* PANEL MOBILE TABS: 2 full + ~20% peek */
+@media (max-width: 767px) {
+  /*
+    عرض هر تب ≈ 100% / 2.2
+    → دو تب کامل + حدود ۲۰٪ تب سوم در دید
+  */
+  .admin-tabs-strip,
+  .seller-tabs-strip,
+  .buyer-tabs-strip,
+  .profile-tabs-strip,
+  .panel-tabs-strip,
+  .panel-ui--admin .panel-tabs,
+  .panel-ui--seller .panel-tabs,
+  .panel-ui--buyer .panel-tabs,
+  .admin-panel-shell .admin-tabs-strip,
+  .seller-panel-shell .seller-tabs-strip {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 0.5rem !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 1rem;
+    padding-inline: 0.25rem;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  .admin-tabs-strip::-webkit-scrollbar,
+  .seller-tabs-strip::-webkit-scrollbar,
+  .buyer-tabs-strip::-webkit-scrollbar,
+  .profile-tabs-strip::-webkit-scrollbar,
+  .panel-tabs-strip::-webkit-scrollbar {
+    display: none !important;
+    height: 0 !important;
+  }
+
+  .admin-tabs-strip > *,
+  .seller-tabs-strip > *,
+  .buyer-tabs-strip > *,
+  .profile-tabs-strip > *,
+  .panel-tabs-strip > *,
+  .panel-ui--admin .panel-tabs > *,
+  .panel-ui--seller .panel-tabs > *,
+  .panel-ui--buyer .panel-tabs > *,
+  .admin-panel-shell .admin-tabs-strip > *,
+  .seller-panel-shell .seller-tabs-strip > * {
+    flex: 0 0 calc((100% - 0.5rem) / 2.2) !important;
+    width: calc((100% - 0.5rem) / 2.2) !important;
+    min-width: calc((100% - 0.5rem) / 2.2) !important;
+    max-width: calc((100% - 0.5rem) / 2.2) !important;
+    scroll-snap-align: start;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+  }
+}
+
