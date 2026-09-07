@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useAppApi } from '../AppApiContext';
+import Avatar from '../ui/Avatar';
 import dynamic from 'next/dynamic';
 import EnamadFooterBadge from './EnamadFooterBadge';
 const FAQMonochrome = dynamic(() => import('../ui/faq-monochrome').then(m => m.FAQMonochrome || m.default), { ssr: false });
@@ -1101,7 +1102,52 @@ export default function StaticPagesView() {
               {/* Header */}
               <div className="flex items-center justify-between gap-3 px-4 py-3.5 bg-white dark:bg-primary-900 border-b border-primary-100 dark:border-white/10 flex-shrink-0 relative z-10 w-full max-w-full overflow-hidden">
                 <div className="flex items-center gap-2.5 min-w-0 flex-1 overflow-hidden">
-                  <img src={dark ? "/logo-white.webp" : "/logo-dark.webp"} alt="پیراهن مردانه" className="site-logo-img h-8 w-auto max-w-[140px] object-contain flex-shrink-0" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }} />
+                  {(() => {
+                    const logged = !!(user || sellerUser);
+                    if (!logged) {
+                      return (
+                        <img
+                          src={dark ? "/logo-white.webp" : "/logo-dark.webp"}
+                          alt="پیراهن مردانه"
+                          className="site-logo-img h-8 w-auto max-w-[140px] object-contain flex-shrink-0"
+                          onError={(e) => {
+                            try {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = dark ? "/blue_t_bg.webp" : "/red_t_bg.webp";
+                            } catch (_) {}
+                          }}
+                        />
+                      );
+                    }
+                    const isSeller = !!sellerUser;
+                    const displayName = isSeller
+                      ? (sellerUser.shopName || sellerUser.name || sellerUser.ownerName || sellerUser.phone || 'فروشنده')
+                      : (user.firstName || user.name || user.lastName || user.phone || 'کاربر');
+                    const avatarSrc = isSeller
+                      ? (sellerUser.logo || sellerUser.logoUrl || sellerUser.logo_url || sellerUser.avatar || sellerUser.avatarUrl || sellerUser.avatar_url || sellerUser.photo || '')
+                      : (user.avatar || user.avatarUrl || user.avatar_url || user.photo || user.photoUrl || user.image || user.profileImage || '');
+                    const roleLabel = isSeller ? 'فروشنده' : 'خریدار';
+                    return (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          try {
+                            if (isSeller) openSellerPanel();
+                            else openProfilePage();
+                          } catch (_) {}
+                        }}
+                        className="flex items-center gap-2.5 min-w-0 text-right"
+                        aria-label={displayName}
+                      >
+                        <Avatar name={displayName} src={avatarSrc} size={40} className="flex-shrink-0 border border-primary-100 dark:border-white/15" />
+                        <span className="min-w-0 flex flex-col items-start">
+                          <span className="text-sm font-bold text-primary-900 dark:text-white truncate max-w-[11rem]">{displayName}</span>
+                          <span className="text-[11px] text-primary-500 dark:text-white/60">{roleLabel}</span>
+                        </span>
+                      </button>
+                    );
+                  })()}
                 </div>
                 <button
                   type="button"
