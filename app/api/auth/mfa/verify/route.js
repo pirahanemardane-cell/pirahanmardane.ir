@@ -118,6 +118,13 @@ export async function POST(req) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
     })
+    res.cookies.set('pm_admin_since', String(Date.now()), {
+      path: '/',
+      maxAge: Number(process.env.ADMIN_SESSION_MAX_AGE_SEC || 7200),
+      sameSite: 'lax',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    })
     res.cookies.set('pm_mfa_pending', '', { path: '/', maxAge: 0 })
     return res
   } catch (e) {
