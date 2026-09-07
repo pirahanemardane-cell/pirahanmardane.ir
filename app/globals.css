@@ -4740,3 +4740,18 @@ html.dark button.seller-rank-chip--on {
   width: 100% !important;
 }
 
+
+/* هدر پنل ادمین هم‌عرض محتوای اصلی (نه زیر سایدبار) */
+@media (min-width: 768px) {
+  .panel-ui--admin .panel-admin-header,
+  .admin-panel-shell .panel-admin-header {
+    margin-right: 17rem !important;
+    margin-left: 0 !important;
+    max-width: none !important;
+  }
+  .panel-ui--seller .panel-admin-header,
+  .seller-panel-shell .panel-admin-header {
+    margin-right: 15rem !important;
+  }
+}
+

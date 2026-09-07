@@ -330,7 +330,7 @@ export default function AdminPanelContent() {
  return (
   <>
       <div className="panel-content-wrap w-full max-w-none px-2 sm:px-4 py-4 sm:py-10 pb-24">
-       <div className="flex flex-wrap items-center justify-between gap-4 mb-6 p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900">
+       <div className="panel-admin-header flex flex-wrap items-center justify-between gap-4 mb-6 p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900">
         <div className="flex items-center gap-3">
          <div className="w-14 h-14 rounded-full bg-primary-800 dark:bg-[#4CCD99] text-white flex items-center justify-center text-xl font-bold">{(adminUser.name || 'ا')[0]}</div>
          <div>
