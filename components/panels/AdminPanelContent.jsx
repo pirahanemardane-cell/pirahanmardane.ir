@@ -1242,7 +1242,7 @@ export default function AdminPanelContent() {
                                     }
                                   } catch (_) {}
                                 }}
-                                className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border-2 border-apple-blue text-apple-blue bg-apple-blue/5 hover:bg-apple-blue hover:text-white transition"
+                                className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-red-600 text-white hover:bg-red-700 transition"
                               >
                                 <Icon name="copy" size={14} />
                                 کپی لینک محصول
