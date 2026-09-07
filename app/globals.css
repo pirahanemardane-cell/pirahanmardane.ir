@@ -1611,7 +1611,7 @@ html.dark .wishlist-toolbar-select,
   background: rgba(0, 0, 0, 0.45);
   z-index: 0 !important;
 }
-/* Panel width: mobile full, desktop 40% of viewport */
+/* Panel width: mobile full, desktop 40% of viewport — گوشه گرد (backdrop دست نخورد) */
 .site-modal-panel,
 .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
   position: relative !important;
@@ -1621,7 +1621,7 @@ html.dark .wishlist-toolbar-select,
   max-height: 90dvh !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch;
-  border-radius: 0 !important;
+  border-radius: 1rem !important;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
   box-sizing: border-box !important;
 }
@@ -1631,7 +1631,7 @@ html.dark .wishlist-toolbar-select,
     width: 100% !important;
     max-width: 100% !important;
     max-height: 92dvh !important;
-    border-radius: 0 !important;
+    border-radius: 1rem 1rem 0 0 !important;
   }
 }
 /* Explicit quick-add force (same 40%) */
@@ -3432,21 +3432,31 @@ html.dark .hero-body2-badge {
   }
 }
 
-/* Modal — گوشه‌های تیز (backdrop + panel) */
+/* Modal — backdrop تیز می‌ماند؛ پنل همیشه گرد */
 .site-modal-root > .site-modal-backdrop,
 .site-modal-backdrop,
 .site-modal-backdrop.open {
   border-radius: 0 !important;
 }
 .site-modal-panel,
-.site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
-  border-radius: 0 !important;
+.site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+.site-modal-root > .quick-add-popup,
+div.quick-add-popup {
+  border-radius: 1rem !important;
 }
 @media (max-width: 639px) {
   .site-modal-panel,
-  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
-    border-radius: 0 !important;
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+  .site-modal-root > .quick-add-popup,
+  div.quick-add-popup {
+    border-radius: 1rem 1rem 0 0 !important;
   }
+}
+/* مودال‌های ثابت خارج از site-modal-root (اگر پنل سفید مرکزی باشند) */
+.fixed.inset-0.z-\[20000\] > div.bg-white,
+.fixed.inset-0[class*="z-"] > div.relative.bg-white,
+.fixed.inset-0[class*="z-"] > div.relative.bg-primary-900 {
+  border-radius: 1rem !important;
 }
 
 
