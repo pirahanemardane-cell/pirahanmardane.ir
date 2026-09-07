@@ -408,7 +408,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         privacy: 'در حال بارگذاری حریم خصوصی…',
         cookies: 'در حال بارگذاری کوکی‌ها…',
         sitemap: 'در حال بارگذاری نقشه سایت…',
-        blog: 'در حال بارگذاری بلاگ…',
+        blog: 'در حال بارگذاری مجله…',
         'blog-post': 'در حال بارگذاری مطلب…',
         brands: 'در حال بارگذاری برندها…',
         campaigns: 'در حال بارگذاری کمپین‌ها…',
@@ -5766,7 +5766,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             const fromPost = String(post?.slug || '').trim();
             const fromTitle = (typeof slugifyFa === 'function' ? slugifyFa(post?.title || '') : '') || '';
             const slug = fromOpts || fromPost || fromTitle || bid;
-            pushFaUrl(`/بلاگ/${encodeURIComponent(slug)}`, { staticPage: 'blog-post', blogId: bid });
+            pushFaUrl(`/مجله/${encodeURIComponent(slug)}`, { staticPage: 'blog-post', blogId: bid });
           } else {
             pushFaUrl(pathForStaticPage(page), { staticPage: page });
           }

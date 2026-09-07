@@ -2278,7 +2278,7 @@ export default function AdminPanelContent() {
                           <div key={c.id} className="flex flex-wrap items-center gap-2 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-primary-900 dark:text-white">{c.name}</p>
-                              {c.slug ? <p className="text-[10px] text-primary-400 font-latin mt-0.5" dir="ltr">/بلاگ?cat={c.slug}</p> : null}
+                              {c.slug ? <p className="text-[10px] text-primary-400 font-latin mt-0.5" dir="ltr">/مجله?cat={c.slug}</p> : null}
                             </div>
                             <button type="button" onClick={() => saveAdminBlogCategories((adminBlogCategories || []).map((x) => x.id === c.id ? { ...x, active: x.active === false } : x))} className={`text-xs px-2 py-1 rounded-full border ${c.active === false ? 'border-amber-300 text-amber-700' : 'border-emerald-300 text-emerald-700'}`}>{c.active === false ? 'غیرفعال' : 'فعال'}</button>
                             <button type="button" onClick={() => openTaxonomyWizard('blog-category', c)} className="p-1.5 rounded-full hover:bg-primary-50 text-primary-500"><Icon name="pencil" size={14} /></button>
@@ -2444,7 +2444,7 @@ export default function AdminPanelContent() {
                                 { n: 12, title: '۱۲. پیشنهاد هوشمند (AI محلی)' },
                               ];
                               const seoPartMap = { 5: 'keywords', 6: 'title', 7: 'desc', 8: 'faq', 9: 'index', 10: 'canonical', 11: 'social', 12: 'ai' };
-                              const prefix = t === 'category' ? '/' : t === 'tag' ? '/shop?tag=' : t === 'brand' ? '/brands/' : t === 'blog-category' ? '/بلاگ?cat=' : '/بلاگ?tag=';
+                              const prefix = t === 'category' ? '/' : t === 'tag' ? '/shop?tag=' : t === 'brand' ? '/brands/' : t === 'blog-category' ? '/مجله?cat=' : '/بلاگ?tag=';
                               const images = Array.isArray(taxonomyForm.images) ? taxonomyForm.images : (taxonomyForm.image ? [taxonomyForm.image] : []);
                               const imageAlts = Array.isArray(taxonomyForm.imageAlts) ? taxonomyForm.imageAlts : images.map(() => '');
                               const setStep = (n) => setTaxonomyForm(f => ({ ...f, step: n }));
@@ -3078,7 +3078,7 @@ export default function AdminPanelContent() {
                               className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white font-latin"
                               dir="ltr"
                             />
-                            <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">/بلاگ/{(bf.slug || 'از-عنوان').toString()}</p>
+                            <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">/مجله/{(bf.slug || 'از-عنوان').toString()}</p>
                           </div>
                           <div>
                             <label className="text-xs text-primary-500 mb-1 block">دسته‌بندی *</label>
@@ -3258,7 +3258,7 @@ export default function AdminPanelContent() {
                               className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white font-latin"
                               dir="ltr"
                             />
-                            <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">/بلاگ/{(blogForm.slug || 'از-عنوان').toString()}</p>
+                            <p className="text-[10px] text-primary-400 mt-1 font-latin" dir="ltr">/مجله/{(blogForm.slug || 'از-عنوان').toString()}</p>
                           </div>
                           <div>
                             <label className="text-xs text-primary-500 mb-1 block">دسته‌بندی *</label>
