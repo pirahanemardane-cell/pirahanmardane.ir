@@ -1315,7 +1315,7 @@ export default function SellerPanelContent() {
             </div>
             <div className="flex flex-col md:flex-row gap-6">
                 <aside className="w-full md:w-48 lg:w-56 flex-shrink-0 md:sticky md:top-24 md:self-start">
-                  <div className="seller-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto no-scrollbar px-3 py-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03]">
+                  <div className="seller-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto px-3 py-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03]">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },
                       { id: 'orders', label: 'سفارش‌ها', icon: 'truck' },
@@ -1337,7 +1337,7 @@ export default function SellerPanelContent() {
                           return;
                         }
                         setSellerTab(t.id); setSellerOrderDetailId(null); setSellerTicketDetailId(null); try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (_) {}
-                      }} className={`flex-shrink-0 flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition whitespace-nowrap ${sellerTab === t.id || (t.id === 'orders' && sellerOrderDetailId) || (t.id === 'support' && sellerTicketDetailId) ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-primary-900'}`}>
+                      }} className={`flex w-full items-center gap-2.5 px-2.5 rounded-[6px] text-right text-sm font-medium transition whitespace-nowrap ${sellerTab === t.id || (t.id === 'orders' && sellerOrderDetailId) || (t.id === 'support' && sellerTicketDetailId) ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-primary-900'}`}>
                         <Icon name={t.icon} size={16} /><span>{t.label}</span>
                         {t.badge > 0 && <span className="mr-auto text-xs bg-white/20 text-white px-1.5 py-0.5 rounded-full">{toFa(t.badge)}</span>}
                       </button>
@@ -3567,7 +3567,7 @@ export default function SellerPanelContent() {
                   <button type="button" onClick={() => downloadSellerOrdersCsv("paid")} className="text-xs sm:text-sm px-3 py-2 rounded-full border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400 transition">فقط پرداخت‌شده</button>
                   <button type="button" onClick={() => downloadSellerOrdersCsv("pending")} className="text-xs sm:text-sm px-3 py-2 rounded-full border border-amber-200 dark:border-amber-500/30 text-amber-700 dark:text-amber-400 transition">فقط در انتظار</button>
                 </div>
-                      <div className="flex gap-1.5 overflow-x-auto no-scrollbar mb-4">
+                      <div className="flex gap-1.5 overflow-x-auto mb-4">
                         {[{ id: 'all', label: 'همه' },{ id: 'new', label: 'جدید' },{ id: 'preparing', label: 'آماده‌سازی' },{ id: 'shipped', label: 'ارسال‌شده' },{ id: 'delivered', label: 'تحویل‌شده' }].map(f => (
                           <button key={f.id} type="button" onClick={() => setSellerOrdersFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${sellerOrdersFilter === f.id ? 'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:border-[#4CCD99] dark:text-white' : 'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.label}</button>
                         ))}

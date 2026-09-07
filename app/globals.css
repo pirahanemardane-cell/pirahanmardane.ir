@@ -2607,14 +2607,41 @@ header.site-header {
 .seller-panel-shell .seller-tabs-strip,
 .profile-tabs-strip {
   overflow-x: auto;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c4c4c4 transparent;
+}
+html.dark .admin-panel-shell .admin-tabs-strip,
+html.dark .seller-panel-shell .seller-tabs-strip,
+html.dark .profile-tabs-strip {
+  scrollbar-color: #666 transparent;
+}
+/* موبایل افقی: اسکرول‌بار نازک بماند؛ دسکتاپ عمودی دیده شود */
+@media (min-width: 768px) {
+  .admin-panel-shell .admin-tabs-strip,
+  .seller-panel-shell .seller-tabs-strip {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: calc(100vh - 7rem);
+  }
 }
 .admin-panel-shell .admin-tabs-strip::-webkit-scrollbar,
 .seller-panel-shell .seller-tabs-strip::-webkit-scrollbar,
 .profile-tabs-strip::-webkit-scrollbar {
-  display: none;
+  width: 8px;
+  height: 6px;
+}
+.admin-panel-shell .admin-tabs-strip::-webkit-scrollbar-thumb,
+.seller-panel-shell .seller-tabs-strip::-webkit-scrollbar-thumb,
+.profile-tabs-strip::-webkit-scrollbar-thumb {
+  background: #c4c4c4;
+  border-radius: 8px;
+}
+html.dark .admin-panel-shell .admin-tabs-strip::-webkit-scrollbar-thumb,
+html.dark .seller-panel-shell .seller-tabs-strip::-webkit-scrollbar-thumb {
+  background: #666;
 }
 
 /* C3: پنل‌ها هم‌عرض خریدار — بدون padding اضافه روی شِل (فقط panel-content-wrap: px-2) */
@@ -3693,23 +3720,39 @@ html.dark .panel-ui {
   color: color-mix(in srgb, var(--p-fg) 90%, transparent) !important;
 }
 
-/* فعال: bg-black/5 dark:bg-white/10 + font-medium */
+/* تب فعال: لایت قرمز+متن سفید | دارک فیروزه‌ای+متن تیره */
 .panel-ui .panel-nav-item--active,
 .panel-ui .panel-nav-item.panel-nav-item--active,
 .panel-ui .panel-nav-item.bg-apple-blue,
-.panel-ui .panel-nav-item--active.bg-apple-blue {
-  background: var(--p-active) !important;
-  color: var(--p-fg) !important;
-  font-weight: 500 !important;
+.panel-ui .panel-nav-item--active.bg-apple-blue,
+.panel-ui .panel-nav-item.panel-nav-item--active.text-white {
+  background: #FF0000 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 600 !important;
   box-shadow: none !important;
   border: none !important;
-  border-left: none !important;
+}
+.panel-ui .panel-nav-item--active *,
+.panel-ui .panel-nav-item--active svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  fill: none;
 }
 
 html.dark .panel-ui .panel-nav-item--active,
-html.dark .panel-ui .panel-nav-item.bg-apple-blue {
-  background: var(--p-active) !important;
-  color: var(--p-fg) !important;
+html.dark .panel-ui .panel-nav-item.panel-nav-item--active,
+html.dark .panel-ui .panel-nav-item.bg-apple-blue,
+html.dark .panel-ui .panel-nav-item--active.bg-apple-blue {
+  background: #13ABC4 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+  font-weight: 600 !important;
+}
+html.dark .panel-ui .panel-nav-item--active *,
+html.dark .panel-ui .panel-nav-item--active svg {
+  color: #0A0A0A !important;
+  stroke: #0A0A0A !important;
 }
 
 /* —— محتوای اصلی —— */
@@ -3863,11 +3906,60 @@ html.dark .panel-ui .panel-nav-item.bg-apple-blue {
   font-size: 13px;
 }
 
-.panel-ui .panel-nav {
-  scrollbar-width: none;
+/* اسکرول‌بار عمودی سایدبار — قابل دیدن */
+.panel-ui .panel-nav,
+.panel-ui .admin-tabs-strip,
+.panel-ui .seller-tabs-strip {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #c4c4c4 transparent !important;
 }
-.panel-ui .panel-nav::-webkit-scrollbar {
-  display: none;
+html.dark .panel-ui .panel-nav,
+html.dark .panel-ui .admin-tabs-strip,
+html.dark .panel-ui .seller-tabs-strip {
+  scrollbar-color: #555 transparent !important;
+}
+.panel-ui .panel-nav::-webkit-scrollbar,
+.panel-ui .admin-tabs-strip::-webkit-scrollbar,
+.panel-ui .seller-tabs-strip::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+  display: block !important;
+}
+.panel-ui .panel-nav::-webkit-scrollbar-track,
+.panel-ui .admin-tabs-strip::-webkit-scrollbar-track,
+.panel-ui .seller-tabs-strip::-webkit-scrollbar-track {
+  background: transparent !important;
+  border-radius: 8px;
+}
+.panel-ui .panel-nav::-webkit-scrollbar-thumb,
+.panel-ui .admin-tabs-strip::-webkit-scrollbar-thumb,
+.panel-ui .seller-tabs-strip::-webkit-scrollbar-thumb {
+  background: #c4c4c4 !important;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+html.dark .panel-ui .panel-nav::-webkit-scrollbar-thumb,
+html.dark .panel-ui .admin-tabs-strip::-webkit-scrollbar-thumb,
+html.dark .panel-ui .seller-tabs-strip::-webkit-scrollbar-thumb {
+  background: #666 !important;
+  background-clip: padding-box;
+}
+
+/* تراز راست + تمام‌عرض آیتم‌های تب (RTL) */
+.panel-ui .panel-nav,
+.panel-ui .admin-tabs-strip,
+.panel-ui .seller-tabs-strip {
+  align-items: stretch !important;
+}
+.panel-ui .panel-nav-item {
+  width: 100% !important;
+  max-width: 100% !important;
+  justify-content: flex-start !important;
+  text-align: right !important;
+  flex-shrink: 0 !important;
 }
 
 @media (max-width: 767px) {

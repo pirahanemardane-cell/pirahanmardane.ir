@@ -342,7 +342,7 @@ export default function AdminPanelContent() {
               </div>
               <div className="flex flex-col md:flex-row gap-4 md:gap-6">
                 <aside className="panel-sidebar w-full md:w-64 flex-shrink-0 md:sticky md:top-0 md:h-[calc(100vh-0px)] md:self-start z-10">
-                  <div className="admin-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto no-scrollbar p-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03] md:min-h-[calc(100vh-6rem)]">
+                  <div className="admin-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto p-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03] md:min-h-[calc(100vh-6rem)]">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },
                       { id: 'sellers', label: 'فروشندگان', icon: 'users' },
@@ -374,7 +374,7 @@ export default function AdminPanelContent() {
                       { id: 'profile', label: 'پروفایل', icon: 'user' },
                     ].map(t => (
                       <button key={t.id} type="button" onClick={() => { setAdminTab(t.id); if (t.id === 'campaigns' && typeof hydrateCampaignsFromApi === 'function') { try { hydrateCampaignsFromApi(true); } catch(_){} } if (t.id === 'dashboard' && typeof hydrateAdminStatsFromApi === 'function') { try { hydrateAdminStatsFromApi(); } catch(_){} } if (t.id === 'coupons' && typeof hydrateAdminCoupons === 'function') { try { hydrateAdminCoupons(); } catch(_){} } if (t.id === 'blog-new') { const defCat = ((adminBlogCategories || []).find(c => c.active !== false) || {}).name || 'راهنمای خرید'; setBlogForm({ id: '', title: '', cat: defCat, excerpt: '', body: '', status: 'published', author: 'تحریریه', read: '۵ دقیقه', publishAtDate: '', publishAtTime: '10:00', publishAtMs: null, publishAtFa: '', seoTitle: '', seoDescription: '', seoFocusKeywords: '', seoCanonical: '', seoOgImage: '', imageAlt: '', image: '', seoNoindex: false, seoFaq: [] }); } else if (t.id === 'blog') { setBlogForm(null); if (typeof hydrateBlogPostsFromApi === 'function') try { hydrateBlogPostsFromApi(); } catch(_){} } setAdminSellerDetailId(null); setAdminProductDetailId(null); setAdminOrderDetailId(null); setAdminTicketDetailId(null); setAdminBuyerDetailId(null); setAdminLoading(true); setTimeout(() => setAdminLoading(false), 200); requestAnimationFrame(() => scrollAdminPanelToTop()); }}
-                        className={`flex-shrink-0 flex items-center gap-2.5 px-2.5 rounded-[6px] text-[13px] font-medium transition-all duration-200 whitespace-nowrap select-none ${adminTab === t.id ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'panel-nav-item text-primary-700 dark:text-white/80 hover:bg-primary-50/90 dark:hover:bg-white/5'}`}>
+                        className={`flex-shrink-0 flex w-full items-center gap-2.5 px-2.5 rounded-[6px] text-[13px] font-medium transition-all duration-200 whitespace-nowrap select-none text-right ${adminTab === t.id ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'panel-nav-item text-primary-700 dark:text-white/80 hover:bg-primary-50/90 dark:hover:bg-white/5'}`}>
                         <Icon name={t.icon === 'home' ? 'shield' : t.icon === 'package' ? 'shoppingBag' : t.icon === 'message' ? 'headphones' : t.icon === 'settings' ? 'pencil' : t.icon === 'percent' ? 'dollar' : t.icon} size={16} />
                         {t.label}
                         {t.id === 'tickets' && adminUnreadTickets > 0 && <span className="mr-auto text-xs bg-red-500 text-white rounded-full px-1.5 min-w-[18px] text-center">{toFa(adminUnreadTickets)}</span>}
@@ -600,7 +600,7 @@ export default function AdminPanelContent() {
                         <h2 className="text-base font-bold text-primary-900 dark:text-white">مدیریت فروشندگان</h2>
                         <input value={adminSellerSearch} onChange={e=>setAdminSellerSearch(e.target.value)} placeholder="جستجو نام یا موبایل…" className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm w-full sm:w-56 focus:outline-none focus:border-apple-blue" />
                       </div>
-                      <div className="flex gap-1 overflow-x-auto no-scrollbar mb-4">
+                      <div className="flex gap-1 overflow-x-auto mb-4">
                         {[{id:'all',l:'همه'},{id:'pending',l:'در انتظار'},{id:'approved',l:'تأیید‌شده'},{id:'rejected',l:'رد‌شده'},{id:'suspended',l:'محدود شده'},{id:'archived',l:'آرشیو شده‌ها'}].map(f=>(
                           <button key={f.id} type="button" onClick={()=>setAdminSellerFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition ${adminSellerFilter===f.id?'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:!text-white dark:border-[#4CCD99]':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
                         ))}
@@ -985,7 +985,7 @@ export default function AdminPanelContent() {
                           <input value={adminProductSearch} onChange={e=>setAdminProductSearch(e.target.value)} placeholder="جستجو نام محصول…" className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm w-full sm:w-56 focus:outline-none focus:border-apple-blue" />
                         </div>
                       </div>
-                      <div className="flex gap-1 overflow-x-auto no-scrollbar mb-4">
+                      <div className="flex gap-1 overflow-x-auto mb-4">
                         {[{id:'all',l:'همه'},{id:'active',l:'فعال'},{id:'pending',l:'در انتظار'},{id:'rejected',l:'رد‌شده'},{id:'inactive',l:'غیرفعال'},{id:'archived',l:'آرشیو شده‌ها'}].map(f=>(
                           <button key={f.id} type="button" onClick={()=>setAdminProductFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminProductFilter===f.id?'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:!text-white':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
                         ))}
@@ -1302,7 +1302,7 @@ export default function AdminPanelContent() {
                         <h2 className="text-base font-bold text-primary-900 dark:text-white">مدیریت سفارش‌ها</h2>
                         <input value={adminOrderSearch} onChange={e=>setAdminOrderSearch(e.target.value)} placeholder="شماره سفارش یا موبایل…" className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm w-full sm:w-56 focus:outline-none focus:border-apple-blue" />
                       </div>
-                      <div className="flex gap-1 overflow-x-auto no-scrollbar mb-4">
+                      <div className="flex gap-1 overflow-x-auto mb-4">
                         {[{id:'all',l:'همه'},{id:'pending',l:'در انتظار پرداخت'},{id:'preparing',l:'آماده‌سازی'},{id:'shipped',l:'ارسال‌شده'},{id:'delivered',l:'تحویل‌شده'},{id:'cancelled',l:'لغو'},{id:'returned',l:'مرجوع'}].map(f=>(
                           <button key={f.id} type="button" onClick={()=>setAdminOrderFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminOrderFilter===f.id?'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:!text-white':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
                         ))}
@@ -1549,7 +1549,7 @@ export default function AdminPanelContent() {
                   {!adminLoading && adminTab === 'tickets' && !adminTicketDetailId && (
                     <div>
                       <h2 className="text-base font-bold text-primary-900 dark:text-white mb-4">تیکت‌های پشتیبانی</h2>
-                      <div className="flex gap-1 overflow-x-auto no-scrollbar mb-4">
+                      <div className="flex gap-1 overflow-x-auto mb-4">
                         {[{id:'all',l:'همه'},{id:'open',l:'باز'},{id:'pending',l:'در انتظار'},{id:'closed',l:'بسته'}].map(f=>(
                           <button key={f.id} type="button" onClick={()=>setAdminTicketFilter(f.id)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border ${adminTicketFilter===f.id?'bg-primary-800 text-white border-primary-800 dark:bg-[#4CCD99] dark:!text-white':'plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium'}`}>{f.l}</button>
                         ))}
