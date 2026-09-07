@@ -1848,7 +1848,27 @@ export default function SellerPanelContent() {
                               <div className="space-y-4">
                               <p className="text-sm font-bold text-primary-900 dark:text-white mb-3">۱. نام محصول و کد محصول و نامک و قیمت (تومان)</p>
 
-                              <div><label className="text-xs text-primary-500 mb-1 block">نام محصول</label><input value={sellerProductForm.name} onChange={e => setSellerProductForm(f => ({ ...f, name: e.target.value, slug: slugifyTaxonomy(e.target.value) }))} className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue shadow-none" /></div>
+                              <div><label className="text-xs text-primary-500 mb-1 block">نام محصول</label>                              <div className="flex items-stretch gap-2">
+                                <div className="flex-1 min-w-0"><input value={sellerProductForm.name} onChange={e =></div>
+                                <button
+                                  type="button"
+                                  title="کپی"
+                                  onClick={async () => {
+                                    const ok = await copyTextToClipboard(sellerProductForm.name);
+                                    try {
+                                      showToast({
+                                        message: ok ? 'کپی شد' : 'کپی نشد',
+                                        variant: ok ? 'success' : 'error',
+                                        duration: 2000,
+                                        position: 'top-center',
+                                      });
+                                    } catch (_) {}
+                                  }}
+                                  className="flex-shrink-0 inline-flex items-center justify-center min-w-[2.5rem] px-2.5 rounded-lg border border-primary-200 dark:border-white/15 text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-white/5 text-[11px] font-medium"
+                                >
+                                  کپی
+                                </button>
+                              </div> setSellerProductForm(f => ({ ...f, name: e.target.value, slug: slugifyTaxonomy(e.target.value) }))} className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue shadow-none" /></div>
                               <div>
                                 <label className="text-xs text-primary-500 mb-1 block">کد محصول</label>
                                 <input
@@ -1863,7 +1883,27 @@ export default function SellerPanelContent() {
                               <div>
                                 <label className="text-xs text-primary-500 mb-1 block">نامک (Slug)</label>
                                 <div className="flex items-center gap-2">
-                                  <input value={productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || '')} readOnly disabled dir="ltr" placeholder="خودکار از نام محصول و فروشگاه" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-900/50 text-sm text-left font-latin text-primary-500 dark:!text-white cursor-not-allowed shadow-none" />
+                                                                    <div className="flex items-stretch gap-2">
+                                    <div className="flex-1 min-w-0"><input value={productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || '')} readOnly disabled dir="ltr" placeholder="خودکار از نام محصول و فروشگاه" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-900/50 text-sm text-left font-latin text-primary-500 dark:!text-white cursor-not-allowed shadow-none" /></div>
+                                    <button
+                                      type="button"
+                                      title="کپی"
+                                      onClick={async () => {
+                                        const ok = await copyTextToClipboard(productSlugFromNameAndShop(sellerProductForm.name, sellerUser?.shopName || sellerUser?.name || ''));
+                                        try {
+                                          showToast({
+                                            message: ok ? 'کپی شد' : 'کپی نشد',
+                                            variant: ok ? 'success' : 'error',
+                                            duration: 2000,
+                                            position: 'top-center',
+                                          });
+                                        } catch (_) {}
+                                      }}
+                                      className="flex-shrink-0 inline-flex items-center justify-center min-w-[2.5rem] px-2.5 rounded-lg border border-primary-200 dark:border-white/15 text-primary-700 dark:text-white/80 hover:bg-primary-50 dark:hover:bg-white/5 text-[11px] font-medium"
+                                    >
+                                      کپی
+                                    </button>
+                                  </div>
                                   <button
                                     type="button"
                                     title="کپی"
