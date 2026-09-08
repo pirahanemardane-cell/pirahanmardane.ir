@@ -5819,7 +5819,6 @@ const generateProductCode = (sellerKey, productId, shopName) => {
        * 2) applyPath را اجرا کن تا state با URL یکی شود
        * هرگز برای breadcrumb از history.back استفاده نکن.
        */
-      const navigateTo = (path, state
       const leaveCurrentPage = () => {
         try {
           if (typeof window !== 'undefined' && window.history.length > 1) {
@@ -5829,6 +5828,18 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         } catch (_) {}
         try { navigateTo(FA_PATHS.home || '/'); } catch (__) {}
       };
+
+      const navigateTo = (path, state = {}) => {
+        try {
+          const target = path || '/';
+          pushFaUrl(target, state);
+          try { applyPathRef.current(); } catch (_) {}
+          try { scrollPageToTop(); } catch (_) {}
+        } catch (_) {
+          try { window.location.assign(path || '/'); } catch (__) {}
+        }
+      };
+
  = {}) => {
         try {
           const target = path || '/';
@@ -17032,3 +17043,5 @@ export default App;
 /* nav-root-fix-product-before-plp-v2 */
 
 /* universal-nav-standard-v4 */
+
+/* fix-syntax-navigateTo-v5 */
