@@ -217,9 +217,9 @@ export default function HomeView() {
                         {/* Features — full-width · فاصله چپ/راست متقارن */}
             <section className="relative z-20 bg-primary-50 dark:bg-primary-900 py-4 sm:py-6 border-b border-primary-200 dark:border-white/30 transition-colors overflow-hidden">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-6 w-full justify-items-stretch sm:justify-items-center">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 w-full items-stretch justify-items-stretch sm:justify-items-center">
                   {features.map((f, i) => (
-                    <div key={i} className="flex items-center justify-start sm:justify-center gap-2 sm:gap-2.5 min-w-0 w-full max-w-full">
+                    <div key={i} className="flex items-center justify-start sm:justify-center gap-2 sm:gap-2.5 min-w-0 w-full max-w-full h-full">
                       <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white dark:bg-primary-800 text-primary-800 dark:text-white flex items-center justify-center flex-shrink-0 border border-primary-200 dark:border-white/30">
                         <Icon name={f.icon} size={16} />
                       </div>
