@@ -1286,6 +1286,7 @@ export default function StaticPagesView() {
                     { label: 'فروشندگان', icon: 'users', onClick: () => openSellersList() },
                     { label: 'شگفت‌انگیز', icon: 'gift', onClick: () => { setMobileMenuOpen(false); openStaticPage('deals'); } },
                     { label: 'پرفروش‌ترین‌ها', icon: 'star', onClick: () => { setMobileMenuOpen(false); openPLP({ sort: 'popular' }); } },
+                    { label: 'جدیدترین‌ها', icon: 'sparkles', onClick: () => { setMobileMenuOpen(false); openPLP({ sort: 'newest' }); } },
                     { label: 'برندها', icon: 'package', onClick: () => { setMobileMenuOpen(false); openStaticPage('brands'); } },
                     { label: 'شرایط بازگشت', icon: 'package', onClick: () => { setMobileMenuOpen(false); openStaticPage('returns'); } },
                     { label: 'بلاگ', icon: 'package', onClick: () => { setMobileMenuOpen(false); openStaticPage('blog'); } },

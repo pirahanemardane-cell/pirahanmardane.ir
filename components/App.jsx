@@ -13212,7 +13212,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         if (plpSort === 'price-desc') return (Number(b.price)||0) - (Number(a.price)||0);
         if (plpSort === 'discount') return (Number(b.discount)||0) - (Number(a.discount)||0);
         if (plpSort === 'rating') return (Number(b.rating)||0) - (Number(a.rating)||0);
-        if (plpSort === 'newest') return String(b.id||'').localeCompare(String(a.id||''));
+        if (plpSort === 'newest') return (new Date(b.created_at || b.createdAt || 0).getTime()) - (new Date(a.created_at || a.createdAt || 0).getTime()) || String(b.id||'').localeCompare(String(a.id||''));
         if (plpSort === 'popular' || !plpSort) return (Number(b.reviews)||0) - (Number(a.reviews)||0);
         return String(b.id||'').localeCompare(String(a.id||''));
       });

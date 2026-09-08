@@ -397,7 +397,7 @@ export default function HomeView() {
                     <span className="text-xl">✨</span>
                     <h2 className="section-title text-primary-900 dark:text-white text-lg sm:text-xl">جدیدترین محصولات</h2>
                   </div>
-                  <a href="#" onClick={(e) => { e.preventDefault(); openPLP(); }} className="text-xs sm:text-sm text-apple-link hover:underline flex items-center gap-1">
+                  <a href="/فروشگاه?sort=newest" onClick={(e) => { e.preventDefault(); openPLP({ sort: 'newest' }); }} className="text-xs sm:text-sm text-apple-link hover:underline flex items-center gap-1">
                     مشاهده همه
                     <Icon name="chevronLeft" size={14} />
                   </a>
@@ -412,7 +412,13 @@ export default function HomeView() {
                     <button
                       key={tab}
                       type="button"
-                      onClick={() => setNewestTab(tab)}
+                      onClick={() => {
+                        if (tab === 'جدیدترین') {
+                          openPLP({ sort: 'newest' });
+                          return;
+                        }
+                        setNewestTab(tab);
+                      }}
                       className={`flex-shrink-0 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition whitespace-nowrap ${
                         newestTab === tab
                           ? 'bg-apple-blue text-white'
