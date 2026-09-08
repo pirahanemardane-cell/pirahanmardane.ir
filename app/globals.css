@@ -4983,3 +4983,11 @@ html.dark button.product-seller-badge span {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
 }
+
+
+/* review-shop-badge-dark */
+html.dark .review-shop-badge {
+  background-color: #FFFFFF !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}

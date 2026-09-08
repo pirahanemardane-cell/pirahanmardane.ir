@@ -505,12 +505,12 @@ export default function HomeView() {
                               setSellerSort('newest');
                               window.scrollTo({ top: 0, behavior: 'instant' });
                             }}
-                            className="product-seller-badge inline-flex self-start items-center h-6 px-2 rounded-md bg-primary-100 dark:bg-primary-700 text-primary-900 dark:text-white text-xs sm:text-xs font-medium mb-2 hover:bg-primary-200 dark:hover:bg-primary-600 transition cursor-pointer"
+                            className="review-shop-badge inline-flex self-start items-center h-6 px-2 rounded-md bg-primary-100 dark:bg-white text-primary-900 dark:!text-[#0A0A0A] text-xs sm:text-xs font-medium mb-2 hover:bg-primary-200 dark:hover:bg-white transition cursor-pointer"
                           >
                             {r.seller}
                           </button>
                         ) : (
-                          <span className="product-seller-badge inline-flex self-start items-center h-6 px-2 rounded-md bg-primary-100 dark:bg-primary-700 text-primary-900 dark:text-white text-xs sm:text-xs font-medium mb-2">
+                          <span className="review-shop-badge inline-flex self-start items-center h-6 px-2 rounded-md bg-primary-100 dark:bg-white text-primary-900 dark:!text-[#0A0A0A] text-xs sm:text-xs font-medium mb-2">
                             {r.seller}
                           </span>
                         )
