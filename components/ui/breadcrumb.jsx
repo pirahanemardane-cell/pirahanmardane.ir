@@ -43,7 +43,7 @@ function ChevronIcon({ className = '' }) {
 
 /**
  * Breadcrumb — items: [{ label, onClick?, href?, current? }]
- * اگر href باشد از <a> واقعی استفاده می‌شود (SEO + باز کردن در تب جدید)
+ * کلیک همیشه SPA: preventDefault + onClick (navigateTo/goHome/goShop)
  */
 export function Breadcrumb({
   items = [],
@@ -57,7 +57,7 @@ export function Breadcrumb({
   if (!crumbs.length) return null;
 
   const linkClass =
-    'truncate max-w-[11rem] sm:max-w-[16rem] text-primary-600 dark:text-white/70 hover:text-apple-blue dark:hover:text-[#4CCD99] transition';
+    'truncate max-w-[11rem] sm:max-w-[16rem] text-primary-600 dark:text-white/70 hover:text-apple-blue dark:hover:text-[#4CCD99] transition cursor-pointer';
 
   return (
     <nav className={`w-full relative z-10 border-t border-b border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-950 ${className}`} aria-label="breadcrumb" dir="rtl">
@@ -65,40 +65,29 @@ export function Breadcrumb({
         <div className="flex flex-wrap justify-start items-center gap-x-2 gap-y-1 text-sm text-primary-500 dark:text-white/55 font-medium text-right">
           {(typeof homeOnClick === 'function' || homeHref) && (
             <>
-              {homeHref ? (
-                <a
-                  href={homeHref}
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (typeof homeOnClick === 'function') homeOnClick(e); }}
-                  aria-label="خانه"
-                  className="inline-flex items-center justify-center text-primary-600 dark:text-white/70 hover:text-apple-blue dark:hover:text-[#4CCD99] transition"
-                >
-                  {showHomeIcon ? (
-                    <HomeIcon className="w-7 h-7 sm:w-8 sm:h-8" />
-                  ) : (
-                    <span>خانه</span>
-                  )}
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  onClick={homeOnClick}
-                  aria-label="خانه"
-                  className="inline-flex items-center justify-center text-primary-600 dark:text-white/70 hover:text-apple-blue dark:hover:text-[#4CCD99] transition"
-                >
-                  {showHomeIcon ? (
-                    <HomeIcon className="w-7 h-7 sm:w-8 sm:h-8" />
-                  ) : (
-                    <span>خانه</span>
-                  )}
-                </button>
-              )}
+              <a
+                href={homeHref || '/'}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (typeof homeOnClick === 'function') homeOnClick(e);
+                  else if (typeof window !== 'undefined') window.location.assign(homeHref || '/');
+                }}
+                aria-label="خانه"
+                className="inline-flex items-center justify-center text-primary-600 dark:text-white/70 hover:text-apple-blue dark:hover:text-[#4CCD99] transition"
+              >
+                {showHomeIcon ? (
+                  <HomeIcon className="w-7 h-7 sm:w-8 sm:h-8" />
+                ) : (
+                  <span>خانه</span>
+                )}
+              </a>
               <ChevronIcon className="text-primary-300 dark:text-white/30 w-4 h-4 sm:w-5 sm:h-5" />
             </>
           )}
 
           {crumbs.map((item, i) => {
-            const isLast = i === crumbs.length - 1;
-            const itemClass = `pm-breadcrumb-item inline-flex items-center ${isLast ? 'font-semibold text-primary-900 dark:text-white' : 'text-primary-600 dark:text-white/70 hover:text-primary-900 dark:hover:text-white'}`; // فقط آخرین آیتم current — نه چندتای همزمان
+            const isLast = i === crumbs.length - 1 || item.current;
             return (
               <React.Fragment key={`${item.label}-${i}`}>
                 {isLast ? (
@@ -108,22 +97,19 @@ export function Breadcrumb({
                   >
                     {item.label}
                   </span>
-                ) : item.href ? (
+                ) : (
                   <a
-                    href={item.href}
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (typeof item.onClick === 'function') item.onClick(e); }}
+                    href={item.href || '#'}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (typeof item.onClick === 'function') item.onClick(e);
+                      else if (item.href && typeof window !== 'undefined') window.location.assign(item.href);
+                    }}
                     className={linkClass}
                   >
                     {item.label}
                   </a>
-                ) : item.onClick ? (
-                  <button type="button" onClick={item.onClick} className={linkClass}>
-                    {item.label}
-                  </button>
-                ) : (
-                  <span className="truncate max-w-[11rem] sm:max-w-[18rem] text-primary-600 dark:text-white/70">
-                    {item.label}
-                  </span>
                 )}
                 {!isLast && (
                   <ChevronIcon className="text-primary-300 dark:text-white/30 w-4 h-4 sm:w-5 sm:h-5" />

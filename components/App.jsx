@@ -5064,7 +5064,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             const tag = params.get('برچسب') || params.get('tag');
             const q = params.get('ق') || params.get('q');
             const sort = params.get('sort') || params.get('مرتب') || undefined;
-            openPLP({ cat: cat || undefined, tag: tag || undefined, query: q || undefined, sort: sort || undefined, silent: true, keepSort: true });
+            openPLP({ cat: cat || undefined, tag: tag || undefined, query: q || undefined, sort: sort || undefined, silent: true, keepSort: !!sort, reset: !cat && !tag && !q, keepQuery: !!q });
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
@@ -5708,7 +5708,25 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       };
 
 
-      /** بستن صفحه: Back مرورگر یا خانه — URL همیشه درست بماند */
+            /**
+       * ناوبری واحد SPA:
+       * 1) URL را عوض کن (push)
+       * 2) applyPath را اجرا کن تا state با URL یکی شود
+       * هرگز برای breadcrumb از history.back استفاده نکن.
+       */
+      const navigateTo = (path, state = {}) => {
+        try {
+          const target = path || '/';
+          pushFaUrl(target, state);
+          // حتی اگر URL یکی بود، applyPath را اجباری اجرا کن
+          try { applyPathRef.current(); } catch (_) {}
+          try { scrollPageToTop(); } catch (_) {}
+        } catch (_) {
+          try { window.location.assign(path || '/'); } catch (__) {}
+        }
+      };
+
+      /** فقط برای دکمهٔ «بازگشت» معنایی مرورگر — نه breadcrumb */
       const leaveCurrentPage = () => {
         try {
           if (typeof window !== 'undefined' && window.history.length > 1) {
@@ -5716,62 +5734,20 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             return;
           }
         } catch (_) {}
-        try {
-          setStaticPage(null);
-          setBlogPostId(null);
-          setPdpProduct(null);
-          setShowPLP(false);
-          setShowCartPage(false);
-          setShowCheckout(false);
-          setShowWishlistPage(false);
-          setShowRecentPage(false);
-          setShowComparePage(false);
-          setShowProfilePage(false);
-          setShowSellerPanel(false);
-          setShowAdminPanel(false);
-          setShowSellersList(false);
-          try { pushFaUrl(FA_PATHS.home || '/'); } catch (_) {}
-          setShowTaxonomyHub(null);
-          setActiveSellerId(null);
-        } catch (_) {}
-        try { replaceFaUrl(FA_PATHS.home); } catch (_) {}
-        try { scrollPageToTop(); } catch (_) {}
+        navigateTo(FA_PATHS.home || '/');
       };
 
-      /** خانه واقعی برای breadcrumb/لوگو — بدون history.back */
+      /** خانه — همیشه URL-driven */
       const goHome = () => {
-        try { beginPageLoad('home'); } catch (_) {}
-        try {
-          setStaticPage(null);
-          setBlogPostId(null);
-          try { setBrandDetailId(null); } catch (_) {}
-          setPdpProduct(null);
-          setShowPLP(false);
-          try { setPlpCats([]); setPlpTagFilter([]); setPlpQuery(''); setPlpColors([]); setPlpSizes([]); } catch (_) {}
-          setShowCartPage(false);
-          setShowCheckout(false);
-          setShowWishlistPage(false);
-          setShowRecentPage(false);
-          setShowComparePage(false);
-          setShowProfilePage(false);
-          setShowSellerPanel(false);
-          setShowAdminPanel(false);
-          setShowSellersList(false);
-          setShowTaxonomyHub(null);
-          setActiveSellerId(null);
-          setMobileMenuOpen(false);
-          try { setMegaOpen(null); } catch (_) {}
-          try { setCartOpen(false); } catch (_) {}
-          try { setWishlistOpen(false); } catch (_) {}
-          try { setCompareOpen(false); } catch (_) {}
-          try { setRecentOpen(false); } catch (_) {}
-          // همیشه URL خانه + applyPath (نه history.back)
-          try { replaceFaUrl(FA_PATHS.home || '/'); } catch (_) {
-            try { pushFaUrl(FA_PATHS.home || '/'); } catch (__) {}
-          }
-          try { applyPathRef.current(); } catch (_) {}
-          try { scrollPageToTop(); } catch (_) {}
-        } catch (_) {}
+        try { setMobileMenuOpen(false); } catch (_) {}
+        try { setMegaOpen(null); } catch (_) {}
+        navigateTo(FA_PATHS.home || '/');
+      };
+
+      /** فروشگاه بدون فیلتر */
+      const goShop = () => {
+        try { setMobileMenuOpen(false); } catch (_) {}
+        navigateTo(FA_PATHS.shop || '/فروشگاه', { plp: true, reset: true });
       };
 
 
@@ -6178,8 +6154,8 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
       const closePLP = () => {
-        setShowPLP(false);
-        leaveCurrentPage();
+        // بستن فروشگاه = رفتن به خانه از طریق URL (نه history.back مبهم)
+        try { goHome(); } catch (_) { setShowPLP(false); navigateTo('/'); }
       };
       const openCartPage = () => {
         beginPageLoad('cart');
@@ -16107,6 +16083,7 @@ const params = new URLSearchParams(window.location.search);
 
 
           {/* Breadcrumbs — فقط صفحات داخلی؛ در صفحه خانه هرگز نمایش داده نشود */}
+          {/* Breadcrumbs — ناوبری فقط با navigateTo / URL (نه history.back) */}
           {!pdpProduct && (() => {
             const isHome = !showPLP && !activeSellerId && !showSellersList && !showCartPage && !showCheckout
               && !showComparePage && !showWishlistPage && !showRecentPage && !showProfilePage
@@ -16114,11 +16091,11 @@ const params = new URLSearchParams(window.location.search);
             if (isHome) return null;
             const crumbItems = [
               ...(showPLP && !activeSeller && !activePlpTag ? [
-                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => { try { openPLP({ resetFilters: true, query: '', cats: [], colors: [], sizes: [] }); } catch (_) {} } },
-                { label: plpCats.length === 1 ? plpH1 : 'همه محصولات', current: true },
+                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => goShop() },
+                { label: (plpCats && plpCats.length === 1) ? plpH1 : 'همه محصولات', current: true },
               ] : []),
               ...(showPLP && !activeSeller && activePlpTag ? [
-                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => { try { openPLP({ resetFilters: true, query: '', cats: [], colors: [], sizes: [] }); } catch (_) {} } },
+                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => goShop() },
                 { label: activePlpTag.name || activePlpTag.label || 'برچسب', current: true },
               ] : []),
               ...(showPLP && activeSeller ? [
@@ -16141,17 +16118,25 @@ const params = new URLSearchParams(window.location.search);
               ...(showWishlistPage ? [{ label: 'علاقه‌مندی‌ها', current: true }] : []),
               ...(showRecentPage ? [{ label: 'اخیراً دیده‌شده', current: true }] : []),
               ...(showProfilePage ? [{ label: 'حساب کاربری', current: true }] : []),
-              ...(showSellerPanel ? [{ label: 'پنل فروشنده', current: !(showTaxonomyHub === 'categories' || showTaxonomyHub === 'brands' || showTaxonomyHub === 'tags'), onClick: showTaxonomyHub ? () => { try { setShowTaxonomyHub(null); } catch (_) {} } : undefined }] : []),
-              // پنل ادمین: breadcrumb فقط داخل AdminPanelContent — جلوگیری از دوبل
+              ...(showSellerPanel ? [{ label: 'پنل فروشنده', current: true }] : []),
               ...(showAdminPanel ? [] : []),
-              ...(showTaxonomyHub === 'categories' ? [{ label: 'همه دسته‌بندی‌ها', current: true }] : []),
-              ...(showTaxonomyHub === 'tags' ? [{ label: 'همه برچسب‌ها', current: true }] : []),
-              ...(staticPage ? [{
+              ...(showTaxonomyHub === 'categories' ? [
+                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => goShop() },
+                { label: 'همه دسته‌بندی‌ها', current: true },
+              ] : []),
+              ...(showTaxonomyHub === 'tags' ? [
+                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => goShop() },
+                { label: 'همه برچسب‌ها', current: true },
+              ] : []),
+              ...(staticPage === 'blog-post' ? [
+                { label: 'مجله', href: '/مجله', onClick: () => { try { openStaticPage('blog'); } catch (_) {} } },
+                { label: (typeof blogPostId !== 'undefined' && blogPosts?.find?.(b => b.id === blogPostId)?.title) || 'مطلب', current: true },
+              ] : []),
+              ...(staticPage && staticPage !== 'blog-post' ? [{
                 label: ({
                   about: 'درباره ما', contact: 'تماس با ما', faq: 'سوالات متداول', 'size-guide': 'راهنمای سایز',
                   'become-seller': 'فروشنده شوید', terms: 'قوانین و شرایط', returns: 'شرایط بازگشت',
                   privacy: 'حریم خصوصی', cookies: 'کوکی‌ها', sitemap: 'نقشه سایت', blog: 'مجله',
-                  'blog-post': (typeof blogPostId !== 'undefined' && blogPosts?.find?.(b => b.id === blogPostId)?.title) || 'مطلب',
                   brands: 'برندها', campaigns: 'کمپین‌ها', deals: 'شگفت‌انگیز',
                   'error-404': 'صفحه یافت نشد', 'error-500': 'خطای سرور', maintenance: 'تعمیرات',
                 })[staticPage] || 'صفحه',
@@ -16162,6 +16147,7 @@ const params = new URLSearchParams(window.location.search);
             return (
               <Breadcrumb
                 fullWidth={showProfilePage || showSellerPanel}
+                homeHref="/"
                 homeOnClick={() => { try { goHome(); } catch (_) {} }}
                 items={crumbItems}
               />
