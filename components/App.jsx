@@ -5002,16 +5002,15 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         } catch (_) {}
       };
       const closePDP = () => {
+        const cat = (pdpProduct && (pdpProduct.category || (Array.isArray(pdpProduct.categories) && pdpProduct.categories[0]))) || null;
         setPdpProduct(null);
         setPdpZoom(false);
         try {
-          if (typeof window !== 'undefined') {
-            const parsed = parseFaPath(window.location.pathname);
-            if (parsed.type === 'product' || parsed.type === 'product_code' || window.location.pathname.startsWith('/product/')) {
-              leaveCurrentPage();
-            }
-          }
-        } catch (_) {}
+          if (cat) navigateTo(pathForCategory(cat), { plp: true, cat });
+          else goShop();
+        } catch (_) {
+          try { goShop(); } catch (__) {}
+        }
       };
 
 
@@ -5240,7 +5239,21 @@ const generateProductCode = (sellerKey, productId, shopName) => {
               return;
             }
 
-            let found = null;
+            // دسته تک‌مسیره قبل از محصول / ۴۰۴
+            if (parsed.type === 'category_or_product') {
+              const rawSlug = parsed.catSlug || parsed.maybeCatSlug || parsed.productSlug || '';
+              let catLabel = '';
+              try { catLabel = decodeURIComponent(String(rawSlug)).replace(/_/g, ' ').trim(); } catch (_) {
+                catLabel = String(rawSlug || '').replace(/_/g, ' ').trim();
+              }
+              if (catLabel) {
+                openPLP({ cat: catLabel, silent: true });
+                try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
+                return;
+              }
+            }
+
+                        let found = null;
             if (parsed.type === 'product_code') {
               found = typeof findProductByCode === 'function'
                 ? findProductByCode(pools, parsed.code)
@@ -5825,18 +5838,48 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         }
       };
 
-      /** فقط برای دکمهٔ «بازگشت» معنایی مرورگر — نه breadcrumb */
-      const leaveCurrentPage = () => {
+      const navigateTo = (path, state = {}) => {
         try {
-          if (typeof window !== 'undefined' && window.history.length > 1) {
-            window.history.back();
-            return;
-          }
-        } catch (_) {}
-        navigateTo(FA_PATHS.home || '/');
+          const target = path || FA_PATHS.home || '/';
+          pushFaUrl(target, state || {});
+          try { applyPathRef.current(); } catch (_) {}
+          try { scrollPageToTop(); } catch (_) {}
+        } catch (_) {
+          try { window.location.assign(path || '/'); } catch (__) {}
+        }
       };
 
-      /** خانه — همیشه URL-driven */
+      const goShop = () => {
+        try {
+          setPlpCats([]);
+          setPlpTagFilter([]);
+          setPlpQuery('');
+          setPlpColors([]);
+          setPlpSizes([]);
+        } catch (_) {}
+        navigateTo(FA_PATHS.shop || '/فروشگاه', { plp: true, reset: true });
+      };
+
+      const leaveCurrentPage = () => {
+        try {
+          const path = (typeof window !== 'undefined' && window.location.pathname) || '/';
+          const parsed = parseFaPath(path);
+          if (parsed.type === 'category_or_product' || parsed.type === 'product' || parsed.type === 'product_code') {
+            const cat = (pdpProduct && (pdpProduct.category || (Array.isArray(pdpProduct.categories) && pdpProduct.categories[0]))) || null;
+            if (cat) { navigateTo(pathForCategory(cat), { plp: true, cat }); return; }
+            goShop();
+            return;
+          }
+          if (parsed.type === 'category_or_product' || parsed.type === 'shop' || showPLP) {
+            goShop();
+            return;
+          }
+          navigateTo(FA_PATHS.home || '/', { home: true });
+        } catch (_) {
+          try { navigateTo('/'); } catch (__) {}
+        }
+      };
+
       const goHome = () => {
         try { setMobileMenuOpen(false); } catch (_) {}
         try { setMegaOpen(null); } catch (_) {}
@@ -17000,3 +17043,4 @@ const params = new URLSearchParams(window.location.search);
     }
 
 export default App;
+
