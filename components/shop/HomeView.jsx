@@ -302,7 +302,7 @@ export default function HomeView() {
                 <div className="relative">
                   <CarouselArrows trackRef={sellersTrackRef} />
                   <div ref={sellersTrackRef} className="carousel-track flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar pb-2 scroll-smooth snap-x px-0 sm:px-10" style={{ WebkitOverflowScrolling: 'touch' }}>
-                  {topSellers.slice(0, 6).map((s) => {
+                  {topSellers.slice(0, 6).map((s, i) => {
                     const img = String(s.image || s.logo || s.avatar || '').trim();
                     const hasPhoto = img && !/default-avatar|logo\.webp|^\/logo/i.test(img);
                     const letter = (() => {
@@ -324,6 +324,14 @@ export default function HomeView() {
                         <span className="text-5xl sm:text-6xl font-bold text-primary-700 dark:text-white select-none" style={{ fontFamily: 'IRANYekanX, var(--font-app), sans-serif' }}>{letter}</span>
                       </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/25" />
+                      <span
+                        className={`seller-rank-badge absolute top-2 left-2 z-20 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-md ${
+                          i === 0 ? 'bg-amber-500' : i === 1 ? 'bg-red-800' : i === 2 ? 'bg-amber-700' : 'bg-primary-700'
+                        }`}
+                      >
+                        {typeof toFa === 'function' ? toFa(i + 1) : (i + 1)}
+                      </span>
+
                       <div className="relative z-10 flex flex-col h-full justify-end p-4 sm:p-5 min-h-[160px] sm:min-h-[180px]">
                         <h3 className="text-base font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{s.name}</h3>
                         <p className="text-xs text-white/95 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">{s.desc}</p>
