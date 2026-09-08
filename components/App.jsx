@@ -13394,7 +13394,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                       try { openSellersList(); } catch (_) {}
                     }
                   }}
-                  className="product-seller-badge inline-flex items-center gap-1 h-6 sm:h-7 px-1.5 sm:px-2 rounded-md bg-primary-900 dark:bg-white text-white dark:!text-primary-900 text-xs font-bold whitespace-nowrap max-w-full transition border border-primary-900 dark:border-white cursor-pointer hover:opacity-90"
+                  className="product-seller-badge inline-flex items-center gap-1 h-6 sm:h-7 px-1.5 sm:px-2 rounded-md bg-primary-900 dark:bg-primary-800 text-white dark:!text-white text-xs font-bold whitespace-nowrap max-w-full transition border border-primary-900 dark:border-white/30 cursor-pointer hover:opacity-90"
                   title="مشاهده فروشگاه"
                 >
                   <span className="truncate">{`فروشنده: ${seller?.name && seller.name !== "undefined" ? seller.name : (seller?.shop_name || "فروشگاه")}`}</span>
