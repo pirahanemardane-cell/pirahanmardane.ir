@@ -398,7 +398,7 @@ export default function HomeView() {
                   className="carousel-track flex gap-2 overflow-x-auto no-scrollbar mb-5 sm:mb-6 pb-1 scroll-smooth"
                   style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' }}
                 >
-                  {['پیراهن رسمی', 'پیراهن کروات', 'آستین کوتاه', 'لینن و نخی', 'کلاسیک', 'جدیدترین', 'همه'].map((tab) => (
+                  {['همه', 'جدیدترین', 'پیراهن رسمی', 'پیراهن کروات', 'آستین کوتاه', 'لینن و نخی', 'کلاسیک'].map((tab) => (
                     <button
                       key={tab}
                       type="button"
