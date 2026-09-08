@@ -4992,12 +4992,23 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           } catch (_) {}
         }
         try {
+          if (silent) return;
           const code = p?.productCode || ensureProductCode(p);
-          if (code && typeof window !== 'undefined') {
-            const path = pathForProduct(p?.name || p?.title || code, p?.shopName || p?.sellerName || p?.brand || '');
-            if (window.location.pathname !== path) {
-              pushFaUrl(path, { product: code || true });
-            }
+          if (typeof window === 'undefined') return;
+          const path = pathForProduct(p?.name || p?.title || code || p?.id, p?.shopName || p?.sellerName || p?.brand || '');
+          const norm = (u) => {
+            try { return decodeURIComponent(String(u || '').split('?')[0]).replace(/\/+$/, '') || '/'; }
+            catch (_) { return String(u || '').split('?')[0].replace(/\/+$/, '') || '/'; }
+          };
+          const cur = norm(window.location.pathname);
+          const next = norm(path);
+          if (cur === next) return;
+          // اگر الان هم روی PDP هستیم → replace (entry اضافه نساز)
+          const onPdp = !!(pdpProduct && pdpProduct.id != null);
+          if (onPdp) {
+            try { replaceFaUrl(path, { product: code || true }); } catch (_) { pushFaUrl(path, { product: code || true }); }
+          } else {
+            pushFaUrl(path, { product: code || true });
           }
         } catch (_) {}
       };
@@ -17037,3 +17048,5 @@ export default App;
 /* nav-standard-final-v7 */
 
 /* nav-root-fix-v8 */
+
+/* nav-dedupe-pdp-v9 */
