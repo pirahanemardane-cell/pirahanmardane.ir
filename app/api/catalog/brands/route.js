@@ -26,9 +26,10 @@ export async function GET(req) {
           { headers: { "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600" } }
         );
       }
+      // بدون برند واقعی → آرایه خالی (نه DEFAULT «عمومی»)
       return NextResponse.json(
-        { brands: data?.length ? data : DEFAULTS },
-        { headers: { "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600" } }
+        { brands: Array.isArray(data) ? data : [] },
+        { headers: { "Cache-Control": "public, s-maxage=15, stale-while-revalidate=60" } }
       );
     });
   } catch (e) {
@@ -71,9 +72,19 @@ export async function PUT(req) {
     }));
 
     const sb = createAdminClient();
-    const { error: upErr } = await sb
-      .from("catalog_brands")
-      .upsert(clean, { onConflict: "id" });
+    let upErr = null;
+    {
+      const r = await sb.from("catalog_brands").upsert(clean, { onConflict: "id" });
+      upErr = r.error;
+    }
+    if (upErr) {
+      const msg = String(upErr.message || '').toLowerCase();
+      if (msg.includes('show_on_home') || msg.includes('column')) {
+        const minimal = clean.map(({ show_on_home, ...rest }) => rest);
+        const r2 = await sb.from("catalog_brands").upsert(minimal, { onConflict: "id" });
+        upErr = r2.error;
+      }
+    }
     if (upErr) {
       console.error("[catalog/brands PUT]", upErr);
       return NextResponse.json({ error: upErr.message }, { status: 500 });
@@ -86,7 +97,12 @@ export async function PUT(req) {
       await sb.from("catalog_brands").delete().in("id", toDelete);
     }
 
-    return NextResponse.json({ ok: true, brands: clean });
+    try {
+      const { invalidateCatalogCache } = await import('@/lib/catalog-cache');
+      if (typeof invalidateCatalogCache === 'function') invalidateCatalogCache();
+    } catch (_) {}
+
+    return NextResponse.json({ ok: true, brands: clean }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     return NextResponse.json({ error: String(e?.message || e) }, { status: 500 });
   }

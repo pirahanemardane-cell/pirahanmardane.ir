@@ -144,76 +144,74 @@ export default function HomeView() {
     .filter((r) => String(r?.text || '').trim().length > 0);
 
   const featuredHomeBrands = useMemo(() => {
-    // فقط برندهای کاتالوگ (نه اسم فروشگاه)
-    const catalogBrands = [
+    // فقط برندهای کاتالوگ ادمین — هرگز اسم فروشگاه
+    const raw = [
       ...(Array.isArray(homeBrands) ? homeBrands : []),
       ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
     ];
-    const byId = new Map();
-    const byName = new Map();
-    for (const b of catalogBrands) {
-      if (!b || b.active === false) continue;
+    const byKey = new Map();
+    for (const b of raw) {
+      if (!b) continue;
       const name = String(b.name || '').trim();
-      if (!name || name === 'عمومی' || name.toLowerCase() === 'generic') continue;
+      if (!name) continue;
+      const low = name.toLowerCase();
+      if (low === 'عمومی' || low === 'generic' || name === 'عمومی') continue;
+      // رد کردن نام‌هایی که شبیه فروشگاه‌اند اگر فقط از seller آمده باشند — فقط از catalog
       const id = String(b.id || b.slug || name);
+      const key = id.toLowerCase();
+      const prev = byKey.get(key);
       const row = {
         id,
         name,
-        logo_url: b.logo_url || b.logoUrl || b.image || '',
-        show_on_home: !!(b.show_on_home ?? b.showOnHome),
-        sort_order: Number(b.sort_order) || 0,
+        logo_url: b.logo_url || b.logoUrl || b.image || (prev && prev.logo_url) || '',
+        show_on_home: !!(b.show_on_home ?? b.showOnHome ?? (prev && prev.show_on_home)),
+        active: b.active !== false,
+        sort_order: Number(b.sort_order ?? b.sortOrder) || (prev && prev.sort_order) || 0,
       };
-      byId.set(String(id).toLowerCase(), row);
-      byName.set(name.toLowerCase(), row);
+      if (!row.active) continue;
+      byKey.set(key, row);
+    }
+    const all = [...byKey.values()];
+
+    // دستی: تیک «صفحه اصلی» در پنل ادمین
+    let manual = all
+      .filter((b) => b.show_on_home)
+      .sort((a, b) => a.sort_order - b.sort_order);
+
+    // اگر هیچ تیکی نبود → همه برندهای فعال کاتالوگ (تا سکشن خالی نماند)
+    if (!manual.length) {
+      manual = all.sort((a, b) => a.sort_order - b.sort_order).slice(0, 16);
     }
 
-    // ۱) دستی: تیک «نمایش در صفحه اصلی» در پنل ادمین
-    const manual = [...byId.values()]
-      .filter((b) => b.show_on_home)
-      .sort((a, b) => a.sort_order - b.sort_order)
-      .map((b) => ({ ...b, manual: true, score: 1e9 }));
-
-    // ۲) خودکار: برندهایی که روی محصول واقعاً ست شده‌اند (نه seller.name)
+    // خودکار: پرفروش بر اساس brand روی محصول (نه seller)
     const productPool = [
       ...(Array.isArray(catalogProducts) ? catalogProducts : []),
       ...(Array.isArray(products) ? products : []),
     ];
+    const byName = new Map(all.map((b) => [b.name.toLowerCase(), b]));
+    const byId = new Map(all.map((b) => [String(b.id).toLowerCase(), b]));
     const salesMap = new Map();
     for (const p of productPool) {
       if (!p) continue;
       const bid = String(p.brand_id || p.brandId || '').trim();
-      let bname = String(p.brand_name || p.brandName || p.brand || '').trim();
-      // رد کردن fallback اشتباه به فروشگاه
-      if (!bname && !bid) continue;
-      if (p.seller && (bname === p.seller.name || bname === p.seller.shopName || bname === p.sellerName)) continue;
+      const bname = String(p.brand_name || p.brandName || p.brand || '').trim();
+      if (!bid && !bname) continue;
       if (bname === 'عمومی' || bname.toLowerCase() === 'generic') continue;
-
-      const catalogHit = (bid && byId.get(bid.toLowerCase())) || (bname && byName.get(bname.toLowerCase()));
-      // فقط برندهایی که در کاتالوگ ادمین تعریف شده‌اند
-      if (!catalogHit) continue;
-
-      const key = String(catalogHit.id).toLowerCase();
-      const sold = Number(p.sold_count ?? p.soldCount ?? p.salesCount ?? p.sales_count ?? p.order_count ?? 0);
-      const weight = sold > 0 ? sold : 1;
-      const prev = salesMap.get(key) || {
-        id: catalogHit.id,
-        name: catalogHit.name,
-        logo_url: catalogHit.logo_url || '',
-        score: 0,
-        auto: true,
-      };
-      prev.score += weight;
-      if (!prev.logo_url && catalogHit.logo_url) prev.logo_url = catalogHit.logo_url;
-      salesMap.set(key, prev);
+      const hit = (bid && byId.get(bid.toLowerCase())) || (bname && byName.get(bname.toLowerCase()));
+      if (!hit) continue;
+      const k = String(hit.id).toLowerCase();
+      const sold = Number(p.sold_count ?? p.soldCount ?? p.salesCount ?? p.order_count ?? 0);
+      const w = sold > 0 ? sold : 1;
+      const prev = salesMap.get(k) || { ...hit, score: 0, auto: true };
+      prev.score += w;
+      salesMap.set(k, prev);
     }
-    const autoSorted = [...salesMap.values()]
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 12);
+    const autoSorted = [...salesMap.values()].sort((a, b) => b.score - a.score).slice(0, 12);
 
     const seen = new Set();
     const out = [];
-    for (const b of [...manual, ...autoSorted]) {
-      const k = String(b.id || b.name).trim().toLowerCase();
+    for (const b of [...manual.map((x) => ({ ...x, manual: true, score: 1e9 })), ...autoSorted]) {
+      const k = String(b.id || b.name).toLowerCase();
       if (!k || seen.has(k)) continue;
       seen.add(k);
       out.push(b);
@@ -221,7 +219,6 @@ export default function HomeView() {
     }
     return out;
   }, [homeBrands, catalogProducts, products, adminCatalogBrands]);
-
 
   return (
     <>
