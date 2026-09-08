@@ -1,44 +1,12 @@
 import './globals.css';
 
-const SITE_URL = 'https://pirahanemardane.ir';
+const SITE_URL = 'https://pirahanmardane.ir';
 const SITE_NAME = 'پیراهن مردانه';
 const SITE_DESC =
   'فروشگاه اینترنتی پیراهن مردانه — رسمی، کروات، لینن و آستین کوتاه از فروشندگان معتبر';
 
 export const metadata = {
-  metadataBase: new URL('https://pirahanmardane.ir'),
-  openGraph: {
-    type: 'website',
-    locale: 'fa_IR',
-    url: 'https://pirahanmardane.ir',
-    siteName: 'پیراهن مردانه',
-    title: 'پیراهن مردانه | مرکز تخصصی فروش پیراهن مردانه',
-    description: 'فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر ایران',
-    images: [
-      {
-        url: '/og-twitter-card.jpg',
-        width: 1200,
-        height: 670,
-        alt: "THE MEN'S SHIRT SPECIALIST — PIRAHANMARDANE.IR",
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'پیراهن مردانه | مرکز تخصصی فروش پیراهن مردانه',
-    description: 'فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر ایران',
-    images: ['/og-twitter-card.jpg'],
-  },
-
-    ],
-  },
-
-    ],
-  },
-
-    ],
-  },
-
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${SITE_NAME} | PIRAHANMARDANE.IR`,
     template: `%s | ${SITE_NAME}`,
@@ -55,6 +23,28 @@ export const metadata = {
   },
   alternates: {
     canonical: SITE_URL,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'fa_IR',
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: 'پیراهن مردانه | مرکز تخصصی فروش پیراهن مردانه',
+    description: 'فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر ایران',
+    images: [
+      {
+        url: '/og-twitter-card.jpg',
+        width: 1200,
+        height: 670,
+        alt: "THE MEN'S SHIRT SPECIALIST — PIRAHANMARDANE.IR",
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'پیراهن مردانه | مرکز تخصصی فروش پیراهن مردانه',
+    description: 'فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر ایران',
+    images: ['/og-twitter-card.jpg'],
   },
   robots: {
     index: false,
@@ -101,16 +91,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <head>
-<meta name="fontiran.com:license" content="E0QI1G9U" />
-        {/* Performance: preconnect; fonts non-blocking for PageSpeed mobile */}
-
-<script
+        <meta name="fontiran.com:license" content="E0QI1G9U" />
+        <script
           dangerouslySetInnerHTML={{
             __html: `(function(){function a(){document.querySelectorAll('link[media=print][rel=stylesheet]').forEach(function(l){l.media='all'});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',a);else a();})();`,
           }}
         />
-        <noscript>
-</noscript>
+        <noscript></noscript>
         <link rel="manifest" href="/manifest.webmanifest" />
         <link rel="preload" as="image" href="/hero-poster.webp" fetchPriority="high" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
