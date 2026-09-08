@@ -59,7 +59,7 @@ export function ModemAnimatedFooter({
               )}
 
               {Array.isArray(navLinks) && navLinks.length > 0 && (
-                <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm font-medium max-w-3xl px-4 mt-2">
+                <div className="flex flex-nowrap justify-center items-center gap-x-3 sm:gap-x-4 text-sm font-medium w-full max-w-6xl px-2 mt-2 overflow-x-auto no-scrollbar whitespace-nowrap">
                   {navLinks.map((link, index) => (
                     <button
                       key={index}
