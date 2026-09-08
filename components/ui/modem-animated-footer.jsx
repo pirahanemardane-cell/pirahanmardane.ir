@@ -5,27 +5,24 @@ import { cn } from '../../lib/utils';
 
 /**
  * فوتر انیمیشنی سایت
- * لایت: قرمز برند  |  دارک: فیروزه‌ای #13ABC4
+ * لایت: قرمز  |  دارک: فیروزه‌ای #13ABC4
  */
 export function ModemAnimatedFooter({
   brandName = 'پیراهن مردانه',
-  brandDescription = 'فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر\u00A0ایران',
   navLinks = [],
   socialLinks = [],
   brandIcon,
   dark = false,
   className,
-  yearText,
   onNavClick,
 }) {
   const accent = dark ? '#13ABC4' : '#FF0000';
-  const year = yearText || '۱۴۰۵';
 
   return (
     <section className={cn('relative w-full mt-0 overflow-hidden', className)} dir="rtl">
       <footer className="border-t border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-950 mt-10 sm:mt-16 relative">
         <div className="max-w-7xl flex flex-col justify-between mx-auto min-h-[22rem] sm:min-h-[26rem] md:min-h-[30rem] relative p-4 py-10">
-          {/* بالا: برند + لینک‌ها */}
+          {/* بالا: برند + توضیح + لینک‌ها */}
           <div className="flex flex-col mb-10 sm:mb-14 w-full relative z-10">
             <div className="w-full flex flex-col items-center gap-3">
               <div className="flex items-center gap-2">
@@ -36,6 +33,7 @@ export function ModemAnimatedFooter({
                   {brandName}
                 </span>
               </div>
+
               <div className="text-primary-500 dark:text-white/60 font-medium text-center w-full max-w-xl text-sm sm:text-base px-4 leading-7 space-y-0.5">
                 <p className="m-0">فروشگاه اینترنتی تخصصی پیراهن مردانه</p>
                 <p className="m-0">ارسال به سراسر&nbsp;ایران</p>
@@ -47,7 +45,7 @@ export function ModemAnimatedFooter({
                     <a
                       key={index}
                       href={link.href}
-                      className="text-primary-400 dark:text-white/50 hover:opacity-100 transition-opacity"
+                      className="transition-opacity hover:opacity-100"
                       style={{ color: accent }}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -71,7 +69,7 @@ export function ModemAnimatedFooter({
                           try { window.location.assign(link.href); } catch (_) {}
                         }
                       }}
-                      className="transition-colors duration-200 whitespace-normal leading-snug"
+                      className="transition-colors duration-200 leading-snug"
                       style={{ color: accent }}
                     >
                       {link.label}
@@ -79,14 +77,14 @@ export function ModemAnimatedFooter({
                   ))}
                 </div>
               )}
-                </div>
-              )}
             </div>
           </div>
 
           {/* کپی‌رایت */}
           <div className="mt-16 md:mt-20 flex flex-col gap-2 items-center justify-center relative z-10 px-4">
-            <p className="text-sm text-primary-400 dark:text-white/50 text-center">تمامی حقوق پیراهن مردانه محفوظ است.</p>
+            <p className="text-sm text-primary-400 dark:text-white/50 text-center">
+              تمامی حقوق پیراهن مردانه محفوظ است.
+            </p>
           </div>
         </div>
 
@@ -107,7 +105,7 @@ export function ModemAnimatedFooter({
           PIRAHANMARDANE
         </div>
 
-        {/* لوگو پایین — همان تصاویر هدر */}
+        {/* لوگو پایین */}
         <div
           className="absolute bottom-20 md:bottom-16 left-1/2 -translate-x-1/2 z-10 rounded-3xl border-2 bg-white/70 dark:bg-primary-900/70 backdrop-blur-sm flex items-center justify-center p-3 drop-shadow-lg"
           style={{ borderColor: dark ? 'rgba(19,171,196,0.45)' : 'rgba(255,0,0,0.35)' }}
