@@ -236,7 +236,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       { title: "ضمانت بازگشت", desc: "۷ روز ضمانت بازگشت کالا", icon: "refresh" },
       { title: "اصالت کالا", desc: "تأمین از فروشندگان معتبر", icon: "badge" },
       { title: "خرید مطمئن", desc: "پیگیری سفارش در پنل", icon: "shield" },
-      { title: "پشتیبانی سریع", desc: "پاسخگویی در کوتاه‌ترین زمان", icon: "headphones" },
+      { title: "پشتیبانی سریع", desc: "پاسخگویی سریع", icon: "headphones" },
     ];
 
     const topSellersSeed = [];
