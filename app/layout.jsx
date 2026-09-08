@@ -30,6 +30,9 @@ export const metadata = {
     images: ['/og-twitter-card.jpg'],
   },
 
+    ],
+  },
+
   title: {
     default: `${SITE_NAME} | PIRAHANMARDANE.IR`,
     template: `%s | ${SITE_NAME}`,
