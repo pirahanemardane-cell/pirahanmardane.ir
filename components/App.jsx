@@ -5244,32 +5244,9 @@ const generateProductCode = (sellerKey, productId, shopName) => {
               return;
             }
 
-            // دسته تک‌مسیره قبل از محصول / ۴۰۴
-            if (parsed.type === 'category_or_product') {
-              const rawSlug = parsed.catSlug || parsed.maybeCatSlug || parsed.productSlug || '';
-              let catLabel = '';
-              try { catLabel = decodeURIComponent(String(rawSlug)).replace(/_/g, ' ').trim(); } catch (_) {
-                catLabel = String(rawSlug || '').replace(/_/g, ' ').trim();
-              }
-              if (catLabel) {
-                openPLP({ cat: catLabel, silent: true });
-                try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
-                return;
-              }
-            }
 
-                        if (parsed.type === 'category_or_product') {
-              const rawSlug = parsed.catSlug || parsed.maybeCatSlug || parsed.productSlug || '';
-              let catLabel = '';
-              try { catLabel = decodeURIComponent(String(rawSlug)).replace(/_/g, ' ').trim(); } catch (_) {
-                catLabel = String(rawSlug || '').replace(/_/g, ' ').trim();
-              }
-              if (catLabel) {
-                openPLP({ cat: catLabel, silent: true });
-                try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
-                return;
-              }
-            }
+                        
+
 
                         let found = null;
             if (parsed.type === 'product_code') {
@@ -17025,3 +17002,5 @@ export default App;
 
 
 /* nav-standard-history-api-v1 */
+
+/* nav-root-fix-product-before-plp-v2 */
