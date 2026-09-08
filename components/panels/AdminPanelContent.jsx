@@ -2053,7 +2053,7 @@ export default function AdminPanelContent() {
                <label className="flex items-center gap-1.5 text-[11px] text-primary-700 dark:text-white cursor-pointer select-none px-2 py-1 rounded-full border border-primary-200 dark:border-white/20">
                 <input
                  type="checkbox"
-                 checked={!!(b.show_on_home ?? b.showOnHome)}
+                 checked={!!(b.show_on_home ?? b.showOnHome)} title="نمایش در برندهای منتخب صفحه اصلی"
                  onChange={() => saveAdminCatalogBrands((adminCatalogBrands || []).map(x => x.id === b.id ? { ...x, show_on_home: !(x.show_on_home ?? x.showOnHome) } : x))}
                 />
                 صفحه اصلی

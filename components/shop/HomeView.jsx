@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAppApi } from '../AppApiContext';
 import Hero from '../Hero';
 import Avatar from '../ui/Avatar';
@@ -51,6 +51,7 @@ export default function HomeView() {
     activeSellerId,
     features,
     brands,
+    adminCatalogBrands,
     topSellers,
     blogs,
     reviews,
@@ -142,6 +143,68 @@ export default function HomeView() {
   const displayReviews = (liveReviews.length ? liveReviews : (reviews || []))
     .filter((r) => String(r?.text || '').trim().length > 0);
 
+  const featuredHomeBrands = useMemo(() => {
+    const catalog = Array.isArray(adminCatalogBrands) && adminCatalogBrands.length
+      ? adminCatalogBrands
+      : (Array.isArray(homeBrands) ? homeBrands : []);
+    const productPool = [
+      ...(Array.isArray(catalogProducts) ? catalogProducts : []),
+      ...(Array.isArray(products) ? products : []),
+    ];
+    // شمارش فروش/محصول به‌ازای برند
+    const salesMap = new Map(); // key -> { id, name, logo, score }
+    const bump = (key, name, logo, weight) => {
+      if (!key && !name) return;
+      const k = String(key || name).trim().toLowerCase();
+      if (!k) return;
+      const prev = salesMap.get(k) || { id: key || k, name: name || key, logo_url: logo || '', score: 0 };
+      prev.score += weight;
+      if (!prev.logo_url && logo) prev.logo_url = logo;
+      if (name) prev.name = name;
+      salesMap.set(k, prev);
+    };
+    for (const p of productPool) {
+      if (!p) continue;
+      const bid = p.brand_id || p.brandId || '';
+      const bname = p.brand_name || p.brandName || p.brand || (p.seller && (p.seller.brand || p.seller.name)) || '';
+      const logo = p.brand_logo || p.brandLogo || '';
+      // sold/orders if present, else 1 per product listing
+      const sold = Number(p.sold_count ?? p.soldCount ?? p.sales ?? p.order_count ?? p.ordersCount ?? 0);
+      const weight = sold > 0 ? sold : 1;
+      bump(bid || bname, bname || String(bid), logo, weight);
+    }
+    const autoSorted = [...salesMap.values()]
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 12);
+
+    // دستی از API: show_on_home
+    const manual = (Array.isArray(homeBrands) ? homeBrands : [])
+      .filter((b) => b && b.active !== false)
+      .map((b) => ({
+        id: b.id || b.slug || b.name,
+        name: b.name || 'برند',
+        logo_url: b.logo_url || b.logoUrl || b.image || '',
+        manual: true,
+        score: 1e9, // دستی بالاتر از خودکار
+      }));
+
+    const seen = new Set();
+    const out = [];
+    for (const b of [...manual, ...autoSorted]) {
+      const k = String(b.id || b.name).trim().toLowerCase();
+      if (!k || seen.has(k)) continue;
+      seen.add(k);
+      out.push(b);
+      if (out.length >= 16) break;
+    }
+    // اگر هنوز خالی و brands از context چیزی داشت
+    if (!out.length && Array.isArray(brands) && brands.length) {
+      return brands.slice(0, 16).map((b) => (typeof b === 'string' ? { name: b } : b));
+    }
+    return out;
+  }, [homeBrands, catalogProducts, products, adminCatalogBrands, brands]);
+
+
   return (
     <>
           {!awaitingDeepProduct && !activeSellerId && !showSellersList && !showPLP && !showTaxonomyHub && !pdpProduct && !showCartPage && !showCheckout && !showWishlistPage && !showRecentPage && !showComparePage && !showProfilePage && !showSellerPanel && !showAdminPanel && !staticPage && (
@@ -188,6 +251,7 @@ export default function HomeView() {
             </section>
 
             {/* Featured brands */}
+            {featuredHomeBrands.length > 0 && (
             <section className="py-8 sm:py-10 bg-white dark:bg-primary-900 border-y border-primary-200 dark:border-white/30 transition-colors">
               <div className="max-w-7xl mx-auto px-3 sm:px-4">
                 <div className="flex items-center justify-between mb-5 sm:mb-6 gap-3">
@@ -204,7 +268,7 @@ export default function HomeView() {
                 <div className="relative">
                   <CarouselArrows trackRef={brandsTrackRef} />
                   <div ref={brandsTrackRef} className="carousel-track flex gap-3 overflow-x-auto no-scrollbar pb-1 px-0 sm:px-10" style={{ WebkitOverflowScrolling: 'touch' }}>
-                    {brands.map((b) => (
+                    {featuredHomeBrands.map((b) => (
                       <div
                         key={b.name}
                         role="button"
@@ -219,6 +283,7 @@ export default function HomeView() {
                 </div>
               </div>
             </section>
+            )}
 
             {/* Top sellers — horizontal carousel, photo + text, palette only */}
             <section className="py-8 sm:py-10 bg-primary-50 dark:bg-primary-950 transition-colors">
