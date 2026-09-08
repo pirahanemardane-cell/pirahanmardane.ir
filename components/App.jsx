@@ -2474,6 +2474,10 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             show_on_home: b.show_on_home != null || b.showOnHome != null
               ? !!(b.show_on_home ?? b.showOnHome)
               : true,
+            // اگر ادمین تیک را برداشت، دیگر auto برنگرداند
+            home_opt_out: (b.show_on_home === false || b.showOnHome === false)
+              ? true
+              : !!(b.home_opt_out ?? b.homeOptOut),
           }));
           const res = await fetch("/api/catalog/brands", {
             method: "PUT",

@@ -173,15 +173,10 @@ export default function HomeView() {
     }
     const all = [...byKey.values()];
 
-    // دستی: تیک «صفحه اصلی» در پنل ادمین
+    // فقط برندهایی که تیک صفحه اصلی دارند (دستی ادمین یا auto پرفروش)
     let manual = all
       .filter((b) => b.show_on_home)
       .sort((a, b) => a.sort_order - b.sort_order);
-
-    // اگر هیچ تیکی نبود → همه برندهای فعال کاتالوگ (تا سکشن خالی نماند)
-    if (!manual.length) {
-      manual = all.sort((a, b) => a.sort_order - b.sort_order).slice(0, 16);
-    }
 
     // خودکار: پرفروش بر اساس brand روی محصول (نه seller)
     const productPool = [

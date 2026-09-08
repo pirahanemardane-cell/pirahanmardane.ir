@@ -2403,7 +2403,11 @@ export default function AdminPanelContent() {
                 <input
                  type="checkbox"
                  checked={!!(b.show_on_home ?? b.showOnHome)} title="نمایش در برندهای منتخب صفحه اصلی"
-                 onChange={() => saveAdminCatalogBrands((adminCatalogBrands || []).map(x => x.id === b.id ? { ...x, show_on_home: !(x.show_on_home ?? x.showOnHome) } : x))}
+                 onChange={() => saveAdminCatalogBrands((adminCatalogBrands || []).map(x => {
+                  if (x.id !== b.id) return x;
+                  const next = !(x.show_on_home ?? x.showOnHome);
+                  return { ...x, show_on_home: next, home_opt_out: !next };
+                }))}
                 />
                 صفحه اصلی
                </label>

@@ -4,6 +4,59 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 export const revalidate = 120;
 
+/** پرفروش‌ترین برندهای کاتالوگ را روی صفحه اصلی می‌آورد؛ برندهایی که ادمین opt-out کرده دست نمی‌خورند */
+async function promoteTopBrands(sb) {
+  try {
+    const { data: brands } = await sb
+      .from('catalog_brands')
+      .select('id,name,active,show_on_home,home_opt_out')
+      .eq('active', true);
+    if (!brands || !brands.length) return;
+
+    const { data: products } = await sb
+      .from('products')
+      .select('brand_id,brand_name,brand,sold_count,status')
+      .eq('status', 'active')
+      .limit(500);
+    if (!products || !products.length) return;
+
+    const byId = new Map();
+    const byName = new Map();
+    for (const b of brands) {
+      byId.set(String(b.id).toLowerCase(), b);
+      byName.set(String(b.name || '').trim().toLowerCase(), b);
+    }
+
+    const scores = new Map();
+    for (const p of products) {
+      const bid = String(p.brand_id || '').trim();
+      const bname = String(p.brand_name || p.brand || '').trim();
+      if (!bid && !bname) continue;
+      const hit = (bid && byId.get(bid.toLowerCase())) || (bname && byName.get(bname.toLowerCase()));
+      if (!hit) continue;
+      if (hit.home_opt_out === true) continue; // ادمین عمداً برداشته
+      const k = String(hit.id);
+      const sold = Number(p.sold_count || 0);
+      scores.set(k, (scores.get(k) || 0) + (sold > 0 ? sold : 1));
+    }
+
+    const topIds = [...scores.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([id]) => id);
+
+    for (const id of topIds) {
+      const b = brands.find((x) => String(x.id) === id);
+      if (!b || b.show_on_home === true || b.home_opt_out === true) continue;
+      await sb.from('catalog_brands').update({ show_on_home: true }).eq('id', id);
+    }
+  } catch (e) {
+    console.error('[brands promoteTopBrands]', e);
+  }
+}
+
+
+
 const DEFAULTS = [
   { id: "brand-generic", name: "عمومی", slug: "generic", active: true, sort_order: 1, logo_url: null },
 ];
@@ -14,9 +67,12 @@ export async function GET(req) {
   try {
     return await withCatalogCache(key, async () => {
       const sb = createAdminClient();
+      // auto-feature پرفروش‌ها (خطا نادیده)
+      try { await promoteTopBrands(sb); } catch (_) {}
+
       const { data, error } = await sb
         .from("catalog_brands")
-        .select("id,name,slug,active,sort_order,logo_url,show_on_home")
+        .select("id,name,slug,active,sort_order,logo_url,show_on_home,home_opt_out")
         .order("sort_order")
         .order("name");
       if (error) {
@@ -68,6 +124,7 @@ export async function PUT(req) {
       sort_order: Number.isFinite(Number(b.sort_order)) ? Number(b.sort_order) : i,
       logo_url: b.logo_url || b.logoUrl || b.image || null,
       show_on_home: !!(b.show_on_home ?? b.showOnHome),
+      home_opt_out: !!(b.home_opt_out ?? b.homeOptOut),
       updated_at: new Date().toISOString(),
     }));
 
