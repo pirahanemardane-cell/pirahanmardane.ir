@@ -43,7 +43,7 @@ export function ModemAnimatedFooter({
     <section className={cn('relative w-full mt-0 overflow-hidden', className)} dir="rtl">
       <footer className="border-t border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-950 mt-10 sm:mt-16 relative">
         <div className="max-w-7xl flex flex-col justify-between mx-auto min-h-[22rem] sm:min-h-[26rem] md:min-h-[30rem] relative p-4 py-10">
-          <div className="flex flex-col mb-10 sm:mb-14 w-full relative z-10">
+          <div className="flex flex-col mb-10 sm:mb-14 w-full relative z-10 pb-4 sm:pb-0">
             <div className="w-full flex flex-col items-center gap-3">
               {/* برند — بالاترین وزن */}
               <div className="flex items-center gap-2">
@@ -89,7 +89,7 @@ export function ModemAnimatedFooter({
               {Array.isArray(navLinks) && navLinks.length > 0 && (
                 <>
                   {/* موبایل: ۳ ستون × ۳ ردیف */}
-                  <div className="grid grid-cols-3 gap-x-2 gap-y-3 text-sm font-medium w-full max-w-md px-2 mt-3 text-center sm:hidden">
+                  <div className="grid grid-cols-3 gap-x-2 gap-y-3 text-sm font-medium w-full max-w-md px-2 mt-3 mb-28 text-center sm:hidden relative z-10">
                     {navLinks.map((link, index) => (
                       <button
                         key={index}
