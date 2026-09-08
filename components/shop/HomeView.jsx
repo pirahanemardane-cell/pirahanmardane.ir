@@ -154,8 +154,6 @@ export default function HomeView() {
       if (!b) continue;
       const name = String(b.name || '').trim();
       if (!name) continue;
-      const low = name.toLowerCase();
-      if (low === 'عمومی' || low === 'generic' || name === 'عمومی') continue;
       // رد کردن نام‌هایی که شبیه فروشگاه‌اند اگر فقط از seller آمده باشند — فقط از catalog
       const id = String(b.id || b.slug || name);
       const key = id.toLowerCase();
