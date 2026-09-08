@@ -144,49 +144,71 @@ export default function HomeView() {
     .filter((r) => String(r?.text || '').trim().length > 0);
 
   const featuredHomeBrands = useMemo(() => {
-    const catalog = Array.isArray(adminCatalogBrands) && adminCatalogBrands.length
-      ? adminCatalogBrands
-      : (Array.isArray(homeBrands) ? homeBrands : []);
+    // فقط برندهای کاتالوگ (نه اسم فروشگاه)
+    const catalogBrands = [
+      ...(Array.isArray(homeBrands) ? homeBrands : []),
+      ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
+    ];
+    const byId = new Map();
+    const byName = new Map();
+    for (const b of catalogBrands) {
+      if (!b || b.active === false) continue;
+      const name = String(b.name || '').trim();
+      if (!name || name === 'عمومی' || name.toLowerCase() === 'generic') continue;
+      const id = String(b.id || b.slug || name);
+      const row = {
+        id,
+        name,
+        logo_url: b.logo_url || b.logoUrl || b.image || '',
+        show_on_home: !!(b.show_on_home ?? b.showOnHome),
+        sort_order: Number(b.sort_order) || 0,
+      };
+      byId.set(String(id).toLowerCase(), row);
+      byName.set(name.toLowerCase(), row);
+    }
+
+    // ۱) دستی: تیک «نمایش در صفحه اصلی» در پنل ادمین
+    const manual = [...byId.values()]
+      .filter((b) => b.show_on_home)
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((b) => ({ ...b, manual: true, score: 1e9 }));
+
+    // ۲) خودکار: برندهایی که روی محصول واقعاً ست شده‌اند (نه seller.name)
     const productPool = [
       ...(Array.isArray(catalogProducts) ? catalogProducts : []),
       ...(Array.isArray(products) ? products : []),
     ];
-    // شمارش فروش/محصول به‌ازای برند
-    const salesMap = new Map(); // key -> { id, name, logo, score }
-    const bump = (key, name, logo, weight) => {
-      if (!key && !name) return;
-      const k = String(key || name).trim().toLowerCase();
-      if (!k) return;
-      const prev = salesMap.get(k) || { id: key || k, name: name || key, logo_url: logo || '', score: 0 };
-      prev.score += weight;
-      if (!prev.logo_url && logo) prev.logo_url = logo;
-      if (name) prev.name = name;
-      salesMap.set(k, prev);
-    };
+    const salesMap = new Map();
     for (const p of productPool) {
       if (!p) continue;
-      const bid = p.brand_id || p.brandId || '';
-      const bname = p.brand_name || p.brandName || p.brand || (p.seller && (p.seller.brand || p.seller.name)) || '';
-      const logo = p.brand_logo || p.brandLogo || '';
-      // sold/orders if present, else 1 per product listing
-      const sold = Number(p.sold_count ?? p.soldCount ?? p.sales ?? p.order_count ?? p.ordersCount ?? 0);
+      const bid = String(p.brand_id || p.brandId || '').trim();
+      let bname = String(p.brand_name || p.brandName || p.brand || '').trim();
+      // رد کردن fallback اشتباه به فروشگاه
+      if (!bname && !bid) continue;
+      if (p.seller && (bname === p.seller.name || bname === p.seller.shopName || bname === p.sellerName)) continue;
+      if (bname === 'عمومی' || bname.toLowerCase() === 'generic') continue;
+
+      const catalogHit = (bid && byId.get(bid.toLowerCase())) || (bname && byName.get(bname.toLowerCase()));
+      // فقط برندهایی که در کاتالوگ ادمین تعریف شده‌اند
+      if (!catalogHit) continue;
+
+      const key = String(catalogHit.id).toLowerCase();
+      const sold = Number(p.sold_count ?? p.soldCount ?? p.salesCount ?? p.sales_count ?? p.order_count ?? 0);
       const weight = sold > 0 ? sold : 1;
-      bump(bid || bname, bname || String(bid), logo, weight);
+      const prev = salesMap.get(key) || {
+        id: catalogHit.id,
+        name: catalogHit.name,
+        logo_url: catalogHit.logo_url || '',
+        score: 0,
+        auto: true,
+      };
+      prev.score += weight;
+      if (!prev.logo_url && catalogHit.logo_url) prev.logo_url = catalogHit.logo_url;
+      salesMap.set(key, prev);
     }
     const autoSorted = [...salesMap.values()]
       .sort((a, b) => b.score - a.score)
       .slice(0, 12);
-
-    // دستی از API: show_on_home
-    const manual = (Array.isArray(homeBrands) ? homeBrands : [])
-      .filter((b) => b && b.active !== false)
-      .map((b) => ({
-        id: b.id || b.slug || b.name,
-        name: b.name || 'برند',
-        logo_url: b.logo_url || b.logoUrl || b.image || '',
-        manual: true,
-        score: 1e9, // دستی بالاتر از خودکار
-      }));
 
     const seen = new Set();
     const out = [];
@@ -197,12 +219,8 @@ export default function HomeView() {
       out.push(b);
       if (out.length >= 16) break;
     }
-    // اگر هنوز خالی و brands از context چیزی داشت
-    if (!out.length && Array.isArray(brands) && brands.length) {
-      return brands.slice(0, 16).map((b) => (typeof b === 'string' ? { name: b } : b));
-    }
     return out;
-  }, [homeBrands, catalogProducts, products, adminCatalogBrands, brands]);
+  }, [homeBrands, catalogProducts, products, adminCatalogBrands]);
 
 
   return (
@@ -270,13 +288,14 @@ export default function HomeView() {
                   <div ref={brandsTrackRef} className="carousel-track flex gap-3 overflow-x-auto no-scrollbar pb-1 px-0 sm:px-10" style={{ WebkitOverflowScrolling: 'touch' }}>
                     {featuredHomeBrands.map((b) => (
                       <div
-                        key={b.name}
+                        key={b.id || b.name}
                         role="button"
                         tabIndex={0}
+                        onClick={() => { try { openPLP({ brand: b.name }); } catch (_) { openPLP(); } }}
+                        onKeyDown={(e) => { if (e.key === 'Enter') { try { openPLP({ brand: b.name }); } catch (_) { openPLP(); } } }}
                         className="flex-shrink-0 w-[104px] h-[88px] rounded-xl border border-primary-200 dark:border-white/25 bg-primary-50 dark:bg-primary-800 flex flex-col items-center justify-center text-center p-2 cursor-pointer transition hover:bg-primary-800 hover:border-primary-800 dark:hover:bg-primary-700 dark:hover:border-white/40 group/brand shadow-sm"
                       >
                         <span className="font-bold text-xs leading-tight text-primary-900 dark:text-white group-hover/brand:text-white dark:group-hover/brand:text-[#FF0000] dark:text-[#13ABC4] line-clamp-2">{b.name}</span>
-                        <span className="text-xs mt-1 text-primary-400 dark:text-white group-hover/brand:text-white/80 dark:group-hover/brand:text-[#FF0000] dark:text-[#13ABC4] line-clamp-1">{b.sub}</span>
                       </div>
                     ))}
                   </div>
