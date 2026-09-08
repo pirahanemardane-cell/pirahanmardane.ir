@@ -5839,20 +5839,6 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           try { window.location.assign(path || '/'); } catch (__) {}
         }
       };
-
- = {}) => {
-        try {
-          const target = path || '/';
-          pushFaUrl(target, state);
-          // حتی اگر URL یکی بود، applyPath را اجباری اجرا کن
-          try { applyPathRef.current(); } catch (_) {}
-          try { scrollPageToTop(); } catch (_) {}
-        } catch (_) {
-          try { window.location.assign(path || '/'); } catch (__) {}
-        }
-      };
-
-      
       const goHome = () => {
         try { setMobileMenuOpen(false); } catch (_) {}
         try { setMegaOpen(null); } catch (_) {}
@@ -5867,9 +5853,9 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         navigateTo(FA_PATHS.shop || '/فروشگاه', { plp: true, reset: true });
       };
 
-      const openAdminPanelPage = () => { try { navigateTo('/amirshn'); } catch (_) { try { openAdminPanelPage(); } catch (__) {} } };
-      const openSellerPanelPage = () => { try { navigateTo(FA_PATHS['seller-panel'] || '/پنل-فروشنده'); } catch (_) { try { openSellerPanelPage(); } catch (__) {} } };
-      const openProfilePageNav = () => { try { navigateTo(FA_PATHS.profile || '/حساب-من'); } catch (_) { try { openProfilePageNav(); } catch (__) {} } };
+      const openAdminPanelPage = () => { try { navigateTo('/amirshn'); } catch (_) { try { setShowAdminPanel(true); } catch (__) {} } };
+      const openSellerPanelPage = () => { try { navigateTo(FA_PATHS['seller-panel'] || '/پنل-فروشنده'); } catch (_) { try { setShowSellerPanel(true); } catch (__) {} } };
+      const openProfilePageNav = () => { try { navigateTo(FA_PATHS.profile || '/حساب-من'); } catch (_) { try { setShowProfilePage(true); } catch (__) {} } };
       try {
         if (typeof window !== 'undefined') {
           window.__nav = {
@@ -17045,3 +17031,5 @@ export default App;
 /* universal-nav-standard-v4 */
 
 /* fix-syntax-navigateTo-v5 */
+
+/* fix-orphan-navigateTo-v6 */
