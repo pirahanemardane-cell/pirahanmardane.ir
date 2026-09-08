@@ -1398,7 +1398,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             const ph = String(saved?.phone || "").replace(/\D/g, "");
             if (ph.length >= 10) {
               setAdminUser({ name: saved.name || "سوپر ادمین", role: saved.role || "Super Admin", phone: ph, loggedAt: saved.loggedAt || Date.now() });
-              setShowAdminPanel(true);
+              openAdminPanelPage();
               setAdminAuthOpen(false);
               setShowSellerPanel(false);
               setShowProfilePage(false);
@@ -1427,7 +1427,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }
 
       if (isSeller) {
-        setShowSellerPanel(true);
+        openSellerPanelPage();
         setShowProfilePage(false);
         try { setAuthOpen(false); } catch (_) {}
         try { sessionStorage.setItem("pm_panel", "seller"); } catch (_) {}
@@ -1446,7 +1446,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           })
           .catch(() => {});
       } else if (isProfile) {
-        setShowProfilePage(true);
+        openProfilePageNav();
         setShowSellerPanel(false);
         const tab = url.searchParams.get("tab");
         try { setProfileTab(tab || "dashboard"); } catch (_) {}
@@ -1496,7 +1496,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           }
         }
       } catch (_) {}
-      setShowSellerPanel(true);
+      openSellerPanelPage();
       setShowProfilePage(false);
       try { setAuthOpen(false); } catch (_) {}
     } else if (panel === "account") {
@@ -1509,7 +1509,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           }
         }
       } catch (_) {}
-      setShowProfilePage(true);
+      openProfilePageNav();
       setShowSellerPanel(false);
       try {
         fetch("/api/auth/me", { credentials: "include", cache: "no-store" })
@@ -1560,12 +1560,12 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           panelUrlBootRef.current = false;
           // اگر URL هنوز پنل است، state را از URL برگردان (جلوگیری از پرت شدن)
           if (onSellerPath) {
-            setShowSellerPanel(true);
+            openSellerPanelPage();
             sessionStorage.setItem("pm_panel", "seller");
             return;
           }
           if (onAccountPath) {
-            setShowProfilePage(true);
+            openProfilePageNav();
             sessionStorage.setItem("pm_panel", "account");
             return;
           }
@@ -1594,10 +1594,10 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const isAdminPanel =
         path === "/amirshn" || path.endsWith("/amirshn");
       if (isSellerPanel) {
-        setShowSellerPanel(true);
+        openSellerPanelPage();
         setShowProfilePage(false);
       } else if (isProfile) {
-        setShowProfilePage(true);
+        openProfilePageNav();
         setShowSellerPanel(false);
       } else if (isAdminPanel) {
         // applyPathRef پنل ادمین را باز می‌کند — اینجا نبند
@@ -5004,9 +5004,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       const closePDP = (opts = {}) => {
         setPdpProduct(null);
         setPdpZoom(false);
-        // silent: فقط بستن state — URL را caller (breadcrumb) عوض می‌کند
         if (opts && opts.silent) return;
-        // استاندارد Back: یک قدم در پشته تاریخچه
         try {
           if (typeof window !== 'undefined' && window.history.length > 1) {
             window.history.back();
@@ -5821,7 +5819,17 @@ const generateProductCode = (sellerKey, productId, shopName) => {
        * 2) applyPath را اجرا کن تا state با URL یکی شود
        * هرگز برای breadcrumb از history.back استفاده نکن.
        */
-      const navigateTo = (path, state = {}) => {
+      const navigateTo = (path, state
+      const leaveCurrentPage = () => {
+        try {
+          if (typeof window !== 'undefined' && window.history.length > 1) {
+            window.history.back();
+            return;
+          }
+        } catch (_) {}
+        try { navigateTo(FA_PATHS.home || '/'); } catch (__) {}
+      };
+ = {}) => {
         try {
           const target = path || '/';
           pushFaUrl(target, state);
@@ -5847,6 +5855,24 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         try { setMobileMenuOpen(false); } catch (_) {}
         navigateTo(FA_PATHS.shop || '/فروشگاه', { plp: true, reset: true });
       };
+
+      const openAdminPanelPage = () => { try { navigateTo('/amirshn'); } catch (_) { try { openAdminPanelPage(); } catch (__) {} } };
+      const openSellerPanelPage = () => { try { navigateTo(FA_PATHS['seller-panel'] || '/پنل-فروشنده'); } catch (_) { try { openSellerPanelPage(); } catch (__) {} } };
+      const openProfilePageNav = () => { try { navigateTo(FA_PATHS.profile || '/حساب-من'); } catch (_) { try { openProfilePageNav(); } catch (__) {} } };
+      try {
+        if (typeof window !== 'undefined') {
+          window.__nav = {
+            to: (p, s) => navigateTo(p, s || {}),
+            admin: openAdminPanelPage,
+            seller: openSellerPanelPage,
+            profile: openProfilePageNav,
+            home: () => navigateTo(FA_PATHS.home || '/'),
+            shop: () => navigateTo(FA_PATHS.shop || '/فروشگاه', { plp: true, reset: true }),
+            back: () => { try { window.history.back(); } catch (_) {} },
+          };
+        }
+      } catch (_) {}
+
 
 
       // endPageLoad on view settle — پاک کردن لودینگ بعد از نشستن ویو
@@ -6912,7 +6938,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             if (p) { openPDP(p); return; }
           }
           if (!returnTo) {
-            setShowProfilePage(true);
+            openProfilePageNav();
             setProfileTab('dashboard');
             setAuthOpen(false);
             return;
@@ -7344,7 +7370,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           setShowSellersList(false);
           setPdpProduct(null);
           setActiveSellerId(null);
-          setShowSellerPanel(true);
+          openSellerPanelPage();
           setSellerTab('dashboard');
           setSellerOrderDetailId(null);
           setSellerTicketDetailId(null);
@@ -7354,7 +7380,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           // یک فریم بعد دوباره پنل را باز کن تا اگر state قبلی مانع شده بود، قطعی باز شود
           try {
             requestAnimationFrame(() => {
-              try { setShowSellerPanel(true); setAuthOpen(false); } catch (_) {}
+              try { openSellerPanelPage(); setAuthOpen(false); } catch (_) {}
             });
           } catch (_) {}
           return;
@@ -7378,7 +7404,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           setShowPLP(false);
           setShowSellersList(false);
           setPdpProduct(null);
-          setShowAdminPanel(true);
+          openAdminPanelPage();
           setAdminTab('dashboard');
           pushFaUrl('/amirshn', { adminPanel: true });
           pushLiveToast('ورود ادمین موفق', { type: 'success', duration: 2000 });
@@ -7419,7 +7445,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         setShowPLP(false);
         setShowSellersList(false);
         setPdpProduct(null);
-        setShowProfilePage(true);
+        openProfilePageNav();
         setProfileTab('dashboard');
         setOrderDetailId(null);
         // B1–B4: هیدراته سرور بلافاصله بعد از ورود
@@ -7594,7 +7620,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
                   mapProfileToSeller(data.user, { ...(data.profile || {}), ...j.seller }, j.seller),
                 );
                 setSellerUser(u);
-                setShowSellerPanel(true);
+                openSellerPanelPage();
                 setShowAdminPanel(false);
                 setShowProfilePage(false);
                 setAuthOpen(false);
@@ -7916,7 +7942,7 @@ const verifyOtp = async () => {
             return;
           }
         }
-        setShowProfilePage(true);
+        openProfilePageNav();
         setProfileTab(tab);
         setOrderDetailId(null);
         setShowTracking(false);
@@ -8745,7 +8771,7 @@ const verifyOtp = async () => {
         // آرشیو/تعلیق: پنل باز شود ولی فروش قفل — پیام جدا در داشبورد
         if (['archived', 'suspended', 'blocked'].includes(st) && !opts.allowPendingView) {
           setSellerTab(typeof tab === 'string' && tab ? tab : 'dashboard');
-          setShowSellerPanel(true);
+          openSellerPanelPage();
           setShowAdminPanel(false);
           setShowProfilePage(false);
           setMobileMenuOpen(false);
@@ -8766,7 +8792,7 @@ const verifyOtp = async () => {
             });
           } catch (_) {}
           setSellerTab('pending-approval');
-          setShowSellerPanel(true);
+          openSellerPanelPage();
           setShowAdminPanel(false);
           setShowProfilePage(false);
           setMobileMenuOpen(false);
@@ -8774,7 +8800,7 @@ const verifyOtp = async () => {
           try { pushFaUrl(FA_PATHS['seller-panel'], { sellerPanel: true, pending: true }); } catch (_) {}
           return;
         }
-        setShowSellerPanel(true);
+        openSellerPanelPage();
         setShowAdminPanel(false);
         setSellerTab(tab === 'pending-approval' ? 'dashboard' : tab);
         setSellerOrderDetailId(null);
@@ -11651,7 +11677,7 @@ const downloadSeoFile = (filename, content, mime) => {
             let u = null;
             try { u = adminUiStore.getState()?.adminUser; } catch (_) { u = adminUser; }
             if (u && typeof isAdminPhone === 'function' && isAdminPhone(u.phone)) {
-              setShowAdminPanel(true);
+              openAdminPanelPage();
               setAdminAuthOpen(false);
             } else {
               setAdminAuthOpen(true);
@@ -11675,7 +11701,7 @@ const downloadSeoFile = (filename, content, mime) => {
             let u = null;
             try { u = adminUiStore.getState()?.adminUser; } catch (_) { u = adminUser; }
             if (u && typeof isAdminPhone === 'function' && isAdminPhone(u.phone)) {
-              setShowAdminPanel(true);
+              openAdminPanelPage();
               setAdminAuthOpen(false);
             } else {
               setAdminAuthOpen(true);
@@ -11705,7 +11731,7 @@ const downloadSeoFile = (filename, content, mime) => {
             let u = null;
             try { u = adminUiStore.getState()?.adminUser; } catch (_) { u = adminUser; }
             if (u && isAdminPhone(u.phone)) {
-              setShowAdminPanel(true);
+              openAdminPanelPage();
               setAdminAuthOpen(false);
               try {
                 const saved = sessionStorage.getItem('adminTab');
@@ -11861,7 +11887,7 @@ const downloadSeoFile = (filename, content, mime) => {
         setPdpProduct(null);
         setActiveSellerId(null);
         setMobileMenuOpen(false);
-        setShowAdminPanel(true);
+        openAdminPanelPage();
         setAdminTab('dashboard');
         try { pushFaUrl('/amirshn', { adminPanel: true }); } catch (_) {}
         pushLiveToast('ورود ادمین موفق', { type: 'success', duration: 2000 });
@@ -12049,7 +12075,7 @@ const downloadSeoFile = (filename, content, mime) => {
                   mapProfileToSeller(data.user, { ...(data.profile || {}), ...j.seller }, j.seller),
                 );
                 setSellerUser(u);
-                setShowSellerPanel(true);
+                openSellerPanelPage();
                 setShowAdminPanel(false);
                 setShowProfilePage(false);
                 setAuthOpen(false);
@@ -12169,7 +12195,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
           return;
         }
         ensureAdminSeed();
-        setShowAdminPanel(true);
+        openAdminPanelPage();
         setAdminTab(tab);
         setAdminSellerDetailId(null);
         setAdminProductDetailId(null);
@@ -12261,7 +12287,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
               } catch (_) {
                 try { setSellerUser(saved); } catch (_) {}
               }
-              setShowSellerPanel(true);
+              openSellerPanelPage();
               setAuthOpen(false);
             }
           }
@@ -12300,7 +12326,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 }
               } catch (_) {}
               if (cancelled) return;
-              setShowSellerPanel(true);
+              openSellerPanelPage();
               setAuthOpen(false);
               return;
             }
@@ -12314,7 +12340,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
               }
             } catch (_) {}
             if (hasLocal) {
-              setShowSellerPanel(true);
+              openSellerPanelPage();
               setAuthOpen(false);
               return;
             }
@@ -12324,7 +12350,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 let cur = null;
                 try { cur = sellerUiStore.getState()?.sellerUser; } catch (_) {}
                 if (cur && (cur.id || cur.phone)) {
-                  setShowSellerPanel(true);
+                  openSellerPanelPage();
                   setAuthOpen(false);
                   return;
                 }
@@ -12355,7 +12381,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 if (!adminUser || onlyDigits(adminUser.phone) !== ph) {
                   setAdminUser({ name: saved.name || 'سوپر ادمین', role: saved.role || 'Super Admin', phone: ph, loggedAt: saved.loggedAt || Date.now() });
                 }
-                setShowAdminPanel(true);
+                openAdminPanelPage();
                 setAdminAuthOpen(false);
                 return; // لاگین معتبر — بیرون نینداز
               }
@@ -12368,7 +12394,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
               let u = adminUser;
               try { u = adminUiStore.getState()?.adminUser || u; } catch (_) {}
               if (u && isAdminPhone(u.phone)) {
-                setShowAdminPanel(true);
+                openAdminPanelPage();
                 setAdminAuthOpen(false);
                 try {
                   if (typeof hydrateAdminProducts === 'function') hydrateAdminProducts();
@@ -13825,7 +13851,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 pnorm === "/seller" ||
                 pnorm === "/seller-panel"
               ) {
-                setShowSellerPanel(true);
+                openSellerPanelPage();
                 try { setShowProfilePage(false); } catch (_) {}
                 try { setShowPLP(false); } catch (_) {}
                 try { setActiveSellerId(null); } catch (_) {}
@@ -13837,7 +13863,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 pnorm === "/account" ||
                 pnorm === "/profile"
               ) {
-                setShowProfilePage(true);
+                openProfilePageNav();
                 try { setShowSellerPanel(false); } catch (_) {}
                 return;
               }
@@ -17004,3 +17030,5 @@ export default App;
 /* nav-standard-history-api-v1 */
 
 /* nav-root-fix-product-before-plp-v2 */
+
+/* universal-nav-standard-v4 */
