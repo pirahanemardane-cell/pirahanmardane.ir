@@ -1076,8 +1076,6 @@ export default function StaticPagesView() {
                 }
               } catch (_) {}
             }}
-              } catch (_) {}
-            }}
           />
           {/* نگه داشتن نماد اعتماد زیر فوتر جدید */}
           <div className="bg-primary-50 dark:bg-primary-950 pb-6 flex justify-center">
