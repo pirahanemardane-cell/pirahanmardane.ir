@@ -4877,3 +4877,25 @@ html, body {
     max-width: 100% !important;
   }
 }
+
+
+/* hero-click-only-shop-btn */
+/* کل هیرو غیرقابل کلیک؛ فقط دکمه فروشگاه */
+.hero-video-section,
+.hero-video-section .hero-video,
+.hero-video-section .hero-frame-img,
+.hero-video-section .video-overlay,
+.hero-title-overlay,
+.hero-body-overlay,
+.hero-body1,
+.hero-body2,
+.hero-scroll-cue {
+  pointer-events: none !important;
+}
+.hero-title-overlay .hero-shop-btn,
+.hero-title-overlay button.hero-shop-btn {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  position: relative;
+  z-index: 20;
+}
