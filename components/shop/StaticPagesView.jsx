@@ -1049,31 +1049,33 @@ export default function StaticPagesView() {
             brandDescription={"فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر\u00A0ایران"}
             yearText="۱۴۰۵"
             navLinks={[
-              { label: 'خانه', href: '/', action: 'home' },
-              { label: 'فروشگاه', href: '/فروشگاه', action: 'shop' },
-              { label: 'فروشندگان', href: '/فروشندگان', action: 'sellers' },
-              { label: 'برندها', href: '/برندها', action: 'brands' },
-              { label: 'شگفت‌انگیز', href: '/شگفت‌انگیز', action: 'deals' },
-              { label: 'درباره ما', href: '/درباره-ما', action: 'about' },
-              { label: 'تماس با ما', href: '/تماس-با-ما', action: 'contact' },
-              { label: 'سوالات متداول', href: '/سوالات-متداول', action: 'faq' },
-              { label: 'پیگیری سفارش', href: '#', action: 'track' },
+              { label: 'پیگیری سفارش', action: 'track' },
+              { label: 'سوالات متداول', action: 'faq' },
+              { label: 'راهنمای سایز', action: 'size-guide' },
+              { label: 'شرایط بازگشت کالا', action: 'returns' },
+              { label: 'حریم خصوصی', action: 'privacy' },
+              { label: 'قوانین و شرایط', action: 'terms' },
+              { label: 'بلاگ', action: 'blog' },
+              { label: 'نقشه سایت', action: 'sitemap' },
+              { label: 'فروشنده شوید', action: 'become-seller' },
             ]}
             onNavClick={(link) => {
               try {
                 const a = link && link.action;
-                if (a === 'home') { try { closeStaticPage(); } catch (_) {} try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {} return; }
-                if (a === 'shop') { try { closeStaticPage(); openPLP?.(); } catch (_) {} return; }
-                if (a === 'sellers') { try { closeStaticPage(); openSellersList?.(); } catch (_) {} return; }
-                if (a === 'brands') { try { openStaticPage('brands'); } catch (_) {} return; }
-                if (a === 'deals') { try { openStaticPage('deals'); } catch (_) {} return; }
-                if (a === 'about') { try { openStaticPage('about'); } catch (_) {} return; }
-                if (a === 'contact') { try { openStaticPage('contact'); } catch (_) {} return; }
-                if (a === 'faq') { try { openStaticPage('faq'); } catch (_) {} return; }
                 if (a === 'track') { try { setPublicTrackOpen?.(true); } catch (_) {} return; }
+                if (a === 'faq') { try { openStaticPage('faq'); } catch (_) {} return; }
+                if (a === 'size-guide') { try { openStaticPage('size-guide'); } catch (_) {} return; }
+                if (a === 'returns') { try { openStaticPage('returns'); } catch (_) {} return; }
+                if (a === 'privacy') { try { openStaticPage('privacy'); } catch (_) {} return; }
+                if (a === 'terms') { try { openStaticPage('terms'); } catch (_) {} return; }
+                if (a === 'blog') { try { openStaticPage('blog'); } catch (_) {} return; }
+                if (a === 'sitemap') { try { openStaticPage('sitemap'); } catch (_) {} return; }
+                if (a === 'become-seller') { try { openStaticPage('become-seller'); } catch (_) {} return; }
                 if (link && link.href && link.href !== '#') {
                   try { window.location.assign(link.href); } catch (_) {}
                 }
+              } catch (_) {}
+            }}
               } catch (_) {}
             }}
           />

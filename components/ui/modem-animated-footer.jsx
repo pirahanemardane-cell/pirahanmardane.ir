@@ -36,7 +36,7 @@ export function ModemAnimatedFooter({
                   {brandName}
                 </span>
               </div>
-              <p className="text-primary-500 dark:text-white/60 font-medium text-center w-full max-w-md text-sm sm:text-base px-4 leading-7">
+              <p className="text-primary-500 dark:text-white/60 font-medium text-center w-full max-w-3xl text-sm sm:text-base px-4 leading-7 whitespace-normal sm:whitespace-nowrap">
                 {brandDescription}
               </p>
 
