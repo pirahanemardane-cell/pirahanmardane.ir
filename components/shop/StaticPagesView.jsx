@@ -1044,7 +1044,7 @@ export default function StaticPagesView() {
 
           <footer className="bg-primary-50 dark:bg-primary-950 text-primary-800 dark:text-white pt-10 sm:pt-14 pb-6 sm:pb-8 border-t border-primary-200 dark:border-white/30 transition-colors">
             <div className="max-w-7xl mx-auto px-3 sm:px-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 mb-8 sm:mb-12 items-start">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10 items-start">
                 {/* ستون ۱ — فقط دسکتاپ (موبایل حذف) */}
                 <div className="min-w-0 hidden md:block">
                   <h3 className="font-bold text-base sm:text-lg text-primary-900 dark:text-white mb-3">دسترسی سریع</h3>
@@ -1088,15 +1088,17 @@ export default function StaticPagesView() {
                 </div>
               </div>
 
-          {/* ستون لوگو — دسکتاپ ستون آخر */}
-          <div className="footer-logo-col flex flex-col items-center md:items-start justify-start">
+          <div className="footer-logo-col flex items-start justify-start md:justify-start pt-1">
             <img
               src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"}
               alt="پیراهن مردانه"
-              className="site-logo-img footer-site-logo h-10 sm:h-12 md:h-14 w-auto max-w-[160px] sm:max-w-[180px] object-contain bg-transparent"
+              className="site-logo-img footer-site-logo h-10 sm:h-12 md:h-14 w-auto max-w-[160px] object-contain bg-transparent"
               onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = dark ? '/blue_t_bg.webp' : '/red_t_bg.webp'; } catch (_) {} }}
             />
           </div>
+
+
+          {/* ستون لوگو — دسکتاپ ستون آخر */}
 <div className="border-t border-primary-200 dark:border-primary-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
                 <p className="text-primary-400 dark:text-white/70 text-sm text-center md:text-right">© ۱۴۰۵ پیراهن مردانه (PIRAHANMARDANE.IR). تمامی حقوق محفوظ است.</p>
                 <EnamadFooterBadge />

@@ -4902,6 +4902,13 @@ html, body {
 
 
 /* footer-logo-theme */
+.footer-site-logo {
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+
 /* همان تصویر هدر — بدون فیلتر و بدون پس‌زمینه */
 .footer-site-logo {
   background: transparent !important;
