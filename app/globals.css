@@ -60,7 +60,7 @@ html.dark {
 
   /* Accent — dark: cyan family */
   --color-apple-blue: #13ABC4;
-  --color-apple-blue-link: #13ABC4;
+  --color-apple-blue-link: #12ABC4;
   --color-apple-blue-dark: #3161A3;
   --color-apple-blue-hover: #3161A3;
   --color-grok-orange: #13ABC4;
@@ -4922,20 +4922,39 @@ html.dark .footer-site-logo {
 
 
 /* view-all-link-dark */
+/* همه لینک/دکمه مشاهده همه در دارک = #12ABC4 بدون استثنا */
 html.dark .text-apple-link,
 html.dark a.text-apple-link,
-html.dark button.text-apple-link {
-  color: #13ABC4 !important;
-  -webkit-text-fill-color: #13ABC4 !important;
+html.dark button.text-apple-link,
+html.dark .text-apple-blue,
+html.dark a.text-apple-blue,
+html.dark button.text-apple-blue {
+  color: #12ABC4 !important;
+  -webkit-text-fill-color: #12ABC4 !important;
 }
 html.dark .text-apple-link svg,
 html.dark a.text-apple-link svg,
-html.dark button.text-apple-link svg {
-  color: #13ABC4 !important;
-  stroke: #13ABC4 !important;
+html.dark button.text-apple-link svg,
+html.dark .text-apple-blue svg,
+html.dark a.text-apple-blue svg,
+html.dark button.text-apple-blue svg {
+  color: #12ABC4 !important;
+  stroke: #12ABC4 !important;
 }
 html.dark a.text-apple-link:hover,
-html.dark button.text-apple-link:hover {
-  color: #0f96ad !important;
-  -webkit-text-fill-color: #0f96ad !important;
+html.dark button.text-apple-link:hover,
+html.dark a.text-apple-blue:hover,
+html.dark button.text-apple-blue:hover {
+  color: #0e9aaf !important;
+  -webkit-text-fill-color: #0e9aaf !important;
 }
+/* اگر جایی فقط با رنگ ثابت فیروزه‌ای قبلی آمده */
+html.dark a[class*="text-[#13ABC4]"],
+html.dark button[class*="text-[#13ABC4]"],
+html.dark a[class*="text-[#7EFAFF]"],
+html.dark button[class*="text-[#7EFAFF]"] {
+  color: #12ABC4 !important;
+  -webkit-text-fill-color: #12ABC4 !important;
+}
+
+
