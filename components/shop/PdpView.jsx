@@ -205,12 +205,17 @@ export default function PdpView() {
                         <img
                           src={mainImg}
                           alt={`${p.name} - ${activeColor.name}`}
-                          className={`w-full h-full object-cover transition duration-300 cursor-zoom-in origin-center sm: ${pdpZoom ? 'scale-150 sm:scale-[1.75]' : ''}`}
-                          onClick={() => setPdpZoom(z => !z)}
-                          onMouseLeave={() => { if (pdpZoom) setPdpZoom(false); }}
+                          className="w-full h-full object-cover cursor-zoom-in"
+                          onClick={() => setPdpZoom(true)}
                           draggable={false}
                         />
-                        <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs bg-black/50 text-white px-2 py-0.5 rounded-full pointer-events-none hidden sm:block">کلیک برای زوم · هاور برای بزرگنمایی</p>
+                        <button
+                          type="button"
+                          onClick={() => setPdpZoom(true)}
+                          className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs bg-black/55 text-white px-3 py-1.5 rounded-full backdrop-blur-sm hover:bg-black/70 transition"
+                        >
+                          مشاهده بزرگ · گالری
+                        </button>
                         {/* Badges — هم‌عرض و چسبیده به راست */}
                         <div className="product-card-badges absolute top-3 right-3 z-10 flex flex-col items-stretch gap-1.5 w-max max-w-[40%] pointer-events-none">
                           {p.discount ? (
@@ -931,6 +936,135 @@ export default function PdpView() {
                   </div>
                 </div>
               </div>
+
+            {/* ——— گالری تمام‌صفحه (لایت‌باکس) ——— */}
+            {pdpZoom && (
+              <div
+                className="fixed inset-0 z-[400] flex flex-col bg-black/92 dark:bg-black/95 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+                aria-label="گالری محصول"
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') setPdpZoom(false);
+                  if (e.key === 'ArrowLeft') setPdpGalleryIdx((i) => (i + 1) % Math.max(galleryImages.length, 1));
+                  if (e.key === 'ArrowRight') setPdpGalleryIdx((i) => (i - 1 + Math.max(galleryImages.length, 1)) % Math.max(galleryImages.length, 1));
+                }}
+              >
+                {/* هدر */}
+                <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 border-b border-white/10 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setPdpZoom(false)}
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+                    aria-label="بستن"
+                  >
+                    <Icon name="x" size={20} />
+                  </button>
+                  <div className="min-w-0 flex-1 text-center">
+                    <p className="text-sm sm:text-base font-bold text-white truncate">{p.name}</p>
+                    {galleryImages.length > 1 && (
+                      <p className="text-[11px] text-white/50 mt-0.5">
+                        {toFa((pdpGalleryIdx % galleryImages.length) + 1)} از {toFa(galleryImages.length)}
+                      </p>
+                    )}
+                  </div>
+                  <div className="w-10" aria-hidden />
+                </div>
+
+                {/* تصویر اصلی */}
+                <div
+                  className="flex-1 relative flex items-center justify-center min-h-0 px-2 sm:px-8 py-4"
+                  onClick={() => setPdpZoom(false)}
+                  onTouchStart={(e) => setPdpTouchX(e.changedTouches[0].clientX)}
+                  onTouchEnd={(e) => {
+                    if (pdpTouchX == null || galleryImages.length < 2) return;
+                    const dx = e.changedTouches[0].clientX - pdpTouchX;
+                    if (Math.abs(dx) > 50) {
+                      if (dx > 0) setPdpGalleryIdx((i) => (i - 1 + galleryImages.length) % galleryImages.length);
+                      else setPdpGalleryIdx((i) => (i + 1) % galleryImages.length);
+                    }
+                    setPdpTouchX(null);
+                  }}
+                >
+                  <img
+                    src={galleryImages[Math.min(pdpGalleryIdx, Math.max(0, galleryImages.length - 1))] || mainImg}
+                    alt={p.name}
+                    className="max-h-full max-w-full object-contain rounded-xl shadow-2xl select-none"
+                    onClick={(e) => e.stopPropagation()}
+                    draggable={false}
+                  />
+                  {galleryImages.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setPdpGalleryIdx((i) => (i - 1 + galleryImages.length) % galleryImages.length); }}
+                        className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition"
+                        aria-label="قبلی"
+                      >
+                        <Icon name="chevronRight" size={22} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setPdpGalleryIdx((i) => (i + 1) % galleryImages.length); }}
+                        className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition"
+                        aria-label="بعدی"
+                      >
+                        <Icon name="chevronLeft" size={22} />
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                {/* فوتر: تامبنیل + رنگ */}
+                <div className="shrink-0 border-t border-white/10 bg-black/40 backdrop-blur-md px-3 sm:px-6 py-3 sm:py-4 space-y-3" onClick={(e) => e.stopPropagation()}>
+                  {galleryImages.length > 1 && (
+                    <div className="flex gap-2 justify-center overflow-x-auto no-scrollbar pb-1">
+                      {galleryImages.map((img, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => setPdpGalleryIdx(i)}
+                          className={`flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 transition ${
+                            pdpGalleryIdx === i ? 'border-white ring-2 ring-white/40' : 'border-white/20 opacity-70 hover:opacity-100'
+                          }`}
+                        >
+                          <img src={img} alt="" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {colors.length > 0 && (
+                    <div className="flex items-center justify-center gap-2 flex-wrap">
+                      <span className="text-xs text-white/60">رنگ:</span>
+                      {colors.map((c, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => {
+                            setPdpColorIdx(i);
+                            const img = c.image;
+                            if (img) {
+                              const gi = galleryImages.indexOf(img);
+                              if (gi >= 0) setPdpGalleryIdx(gi);
+                            }
+                          }}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border transition ${
+                            pdpColorIdx === i
+                              ? 'bg-white text-primary-900 border-white'
+                              : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
+                          }`}
+                        >
+                          <span className="w-3.5 h-3.5 rounded-full border border-white/30" style={{ background: c.hex || '#ccc' }} />
+                          {c.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-center text-[11px] text-white/40 hidden sm:block">برای بستن: Esc · کلیک روی پس‌زمینه · یا دکمه ×</p>
+                </div>
+              </div>
+            )}
+
             );
           })()}
     </>
