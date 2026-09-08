@@ -5186,7 +5186,8 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
-          if (parsed.type === 'product' || parsed.type === 'product_code') {
+          // ——— دسته یا محصول تک‌مسیره / محصول دو‌مسیره ———
+          if (parsed.type === 'category_or_product' || parsed.type === 'product' || parsed.type === 'product_code') {
             const pools = [
               ...(catalogProducts || []),
               ...(serverProducts || []),
@@ -5194,6 +5195,51 @@ const generateProductCode = (sellerKey, productId, shopName) => {
               ...(adminProducts || []),
               ...(products || []),
             ];
+            const catSlugRaw = parsed.catSlug || parsed.maybeCatSlug || parsed.productSlug || '';
+            const catLabel = (() => {
+              try {
+                const s = decodeURIComponent(String(catSlugRaw || '')).replace(/_/g, ' ').trim();
+                return s;
+              } catch (_) {
+                return String(catSlugRaw || '').replace(/_/g, ' ').trim();
+              }
+            })();
+
+            // 1) آیا این اسلاگ یک دستهٔ شناخته‌شده است؟
+            const isKnownCategory = (() => {
+              if (!catLabel) return false;
+              const norm = (x) => slugifyFa(String(x || ''));
+              const target = norm(catLabel);
+              if (!target || target === 'مورد') return false;
+              // دسته‌های استاتیک UI
+              const fromUi = (Array.isArray(categories) ? categories : []).some((c) => {
+                const n = c && (c.name || c.label || c.title);
+                return n && (norm(n) === target || String(n).trim() === catLabel);
+              });
+              if (fromUi) return true;
+              // کاتالوگ ادمین
+              const fromAdmin = (Array.isArray(adminCategories) ? adminCategories : []).some((c) => {
+                const n = c && (c.name || c.label || c.title || c.slug);
+                return n && (norm(n) === target || String(c.slug || '') === catSlugRaw);
+              });
+              if (fromAdmin) return true;
+              // هر محصولی با این دسته
+              const fromProducts = pools.some((p) => {
+                const c1 = p && (p.category || '');
+                const cats = Array.isArray(p?.categories) ? p.categories : [];
+                if (c1 && (norm(c1) === target || String(c1).includes(catLabel))) return true;
+                return cats.some((c) => norm(c) === target || String(c) === catLabel);
+              });
+              return fromProducts;
+            })();
+
+            // تک‌بخشی + دستهٔ شناخته‌شده → همیشه PLP (قبل از جستجوی محصول)
+            if (parsed.type === 'category_or_product' && isKnownCategory) {
+              openPLP({ cat: catLabel, silent: true, reset: false });
+              try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
+              return;
+            }
+
             let found = null;
             if (parsed.type === 'product_code') {
               found = typeof findProductByCode === 'function'
@@ -5202,16 +5248,54 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             } else {
               found = pools.find((x) => {
                 const pth = pathForProduct(x.name || x.title, x.shopName || x.sellerName || x.brand || '');
+                // want: /shop/product
                 const want = pathForProduct(parsed.productSlug, parsed.shopSlug || '');
-                return pth === want || slugifyFa(x.name || x.title) === slugifyFa(parsed.productSlug);
+                const wantAlt = pathForProduct(parsed.shopSlug, parsed.productSlug || '');
+                const nameSlug = slugifyFa(x.name || x.title);
+                return (
+                  pth === want ||
+                  pth === wantAlt ||
+                  nameSlug === slugifyFa(parsed.productSlug) ||
+                  (parsed.shopSlug && nameSlug === slugifyFa(parsed.shopSlug)) ||
+                  // مسیر واقعی در نوار آدرس
+                  pth === (window.location.pathname || '')
+                );
               });
             }
-            if (found) openPDP(found, { silent: true });
-            else if (catalogFetchDone) setStaticPage('error-404');
+
+            if (found) {
+              openPDP(found, { silent: true });
+              try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
+              return;
+            }
+
+            // 2) محصول پیدا نشد — اگر کاندید دسته بود، PLP باز کن (نه ۴۰۴)
+            if (parsed.type === 'category_or_product' || (parsed.maybeCatSlug && !parsed.shopSlug)) {
+              if (catLabel) {
+                openPLP({ cat: catLabel, silent: true, reset: false });
+                try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
+                return;
+              }
+            }
+
+            // 3) فقط وقتی کاتالوگ لود شده و هیچ تطبیقی نیست → ۴۰۴
+            if (catalogFetchDone) {
+              setStaticPage('error-404');
+            }
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
           if (parsed.type === 'unknown') {
+            // آخرین شانس: تک‌بخشی ناشناخته را به‌جای ۴۰۴ به فروشگاه ببر
+            try {
+              const parts = (window.location.pathname || '/').split('/').filter(Boolean);
+              if (parts.length === 1) {
+                const label = decodeURIComponent(parts[0]).replace(/_/g, ' ');
+                openPLP({ cat: label, silent: true });
+                try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
+                return;
+              }
+            } catch (_) {}
             setStaticPage('error-404');
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
@@ -5237,8 +5321,13 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           const isProdRoute =
             parsed.type === 'product' ||
             parsed.type === 'product_code' ||
+            parsed.type === 'category_or_product' ||
             (window.location.pathname || '').startsWith('/product/');
           if (!isProdRoute) return;
+          // اگر تک‌مسیره و شبیه دسته است، این effect محصول را ۴۰۴ نکند
+          if (parsed.type === 'category_or_product' && !parsed.shopSlug) {
+            /* applyPath مسئول است؛ اینجا فقط محصول را resolve کن */
+          }
           if (pdpProduct) {
             try { setAwaitingDeepProduct(false); } catch (_) {}
             return;
@@ -5270,7 +5359,17 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             try { setAwaitingDeepProduct(false); } catch (_) {}
             try { if (staticPage === 'error-404') setStaticPage(null); } catch (_) {}
           } else if (catalogFetchDone) {
-            // فقط بعد از پاسخ سرور → ۴۰۴
+            // دسته؟ (مثلاً /پیراهن بعد از Back)
+            try {
+              const catSlug = parsed.catSlug || parsed.maybeCatSlug || parsed.productSlug;
+              if (catSlug && (parsed.type === 'category_or_product' || !parsed.shopSlug)) {
+                const label = decodeURIComponent(String(catSlug)).replace(/_/g, ' ');
+                openPLP({ cat: label, silent: true });
+                setAwaitingDeepProduct(false);
+                try { if (staticPage === 'error-404') setStaticPage(null); } catch (_) {}
+                return;
+              }
+            } catch (_) {}
             try { setAwaitingDeepProduct(false); } catch (_) {}
             try { setStaticPage('error-404'); } catch (_) {}
           }
