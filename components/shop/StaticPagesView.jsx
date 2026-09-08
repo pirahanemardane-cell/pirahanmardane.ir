@@ -1422,8 +1422,14 @@ export default function StaticPagesView() {
                 </div>
 
                 {/* بنر تخفیف */}
-                <button type="button" onClick={() => { setMobileMenuOpen(false); openPLP(); }} className="w-full block rounded-2xl overflow-hidden relative h-28 text-right shadow-sm">
-                  <img src="https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp" alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+                <button type="button" onClick={() => { setMobileMenuOpen(false); try { openStaticPage('deals'); } catch (_) { openPLP(); } }} className="w-full block rounded-2xl overflow-hidden relative h-28 text-right shadow-sm isolate ring-1 ring-black/5 dark:ring-white/10">
+                  <img
+                    src={(() => { try { const c = typeof getPageCms === 'function' ? getPageCms('deals') : null; return (c && (c.image || c.banner || c.cover)) || 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp'; } catch (_) { return 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp'; } })()}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover rounded-2xl"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-l from-black/75 via-black/40 to-transparent" />
                   <div className="absolute inset-0 flex items-center justify-end p-4 text-white">
                     <div>

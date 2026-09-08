@@ -2150,7 +2150,61 @@ export default function AdminPanelContent() {
                    minHeight={180}
                   />
                   <div className="grid sm:grid-cols-2 gap-2">
-                   <input dir="ltr" value={cms.image || ''} onChange={(e) => updatePageCms(active.cmsKey, { image: e.target.value })} placeholder="آدرس تصویر (اختیاری)" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-left" />
+                   <div className="space-y-2">
+                    <label className="block text-xs text-primary-500 dark:text-white/60">
+                      {active.cmsKey === 'deals' ? 'تصویر بنر شگفت‌انگیز (منو / کارت پیشنهاد)' : 'تصویر صفحه (اختیاری)'}
+                    </label>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <input
+                        dir="ltr"
+                        value={cms.image || ''}
+                        onChange={(e) => updatePageCms(active.cmsKey, { image: e.target.value })}
+                        placeholder="آدرس تصویر یا آپلود از دکمه کنار"
+                        className="flex-1 min-w-[12rem] px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-left"
+                      />
+                      <label className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-xl border border-primary-200 dark:border-white/25 bg-primary-50 dark:bg-primary-800 text-primary-800 dark:text-white cursor-pointer">
+                        آپلود تصویر
+                        <input
+                          type="file"
+                          accept="image/webp,image/jpeg,image/png,image/jpg"
+                          className="hidden"
+                          onChange={async (e) => {
+                            const file = e.target.files && e.target.files[0];
+                            e.target.value = '';
+                            if (!file) return;
+                            try {
+                              let url = null;
+                              if (typeof processProductImageFile === 'function') {
+                                url = await processProductImageFile(file, { folder: 'cms' });
+                              } else if (typeof uploadImage === 'function') {
+                                url = await uploadImage(file, { folder: 'cms' });
+                              } else {
+                                const fd = new FormData();
+                                fd.append('file', file);
+                                fd.append('folder', 'cms');
+                                const res = await fetch('/api/upload', { method: 'POST', body: fd, credentials: 'include' });
+                                const data = await res.json().catch(() => ({}));
+                                url = data.url || data.path || null;
+                              }
+                              if (url) {
+                                updatePageCms(active.cmsKey, { image: url });
+                                try { showToast && showToast({ message: 'تصویر ذخیره شد', variant: 'success', duration: 2500, position: 'top-center' }); } catch (_) {}
+                              } else {
+                                try { showToast && showToast({ message: 'آپلود ناموفق', variant: 'error', duration: 3000, position: 'top-center' }); } catch (_) {}
+                              }
+                            } catch (_) {
+                              try { showToast && showToast({ message: 'خطا در آپلود', variant: 'error', duration: 3000, position: 'top-center' }); } catch (__) {}
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+                    {cms.image ? (
+                      <div className="w-full max-w-xs h-28 rounded-2xl overflow-hidden border border-primary-200 dark:border-white/15 relative">
+                        <img src={cms.image} alt="" className="w-full h-full object-cover rounded-2xl" onError={(e) => { try { e.currentTarget.style.display = 'none'; } catch (_) {} }} />
+                      </div>
+                    ) : null}
+                   </div>
                    <input dir="ltr" value={cms.video || ''} onChange={(e) => updatePageCms(active.cmsKey, { video: e.target.value })} placeholder="آدرس ویدیو / آپارات (اختیاری)" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-left" />
                   </div>
                   <p className="text-[10px] text-primary-400">ذخیره خودکار · بلافاصله در سایت اعمال می‌شود</p>

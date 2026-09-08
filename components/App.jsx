@@ -15721,8 +15721,15 @@ const params = new URLSearchParams(window.location.search);
                             </div>
                           </div>
                           <div className="col-span-3">
-                            <button type="button" onClick={() => setMegaOpen(null)} className="block w-full h-full min-h-[220px] rounded-2xl overflow-hidden relative group text-right">
-                              <img src="/logo.svg" alt="پیشنهاد ویژه" className="absolute inset-0 w-full h-full object-cover group-hover:opacity-95 transition duration-700" loading="lazy" decoding="async" />
+                            <button type="button" onClick={() => { setMegaOpen(null); try { openStaticPage('deals'); } catch (_) {} }} className="block w-full h-full min-h-[220px] rounded-2xl overflow-hidden relative group text-right isolate ring-1 ring-black/5 dark:ring-white/10">
+                              <img
+                                src={(() => { try { const c = getPageCms && getPageCms('deals'); return (c && (c.image || c.banner || c.cover)) || '/logo.svg'; } catch (_) { return '/logo.svg'; } })()}
+                                alt="پیشنهاد ویژه"
+                                className="absolute inset-0 w-full h-full object-cover group-hover:opacity-95 transition duration-700 rounded-2xl"
+                                loading="lazy"
+                                decoding="async"
+                                onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.svg'; } catch (_) {} }}
+                              />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                               <div className="absolute bottom-0 inset-x-0 p-4 text-white">
                                 <span className="inline-block text-xs bg-apple-blue px-2 py-0.5 rounded-full mb-2">تا ۲۹٪ تخفیف</span>
