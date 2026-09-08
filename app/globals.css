@@ -4902,11 +4902,15 @@ html, body {
 
 
 /* footer-logo-theme */
+/* همان تصویر هدر — بدون فیلتر و بدون پس‌زمینه */
 .footer-site-logo {
-  /* لایت: قرمز برند */
-  filter: brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(7456%) hue-rotate(0deg) brightness(98%) contrast(118%);
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
 }
 html.dark .footer-site-logo {
-  /* دارک: فیروزه‌ای #13ABC4 */
-  filter: brightness(0) saturate(100%) invert(56%) sepia(72%) saturate(507%) hue-rotate(143deg) brightness(94%) contrast(96%);
+  background: transparent !important;
+  filter: none !important;
 }
+
+

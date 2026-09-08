@@ -1089,23 +1089,15 @@ export default function StaticPagesView() {
               </div>
 
           {/* ستون لوگو — دسکتاپ ستون آخر */}
-          <div className="footer-logo-col flex flex-col items-center sm:items-start justify-start gap-3">
+          <div className="footer-logo-col flex flex-col items-center md:items-start justify-start">
             <img
-              src="/logo.svg"
+              src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"}
               alt="پیراهن مردانه"
-              width={120}
-              height={120}
-              className="footer-site-logo w-24 h-24 sm:w-28 sm:h-28 object-contain select-none"
-              onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; } catch (_) {} }}
+              className="site-logo-img footer-site-logo h-10 sm:h-12 md:h-14 w-auto max-w-[160px] sm:max-w-[180px] object-contain bg-transparent"
+              onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = dark ? '/blue_t_bg.webp' : '/red_t_bg.webp'; } catch (_) {} }}
             />
-            <p className="text-sm font-bold text-primary-900 dark:text-white">پیراهن مردانه</p>
-            <p className="text-xs text-primary-500 dark:text-white/60 leading-relaxed max-w-[14rem] text-center sm:text-right">
-              فروشگاه تخصصی پیراهن مردانه
-            </p>
           </div>
-
-
-              <div className="border-t border-primary-200 dark:border-primary-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
+<div className="border-t border-primary-200 dark:border-primary-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
                 <p className="text-primary-400 dark:text-white/70 text-sm text-center md:text-right">© ۱۴۰۵ پیراهن مردانه (PIRAHANMARDANE.IR). تمامی حقوق محفوظ است.</p>
                 <EnamadFooterBadge />
               </div>
