@@ -68,7 +68,7 @@ export function Breadcrumb({
               {homeHref ? (
                 <a
                   href={homeHref}
-                  onClick={(e) => { e.preventDefault(); if (typeof homeOnClick === 'function') homeOnClick(e); }}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (typeof homeOnClick === 'function') homeOnClick(e); }}
                   aria-label="خانه"
                   className="inline-flex items-center justify-center text-primary-600 dark:text-white/70 hover:text-apple-blue dark:hover:text-[#4CCD99] transition"
                 >
@@ -111,7 +111,7 @@ export function Breadcrumb({
                 ) : item.href ? (
                   <a
                     href={item.href}
-                    onClick={(e) => { e.preventDefault(); if (typeof item.onClick === 'function') item.onClick(e); }}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (typeof item.onClick === 'function') item.onClick(e); }}
                     className={linkClass}
                   >
                     {item.label}

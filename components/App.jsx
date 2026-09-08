@@ -5747,6 +5747,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           try { setBrandDetailId(null); } catch (_) {}
           setPdpProduct(null);
           setShowPLP(false);
+          try { setPlpCats([]); setPlpTagFilter([]); setPlpQuery(''); setPlpColors([]); setPlpSizes([]); } catch (_) {}
           setShowCartPage(false);
           setShowCheckout(false);
           setShowWishlistPage(false);
@@ -6071,10 +6072,13 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           const key = normalizeCategoryKey(opts.cat);
           setPlpCats(key ? [key] : []);
           setPlpTagFilter([]);
-        } else if (!opts.query && opts.tag === undefined && opts.cats === undefined) {
-          // فروشگاه عمومی بدون cat → همه محصولات
+        } else if (opts.resetFilters || (opts.query == null && opts.tag === undefined && opts.cats === undefined && opts.cat === undefined)) {
+          // فروشگاه عمومی / بازگشت از breadcrumb → همه فیلترها پاک
           setPlpCats([]);
-          if (!opts.keepTags) setPlpTagFilter([]);
+          setPlpTagFilter([]);
+          if (!opts.keepQuery) setPlpQuery('');
+          if (opts.colors === undefined) setPlpColors([]);
+          if (opts.sizes === undefined) setPlpSizes([]);
         }
         if (opts.tag !== undefined) {
           const t = (adminTags || []).find((x) => x.name === opts.tag || x.slug === opts.tag);
@@ -6101,13 +6105,16 @@ const generateProductCode = (sellerKey, productId, shopName) => {
 
         try {
           if (!opts.silent) {
-            if (opts.cat && !opts.tag && !opts.query) {
+            if (opts.resetFilters || (opts.cat == null && opts.tag == null && (opts.query == null || opts.query === '') && opts.cats === undefined)) {
+              pushFaUrl(FA_PATHS.shop || '/فروشگاه', { plp: true });
+            } else if (opts.cat && !opts.tag && !opts.query) {
               pushFaUrl(pathForCategory(opts.cat), { plp: true, cat: opts.cat });
             } else {
               pushFaUrl(pathForShop({ cat: opts.cat, tag: opts.tag, query: opts.query, sort: opts.sort }), { plp: true });
             }
           }
         } catch (_) {}
+        try { if (typeof applyPathRef !== 'undefined' && applyPathRef?.current && opts.syncPath) applyPathRef.current(); } catch (_) {}
         // همیشه از بالای صفحه (هدر) باز شود — نه نزدیک فوتر
         scrollPageToTop();
       };
@@ -16107,11 +16114,11 @@ const params = new URLSearchParams(window.location.search);
             if (isHome) return null;
             const crumbItems = [
               ...(showPLP && !activeSeller && !activePlpTag ? [
-                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => { try { openPLP({}); } catch (_) {} } },
+                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => { try { openPLP({ resetFilters: true, query: '', cats: [], colors: [], sizes: [] }); } catch (_) {} } },
                 { label: plpCats.length === 1 ? plpH1 : 'همه محصولات', current: true },
               ] : []),
               ...(showPLP && !activeSeller && activePlpTag ? [
-                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => { try { openPLP({}); } catch (_) {} } },
+                { label: 'فروشگاه', href: '/فروشگاه', onClick: () => { try { openPLP({ resetFilters: true, query: '', cats: [], colors: [], sizes: [] }); } catch (_) {} } },
                 { label: activePlpTag.name || activePlpTag.label || 'برچسب', current: true },
               ] : []),
               ...(showPLP && activeSeller ? [
