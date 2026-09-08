@@ -239,7 +239,7 @@ export default function StaticPagesView() {
                   })()}
 
                   <p className="text-sm sm:text-base text-primary-600 dark:text-white/70 leading-8">پیراهن مردانه یک بازارگاه اینترنتی تخصصی برای خرید پیراهن مردانه است. ما فروشگاه حضوری نداریم و از طریق همکاری با فروشندگان معتبر سراسر ایران، امکان مقایسه قیمت، اصالت کالا و ارسال سراسری را فراهم کرده‌ایم. پلتفرم توسط شخص حقیقی اداره می‌شود و نقش واسطهٔ شفاف بین خریدار و فروشنده را دارد.</p>
-                  <div className="grid grid-cols-3 gap-3 text-center">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-center">
                     {[{ n: '۱۲+', l: 'فروشنده' }, { n: toFa((products || []).length || 40) + '+', l: 'محصول' }, { n: '۳۱', l: 'استان پوشش' }].map(x => (
                       <div key={x.l} className="p-3 rounded-2xl bg-apple-blue/10">
                         <p className="text-xl font-bold text-apple-blue">{x.n}</p>
@@ -1044,7 +1044,7 @@ export default function StaticPagesView() {
 
           <footer className="bg-primary-50 dark:bg-primary-950 text-primary-800 dark:text-white pt-10 sm:pt-14 pb-6 sm:pb-8 border-t border-primary-200 dark:border-white/30 transition-colors">
             <div className="max-w-7xl mx-auto px-3 sm:px-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 mb-8 sm:mb-12 items-start">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 mb-8 sm:mb-12 items-start">
                 {/* ستون ۱ — فقط دسکتاپ (موبایل حذف) */}
                 <div className="min-w-0 hidden md:block">
                   <h3 className="font-bold text-base sm:text-lg text-primary-900 dark:text-white mb-3">دسترسی سریع</h3>
@@ -1087,6 +1087,23 @@ export default function StaticPagesView() {
                   </ul>
                 </div>
               </div>
+
+          {/* ستون لوگو — دسکتاپ ستون آخر */}
+          <div className="footer-logo-col flex flex-col items-center sm:items-start justify-start gap-3">
+            <img
+              src="/logo.svg"
+              alt="پیراهن مردانه"
+              width={120}
+              height={120}
+              className="footer-site-logo w-24 h-24 sm:w-28 sm:h-28 object-contain select-none"
+              onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; } catch (_) {} }}
+            />
+            <p className="text-sm font-bold text-primary-900 dark:text-white">پیراهن مردانه</p>
+            <p className="text-xs text-primary-500 dark:text-white/60 leading-relaxed max-w-[14rem] text-center sm:text-right">
+              فروشگاه تخصصی پیراهن مردانه
+            </p>
+          </div>
+
 
               <div className="border-t border-primary-200 dark:border-primary-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
                 <p className="text-primary-400 dark:text-white/70 text-sm text-center md:text-right">© ۱۴۰۵ پیراهن مردانه (PIRAHANMARDANE.IR). تمامی حقوق محفوظ است.</p>
