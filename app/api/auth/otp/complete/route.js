@@ -192,6 +192,7 @@ export async function POST(request) {
             .maybeSingle()
           if (sErr) {
             console.error('seller insert', sErr)
+            return NextResponse.json({ ok: false, error: sErr.message || 'ثبت فروشگاه ناموفق' }, { status: 400 })
           } else {
             sellerRow = createdSeller
           }

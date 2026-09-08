@@ -72,6 +72,10 @@ export async function PATCH(request) {
       .select('id, shop_name, slug, status, owner_id, created_at')
       .maybeSingle()
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+    try {
+      const { invalidateCatalogCache } = await import('@/lib/catalog-cache')
+      if (typeof invalidateCatalogCache === 'function') invalidateCatalogCache()
+    } catch (_) {}
     return NextResponse.json({ ok: true, seller: data })
   } catch (e) {
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })

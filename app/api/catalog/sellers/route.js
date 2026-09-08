@@ -3,7 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { withCatalogCache, cacheKey } from '../../../../lib/catalog-cache';
 import { logCritical } from '../../../../lib/critical-log';
 
-export const revalidate = 60;
+export const revalidate = 5;
 
 export async function GET(req) {
   const key = cacheKey(['catalog', 'sellers', req?.url || 'sellers']);
@@ -51,7 +51,7 @@ export async function GET(req) {
 
       return NextResponse.json(
         { ok: true, sellers },
-        { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } }
+        { headers: { 'Cache-Control': 'public, s-maxage=5, stale-while-revalidate=30' } }
       );
     });
   } catch (e) {

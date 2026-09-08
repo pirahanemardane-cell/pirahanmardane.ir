@@ -589,9 +589,9 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const reloadServerCatalog = async () => {
         try {
-          const res = await fetch('/api/catalog/products?limit=200', {
+          const res = await fetch('/api/catalog/products?limit=200&_=' + Date.now(), {
             credentials: 'include',
-            headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' },
+            headers: { Accept: 'application/json', 'Cache-Control': 'no-cache', Pragma: 'no-cache' },
             cache: 'no-store',
           });
           const data = await res.json().catch(() => null);
@@ -7818,9 +7818,34 @@ const verifyOtp = async () => {
             return;
           }
           if (authMode === 'seller') {
+            let sellerFromApi = data.seller || null;
+            if (!sellerFromApi || !sellerFromApi.id) {
+              try {
+                const rr = await fetch('/api/seller/register', {
+                  method: 'POST',
+                  credentials: 'include',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    shop_name: authName.trim(),
+                    shopName: authName.trim(),
+                    owner_name: authLastName.trim() || authName.trim(),
+                    phone: phoneDigits,
+                  }),
+                });
+                const rj = await rr.json().catch(() => ({}));
+                if (rr.ok && rj?.ok && rj.seller) sellerFromApi = rj.seller;
+              } catch (_) {}
+            }
+            if (!sellerFromApi || !sellerFromApi.id) {
+              setAuthError('ثبت فروشگاه روی سرور ناموفق بود. دوباره تلاش کنید.');
+              setAuthLoading(false);
+              return;
+            }
             const u = persistSession('sellerUser', mapProfileToSeller(data.user, data.profile, {
-              shopName: authName.trim(),
+              ...sellerFromApi,
+              shopName: sellerFromApi.shop_name || authName.trim(),
               ownerName: authLastName.trim() || authName.trim(),
+              status: sellerFromApi.status || 'pending',
             }));
             setSellerUser(u);
             finishAuthSuccess('seller', u);
@@ -12698,6 +12723,8 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         }
         if (typeof showToast === 'function') showToast({ message: status === 'active' ? 'محصول فعال شد' : (status === 'rejected' ? 'محصول رد شد' : (status === 'archived' ? 'محصول آرشیو شد' : (status === 'inactive' ? 'محصول غیرفعال شد' : 'وضعیت محصول بروزرسانی شد'))), variant: 'default', duration: 3500, position: 'top-center' });
         await hydrateAdminProducts();
+        try { if (typeof reloadServerCatalog === 'function') await reloadServerCatalog(); } catch (_) {}
+        try { window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'catalog', ts: Date.now() } })); } catch (_) {}
         try {
           if (typeof reloadServerCatalog === 'function') await reloadServerCatalog();
           window.dispatchEvent(new Event('catalog-products-refetch'));
@@ -12963,6 +12990,11 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         }
         if (typeof showToast === 'function') showToast({ message: 'وضعیت فروشنده: ' + status, variant: 'default', duration: 3500, position: 'top-center' });
         await hydrateAdminSellers();
+        try { if (typeof reloadServerCatalog === 'function') await reloadServerCatalog(); } catch (_) {}
+        try {
+          window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'sellers', ts: Date.now() } }));
+          window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'catalog', ts: Date.now() } }));
+        } catch (_) {}
         return true;
       };
 

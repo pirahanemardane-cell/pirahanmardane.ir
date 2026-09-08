@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { randomUUID } from "crypto";
 
-export const revalidate = 60; // catalog public cache (seconds)
+export const revalidate = 5; // catalog public cache (seconds)
 
 function isUuid(v) {
   return (
@@ -110,7 +110,7 @@ function parsePrice(p) {
 
 
 const catalogCacheHeaders = {
-  "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+  "Cache-Control": "public, s-maxage=5, stale-while-revalidate=30",
 };
 const noStoreHeaders = { "Cache-Control": "no-store" };
 
