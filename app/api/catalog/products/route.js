@@ -88,6 +88,15 @@ function rowToUi(row) {
     scheduled_publish_at: row.scheduled_publish_at,
     created_at: row.created_at,
     updated_at: row.updated_at,
+    // بج‌های فروشگاهی (از payload یا ستون)
+    discount_percent: Number(payload.discount_percent ?? payload.discount ?? row.discount_percent ?? 0) || 0,
+    discount: Number(payload.discount ?? payload.discount_percent ?? row.discount_percent ?? 0) || 0,
+    stock: Number(payload.stock ?? row.stock ?? 0),
+    amazing: !!(payload.amazing || row.amazing),
+    dealEndsAt: payload.dealEndsAt || payload.deal_ends_at || row.deal_ends_at || null,
+    popular: !!(payload.popular || payload.bestseller || row.popular),
+    fastShip: !!(payload.fastShip || payload.fast_ship || payload.fastShipping || row.fast_ship),
+    salesCount: Number(payload.salesCount ?? payload.sales_count ?? payload.sold_count ?? 0) || 0,
   };
 }
 

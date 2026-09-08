@@ -518,7 +518,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const mapCatalogRow = (p) => {
         if (!p) return null;
         const base = Number(p.base_price ?? p.price) || 0;
-        const disc = Number(p.discount_percent) || 0;
+        const disc = Number(p.discount_percent ?? p.discount) || 0;
         const price = disc > 0 ? Math.round(base * (1 - disc / 100)) : base;
         const img = pickProductImage(p);
         const imgs = Array.isArray(p.images) && p.images.length
@@ -532,7 +532,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           p.seller?.name ||
           p.sellerName ||
           'فروشگاه';
-        const stockN = Number(p.stock);
+        const stockN = Number(p.stock ?? p.stockLeft);
         let colors = Array.isArray(p.colors) && p.colors.length ? p.colors.map((c) => ({ ...c })) : [];
         if (!colors.length) {
           colors = [{ name: 'پیش‌فرض', hex: '#999', image: img || '/logo.webp' }];
@@ -578,6 +578,12 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           description: p.description || '',
           fromServer: true,
           scheduledPublishAt: p.scheduled_publish_at || null,
+          // بج‌های کارت محصول
+          amazing: !!(p.amazing || p.is_amazing || p.isAmazing),
+          dealEndsAt: p.dealEndsAt || p.deal_ends_at || p.deal_endsAt || null,
+          popular: !!(p.popular || p.is_popular || p.isPopular || p.bestseller || p.best_seller),
+          fastShip: !!(p.fastShip || p.fast_ship || p.fastShipping || p.fast_shipping),
+          salesCount: Number(p.salesCount ?? p.sales_count ?? p.sold_count ?? p.soldCount ?? 0) || 0,
         };
       };
 
@@ -8130,7 +8136,13 @@ const verifyOtp = async () => {
             id: p.seller_id || payload.sellerId || 'own',
             name: (typeof sellerUser !== 'undefined' && sellerUser ? (sellerUser.shopName || sellerUser.name) : '') || payload.sellerName || 'فروشگاه',
           },
-          salesCount: 0,
+          salesCount: Number(payload.salesCount ?? payload.sales_count ?? payload.sold_count ?? 0) || 0,
+          amazing: !!(payload.amazing || p.amazing),
+          dealEndsAt: payload.dealEndsAt || payload.deal_ends_at || null,
+          popular: !!(payload.popular || payload.is_popular || payload.bestseller),
+          fastShip: !!(payload.fastShip || payload.fast_ship || payload.fastShipping),
+          discount: Number(payload.discount ?? payload.discount_percent ?? 0) || 0,
+          inStock: (Number(payload.stock ?? p.stock ?? 0) || 0) > 0,
           fromServer: true,
         };
       };
