@@ -1044,9 +1044,9 @@ export default function StaticPagesView() {
 
           <footer className="bg-primary-50 dark:bg-primary-950 text-primary-800 dark:text-white pt-10 sm:pt-14 pb-6 sm:pb-8 border-t border-primary-200 dark:border-white/30 transition-colors">
             <div className="max-w-7xl mx-auto px-3 sm:px-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10 items-stretch">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10 items-center">
                 {/* ستون ۱ — فقط دسکتاپ (موبایل حذف) */}
-                <div className="min-w-0 hidden md:block">
+                <div className="min-w-0 hidden md:flex md:flex-col md:justify-center">
                   <h3 className="font-bold text-base sm:text-lg text-primary-900 dark:text-white mb-3">دسترسی سریع</h3>
                   <ul className="space-y-2 text-sm text-primary-500 dark:text-white/80">
                     <li><button type="button" onClick={() => { try { closeStaticPage(); } catch (_) {} try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">خانه</button></li>
@@ -1088,7 +1088,7 @@ export default function StaticPagesView() {
                 </div>
 
                 {/* ستون ۴ — لوگو (سمت چپ در RTL) */}
-                <div className="footer-logo-col min-w-0 hidden md:flex items-center justify-center self-stretch">
+                <div className="footer-logo-col min-w-0 hidden md:flex items-center justify-center">
                   <img
                     src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"}
                     alt="پیراهن مردانه"
