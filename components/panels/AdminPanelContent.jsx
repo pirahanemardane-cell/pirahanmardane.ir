@@ -30,6 +30,165 @@ function scrollAdminPanelToTop() {
 }
 
 /** پنل AdminPanelContent — استخراج‌شده از App.jsx (رفتار یکسان، وابستگی از AppApi) */
+
+
+function AdminMediaTab({ showToast }) {
+  const [scope, setScope] = useState('buyers');
+  const [kind, setKind] = useState('avatar');
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [editUrl, setEditUrl] = useState('');
+
+  const buyerKinds = [
+    { id: 'avatar', label: 'تصویر پروفایل خریدار' },
+    { id: 'ticket', label: 'تصویر الصاقی در تیکت‌ها' },
+    { id: 'review', label: 'تصویر الصاقی در نظر محصول' },
+  ];
+  const sellerKinds = [
+    { id: 'logo', label: 'تصویر پروفایل' },
+    { id: 'banner', label: 'کاور پروفایل' },
+    { id: 'product', label: 'تصاویر محصولات' },
+    { id: 'ticket', label: 'تصاویر الصاقی در تیکت‌ها' },
+  ];
+  const kinds = scope === 'buyers' ? buyerKinds : sellerKinds;
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/media?scope=${encodeURIComponent(scope)}&kind=${encodeURIComponent(kind)}`, {
+        credentials: 'include',
+        cache: 'no-store',
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) {
+        try { showToast && showToast({ message: data.error || 'بارگذاری ناموفق', variant: 'error', duration: 3000, position: 'top-center' }); } catch (_) {}
+        setItems([]);
+      } else {
+        setItems(Array.isArray(data.items) ? data.items : []);
+      }
+    } catch (_) {
+      setItems([]);
+      try { showToast && showToast({ message: 'خطای شبکه', variant: 'error', duration: 3000, position: 'top-center' }); } catch (__) {}
+    } finally {
+      setLoading(false);
+    }
+  }, [scope, kind, showToast]);
+
+  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    // reset kind when scope changes
+    setKind(scope === 'buyers' ? 'avatar' : 'logo');
+  }, [scope]);
+
+  const removeItem = async (it) => {
+    const ok = typeof siteConfirm === 'function'
+      ? await siteConfirm('این تصویر از سایت و پایگاه داده حذف شود؟', 'حذف تصویر')
+      : (typeof window !== 'undefined' && window.confirm('حذف تصویر؟'));
+    if (!ok) return;
+    try {
+      const res = await fetch('/api/admin/media', {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'delete',
+          table: it.table,
+          rowId: it.rowId || it.ownerId,
+          field: it.field,
+          index: it.index,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) {
+        try { showToast && showToast({ message: data.error || 'حذف ناموفق', variant: 'error', duration: 3000, position: 'top-center' }); } catch (_) {}
+        return;
+      }
+      try { showToast && showToast({ message: 'حذف شد', variant: 'success', duration: 2000, position: 'top-center' }); } catch (_) {}
+      load();
+    } catch (_) {
+      try { showToast && showToast({ message: 'خطای شبکه', variant: 'error', duration: 3000, position: 'top-center' }); } catch (__) {}
+    }
+  };
+
+  const saveEdit = async (it) => {
+    try {
+      const res = await fetch('/api/admin/media', {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update',
+          table: it.table,
+          rowId: it.rowId || it.ownerId,
+          field: it.field,
+          url: editUrl,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) {
+        try { showToast && showToast({ message: data.error || 'ذخیره ناموفق', variant: 'error', duration: 3000, position: 'top-center' }); } catch (_) {}
+        return;
+      }
+      setEditId(null);
+      setEditUrl('');
+      try { showToast && showToast({ message: 'ذخیره شد', variant: 'success', duration: 2000, position: 'top-center' }); } catch (_) {}
+      load();
+    } catch (_) {
+      try { showToast && showToast({ message: 'خطای شبکه', variant: 'error', duration: 3000, position: 'top-center' }); } catch (__) {}
+    }
+  };
+
+  return (
+    <div className="space-y-4 p-1">
+      <div className="flex flex-wrap gap-2">
+        <button type="button" onClick={() => setScope('buyers')} className={`px-3 py-1.5 rounded-full text-xs font-medium border ${scope === 'buyers' ? 'bg-apple-blue text-white border-apple-blue' : 'border-primary-200 dark:border-white/20'}`}>خریداران</button>
+        <button type="button" onClick={() => setScope('sellers')} className={`px-3 py-1.5 rounded-full text-xs font-medium border ${scope === 'sellers' ? 'bg-apple-blue text-white border-apple-blue' : 'border-primary-200 dark:border-white/20'}`}>فروشندگان</button>
+        <button type="button" onClick={load} className="px-3 py-1.5 rounded-full text-xs border border-primary-200 dark:border-white/20">بازنشانی</button>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {kinds.map((k) => (
+          <button key={k.id} type="button" onClick={() => setKind(k.id)} className={`px-3 py-1.5 rounded-full text-xs font-medium border ${kind === k.id ? 'bg-primary-900 text-white dark:bg-white dark:text-primary-900 border-transparent' : 'border-primary-200 dark:border-white/20'}`}>{k.label}</button>
+        ))}
+      </div>
+      {loading ? (
+        <p className="text-sm text-primary-500 py-8 text-center">در حال بارگذاری…</p>
+      ) : items.length === 0 ? (
+        <p className="text-sm text-primary-500 py-8 text-center">موردی نیست</p>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {items.map((it) => (
+            <div key={it.id} className="rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 overflow-hidden flex flex-col">
+              <div className="aspect-square bg-primary-50 dark:bg-primary-950 relative">
+                <img src={it.url} alt="" className="w-full h-full object-cover" onError={(e) => { try { e.currentTarget.style.opacity = '0.3'; } catch (_) {} }} />
+              </div>
+              <div className="p-2 space-y-1 text-right">
+                <p className="text-[11px] font-medium text-primary-900 dark:text-white truncate">{it.ownerName}</p>
+                <p className="text-[10px] text-primary-400 truncate" dir="ltr">{it.kind}{it.status ? ` · ${it.status}` : ''}</p>
+                {editId === it.id ? (
+                  <div className="space-y-1">
+                    <input dir="ltr" value={editUrl} onChange={(e) => setEditUrl(e.target.value)} className="w-full text-[11px] px-2 py-1 rounded-lg border border-primary-200 dark:border-white/20 bg-transparent" placeholder="https://..." />
+                    <div className="flex gap-1">
+                      <button type="button" onClick={() => saveEdit(it)} className="flex-1 text-[10px] py-1 rounded-lg bg-apple-blue text-white">ذخیره</button>
+                      <button type="button" onClick={() => { setEditId(null); setEditUrl(''); }} className="text-[10px] px-2 py-1 rounded-lg border">لغو</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex gap-1">
+                    <button type="button" onClick={() => { setEditId(it.id); setEditUrl(it.url || ''); }} className="flex-1 text-[10px] py-1 rounded-lg border border-primary-200 dark:border-white/25">ویرایش</button>
+                    <button type="button" onClick={() => removeItem(it)} className="text-[10px] px-2 py-1 rounded-lg border border-red-300 text-red-600">حذف</button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 export default function AdminPanelContent() {
 
  const AdminProductActions = ({ product }) => {
@@ -475,6 +634,7 @@ export default function AdminPanelContent() {
            { id: 'tickets', label: 'تیکت‌ها', icon: 'message' },
            { id: 'buyers', label: 'خریداران', icon: 'user' },
            { id: 'reviews', label: 'نظرات مشتریان', icon: 'message' },
+           { id: 'media', label: 'مدیا', icon: 'image' },
            { id: 'seo', label: 'سئو و ایندکس', icon: 'settings' },
            { id: 'redirects', label: 'ریدایرکت', icon: 'share' },
            { id: 'analytics', label: 'آنالیتیکس', icon: 'grid' },
@@ -3973,7 +4133,12 @@ export default function AdminPanelContent() {
           </div>
          )}
 
-         {!adminLoading && adminTab === 'seo' && (
+         
+          {!adminLoading && adminTab === 'media' && (
+            <AdminMediaTab showToast={showToast} />
+          )}
+
+          {!adminLoading && adminTab === 'seo' && (
           <div className="space-y-6 max-w-none w-full">
            <div>
             <h2 className="text-base font-bold text-primary-900 dark:text-white">سئو و ابزارهای فنی</h2>
