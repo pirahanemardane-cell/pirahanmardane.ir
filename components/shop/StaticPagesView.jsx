@@ -1264,7 +1264,7 @@ export default function StaticPagesView() {
                       className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 shadow-sm active:scale-[0.99] transition"
                     >
                       <span className="w-10 h-10 rounded-full bg-apple-blue flex items-center justify-center !text-white">
-                        <Icon name="user" size={18} className="!text-white" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="!text-white" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
                       </span>
                       <span className="text-xs font-bold text-primary-900 dark:text-white whitespace-nowrap shrink-0">ورود خریدار</span>
                     </button>
@@ -1274,7 +1274,7 @@ export default function StaticPagesView() {
                       className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 shadow-sm active:scale-[0.99] transition"
                     >
                       <span className="w-10 h-10 rounded-full bg-emerald-600 dark:bg-emerald-500 flex items-center justify-center !text-white">
-                        <Icon name="sell" size={18} className="!text-white" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="!text-white" aria-hidden="true"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg>
                       </span>
                       <span className="text-xs font-bold text-primary-900 dark:text-white whitespace-nowrap shrink-0 header-auth min-w-0 max-w-full overflow-hidden">ورود فروشنده</span>
                     </button>
