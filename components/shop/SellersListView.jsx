@@ -479,7 +479,7 @@ export default function SellersListView() {
                           <img src={s.image} alt={s.name} className="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy" decoding="async" />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/25" />
                           {idx < 3 && (
-                            <span className={`absolute top-2 right-2 z-20 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shadow ${idx === 0 ? 'bg-amber-400 text-amber-950' : idx === 1 ? 'bg-slate-300 text-slate-800' : 'bg-amber-700 text-amber-50'}`}>
+                            <span className={`absolute top-2 left-2 z-20 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shadow ${idx === 0 ? 'bg-amber-400 text-amber-950' : idx === 1 ? 'bg-slate-300 text-slate-800' : 'bg-amber-700 text-amber-50'}`}>
                               {toFa(idx + 1)}
                             </span>
                           )}
