@@ -13395,7 +13395,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         </span>
       );
 
-      const renderProductCard = useCallback((p, keyPrefix = '', opts = {}) => {
+      const renderProductCard = useCallback((p, keyPrefix = '', opts = {}) => { /* card-height-v2 */
         const gridMode = !!opts.grid;
         const colors = Array.isArray(p?.colors) ? p.colors : [];
         const colorIdx = Math.min(selectedColors[p?.id] ?? 0, Math.max(0, colors.length - 1));
@@ -13417,11 +13417,11 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
             suppressHydrationWarning
             className={`gsap-card product-card bg-white dark:bg-black rounded-xl sm:rounded-2xl overflow-hidden shadow-sm flex flex-col cursor-pointer select-none border border-primary-100/80 dark:border-white/10 ${gridMode ? 'w-full h-full' : 'flex-shrink-0 w-[78%] min-[400px]:w-[70%] sm:w-[42%] md:w-[calc((100%-2.5rem)/3.3)] lg:w-[calc((100%-3.5rem)/4.3)] snap-start'}`}
           >
-            <div className="px-2.5 pt-2.5 sm:px-3 sm:pt-2.5 sm:pb-0">
+            <div className="px-2.5 pt-2 sm:px-2.5 sm:pt-2 sm:pb-0">
               <h3 className="text-base font-bold text-primary-900 dark:text-white">
                 <TipText text={p.name} className="font-bold text-primary-900 dark:text-white text-base" />
               </h3>
-              <div className="mt-1 flex flex-col items-start gap-0.5 sm:gap-1 min-h-[3rem] sm:min-h-[2.75rem]">
+              <div className="mt-1 flex flex-col items-start gap-0.5 min-h-[2.5rem] sm:min-h-[2.25rem]">
                 <button
                   type="button"
                   onClick={(e) => {
@@ -13460,7 +13460,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 </button>
               </div>
             </div>
-            <div className="relative aspect-[1/1] sm:aspect-[1/1] lg:aspect-[5/6] overflow-hidden bg-primary-50 dark:bg-black mx-2 my-1.5 sm:mx-3 sm:my-2 rounded-md sm:rounded-xl group/img">
+            <div className="relative aspect-[1/1] overflow-hidden bg-primary-50 dark:bg-black mx-2 my-1.5 sm:mx-2.5 sm:my-1.5 rounded-md sm:rounded-xl group/img">
               <img src={activeColor.image || p?.image || '/logo.webp'} alt={`${p.name || ''} - ${activeColor.name || ''}`} loading="lazy" decoding="async" referrerPolicy="no-referrer" className={`w-full h-full object-cover transition-opacity duration-300 pointer-events-none ${colors.length > 1 ? 'group-hover/img:opacity-0' : ''}`} onError={(e) => { e.currentTarget.classList.add('img-broken'); e.currentTarget.src = '/logo.webp'; }} />
               {colors.length > 1 && colors[colorIdx === 0 ? 1 : 0]?.image && (
                 <img src={colors[colorIdx === 0 ? 1 : 0].image} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
