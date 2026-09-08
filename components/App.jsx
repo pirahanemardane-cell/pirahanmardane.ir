@@ -5253,6 +5253,19 @@ const generateProductCode = (sellerKey, productId, shopName) => {
               }
             }
 
+                        if (parsed.type === 'category_or_product') {
+              const rawSlug = parsed.catSlug || parsed.maybeCatSlug || parsed.productSlug || '';
+              let catLabel = '';
+              try { catLabel = decodeURIComponent(String(rawSlug)).replace(/_/g, ' ').trim(); } catch (_) {
+                catLabel = String(rawSlug || '').replace(/_/g, ' ').trim();
+              }
+              if (catLabel) {
+                openPLP({ cat: catLabel, silent: true });
+                try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
+                return;
+              }
+            }
+
                         let found = null;
             if (parsed.type === 'product_code') {
               found = typeof findProductByCode === 'function'
@@ -6118,7 +6131,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
        * صفحهٔ جدا برای دسته نسازید — از openCategory / openPLP استفاده کنید.
        */
       const openPLP = (opts = {}) => {
-        beginPageLoad('shop');
+        if (!(opts && opts.silent)) beginPageLoad('shop');
         closeStaticPage();
         const alreadyOnPlp = !!showPLP && !opts.forceSkeleton;
         setPdpProduct(null);
