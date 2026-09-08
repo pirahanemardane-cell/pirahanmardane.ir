@@ -1088,7 +1088,7 @@ export default function StaticPagesView() {
                 </div>
 
                 {/* ستون ۴ — لوگو (سمت چپ در RTL) */}
-                <div className="footer-logo-col min-w-0 hidden md:flex items-center justify-center self-stretch">
+                <div className="footer-logo-col min-w-0 hidden md:flex items-center justify-center self-stretch -mt-[5px]">
                   <img
                     src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"}
                     alt="پیراهن مردانه"
