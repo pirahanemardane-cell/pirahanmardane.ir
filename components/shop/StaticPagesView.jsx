@@ -1086,19 +1086,19 @@ export default function StaticPagesView() {
                     <li className="pt-2 text-xs text-primary-400 dark:text-white/60 leading-relaxed">فروشگاه اینترنتی — ارسال به سراسر ایران</li>
                   </ul>
                 </div>
+
+                {/* ستون ۴ — لوگو (سمت چپ در RTL) */}
+                <div className="footer-logo-col min-w-0 hidden md:flex items-center justify-center self-stretch">
+                  <img
+                    src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"}
+                    alt="پیراهن مردانه"
+                    className="site-logo-img footer-site-logo w-full max-w-[200px] h-auto aspect-square object-contain bg-transparent"
+                    onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = dark ? '/blue_t_bg.webp' : '/red_t_bg.webp'; } catch (_) {} }}
+                  />
+                </div>
+
               </div>
 
-          <div className="footer-logo-col flex items-start justify-start md:justify-start pt-1">
-            <img
-              src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"}
-              alt="پیراهن مردانه"
-              className="site-logo-img footer-site-logo h-10 sm:h-12 md:h-14 w-auto max-w-[160px] object-contain bg-transparent"
-              onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = dark ? '/blue_t_bg.webp' : '/red_t_bg.webp'; } catch (_) {} }}
-            />
-          </div>
-
-
-          {/* ستون لوگو — دسکتاپ ستون آخر */}
 <div className="border-t border-primary-200 dark:border-primary-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
                 <p className="text-primary-400 dark:text-white/70 text-sm text-center md:text-right">© ۱۴۰۵ پیراهن مردانه (PIRAHANMARDANE.IR). تمامی حقوق محفوظ است.</p>
                 <EnamadFooterBadge />
