@@ -9,7 +9,7 @@ import { cn } from '../../lib/utils';
  */
 export function ModemAnimatedFooter({
   brandName = 'پیراهن مردانه',
-  brandDescription = 'فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر ایران',
+  brandDescription = 'فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر\u00A0ایران',
   navLinks = [],
   socialLinks = [],
   brandIcon,
@@ -70,7 +70,7 @@ export function ModemAnimatedFooter({
                           try { window.location.assign(link.href); } catch (_) {}
                         }
                       }}
-                      className="transition-colors duration-300 hover:font-semibold"
+                      className="transition-colors duration-300"
                       style={{ color: accent }}
                     >
                       {link.label}

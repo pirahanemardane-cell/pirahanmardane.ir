@@ -1046,7 +1046,7 @@ export default function StaticPagesView() {
           <ModemAnimatedFooter
             dark={!!dark}
             brandName="پیراهن مردانه"
-            brandDescription="فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر ایران"
+            brandDescription={"فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر\u00A0ایران"}
             yearText="۱۴۰۵"
             navLinks={[
               { label: 'خانه', href: '/', action: 'home' },
