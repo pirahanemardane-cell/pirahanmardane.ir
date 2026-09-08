@@ -163,10 +163,10 @@ export default function PdpView() {
                 />
                 {/* Breadcrumb */}
                 <Breadcrumb
-                  homeOnClick={() => { closePDP(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  homeOnClick={() => { try { closePDP({ silent: true }); } catch(_){} try { if (window.__goHome) window.__goHome(); } catch(_){} try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(_){} }}
                   items={[
-                    { label: 'فروشگاه', onClick: () => { closePDP(); openPLP(); } },
-                    { label: p.category, onClick: () => { closePDP(); openCategory(p.category); } },
+                    { label: 'فروشگاه', onClick: () => { try { closePDP({ silent: true }); } catch(_){} openPLP({ resetFilters: true, query: '', cats: [], colors: [], sizes: [] }); } },
+                    { label: p.category, onClick: () => { try { closePDP({ silent: true }); } catch(_){} openCategory(p.category); } },
                     { label: p.name, current: true },
                   ]}
                 />
@@ -285,7 +285,7 @@ export default function PdpView() {
                               <p className="text-sm font-bold text-primary-900 dark:text-white truncate">{fullSeller.name}</p>
                               <p className="text-xs text-primary-500 dark:!text-white">{toFa(Number(fullSeller.rating || seller.rating || 0).toFixed(1))}★ · {toFa(fullSeller.products || 0)} محصول</p>
                             </div>
-                            <button type="button" onClick={() => { closePDP(); openSeller(seller.id || 'own'); }} className="px-3 py-1.5 rounded-full text-xs font-medium border border-primary-200 dark:border-white/30 text-primary-800 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800">
+                            <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openSeller(seller.id || 'own'); }} className="px-3 py-1.5 rounded-full text-xs font-medium border border-primary-200 dark:border-white/30 text-primary-800 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800">
                               مشاهده فروشگاه
                             </button>
                           </div>
@@ -305,9 +305,9 @@ export default function PdpView() {
                       <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white leading-snug">{p.name}</h1>
                       {p.productCode && <p className="text-xs text-primary-400 dark:text-white/50 font-latin mt-1" dir="ltr">کد: {p.productCode}</p>}
                       <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm">
-                        <button type="button" onClick={() => { closePDP(); openCategory(p.category); }} className="text-apple-blue dark:text-[#13ABC4] hover:underline">{p.category}</button>
+                        <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openCategory(p.category); }} className="text-apple-blue dark:text-[#13ABC4] hover:underline">{p.category}</button>
                         <span className="text-primary-300">·</span>
-                        <button type="button" onClick={() => { closePDP(); openSeller(seller.id || 'own'); }} className="text-primary-600 dark:text-white/80 hover:underline">فروشنده: {seller.name}</button>
+                        <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openSeller(seller.id || 'own'); }} className="text-primary-600 dark:text-white/80 hover:underline">فروشنده: {seller.name}</button>
                         <span className="text-primary-300">·</span>
                         <span className="text-primary-400 dark:!text-white">کد: {p.sku || `PM-${p.id}`}</span>
                       </div>
@@ -627,7 +627,7 @@ export default function PdpView() {
                             <p className="text-sm font-bold text-primary-900 dark:text-white truncate">{fullSeller.name}</p>
                             <p className="text-xs text-primary-500 dark:!text-white">{toFa(Number(fullSeller.rating || seller.rating || 0).toFixed(1))}★ · {toFa(fullSeller.products || 0)} محصول</p>
                           </div>
-                          <button type="button" onClick={() => { closePDP(); openSeller(seller.id || 'own'); }} className="px-3 py-1.5 rounded-full text-xs font-medium border border-primary-200 dark:border-white/30 text-primary-800 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800">
+                          <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openSeller(seller.id || 'own'); }} className="px-3 py-1.5 rounded-full text-xs font-medium border border-primary-200 dark:border-white/30 text-primary-800 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800">
                             مشاهده فروشگاه
                           </button>
                         </div>

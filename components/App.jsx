@@ -4996,19 +4996,24 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           if (code && typeof window !== 'undefined') {
             const path = pathForProduct(p?.name || p?.title || code, p?.shopName || p?.sellerName || p?.brand || '');
             if (window.location.pathname !== path) {
-              window.history.pushState({ product: code }, '', path);
+              pushFaUrl(path, { product: code || true });
             }
           }
         } catch (_) {}
       };
-      const closePDP = () => {
-        const cat = (pdpProduct && (pdpProduct.category || (Array.isArray(pdpProduct.categories) && pdpProduct.categories[0]))) || null;
+      const closePDP = (opts = {}) => {
         setPdpProduct(null);
         setPdpZoom(false);
+        // silent: فقط بستن state — URL را caller (breadcrumb) عوض می‌کند
+        if (opts && opts.silent) return;
+        // استاندارد Back: یک قدم در پشته تاریخچه
         try {
-          if (cat) navigateTo(pathForCategory(cat), { plp: true, cat });
-          else goShop();
-        } catch (_) {
+          if (typeof window !== 'undefined' && window.history.length > 1) {
+            window.history.back();
+            return;
+          }
+        } catch (_) {}
+        try { goHome(); } catch (_) {
           try { goShop(); } catch (__) {}
         }
       };
@@ -5857,6 +5862,8 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         try { setMegaOpen(null); } catch (_) {}
         navigateTo(FA_PATHS.home || '/');
       };
+      try { if (typeof window !== 'undefined') window.__goHome = goHome; } catch (_) {}
+
 
       /** فروشگاه بدون فیلتر */
       const goShop = () => {
@@ -17016,3 +17023,5 @@ const params = new URLSearchParams(window.location.search);
 
 export default App;
 
+
+/* nav-standard-history-api-v1 */
