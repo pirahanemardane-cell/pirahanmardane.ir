@@ -4970,3 +4970,16 @@ html.dark button.product-seller-badge span {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
 }
+
+
+/* product-add-btn-white */
+html.dark .product-add-btn,
+html.dark button.product-add-btn {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html.dark .product-add-btn:hover,
+html.dark button.product-add-btn:hover {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}

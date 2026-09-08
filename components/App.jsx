@@ -13517,7 +13517,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); openQuickAdd(p); }}
-                  className="product-add-btn px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-xl border border-transparent bg-apple-blue text-white dark:!text-white hover:bg-blue-700 hover:text-white dark:hover:!bg-[#1A1C20] dark:hover:!text-[#7EFAFF] dark:text-[#13ABC4] dark:hover:!border-white transition flex-shrink-0"
+                  className="product-add-btn px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-xl border border-transparent bg-apple-blue !text-white dark:!text-white hover:bg-blue-700 hover:!text-white dark:hover:!bg-[#0f96ad] dark:hover:!text-white transition flex-shrink-0"
                 >
                   افزودن
                 </button>
