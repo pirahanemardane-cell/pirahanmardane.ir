@@ -88,7 +88,10 @@ export async function PATCH(request) {
     const needPayload =
       body.stock != null || body.category != null || body.brand != null ||
       body.colors != null || body.sizes != null || body.tags != null ||
-      body.attributes != null || body.payload != null
+      body.attributes != null || body.payload != null ||
+      body.amazing != null || body.popular != null || body.fastShip != null ||
+      body.fast_ship != null || body.discount != null || body.discount_percent != null ||
+      body.dealEndsAt != null || body.deal_ends_at != null
 
     if (needPayload) {
       const { data: cur } = await gate.admin
@@ -101,6 +104,20 @@ export async function PATCH(request) {
       if (body.stock != null) next.stock = Number(body.stock) || 0
       if (body.category != null) next.category = String(body.category)
       if (body.brand != null) next.brand = String(body.brand)
+      if (body.amazing != null) next.amazing = !!body.amazing
+      if (body.popular != null) next.popular = !!body.popular
+      if (body.fastShip != null || body.fast_ship != null) {
+        next.fastShip = !!(body.fastShip ?? body.fast_ship)
+        next.fast_ship = next.fastShip
+      }
+      if (body.discount != null || body.discount_percent != null) {
+        const d = Math.max(0, Math.min(90, Number(body.discount ?? body.discount_percent) || 0))
+        next.discount = d
+        next.discount_percent = d
+      }
+      if (body.dealEndsAt != null || body.deal_ends_at != null) {
+        next.dealEndsAt = body.dealEndsAt ?? body.deal_ends_at
+      }
       if (body.colors != null) next.colors = body.colors
       if (body.sizes != null) next.sizes = body.sizes
       if (body.tags != null) next.tags = body.tags

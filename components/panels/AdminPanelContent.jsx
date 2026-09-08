@@ -1439,6 +1439,101 @@ export default function AdminPanelContent() {
           return (
            <div className="space-y-4" key={p.id}>
             <button type="button" onClick={() => setAdminProductDetailId(null)} className="text-xs text-apple-blue flex items-center gap-1">← بازگشت به لیست محصولات</button>
+
+            {/* نوار بج‌های کارت محصول */}
+            <div className="p-3 sm:p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-primary-50/80 dark:bg-primary-950/50 space-y-3">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <p className="text-xs font-bold text-primary-900 dark:text-white">بج‌های کارت محصول</p>
+                <p className="text-[10px] text-primary-500 dark:text-white/50">با زدن هر گزینه بلافاصله ذخیره می‌شود</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { key: 'amazing', label: 'شگفت‌انگیز', on: !!(p.amazing), cls: 'from-amber-500 to-orange-500 text-white' },
+                  { key: 'popular', label: 'پرفروش', on: !!(p.popular), cls: 'bg-amber-500 text-white' },
+                  { key: 'fastShip', label: 'ارسال سریع', on: !!(p.fastShip || p.fast_ship), cls: 'bg-emerald-600 text-white' },
+                ].map((b) => (
+                  <button
+                    key={b.key}
+                    type="button"
+                    onClick={async () => {
+                      const nextVal = !b.on;
+                      try {
+                        const res = await fetch('/api/admin/products', {
+                          method: 'PATCH',
+                          credentials: 'include',
+                          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                          body: JSON.stringify({ id: p.id, [b.key]: nextVal }),
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (!res.ok || data.ok === false) {
+                          try { showToast({ message: data.error || 'ذخیره ناموفق', variant: 'error', duration: 3000, position: 'top-center' }); } catch (_) {}
+                          return;
+                        }
+                        if (typeof setAdminProducts === 'function') {
+                          setAdminProducts((prev) => (prev || []).map((x) => String(x.id) === String(p.id) ? { ...x, [b.key]: nextVal, fast_ship: b.key === 'fastShip' ? nextVal : x.fast_ship } : x));
+                        }
+                        try { showToast({ message: nextVal ? (b.label + ' فعال شد') : (b.label + ' برداشته شد'), variant: 'success', duration: 2000, position: 'top-center' }); } catch (_) {}
+                        try { window.dispatchEvent(new CustomEvent('catalog-products-refetch')); } catch (_) {}
+                      } catch (_) {
+                        try { showToast({ message: 'خطای شبکه', variant: 'error', duration: 3000, position: 'top-center' }); } catch (__) {}
+                      }
+                    }}
+                    className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
+                      b.on
+                        ? (b.key === 'amazing' ? 'bg-gradient-to-l from-amber-500 to-orange-500 text-white border-transparent' : b.cls + ' border-transparent')
+                        : 'bg-white dark:bg-primary-900 text-primary-700 dark:text-white/80 border-primary-200 dark:border-white/20'
+                    }`}
+                  >
+                    {b.on ? '✓ ' : ''}{b.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-end gap-2">
+                <label className="text-xs text-primary-600 dark:text-white/70 space-y-1">
+                  <span>٪ تخفیف (بج آبی)</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="90"
+                    defaultValue={Number(p.discount || p.discount_percent || 0) || 0}
+                    key={`disc-${p.id}-${p.discount || 0}`}
+                    id={`admin-prod-discount-${p.id}`}
+                    className="w-24 px-2 py-1.5 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm"
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white font-medium"
+                  onClick={async () => {
+                    const el = document.getElementById(`admin-prod-discount-${p.id}`);
+                    const disc = Math.max(0, Math.min(90, Number(el && el.value) || 0));
+                    try {
+                      const res = await fetch('/api/admin/products', {
+                        method: 'PATCH',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                        body: JSON.stringify({ id: p.id, discount: disc, discount_percent: disc }),
+                      });
+                      const data = await res.json().catch(() => ({}));
+                      if (!res.ok || data.ok === false) {
+                        try { showToast({ message: data.error || 'ذخیره ناموفق', variant: 'error', duration: 3000, position: 'top-center' }); } catch (_) {}
+                        return;
+                      }
+                      if (typeof setAdminProducts === 'function') {
+                        setAdminProducts((prev) => (prev || []).map((x) => String(x.id) === String(p.id) ? { ...x, discount: disc, discount_percent: disc } : x));
+                      }
+                      try { showToast({ message: disc ? (`تخفیف ${disc}٪ ذخیره شد`) : 'تخفیف برداشته شد', variant: 'success', duration: 2000, position: 'top-center' }); } catch (_) {}
+                      try { window.dispatchEvent(new CustomEvent('catalog-products-refetch')); } catch (_) {}
+                    } catch (_) {
+                      try { showToast({ message: 'خطای شبکه', variant: 'error', duration: 3000, position: 'top-center' }); } catch (__) {}
+                    }
+                  }}
+                >
+                  ذخیره تخفیف
+                </button>
+              </div>
+            </div>
+
             <div className="flex flex-wrap items-start gap-4 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
              <img src={p.image || (p.images && p.images[0]) || '/logo.webp'} alt="" className="w-28 h-36 object-cover rounded-xl bg-primary-50" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }} />
              <div className="flex-1 min-w-0 space-y-1 text-right">
