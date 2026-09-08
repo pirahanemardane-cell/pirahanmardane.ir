@@ -3339,7 +3339,7 @@ html.dark .hero-title-main {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   background-color: #FF0000 !important;
-  border: none !important;
+  border: 2px solid #ffffff !important;
   box-shadow: none !important;
   text-shadow: none !important;
 }
@@ -3396,7 +3396,7 @@ html.dark .hero-title-overlay .hero-shop-btn span {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   background-color: #FF0000 !important;
-  border: none !important;
+  border: 2px solid #ffffff !important;
   box-shadow: none !important;
   text-shadow: none !important;
 }
