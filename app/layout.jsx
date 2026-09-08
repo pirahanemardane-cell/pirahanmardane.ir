@@ -33,6 +33,9 @@ export const metadata = {
     ],
   },
 
+    ],
+  },
+
   title: {
     default: `${SITE_NAME} | PIRAHANMARDANE.IR`,
     template: `%s | ${SITE_NAME}`,
