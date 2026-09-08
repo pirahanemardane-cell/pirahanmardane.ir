@@ -1044,7 +1044,7 @@ export default function StaticPagesView() {
 
           <footer className="bg-primary-50 dark:bg-primary-950 text-primary-800 dark:text-white pt-10 sm:pt-14 pb-6 sm:pb-8 border-t border-primary-200 dark:border-white/30 transition-colors">
             <div className="max-w-7xl mx-auto px-3 sm:px-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10 items-start">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10 items-stretch">
                 {/* ستون ۱ — فقط دسکتاپ (موبایل حذف) */}
                 <div className="min-w-0 hidden md:block">
                   <h3 className="font-bold text-base sm:text-lg text-primary-900 dark:text-white mb-3">دسترسی سریع</h3>
@@ -1088,11 +1088,11 @@ export default function StaticPagesView() {
                 </div>
 
                 {/* ستون ۴ — لوگو (سمت چپ در RTL) */}
-                <div className="footer-logo-col min-w-0 hidden md:flex items-center justify-center self-center h-full">
+                <div className="footer-logo-col min-w-0 hidden md:flex items-center justify-center self-stretch">
                   <img
                     src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"}
                     alt="پیراهن مردانه"
-                    className="site-logo-img footer-site-logo w-full max-w-[200px] h-auto aspect-square object-contain bg-transparent"
+                    className="site-logo-img footer-site-logo w-[148px] h-[148px] object-contain bg-transparent shrink-0"
                     onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = dark ? '/blue_t_bg.webp' : '/red_t_bg.webp'; } catch (_) {} }}
                   />
                 </div>
