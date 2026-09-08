@@ -30,15 +30,16 @@ export function ModemAnimatedFooter({
             <div className="w-full flex flex-col items-center gap-3">
               <div className="flex items-center gap-2">
                 <span
-                  className="text-2xl sm:text-3xl font-bold"
+                  className="text-2xl sm:text-3xl font-black"
                   style={{ color: accent }}
                 >
                   {brandName}
                 </span>
               </div>
-              <p className="text-primary-500 dark:text-white/60 font-medium text-center w-full max-w-3xl text-sm sm:text-base px-4 leading-7 whitespace-normal sm:whitespace-nowrap">
-                {brandDescription}
-              </p>
+              <div className="text-primary-500 dark:text-white/60 font-medium text-center w-full max-w-xl text-sm sm:text-base px-4 leading-7 space-y-0.5">
+                <p className="m-0">فروشگاه اینترنتی تخصصی پیراهن مردانه</p>
+                <p className="m-0">ارسال به سراسر&nbsp;ایران</p>
+              </div>
 
               {Array.isArray(socialLinks) && socialLinks.length > 0 && (
                 <div className="flex mb-4 mt-2 gap-4">
@@ -59,7 +60,7 @@ export function ModemAnimatedFooter({
               )}
 
               {Array.isArray(navLinks) && navLinks.length > 0 && (
-                <div className="flex flex-nowrap justify-center items-center gap-x-3 sm:gap-x-4 text-sm font-medium w-full max-w-6xl px-2 mt-2 overflow-x-auto no-scrollbar whitespace-nowrap">
+                <div className="grid grid-cols-3 gap-x-3 gap-y-3 sm:gap-x-6 sm:gap-y-3 text-sm font-medium w-full max-w-2xl px-3 mt-3 text-center">
                   {navLinks.map((link, index) => (
                     <button
                       key={index}
@@ -70,7 +71,7 @@ export function ModemAnimatedFooter({
                           try { window.location.assign(link.href); } catch (_) {}
                         }
                       }}
-                      className="transition-colors duration-300"
+                      className="transition-colors duration-200 whitespace-normal leading-snug"
                       style={{ color: accent }}
                     >
                       {link.label}
@@ -78,14 +79,14 @@ export function ModemAnimatedFooter({
                   ))}
                 </div>
               )}
+                </div>
+              )}
             </div>
           </div>
 
           {/* کپی‌رایت */}
           <div className="mt-16 md:mt-20 flex flex-col gap-2 items-center justify-center relative z-10 px-4">
-            <p className="text-sm text-primary-400 dark:text-white/50 text-center">
-              © {year} {brandName} (PIRAHANMARDANE.IR). تمامی حقوق محفوظ است.
-            </p>
+            <p className="text-sm text-primary-400 dark:text-white/50 text-center">تمامی حقوق پیراهن مردانه محفوظ است.</p>
           </div>
         </div>
 
