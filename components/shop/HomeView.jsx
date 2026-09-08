@@ -164,7 +164,7 @@ export default function HomeView() {
         id,
         name,
         logo_url: b.logo_url || b.logoUrl || b.image || (prev && prev.logo_url) || '',
-        show_on_home: !!(b.show_on_home ?? b.showOnHome ?? (prev && prev.show_on_home)),
+        show_on_home: (b.home_opt_out === true || b.homeOptOut === true) ? false : (b.show_on_home == null && b.showOnHome == null ? true : !!(b.show_on_home ?? b.showOnHome ?? (prev && prev.show_on_home))),
         active: b.active !== false,
         sort_order: Number(b.sort_order ?? b.sortOrder) || (prev && prev.sort_order) || 0,
       };
