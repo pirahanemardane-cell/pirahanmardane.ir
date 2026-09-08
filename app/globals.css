@@ -4958,19 +4958,6 @@ html.dark button[class*="text-[#7EFAFF]"] {
 }
 
 
-/* product-seller-white-dark */
-html.dark .product-seller-badge,
-html.dark button.product-seller-badge,
-html.dark a.product-seller-badge {
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
-}
-html.dark .product-seller-badge span,
-html.dark button.product-seller-badge span {
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
-}
-
 
 /* product-add-btn-white */
 html.dark .product-add-btn,
@@ -4982,4 +4969,19 @@ html.dark .product-add-btn:hover,
 html.dark button.product-add-btn:hover {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* product-seller-badge-dark */
+html.dark .product-seller-badge,
+html.dark button.product-seller-badge {
+  background-color: #FFFFFF !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+  border-color: #FFFFFF !important;
+}
+html.dark .product-seller-badge span,
+html.dark button.product-seller-badge span {
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
 }
