@@ -4975,13 +4975,11 @@ html.dark button.product-add-btn:hover {
 /* product-seller-badge-dark */
 html.dark .product-seller-badge,
 html.dark button.product-seller-badge {
-  background-color: #FFFFFF !important;
-  color: #0A0A0A !important;
-  -webkit-text-fill-color: #0A0A0A !important;
-  border-color: #FFFFFF !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }
 html.dark .product-seller-badge span,
 html.dark button.product-seller-badge span {
-  color: #0A0A0A !important;
-  -webkit-text-fill-color: #0A0A0A !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }
