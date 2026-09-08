@@ -720,7 +720,7 @@ export default function HomeView() {
                 <div className="mt-auto pt-5 flex w-full max-w-md gap-2 flex-row justify-center items-center">
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={async () => {
                       const raw = String(newsletterPhone || '').trim();
                       const digits = raw.replace(/[۰-۹]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/\D/g, '');
                       let phone = digits;
@@ -732,16 +732,30 @@ export default function HomeView() {
                         return;
                       }
                       try {
-                        const prev = JSON.parse(localStorage.getItem('newsletterPhones') || '[]');
-                        const list = Array.isArray(prev) ? prev : [];
-                        if (!list.includes(phone)) {
-                          list.unshift({ phone, at: Date.now() });
-                          localStorage.setItem('newsletterPhones', JSON.stringify(list.slice(0, 200)));
+                        const res = await fetch('/api/club', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ phone, source: 'home_newsletter' }),
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (!res.ok || data.ok === false) {
+                          try { showToast({ message: data.error || 'ثبت ناموفق', variant: 'error', duration: 4000, position: 'top-center' }); } catch (_) {}
+                          return;
                         }
-                      } catch (_) {}
-                      setNewsletterPhone('');
-                      try { showToast({ message: 'شماره شما ثبت شد. از تخفیف‌ها باخبر می‌شوید.', variant: 'success', duration: 4000, position: 'top-center' }); } catch (_) {}
-                      try { pushLiveToast('شماره با موفقیت ثبت شد', { type: 'success', duration: 3500 }); } catch (_) {}
+                        try {
+                          const prev = JSON.parse(localStorage.getItem('newsletterPhones') || '[]');
+                          const list = Array.isArray(prev) ? prev : [];
+                          if (!list.some((x) => (x && x.phone) === phone || x === phone)) {
+                            list.unshift({ phone, at: Date.now() });
+                            localStorage.setItem('newsletterPhones', JSON.stringify(list.slice(0, 200)));
+                          }
+                        } catch (_) {}
+                        setNewsletterPhone('');
+                        try { showToast({ message: 'شماره شما ثبت شد. از تخفیف‌ها باخبر می‌شوید.', variant: 'success', duration: 4000, position: 'top-center' }); } catch (_) {}
+                        try { pushLiveToast('شماره با موفقیت ثبت شد', { type: 'success', duration: 3500 }); } catch (_) {}
+                      } catch (_) {
+                        try { showToast({ message: 'خطای شبکه', variant: 'error', duration: 3500, position: 'top-center' }); } catch (__) {}
+                      }
                     }}
                     className="h-11 min-w-[7.5rem] px-5 rounded-full bg-apple-blue text-white text-sm font-bold hover:opacity-90 dark:bg-[#13ABC4] transition whitespace-nowrap flex-shrink-0 inline-flex items-center justify-center"
                   >

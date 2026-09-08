@@ -189,6 +189,99 @@ function AdminMediaTab({ showToast }) {
 }
 
 
+
+
+function AdminCustomerClubTab() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [q, setQ] = useState('');
+  const [busyId, setBusyId] = useState(null);
+
+  const load = async (query = q) => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/club?q=' + encodeURIComponent(query || ''), {
+        credentials: 'include',
+        cache: 'no-store',
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) {
+        try { showToast({ message: data.error || 'بارگذاری ناموفق', variant: 'error', duration: 3500, position: 'top-center' }); } catch (_) {}
+        setItems([]);
+      } else {
+        setItems(Array.isArray(data.items) ? data.items : []);
+      }
+    } catch (_) {
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { load(''); }, []);
+
+  const remove = async (id) => {
+    if (!window.confirm('این شماره حذف شود؟')) return;
+    setBusyId(id);
+    try {
+      const res = await fetch('/api/admin/club', {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) {
+        try { showToast({ message: data.error || 'حذف ناموفق', variant: 'error', duration: 3000, position: 'top-center' }); } catch (_) {}
+      } else {
+        setItems((prev) => (prev || []).filter((x) => x.id !== id));
+        try { showToast({ message: 'حذف شد', variant: 'success', duration: 2000, position: 'top-center' }); } catch (_) {}
+      }
+    } catch (_) {
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-base font-bold text-primary-900 dark:text-white">باشگاه مشتریان</h2>
+          <p className="text-xs text-primary-500 dark:text-white/60 mt-1">شماره‌های فرم تخفیف صفحه اصلی</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') load(q); }} placeholder="جستجوی شماره…" className="px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm w-40 sm:w-52" dir="ltr" />
+          <button type="button" onClick={() => load(q)} className="text-xs px-3 py-2 rounded-full border border-primary-200 dark:border-white/20">جستجو</button>
+          <button type="button" onClick={() => load('')} className="text-xs px-3 py-2 rounded-full bg-apple-blue text-white">بازنشانی</button>
+        </div>
+      </div>
+      <p className="text-xs text-primary-400">تعداد: {items.length}</p>
+      {loading ? (
+        <p className="text-sm text-primary-500 py-8 text-center">در حال بارگذاری…</p>
+      ) : !items.length ? (
+        <p className="text-sm text-primary-500 py-10 text-center">موردی ثبت نشده</p>
+      ) : (
+        <div className="space-y-2">
+          {items.map((row) => (
+            <div key={row.id} className="flex items-center justify-between gap-3 p-3 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
+              <div className="min-w-0 text-right">
+                <p className="font-medium text-primary-900 dark:text-white font-latin" dir="ltr">{row.phone || row.phone_normalized}</p>
+                <p className="text-[11px] text-primary-400 mt-0.5">
+                  {row.created_at ? new Date(row.created_at).toLocaleString('fa-IR') : '—'}
+                  {row.source ? ` · ${row.source}` : ''}
+                </p>
+              </div>
+              <button type="button" disabled={busyId === row.id} onClick={() => remove(row.id)} className="text-xs px-2.5 py-1 rounded-full border border-red-300 text-red-600 flex-shrink-0">حذف</button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 export default function AdminPanelContent() {
 
  const AdminProductActions = ({ product }) => {
@@ -634,6 +727,7 @@ export default function AdminPanelContent() {
            { id: 'tickets', label: 'تیکت‌ها', icon: 'message' },
            { id: 'buyers', label: 'خریداران', icon: 'user' },
            { id: 'reviews', label: 'نظرات مشتریان', icon: 'message' },
+           { id: 'club', label: 'باشگاه مشتریان', icon: 'user' },
            { id: 'media', label: 'مدیا', icon: 'image' },
            { id: 'seo', label: 'سئو و ایندکس', icon: 'settings' },
            { id: 'redirects', label: 'ریدایرکت', icon: 'share' },
@@ -4126,7 +4220,12 @@ export default function AdminPanelContent() {
 
          {/* SEO & Indexing */}
          
-         {!adminLoading && adminTab === 'reviews' && (
+         
+          {!adminLoading && adminTab === 'club' && (
+            <AdminCustomerClubTab />
+          )}
+
+          {!adminLoading && adminTab === 'reviews' && (
           <div className="space-y-4">
            <h2 className="text-lg font-bold text-primary-900 dark:text-white">نظرات مشتریان واقعی</h2>
            <AdminReviewsTab showToast={typeof showToast === 'function' ? showToast : undefined} />
