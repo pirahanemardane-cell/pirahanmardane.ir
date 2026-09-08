@@ -4991,3 +4991,16 @@ html.dark .review-shop-badge {
   color: #0A0A0A !important;
   -webkit-text-fill-color: #0A0A0A !important;
 }
+
+
+/* hero-body1-line1-mobile-oneline */
+/* فقط موبایل: مرکز فروش تخصصی یک خط، بدون اورفلو — دسکتاپ دست‌نخورده */
+@media (max-width: 768px) {
+  .hero-body1-line1 {
+    white-space: nowrap !important;
+    font-size: clamp(1.25rem, 6.6vw, 2.1rem) !important;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+}
