@@ -5,6 +5,7 @@ import { useAppApi } from '../AppApiContext';
 import Avatar from '../ui/Avatar';
 import dynamic from 'next/dynamic';
 import EnamadFooterBadge from './EnamadFooterBadge';
+import { ModemAnimatedFooter } from '../ui/modem-animated-footer';
 const FAQMonochrome = dynamic(() => import('../ui/faq-monochrome').then(m => m.FAQMonochrome || m.default), { ssr: false });
 
 /** StaticPagesView — code-split from App.jsx */
@@ -1042,69 +1043,44 @@ export default function StaticPagesView() {
 
           {/* Footer — در تمام صفحات بدون استثنا */}
 
-          <footer className="bg-primary-50 dark:bg-primary-950 text-primary-800 dark:text-white pt-10 sm:pt-14 pb-6 sm:pb-8 border-t border-primary-200 dark:border-white/30 transition-colors">
-            <div className="max-w-7xl mx-auto px-3 sm:px-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10 items-center">
-                {/* ستون ۱ — فقط دسکتاپ (موبایل حذف) */}
-                <div className="min-w-0 hidden md:flex md:flex-col md:justify-center">
-                  <h3 className="font-bold text-base sm:text-lg text-primary-900 dark:text-white mb-3">دسترسی سریع</h3>
-                  <ul className="space-y-2 text-sm text-primary-500 dark:text-white/80">
-                    <li><button type="button" onClick={() => { try { closeStaticPage(); } catch (_) {} try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">خانه</button></li>
-                    <li><button type="button" onClick={() => { try { closeStaticPage(); openPLP?.(); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">فروشگاه</button></li>
-                    <li><button type="button" onClick={() => { try { closeStaticPage(); openSellersList?.(); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">فروشندگان</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('brands'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">برندها</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('deals'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">شگفت‌انگیز</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('about'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">درباره ما</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('contact'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">تماس با ما</button></li>
-                  </ul>
-                </div>
-
-                {/* ستون ۲ */}
-                <div className="min-w-0">
-                  <h3 className="font-bold text-base sm:text-lg text-primary-900 dark:text-white mb-3">خدمات مشتریان</h3>
-                  <ul className="space-y-2 text-sm text-primary-500 dark:text-white/80">
-                    <li><button type="button" onClick={() => { try { setPublicTrackOpen && setPublicTrackOpen(true); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">پیگیری سفارش</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('faq'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">سوالات متداول</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('size-guide'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">راهنمای سایز</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('returns'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">شرایط بازگشت کالا</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('privacy'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">حریم خصوصی</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('terms'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">قوانین و شرایط</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('blog'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">بلاگ</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('sitemap'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">نقشه سایت</button></li>
-                    <li><button type="button" onClick={() => { try { openStaticPage('become-seller'); } catch (_) {} }} className="text-red-600 hover:text-red-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition">فروشنده شوید</button></li>
-                  </ul>
-                </div>
-
-                {/* ستون ۳ */}
-                <div className="min-w-0">
-                  <h3 className="font-bold text-base sm:text-lg text-primary-900 dark:text-white mb-3">ساعات پاسخگویی</h3>
-                  <ul className="space-y-2 text-sm text-primary-500 dark:text-white/80">
-                    <li>شنبه تا چهارشنبه: ۹ تا ۱۸</li>
-                    <li>پنج‌شنبه: ۹ تا ۱۴</li>
-                    <li>جمعه: تعطیل</li>
-                    <li className="pt-1 text-primary-600 dark:text-white/90">پشتیبانی آنلاین همه روزه</li>
-                    <li className="pt-2 text-xs text-primary-400 dark:text-white/60 leading-relaxed">فروشگاه اینترنتی — ارسال به سراسر ایران</li>
-                  </ul>
-                </div>
-
-                {/* ستون ۴ — لوگو (سمت چپ در RTL) */}
-                <div className="footer-logo-col min-w-0 hidden md:flex items-center justify-center">
-                  <img
-                    src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"}
-                    alt="پیراهن مردانه"
-                    className="site-logo-img footer-site-logo w-[148px] h-[148px] object-contain bg-transparent shrink-0"
-                    onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = dark ? '/blue_t_bg.webp' : '/red_t_bg.webp'; } catch (_) {} }}
-                  />
-                </div>
-
-              </div>
-
-<div className="border-t border-primary-200 dark:border-primary-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
-                <p className="text-primary-400 dark:text-white/70 text-sm text-center md:text-right">© ۱۴۰۵ پیراهن مردانه (PIRAHANMARDANE.IR). تمامی حقوق محفوظ است.</p>
-                <EnamadFooterBadge />
-              </div>
-            </div>
-          </footer>
+          <ModemAnimatedFooter
+            dark={!!dark}
+            brandName="پیراهن مردانه"
+            brandDescription="فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر ایران"
+            yearText="۱۴۰۵"
+            navLinks={[
+              { label: 'خانه', href: '/', action: 'home' },
+              { label: 'فروشگاه', href: '/فروشگاه', action: 'shop' },
+              { label: 'فروشندگان', href: '/فروشندگان', action: 'sellers' },
+              { label: 'برندها', href: '/برندها', action: 'brands' },
+              { label: 'شگفت‌انگیز', href: '/شگفت‌انگیز', action: 'deals' },
+              { label: 'درباره ما', href: '/درباره-ما', action: 'about' },
+              { label: 'تماس با ما', href: '/تماس-با-ما', action: 'contact' },
+              { label: 'سوالات متداول', href: '/سوالات-متداول', action: 'faq' },
+              { label: 'پیگیری سفارش', href: '#', action: 'track' },
+            ]}
+            onNavClick={(link) => {
+              try {
+                const a = link && link.action;
+                if (a === 'home') { try { closeStaticPage(); } catch (_) {} try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {} return; }
+                if (a === 'shop') { try { closeStaticPage(); openPLP?.(); } catch (_) {} return; }
+                if (a === 'sellers') { try { closeStaticPage(); openSellersList?.(); } catch (_) {} return; }
+                if (a === 'brands') { try { openStaticPage('brands'); } catch (_) {} return; }
+                if (a === 'deals') { try { openStaticPage('deals'); } catch (_) {} return; }
+                if (a === 'about') { try { openStaticPage('about'); } catch (_) {} return; }
+                if (a === 'contact') { try { openStaticPage('contact'); } catch (_) {} return; }
+                if (a === 'faq') { try { openStaticPage('faq'); } catch (_) {} return; }
+                if (a === 'track') { try { setPublicTrackOpen?.(true); } catch (_) {} return; }
+                if (link && link.href && link.href !== '#') {
+                  try { window.location.assign(link.href); } catch (_) {}
+                }
+              } catch (_) {}
+            }}
+          />
+          {/* نگه داشتن نماد اعتماد زیر فوتر جدید */}
+          <div className="bg-primary-50 dark:bg-primary-950 pb-6 flex justify-center">
+            <EnamadFooterBadge />
+          </div>
 
 
           {/* Mobile Mega Menu — مدرن، تمام‌صفحه */}
