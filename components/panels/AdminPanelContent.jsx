@@ -2411,7 +2411,7 @@ export default function AdminPanelContent() {
                 />
                 صفحه اصلی
                </label>
-               <button type="button" onClick={() => saveAdminCatalogBrands((adminCatalogBrands || []).map(x => x.id === b.id ? { ...x, active: x.active === false } : x))} className={`text-xs px-2 py-1 rounded-full border ${b.active === false ? 'border-amber-300 text-amber-700' : 'border-emerald-300 text-emerald-700'}`}>{b.active === false ? 'غیرفعال' : 'فعال'}</button>
+               <button type="button" onClick={() => saveAdminCatalogBrands((adminCatalogBrands || []).map(x => x.id === b.id ? { ...x, active: x.active === false } : x))} className={`text-xs px-2.5 py-1 rounded-full border font-medium ${b.active === false ? 'bg-red-50 border-red-200 text-red-600 dark:bg-red-950/40 dark:border-red-800/60 dark:text-red-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/40 dark:border-emerald-800/60 dark:text-emerald-300'}`}>{b.active === false ? 'غیرفعال' : 'فعال'}</button>
                <button type="button" onClick={() => openTaxonomyWizard('brand', b)} className="p-1.5 rounded-full hover:bg-primary-50 text-primary-500"><Icon name="pencil" size={14} /></button>
                <button type="button" onClick={() => { siteConfirm('حذف این برند؟').then(ok=>{ if(ok) saveAdminCatalogBrands((adminCatalogBrands || []).filter(x => x.id !== b.id)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
               </div>
