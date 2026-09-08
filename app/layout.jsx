@@ -6,7 +6,30 @@ const SITE_DESC =
   'فروشگاه اینترنتی پیراهن مردانه — رسمی، کروات، لینن و آستین کوتاه از فروشندگان معتبر';
 
 export const metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL('https://pirahanmardane.ir'),
+  openGraph: {
+    type: 'website',
+    locale: 'fa_IR',
+    url: 'https://pirahanmardane.ir',
+    siteName: 'پیراهن مردانه',
+    title: 'پیراهن مردانه | مرکز تخصصی فروش پیراهن مردانه',
+    description: 'فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر ایران',
+    images: [
+      {
+        url: '/og-twitter-card.jpg',
+        width: 1200,
+        height: 670,
+        alt: "THE MEN'S SHIRT SPECIALIST — PIRAHANMARDANE.IR",
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'پیراهن مردانه | مرکز تخصصی فروش پیراهن مردانه',
+    description: 'فروشگاه اینترنتی تخصصی پیراهن مردانه — ارسال به سراسر ایران',
+    images: ['/og-twitter-card.jpg'],
+  },
+
   title: {
     default: `${SITE_NAME} | PIRAHANMARDANE.IR`,
     template: `%s | ${SITE_NAME}`,
@@ -23,21 +46,6 @@ export const metadata = {
   },
   alternates: {
     canonical: SITE_URL,
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'fa_IR',
-    url: SITE_URL,
-    siteName: SITE_NAME,
-    title: `${SITE_NAME} | PIRAHANMARDANE.IR`,
-    description: SITE_DESC,
-    images: [{ url: '/logo.webp', width: 512, height: 512, alt: SITE_NAME }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: `${SITE_NAME} | PIRAHANMARDANE.IR`,
-    description: SITE_DESC,
-    images: ['/logo.webp'],
   },
   robots: {
     index: false,
