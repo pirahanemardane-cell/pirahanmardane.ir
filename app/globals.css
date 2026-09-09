@@ -5252,3 +5252,63 @@ html.dark p.pm-page-loader-text,
 }
 /* === END MOBILE PANEL TABS FIXED === */
 
+
+/* OTP boxes — پر شدن و بررسی */
+.pm-otp-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  direction: ltr;
+}
+.pm-otp-digit {
+  width: 2.75rem;
+  height: 3.25rem;
+  border-radius: 0.75rem;
+  border: 2px solid rgba(0,0,0,0.12);
+  background: #f5f5f7;
+  color: #0A0A0A;
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-align: center;
+  caret-color: transparent;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+html.dark .pm-otp-digit {
+  background: #1a1c20;
+  border-color: rgba(255,255,255,0.15);
+  color: #EBFFFB;
+}
+.pm-otp-digit:focus,
+.pm-otp-digit.pm-otp-active {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+}
+html.dark .pm-otp-digit:focus,
+html.dark .pm-otp-digit.pm-otp-active {
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.3);
+}
+.pm-otp-digit.pm-otp-filled {
+  border-color: #22c55e;
+}
+html.dark .pm-otp-digit.pm-otp-filled {
+  border-color: #4ade80;
+}
+.pm-otp-digit.pm-otp-checking {
+  animation: pm-otp-pulse 0.9s ease-in-out infinite;
+  border-color: #22c55e;
+}
+@keyframes pm-otp-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.35); }
+  50% { transform: scale(1.04); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+}
+.pm-otp-checking-label {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #16a34a;
+  margin-top: 0.5rem;
+}
+html.dark .pm-otp-checking-label {
+  color: #4ade80;
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import {useEffect, useState, useRef} from 'react';
 import { useAppApi } from '../AppApiContext';
 
 /**
@@ -11,6 +11,111 @@ import { useAppApi } from '../AppApiContext';
  *  اگر از checkout آمده → بعد از ورود به تسویه
  * ادمین جدا است و اینجا دست زده نمی‌شود.
  */
+
+function OtpDigitBoxes({ value, onChange, length = 6, disabled = false, checking = false }) {
+  const refs = useRef([]);
+  const digits = String(value || "").replace(/\D/g, "").slice(0, length).split("");
+  while (digits.length < length) digits.push("");
+
+  const focusAt = (i) => {
+    const el = refs.current[i];
+    if (el) {
+      try { el.focus(); el.select?.(); } catch (_) {}
+    }
+  };
+
+  const setFromString = (str) => {
+    const clean = String(str || "").replace(/\D/g, "").slice(0, length);
+    onChange?.(clean);
+    if (clean.length < length) focusAt(clean.length);
+    else focusAt(length - 1);
+  };
+
+  const onInput = (i, e) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    if (!raw) {
+      const next = digits.slice();
+      next[i] = "";
+      onChange?.(next.join(""));
+      return;
+    }
+    // پیست چند رقمی
+    if (raw.length > 1) {
+      setFromString((digits.join("").slice(0, i) + raw).slice(0, length));
+      return;
+    }
+    const next = digits.slice();
+    next[i] = raw.slice(-1);
+    const joined = next.join("");
+    onChange?.(joined);
+    if (i < length - 1) focusAt(i + 1);
+  };
+
+  const onKeyDown = (i, e) => {
+    if (e.key === "Backspace") {
+      e.preventDefault();
+      const next = digits.slice();
+      if (next[i]) {
+        next[i] = "";
+        onChange?.(next.join(""));
+      } else if (i > 0) {
+        next[i - 1] = "";
+        onChange?.(next.join(""));
+        focusAt(i - 1);
+      }
+    } else if (e.key === "ArrowLeft" && i > 0) {
+      e.preventDefault();
+      focusAt(i - 1);
+    } else if (e.key === "ArrowRight" && i < length - 1) {
+      e.preventDefault();
+      focusAt(i + 1);
+    }
+  };
+
+  const onPaste = (e) => {
+    e.preventDefault();
+    const t = (e.clipboardData || window.clipboardData)?.getData("text") || "";
+    setFromString(t);
+  };
+
+  return (
+    <div className="pm-otp-wrap">
+      <div className="pm-otp-row" dir="ltr" onPaste={onPaste}>
+        {digits.map((d, i) => {
+          const filled = !!d;
+          const active = !disabled && !checking && (i === String(value || "").replace(/\D/g, "").length || (String(value || "").replace(/\D/g, "").length === length && i === length - 1));
+          return (
+            <input
+              key={i}
+              ref={(el) => { refs.current[i] = el; }}
+              type="text"
+              inputMode="numeric"
+              autoComplete={i === 0 ? "one-time-code" : "off"}
+              maxLength={i === 0 ? length : 1}
+              disabled={disabled || checking}
+              value={d}
+              aria-label={`رقم ${i + 1} کد تأیید`}
+              className={[
+                "pm-otp-digit",
+                filled ? "pm-otp-filled" : "",
+                active ? "pm-otp-active" : "",
+                checking ? "pm-otp-checking" : "",
+              ].filter(Boolean).join(" ")}
+              onChange={(e) => onInput(i, e)}
+              onKeyDown={(e) => onKeyDown(i, e)}
+              onFocus={(e) => { try { e.target.select(); } catch (_) {} }}
+            />
+          );
+        })}
+      </div>
+      {checking && (
+        <p className="pm-otp-checking-label">در حال بررسی کد…</p>
+      )}
+    </div>
+  );
+}
+
+
 export default function AuthModalView() {
   const {
     Icon,
