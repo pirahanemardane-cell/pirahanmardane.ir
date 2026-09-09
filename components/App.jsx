@@ -16720,7 +16720,18 @@ const params = new URLSearchParams(window.location.search);
                 { label: 'مجله', href: '/مجله', onClick: () => { try { openStaticPage('blog'); } catch (_) {} } },
                 { label: (typeof blogPostId !== 'undefined' && blogPosts?.find?.(b => b.id === blogPostId)?.title) || 'مطلب', current: true },
               ] : []),
-              ...(staticPage && staticPage !== 'blog-post' ? [{
+              ...(staticPage === 'brands' && brandDetailId ? [
+                { label: 'برندها', href: '/برندها', onClick: () => { try { setBrandDetailId(null); openStaticPage('brands'); } catch (_) {} } },
+                { label: (() => {
+                  const pool = [
+                    ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
+                    ...(Array.isArray(brandsList) ? brandsList : []),
+                  ];
+                  const br = pool.find((x) => x && (String(x.id) === String(brandDetailId) || String(x.slug) === String(brandDetailId) || String(x.name) === String(brandDetailId)));
+                  return (br && br.name) || String(brandDetailId);
+                })(), current: true },
+              ] : []),
+              ...(staticPage && staticPage !== 'blog-post' && !(staticPage === 'brands' && brandDetailId) ? [{
                 label: ({
                   about: 'درباره ما', contact: 'تماس با ما', faq: 'سوالات متداول', 'size-guide': 'راهنمای سایز',
                   'become-seller': 'فروشنده شوید', terms: 'قوانین و شرایط', returns: 'شرایط بازگشت',

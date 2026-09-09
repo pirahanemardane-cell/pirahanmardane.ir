@@ -10,7 +10,7 @@ const FAQMonochrome = dynamic(() => import('../ui/faq-monochrome').then(m => m.F
 
 /** StaticPagesView — code-split from App.jsx */
 export default function StaticPagesView() {
-  const {BRANDS_LIST, COMPARE_MAX, DEFAULT_SITE_FAQS, DEFAULT_SELLER_FAQS, EmptyStateBox, Icon, SimpleEditor, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Textarea, activeSellerId, addBlogComment, addToCart, blogCommentName, blogCommentText, blogComments, blogPostId, blogPosts, brandDetailId, brandsList, adminCatalogBrands, catalogProducts, brandQuery, campaignNow, campaignsList, cart, cartCount: cartCountProp, cartOpen, catOpen, clearCompare, clearFavorites, closeStaticPage, compare, compareOpen, compareReplaceOpen, contactForm, contactFormError, cookieConsent, dark, dealsMinDiscount, dealsSort, faqCat, faqQuery, favorites, getPageCms, hasMounted, headerRevealedAfterHero, imgZoom, isBlogLiked, isDealActive, markAllNotifsRead, markNotifRead, mobileMenuOpen, notifPanelOpen, notifications, unreadNotifCount: unreadNotifCountRaw, openAdminPanel, openAuth, openCartPage, openComparePage, openPDP, openPLP, openProfilePage, openRecentPage, openSellerAuth, openSellerPanel, openSellersList, openStaticPage, setPublicTrackOpen, openWishlistPage, orders, pdpProduct, products, pushLiveToast, quickAdd, quickColorIdx, quickDescOpen, quickGalleryIdx, quickQty, quickSize, recentOpen, recentlyViewed, renderShareBar, replaceCompareAt, searchCategories, searchColors, searchSizes, sellerUser, sellerTickets, setActiveSellerId, setBlogCommentName, setBlogCommentText, setBrandDetailId, setBrandQuery, setCartOpen, setCatOpen, setCompareOpen, setCompareReplaceOpen, setContactForm, setContactFormError, setCookieConsent, setDark, toggleDarkMode, setDealsMinDiscount, setDealsSort, setFaqCat, setFaqQuery, setImgZoom, setMobileMenuOpen, setNotifPanelOpen, setPdpProduct, setQuickAdd, setQuickColorIdx, setQuickDescOpen, setQuickGalleryIdx, setQuickQty, setQuickSize, setRecentOpen, setSearchQuery, setShowCartPage, setShowCheckout, setShowComparePage, setShowPLP, setShowProfilePage, setShowSellerPanel, setShowSellersList, setShowWishlistPage, setWishlistClearConfirm, setWishlistOpen, showAdminPanel, showCartPage, showCheckout, showComparePage, showPLP, showProfilePage, showRecentPage, showSellerPanel, showSellersList, showTaxonomyHub, showToast, showWishlistPage, siteFaqs, staticPage, toFa, toggleBlogLike, toggleCompare, toggleFavorite, toggleSearchCategory, toggleSearchColor, toggleSearchSize, categories, allColors, allSizes, user, wishlistClearConfirm, wishlistOpen, wishlistProducts, publicTrackOpen, openBrand} = useAppApi();
+  const {BRANDS_LIST, COMPARE_MAX, DEFAULT_SITE_FAQS, DEFAULT_SELLER_FAQS, EmptyStateBox, Icon, SimpleEditor, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Textarea, activeSellerId, addBlogComment, addToCart, blogCommentName, blogCommentText, blogComments, blogPostId, blogPosts, brandDetailId, brandsList, adminCatalogBrands, catalogProducts, brandQuery, campaignNow, campaignsList, cart, cartCount: cartCountProp, cartOpen, catOpen, clearCompare, clearFavorites, closeStaticPage, compare, compareOpen, compareReplaceOpen, contactForm, contactFormError, cookieConsent, dark, dealsMinDiscount, dealsSort, faqCat, faqQuery, favorites, getPageCms, hasMounted, headerRevealedAfterHero, imgZoom, isBlogLiked, isDealActive, markAllNotifsRead, markNotifRead, mobileMenuOpen, notifPanelOpen, notifications, unreadNotifCount: unreadNotifCountRaw, openAdminPanel, openAuth, openCartPage, openComparePage, openPDP, renderProductCard, openPLP, openProfilePage, openRecentPage, openSellerAuth, openSellerPanel, openSellersList, openStaticPage, setPublicTrackOpen, openWishlistPage, orders, pdpProduct, products, pushLiveToast, quickAdd, quickColorIdx, quickDescOpen, quickGalleryIdx, quickQty, quickSize, recentOpen, recentlyViewed, renderShareBar, replaceCompareAt, searchCategories, searchColors, searchSizes, sellerUser, sellerTickets, setActiveSellerId, setBlogCommentName, setBlogCommentText, setBrandDetailId, setBrandQuery, setCartOpen, setCatOpen, setCompareOpen, setCompareReplaceOpen, setContactForm, setContactFormError, setCookieConsent, setDark, toggleDarkMode, setDealsMinDiscount, setDealsSort, setFaqCat, setFaqQuery, setImgZoom, setMobileMenuOpen, setNotifPanelOpen, setPdpProduct, setQuickAdd, setQuickColorIdx, setQuickDescOpen, setQuickGalleryIdx, setQuickQty, setQuickSize, setRecentOpen, setSearchQuery, setShowCartPage, setShowCheckout, setShowComparePage, setShowPLP, setShowProfilePage, setShowSellerPanel, setShowSellersList, setShowWishlistPage, setWishlistClearConfirm, setWishlistOpen, showAdminPanel, showCartPage, showCheckout, showComparePage, showPLP, showProfilePage, showRecentPage, showSellerPanel, showSellersList, showTaxonomyHub, showToast, showWishlistPage, siteFaqs, staticPage, toFa, toggleBlogLike, toggleCompare, toggleFavorite, toggleSearchCategory, toggleSearchColor, toggleSearchSize, categories, allColors, allSizes, user, wishlistClearConfirm, wishlistOpen, wishlistProducts, publicTrackOpen, openBrand} = useAppApi();
   const _sellerTickets = (typeof sellerTickets !== 'undefined' ? sellerTickets : (api && api.sellerTickets)) || [];
   const sellerUnreadTickets = (Array.isArray(sellerTickets) ? sellerTickets : []).filter((x) => x && x.unread).length;
 
@@ -707,13 +707,6 @@ export default function StaticPagesView() {
                 });
                 return (
                   <div className="space-y-6">
-                    <nav className="flex flex-wrap items-center gap-1.5 text-xs text-primary-500 dark:text-white/70" aria-label="breadcrumb">
-                      <button type="button" onClick={() => { try { closeStaticPage(); } catch (_) {} try { if (typeof goHome === 'function') goHome(); else window.location.href = '/'; } catch (_) {} }} className="hover:text-apple-blue">خانه</button>
-                      <span aria-hidden>‹</span>
-                      <button type="button" onClick={() => { setBrandDetailId(null); try { openStaticPage('brands'); } catch (_) {} }} className="hover:text-apple-blue">برندها</button>
-                      <span aria-hidden>‹</span>
-                      <span className="text-primary-800 dark:text-white font-medium">{b.name}</span>
-                    </nav>
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 rounded-full bg-primary-100 dark:bg-primary-700 flex items-center justify-center text-2xl font-bold text-primary-800 dark:!text-white border border-primary-200 dark:border-white/25 shadow-sm overflow-hidden">
                         {b.logoUrl || b.logo_url || b.image ? (
@@ -726,18 +719,22 @@ export default function StaticPagesView() {
                         <p className="text-xs text-primary-400 dark:!text-white mt-0.5">{toFa(brandProducts.length)} محصول</p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4">
                       {!brandProducts.length && (
-                      <p className="col-span-full text-center text-sm text-primary-500 py-10">محصولی برای این برند ثبت نشده</p>
-                    )}
-                    {(brandProducts.length ? brandProducts : []).map(p => (
-                        <button key={p.id} type="button" onClick={() => { closeStaticPage(); setBrandDetailId(null); openPDP(p); }} className="text-right rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 overflow-hidden hover:border-apple-blue/40 transition">
-                          <img src={p.colors?.[0]?.image || p.image} alt="" className="aspect-[4/5] w-full object-cover" loading="lazy" />
-                          <div className="p-2.5">
-                            <p className="text-sm sm:text-base font-medium text-primary-900 dark:!text-white line-clamp-2">{p.name}</p>
-                            <p className="text-xs font-bold mt-1">{p.priceText} ت</p>
-                          </div>
-                        </button>
+                        <p className="col-span-full text-center text-sm text-primary-500 py-10">محصولی برای این برند ثبت نشده</p>
+                      )}
+                      {(brandProducts.length ? brandProducts : []).map((p) => (
+                        typeof renderProductCard === 'function'
+                          ? <div key={p.id}>{renderProductCard(p, 'brand-' + String(p.id))}</div>
+                          : (
+                            <button key={p.id} type="button" onClick={() => { try { closeStaticPage(); } catch (_) {} try { setBrandDetailId(null); } catch (_) {} openPDP(p); }} className="text-right rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 overflow-hidden hover:border-apple-blue/40 transition">
+                              <img src={p.colors?.[0]?.image || p.image} alt="" className="aspect-[4/5] w-full object-cover" loading="lazy" />
+                              <div className="p-2.5">
+                                <p className="text-sm sm:text-base font-medium text-primary-900 dark:!text-white line-clamp-2">{p.name}</p>
+                                <p className="text-xs font-bold mt-1">{p.priceText} ت</p>
+                              </div>
+                            </button>
+                          )
                       ))}
                     </div>
                   </div>
