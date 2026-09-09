@@ -422,6 +422,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         blog: 'در حال بارگذاری مجله…',
         'blog-post': 'در حال بارگذاری مطلب…',
         brands: 'در حال بارگذاری برندها…',
+        brand: 'در حال بارگذاری برند…',
         campaigns: 'در حال بارگذاری کمپین‌ها…',
         deals: 'در حال بارگذاری پیشنهادها…',
         home: 'در حال بارگذاری…',
@@ -6139,7 +6140,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       // endPageLoad on view settle — پاک کردن لودینگ بعد از نشستن ویو
       useEffect(() => {
         if (!pageLoadingText) return undefined;
-        const tmr = setTimeout(() => { try { endPageLoad(); } catch (_) {} }, 250);
+        const tmr = setTimeout(() => { try { endPageLoad(); } catch (_) {} }, 500);
         return () => clearTimeout(tmr);
       }, [
         pageLoadingText,
@@ -15937,10 +15938,13 @@ const params = new URLSearchParams(window.location.search);
       return (
         <AppApiProvider value={appApiValue}>
         <div className="min-h-screen flex flex-col">
-          {(awaitingDeepProduct && !pdpProduct) ? (
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#5C6065]" style={{ backgroundImage: 'url(/hero-poster.webp)', backgroundSize: 'cover', backgroundPosition: 'center' }} role="status" aria-live="polite">
-              <div className="px-4 py-2 rounded-full bg-black/40 text-white/75 text-sm tracking-wide backdrop-blur-sm">
-                {pageLoadingText || 'در حال بارگذاری محصول…'}
+          {(pageLoadingText || (awaitingDeepProduct && !pdpProduct)) ? (
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-[2px]" role="status" aria-live="polite">
+              <div className="flex flex-col items-center gap-3 px-6 py-5 rounded-2xl bg-white dark:bg-[#1a1c20] shadow-2xl border border-primary-100 dark:border-white/10 min-w-[200px]">
+                <div className="w-10 h-10 rounded-full border-[3px] border-primary-200 dark:border-white/15 border-t-[#0071e3] dark:border-t-[#13ABC4] animate-spin" aria-hidden />
+                <p className="text-sm font-medium text-primary-900 dark:text-white tracking-wide text-center">
+                  {pageLoadingText || 'در حال بارگذاری…'}
+                </p>
               </div>
             </div>
           ) : null}
