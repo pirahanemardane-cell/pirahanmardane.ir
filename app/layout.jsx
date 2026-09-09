@@ -105,7 +105,7 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-title" content="پیراهن مردانه" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');var dark=t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',!!dark);}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('theme');var dark=(t==='dark');var d=document.documentElement;d.classList.toggle('dark',dark);d.style.colorScheme=dark?'dark':'light';}catch(e){}})();`,
           }}
         />
       </head>

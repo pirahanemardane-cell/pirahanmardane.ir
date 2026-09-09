@@ -3754,34 +3754,26 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         return () => ro.disconnect();
       }, []);
 
-      // هیدرات تم از localStorage — قبل از هر چیز، انتخاب کاربر حفظ شود
+      // تم: پیش‌فرض همیشه لایت.
+      // فقط اگر کاربر قبلاً «دارک» را انتخاب کرده (theme=dark در localStorage) دارک بماند.
+      // هرگز از prefers-color-scheme سیستم برای پیش‌فرض استفاده نکن.
       useEffect(() => {
         try {
           const saved = localStorage.getItem('theme');
-          if (saved === 'dark') {
-            setDark(true);
-            document.documentElement.classList.add('dark');
-          } else if (saved === 'light') {
+          const isDark = saved === 'dark';
+          setDark(isDark);
+          document.documentElement.classList.toggle('dark', isDark);
+          document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+        } catch (_) {
+          try {
             setDark(false);
             document.documentElement.classList.remove('dark');
-          } else {
-            // auto: فقط سیستم — چیزی در localStorage ننویس
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            setDark(!!prefersDark);
-            document.documentElement.classList.toggle('dark', !!prefersDark);
-          }
-        } catch (_) {}
+            document.documentElement.style.colorScheme = 'light';
+          } catch (__) {}
+        }
       }, [setDark]);
 
-      // فقط کلاس DOM را با state هم‌تراز کن — هرگز localStorage را اینجا بازنویسی نکن
-      // (بازنویسی اشتباه باعث می‌شد بعد از ریلود dark→light شود)
-      useEffect(() => {
-        try {
-          document.documentElement.classList.toggle('dark', !!dark);
-        } catch (_) {}
-      }, [dark]);
-
-      // دکمه تم: انتخاب صریح کاربر در localStorage ذخیره می‌شود
+      // دکمه تم: فقط اینجا localStorage نوشته می‌شود
       const toggleDarkMode = () => {
         const next = !dark;
         setDark(next);
@@ -3790,32 +3782,9 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         } catch (_) {}
         try {
           document.documentElement.classList.toggle('dark', next);
+          document.documentElement.style.colorScheme = next ? 'dark' : 'light';
         } catch (_) {}
       };
-
-      // فقط وقتی کاربر دستی انتخاب نکرده، با تم سیستم همگام شو
-      useEffect(() => {
-        let mq;
-        try {
-          mq = window.matchMedia('(prefers-color-scheme: dark)');
-        } catch (_) {
-          return undefined;
-        }
-        const onChange = (e) => {
-          try {
-            const saved = localStorage.getItem('theme');
-            if (saved === 'dark' || saved === 'light') return;
-            setDark(!!e.matches);
-            document.documentElement.classList.toggle('dark', !!e.matches);
-          } catch (_) {}
-        };
-        if (mq.addEventListener) mq.addEventListener('change', onChange);
-        else if (mq.addListener) mq.addListener(onChange);
-        return () => {
-          if (mq.removeEventListener) mq.removeEventListener('change', onChange);
-          else if (mq.removeListener) mq.removeListener(onChange);
-        };
-      }, [setDark]);
 
       useEffect(() => {
         let ticking = false;
