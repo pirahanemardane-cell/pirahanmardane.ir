@@ -5653,9 +5653,11 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             try {
               const res = await addToCartServer(productId, addQty, opts.variantId || p.variant_id || null);
               if (res?.ok) {
+                if (!opts.silent) {
+                  setCartOpen(true);
+                }
                 setQuickAdd(null);
                 if (!opts.silent) {
-                  window.setTimeout(() => setCartOpen(true), 80);
                   pushLiveToast(`«${p.name || p.title}» به سبد اضافه شد`, { type: 'success', action: 'cart' });
                 }
                 return;
@@ -5703,9 +5705,11 @@ const generateProductCode = (sellerKey, productId, shopName) => {
               fromServer: isServerProd,
             }];
           });
+          if (!opts.silent) {
+            setCartOpen(true);
+          }
           setQuickAdd(null);
           if (!opts.silent) {
-            window.setTimeout(() => setCartOpen(true), 80);
             pushLiveToast(`«${p.name || p.title}» به سبد اضافه شد`, { type: 'success', action: 'cart' });
           }
         }
