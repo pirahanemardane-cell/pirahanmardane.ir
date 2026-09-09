@@ -527,6 +527,8 @@ export default function AdminPanelContent() {
     }
     const isPurge = mode === 'purge';
     const isRestore = mode === 'restore';
+    const isActivate = mode === 'activate';
+    const isDeactivate = mode === 'deactivate';
     let msg = 'آرشیو ' + ids.size + ' دسته؟';
     if (isPurge) msg = 'حذف دائم ' + ids.size + ' دسته؟ برگشت‌پذیر نیست.';
     if (isRestore) msg = 'بازگردانی ' + ids.size + ' دسته؟';
@@ -539,6 +541,8 @@ export default function AdminPanelContent() {
       const list = adminCategories || [];
       if (isPurge) saveAdminCategories(list.filter((x) => !ids.has(String(x.id))));
       else if (isRestore) saveAdminCategories(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else if (isActivate) saveAdminCategories(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else if (isDeactivate) saveAdminCategories(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
       else saveAdminCategories(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
       setTaxSelectedIds([]);
       try { showToast({ message: isPurge ? 'حذف دائم انجام شد' : (isRestore ? 'بازگردانی شد' : 'به آرشیو منتقل شد'), variant: 'success', duration: 3000, position: 'top-center' }); } catch (_) {}
@@ -565,6 +569,8 @@ export default function AdminPanelContent() {
     }
     const isPurge = mode === 'purge';
     const isRestore = mode === 'restore';
+    const isActivate = mode === 'activate';
+    const isDeactivate = mode === 'deactivate';
     let msg = 'آرشیو ' + ids.size + ' برچسب؟';
     if (isPurge) msg = 'حذف دائم ' + ids.size + ' برچسب؟ برگشت‌پذیر نیست.';
     if (isRestore) msg = 'بازگردانی ' + ids.size + ' برچسب؟';
@@ -577,6 +583,8 @@ export default function AdminPanelContent() {
       const list = adminTags || [];
       if (isPurge) saveAdminTags(list.filter((x) => !ids.has(String(x.id))));
       else if (isRestore) saveAdminTags(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else if (isActivate) saveAdminTags(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else if (isDeactivate) saveAdminTags(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
       else saveAdminTags(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
       setTaxSelectedIds([]);
       try { showToast({ message: isPurge ? 'حذف دائم انجام شد' : (isRestore ? 'بازگردانی شد' : 'به آرشیو منتقل شد'), variant: 'success', duration: 3000, position: 'top-center' }); } catch (_) {}
@@ -603,6 +611,8 @@ export default function AdminPanelContent() {
     }
     const isPurge = mode === 'purge';
     const isRestore = mode === 'restore';
+    const isActivate = mode === 'activate';
+    const isDeactivate = mode === 'deactivate';
     let msg = 'آرشیو ' + ids.size + ' برند؟';
     if (isPurge) msg = 'حذف دائم ' + ids.size + ' برند؟ برگشت‌پذیر نیست.';
     if (isRestore) msg = 'بازگردانی ' + ids.size + ' برند؟';
@@ -615,6 +625,8 @@ export default function AdminPanelContent() {
       const list = adminCatalogBrands || [];
       if (isPurge) saveAdminCatalogBrands(list.filter((x) => !ids.has(String(x.id))));
       else if (isRestore) saveAdminCatalogBrands(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else if (isActivate) saveAdminCatalogBrands(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else if (isDeactivate) saveAdminCatalogBrands(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
       else saveAdminCatalogBrands(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
       setTaxSelectedIds([]);
       try { showToast({ message: isPurge ? 'حذف دائم انجام شد' : (isRestore ? 'بازگردانی شد' : 'به آرشیو منتقل شد'), variant: 'success', duration: 3000, position: 'top-center' }); } catch (_) {}
@@ -635,6 +647,8 @@ export default function AdminPanelContent() {
     if (!ids.size) { try { showToast({ message: 'موردی انتخاب نشده', variant: 'error', duration: 2500, position: 'top-center' }); } catch (_) {} return; }
     const isPurge = mode === 'purge';
     const isRestore = mode === 'restore';
+    const isActivate = mode === 'activate';
+    const isDeactivate = mode === 'deactivate';
     let msg = 'آرشیو ' + ids.size + ' مطلب؟';
     if (isPurge) msg = 'حذف دائم ' + ids.size + ' مطلب؟';
     if (isRestore) msg = 'بازگردانی ' + ids.size + ' مطلب؟';
@@ -646,6 +660,10 @@ export default function AdminPanelContent() {
       if (isPurge) {
         saveBlogPosts(list.filter((x) => !ids.has(String(x.id))));
         if (blogForm && ids.has(String(blogForm.id))) setBlogForm(null);
+      } else if (isActivate) {
+        saveBlogPosts(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'published' } : x));
+      } else if (isDeactivate) {
+        saveBlogPosts(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'draft' } : x));
       } else if (isRestore) {
         saveBlogPosts(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'draft' } : x));
       } else {
@@ -674,6 +692,8 @@ export default function AdminPanelContent() {
     if (!ids.size) { try { showToast({ message: 'موردی انتخاب نشده', variant: 'error', duration: 2500, position: 'top-center' }); } catch (_) {} return; }
     const isPurge = mode === 'purge';
     const isRestore = mode === 'restore';
+    const isActivate = mode === 'activate';
+    const isDeactivate = mode === 'deactivate';
     let msg = 'آرشیو ' + ids.size + ' دسته مقاله؟';
     if (isPurge) msg = 'حذف دائم ' + ids.size + ' دسته مقاله؟';
     if (isRestore) msg = 'بازگردانی ' + ids.size + ' دسته مقاله؟';
@@ -684,6 +704,8 @@ export default function AdminPanelContent() {
       const list = adminBlogCategories || [];
       if (isPurge) saveAdminBlogCategories(list.filter((x) => !ids.has(String(x.id))));
       else if (isRestore) saveAdminBlogCategories(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else if (isActivate) saveAdminBlogCategories(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else if (isDeactivate) saveAdminBlogCategories(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
       else saveAdminBlogCategories(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
       setTaxSelectedIds([]);
       try { showToast({ message: 'انجام شد', variant: 'success', duration: 2500, position: 'top-center' }); } catch (_) {}
@@ -695,6 +717,8 @@ export default function AdminPanelContent() {
     if (!ids.size) { try { showToast({ message: 'موردی انتخاب نشده', variant: 'error', duration: 2500, position: 'top-center' }); } catch (_) {} return; }
     const isPurge = mode === 'purge';
     const isRestore = mode === 'restore';
+    const isActivate = mode === 'activate';
+    const isDeactivate = mode === 'deactivate';
     let msg = 'آرشیو ' + ids.size + ' برچسب مقاله؟';
     if (isPurge) msg = 'حذف دائم ' + ids.size + ' برچسب مقاله؟';
     if (isRestore) msg = 'بازگردانی ' + ids.size + ' برچسب مقاله؟';
@@ -705,6 +729,8 @@ export default function AdminPanelContent() {
       const list = adminBlogTags || [];
       if (isPurge) saveAdminBlogTags(list.filter((x) => !ids.has(String(x.id))));
       else if (isRestore) saveAdminBlogTags(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else if (isActivate) saveAdminBlogTags(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else if (isDeactivate) saveAdminBlogTags(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
       else saveAdminBlogTags(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
       setTaxSelectedIds([]);
       try { showToast({ message: 'انجام شد', variant: 'success', duration: 2500, position: 'top-center' }); } catch (_) {}
@@ -779,7 +805,17 @@ export default function AdminPanelContent() {
   if (!ok) return;
   setAdminBulkBusy(true);
   try {
-   if (isPurge && typeof adminBulkPurgeProducts === 'function') await adminBulkPurgeProducts(ids);
+   if (mode === 'activate' || mode === 'deactivate') {
+    const st = mode === 'activate' ? 'active' : 'inactive';
+    for (const id of ids) {
+     try {
+      if (typeof patchAdminProductStatus === 'function') await patchAdminProductStatus(id, st);
+      else if (typeof adminPatchProductStatus === 'function') await adminPatchProductStatus(id, st);
+     } catch (_) {}
+    }
+    try { if (typeof hydrateAdminProducts === 'function') await hydrateAdminProducts(); } catch (_) {}
+    try { showToast({ message: mode === 'activate' ? 'محصولات فعال شدند' : 'محصولات غیرفعال شدند', variant: 'success', duration: 3000, position: 'top-center' }); } catch (_) {}
+   } else if (isPurge && typeof adminBulkPurgeProducts === 'function') await adminBulkPurgeProducts(ids);
    else if (!isPurge && typeof adminBulkArchiveProducts === 'function') await adminBulkArchiveProducts(ids);
    else {
     for (const id of ids) {
@@ -1716,6 +1752,8 @@ export default function AdminPanelContent() {
            {adminSelectedProductIds.length > 0 && (
             <div className="mb-3 flex flex-wrap items-center gap-2 p-2.5 rounded-xl border border-red-200 bg-red-50/80 dark:bg-red-950/30 dark:border-red-500/30">
              <span className="text-xs font-medium text-red-800 dark:text-red-200">{adminSelectedProductIds.length} محصول انتخاب شده</span>
+             <button type="button" disabled={adminBulkBusy} onClick={() => runAdminBulkProducts('activate')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 font-medium disabled:opacity-50">فعال گروهی</button>
+             <button type="button" disabled={adminBulkBusy} onClick={() => runAdminBulkProducts('deactivate')} className="text-xs px-3 py-1.5 rounded-full border border-amber-300 text-amber-700 bg-amber-50 font-medium disabled:opacity-50">غیرفعال گروهی</button>
              <button type="button" disabled={adminBulkBusy} onClick={() => runAdminBulkProducts(adminProductFilter === 'archived' || adminProductFilter === 'purge_requested' ? 'purge' : 'archive')} className="text-xs px-3 py-1.5 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white font-medium disabled:opacity-50">
               {adminBulkBusy ? 'در حال اجرا…' : (adminProductFilter === 'archived' || adminProductFilter === 'purge_requested' ? 'حذف دائم گروهی' : 'آرشیو گروهی')}
              </button>
@@ -2725,6 +2763,8 @@ export default function AdminPanelContent() {
             {taxSelectedIds.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
                 <span className="text-xs font-medium text-red-800 dark:text-red-200">{taxSelectedIds.length} مورد انتخاب شده</span>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkCategory('activate')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">فعال گروهی</button>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkCategory('deactivate')} className="text-xs px-3 py-1.5 rounded-full border border-amber-300 text-amber-700 bg-amber-50 disabled:opacity-50">غیرفعال گروهی</button>
                 {taxFilter === 'archived' ? (
                   <>
                     <button type="button" disabled={taxBusy} onClick={() => runTaxBulkCategory('restore')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">بازگردانی گروهی</button>
@@ -2831,6 +2871,8 @@ export default function AdminPanelContent() {
             {taxSelectedIds.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
                 <span className="text-xs font-medium text-red-800 dark:text-red-200">{taxSelectedIds.length} مورد انتخاب شده</span>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkTag('activate')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">فعال گروهی</button>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkTag('deactivate')} className="text-xs px-3 py-1.5 rounded-full border border-amber-300 text-amber-700 bg-amber-50 disabled:opacity-50">غیرفعال گروهی</button>
                 {taxFilter === 'archived' ? (
                   <>
                     <button type="button" disabled={taxBusy} onClick={() => runTaxBulkTag('restore')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">بازگردانی گروهی</button>
@@ -2926,6 +2968,8 @@ export default function AdminPanelContent() {
             {taxSelectedIds.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
                 <span className="text-xs font-medium text-red-800 dark:text-red-200">{taxSelectedIds.length} مورد انتخاب شده</span>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBrand('activate')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">فعال گروهی</button>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBrand('deactivate')} className="text-xs px-3 py-1.5 rounded-full border border-amber-300 text-amber-700 bg-amber-50 disabled:opacity-50">غیرفعال گروهی</button>
                 {taxFilter === 'archived' ? (
                   <>
                     <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBrand('restore')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">بازگردانی گروهی</button>
@@ -3493,6 +3537,8 @@ export default function AdminPanelContent() {
             {taxSelectedIds.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
                 <span className="text-xs font-medium text-red-800 dark:text-red-200">{taxSelectedIds.length} مورد انتخاب شده</span>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogCategory('activate')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">فعال گروهی</button>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogCategory('deactivate')} className="text-xs px-3 py-1.5 rounded-full border border-amber-300 text-amber-700 bg-amber-50 disabled:opacity-50">غیرفعال گروهی</button>
                 {taxFilter === 'archived' ? (
                   <>
                     <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogCategory('restore')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">بازگردانی گروهی</button>
@@ -3571,6 +3617,8 @@ export default function AdminPanelContent() {
             {taxSelectedIds.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
                 <span className="text-xs font-medium text-red-800 dark:text-red-200">{taxSelectedIds.length} مورد انتخاب شده</span>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogTag('activate')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">فعال گروهی</button>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogTag('deactivate')} className="text-xs px-3 py-1.5 rounded-full border border-amber-300 text-amber-700 bg-amber-50 disabled:opacity-50">غیرفعال گروهی</button>
                 {taxFilter === 'archived' ? (
                   <>
                     <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogTag('restore')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">بازگردانی گروهی</button>
@@ -4840,6 +4888,8 @@ export default function AdminPanelContent() {
             {taxSelectedIds.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
                 <span className="text-xs font-medium text-red-800 dark:text-red-200">{taxSelectedIds.length} مورد انتخاب شده</span>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogPost('activate')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">فعال گروهی</button>
+                <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogPost('deactivate')} className="text-xs px-3 py-1.5 rounded-full border border-amber-300 text-amber-700 bg-amber-50 disabled:opacity-50">غیرفعال گروهی</button>
                 {taxFilter === 'archived' ? (
                   <>
                     <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogPost('restore')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">بازگردانی گروهی</button>
