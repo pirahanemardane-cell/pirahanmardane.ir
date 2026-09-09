@@ -991,7 +991,7 @@ export default function AdminPanelContent() {
         </div>
        </div>
        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-        <aside className="panel-sidebar w-full md:w-64 flex-shrink-0 sticky top-[var(--site-header-h,6.75rem)] z-40 md:top-0 md:h-[calc(100vh-0px)] md:self-start">
+        <aside className="panel-sidebar w-full md:w-64 flex-shrink-0 sticky top-[var(--site-header-h,3.5rem)] z-40 md:top-0 md:h-[calc(100vh-0px)] md:self-start">
          <div className="admin-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto p-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03] md:min-h-[calc(100vh-6rem)]">
           {[
            { id: 'dashboard', label: 'داشبورد', icon: 'home' },
