@@ -1743,13 +1743,72 @@ img.img-broken {
 
 /* Sticky tab strips in panels stay usable under header */
 .admin-panel-shell .admin-tabs-strip,
-.seller-panel-shell .seller-tabs-strip {
+.seller-panel-shell .seller-tabs-strip,
+.profile-tabs-strip,
+.buyer-tabs-strip {
   position: sticky;
   top: var(--site-header-h, 6.75rem);
   z-index: 30;
   backdrop-filter: blur(var(--site-glass-blur));
   -webkit-backdrop-filter: blur(var(--site-glass-blur));
 }
+/* === MOBILE PANEL TABS STICKY UNDER HEADER === */
+/* ادمین / فروشنده / خریدار: نوار تب دقیقاً زیر هدر چسبان در موبایل */
+@media (max-width: 767px) {
+  .admin-panel-shell .panel-sidebar,
+  .seller-panel-shell .panel-sidebar,
+  .profile-page-shell .panel-sidebar,
+  .profile-panel-shell .panel-sidebar,
+  .profile-page-shell .profile-tabs-outer,
+  .profile-panel-shell .profile-tabs-outer {
+    position: sticky !important;
+    top: var(--site-header-h, 6.75rem) !important;
+    z-index: 40 !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .admin-panel-shell .admin-tabs-strip,
+  .seller-panel-shell .seller-tabs-strip,
+  .profile-tabs-strip,
+  .buyer-tabs-strip,
+  .profile-page-shell .panel-nav,
+  .profile-panel-shell .panel-nav {
+    position: sticky !important;
+    top: var(--site-header-h, 6.75rem) !important;
+    z-index: 40 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  }
+
+  html.dark .admin-panel-shell .admin-tabs-strip,
+  html.dark .seller-panel-shell .seller-tabs-strip,
+  html.dark .profile-tabs-strip,
+  html.dark .buyer-tabs-strip,
+  html.dark .profile-page-shell .panel-nav,
+  html.dark .profile-panel-shell .panel-nav {
+    background: #0A0A0A !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  /* والدین sticky را خراب نکنند */
+  .admin-panel-shell,
+  .seller-panel-shell,
+  .profile-page-shell,
+  .profile-panel-shell,
+  .admin-panel-shell .panel-content-wrap,
+  .seller-panel-shell .panel-content-wrap,
+  .profile-page-shell .panel-content-wrap,
+  .profile-panel-shell .panel-content-wrap {
+    overflow: visible !important;
+  }
+}
+/* === END MOBILE PANEL TABS STICKY === */
+
 
 /* Site modal panel keyboard scroll */
 .site-modal-panel {

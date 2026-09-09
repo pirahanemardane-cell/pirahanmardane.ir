@@ -1386,7 +1386,7 @@ export default function SellerPanelContent() {
               </div>
             </div>
             <div className="flex flex-col md:flex-row gap-6">
-                <aside data-panel-sidebar className="panel-sidebar w-full md:w-48 lg:w-56 flex-shrink-0 z-20 overflow-y-auto">
+                <aside data-panel-sidebar className="panel-sidebar w-full md:w-48 lg:w-56 flex-shrink-0 sticky top-[var(--site-header-h,6.75rem)] z-40 md:static md:overflow-y-auto">
                   <div className="seller-tabs-strip panel-nav flex md:flex-col gap-0.5 overflow-x-auto px-3 py-3 rounded-xl border border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/[0.03]">
                     {[
                       { id: 'dashboard', label: 'داشبورد', icon: 'home' },
