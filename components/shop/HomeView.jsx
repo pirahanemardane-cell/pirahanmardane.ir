@@ -486,77 +486,52 @@ export default function HomeView() {
               </div>
             </section>
 
-            {/* Top brands — فقط show_on_home از پنل ادمین */}
-            {/* برترین‌های پیراهن — محصول */}
+            {/* برترین های پیراهن — فقط تیک ادمین (featured_top) — بدون اتومات و بدون برند */}
       {(() => {
-        const all = (typeof products !== 'undefined' && products) || (typeof catalogProducts !== 'undefined' && catalogProducts) || [];
-        const list = (Array.isArray(all) ? all : [])
-          .filter((p) => p && (p.status === 'active' || !p.status))
-          .map((p) => ({
-            ...p,
-            _sales: Number(p.soldRecent || p.sold_count || p.sales || p.sold || 0) || 0,
-            _feat: !!(p.featured_top || p.featuredTop),
-          }))
-          .sort((a, b) => {
-            if (a._feat !== b._feat) return a._feat ? -1 : 1;
-            return b._sales - a._sales;
+        const all = (typeof catalogProducts !== 'undefined' && Array.isArray(catalogProducts) && catalogProducts.length)
+          ? catalogProducts
+          : ((typeof products !== 'undefined' && Array.isArray(products)) ? products : []);
+        const list = all
+          .filter((p) => {
+            if (!p) return false;
+            const st = String(p.status || 'active').toLowerCase();
+            if (st && st !== 'active' && st !== 'approved') return false;
+            return !!(p.featured_top || p.featuredTop || (p.payload && (p.payload.featured_top || p.payload.featuredTop)));
           })
-          .slice(0, 8);
+          .slice(0, 12);
         if (!list.length) return null;
         return (
-          <section className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
-            <h2 className="text-lg sm:text-xl font-black text-primary-900 dark:text-white mb-4 text-center">برترین‌های پیراهن</h2>
+          <section className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8" data-section="top-shirts">
+            <h2 className="section-title text-right text-primary-900 dark:text-white mb-6 sm:mb-8 text-lg sm:text-xl">برترین های پیراهن</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {list.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => { try { if (typeof openPDP === 'function') openPDP(p); } catch (_) {} }}
-                  className="text-right rounded-2xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 overflow-hidden shadow-sm hover:shadow-md transition"
-                >
-                  <div className="aspect-[3/4] bg-primary-50 dark:bg-primary-950">
-                    <img src={p.image || p.images?.[0] || p.thumb || ''} alt={p.name || ''} className="w-full h-full object-cover" loading="lazy" />
-                  </div>
-                  <div className="p-2.5">
-                    <p className="text-xs sm:text-sm font-bold text-primary-900 dark:text-white line-clamp-2">{p.name}</p>
-                    {p.priceText && <p className="text-xs text-primary-600 dark:text-white/70 mt-1">{p.priceText} تومان</p>}
-                  </div>
-                </button>
+                typeof renderProductCard === 'function'
+                  ? <div key={p.id}>{renderProductCard(p, 'topshirt-')}</div>
+                  : (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => { try { if (typeof openPDP === 'function') openPDP(p); } catch (_) {} }}
+                      className="text-right rounded-2xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 overflow-hidden shadow-sm hover:shadow-md transition"
+                    >
+                      <div className="aspect-[3/4] bg-primary-50 dark:bg-primary-950">
+                        <img src={p.image || p.images?.[0] || p.thumb || ''} alt={p.name || ''} className="w-full h-full object-cover" loading="lazy" />
+                      </div>
+                      <div className="p-2.5">
+                        <p className="text-xs sm:text-sm font-bold text-primary-900 dark:text-white line-clamp-2">{p.name}</p>
+                        {p.priceText && <p className="text-xs text-primary-600 dark:text-white/70 mt-1">{p.priceText} تومان</p>}
+                      </div>
+                    </button>
+                  )
               ))}
             </div>
           </section>
         );
       })()}
 
-{homeBrands.length > 0 && (
-<section className="py-8 sm:py-12 bg-white dark:bg-primary-900 transition-colors">
-              <div className="max-w-7xl mx-auto px-3 sm:px-4">
-                <h2 className="section-title text-right text-primary-900 dark:text-white mb-6 sm:mb-8 text-lg sm:text-xl">برترین برندها</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-5">
-                  {homeBrands.slice(0, 12).map((item) => {
-                    const img = item.logo_url || item.logoUrl || item.image || '';
-                    const name = item.name || 'برند';
-                    return (
-                    <a
-                      key={item.id || name}
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        try { (typeof openBrand === 'function' ? openBrand({ name, slug: item.slug || name }) : openPLP({ brand: name, brandSlug: item.slug || name })); } catch (_) { openPLP({ brand: name }); }
-                      }}
-                      className="group relative rounded-2xl overflow-hidden bg-primary-50 dark:bg-primary-800 aspect-[4/5] flex flex-col items-center justify-center p-3 sm:p-4 transition hover:shadow-lg top-brand-card border border-transparent dark:border-white/15"
-                    >
-                      <div className="relative w-full flex-1 flex items-center justify-center">
-                        <Avatar name={name} src={img} size={88} shape="rounded" className="shadow-sm" />
-                      </div>
-                      <span className="mt-2 text-sm sm:text-base font-bold text-primary-900 dark:!text-white">{name}</span>
-                    </a>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-            )}
+
+            {/* برترین برندها حذف شد — جایش برترین های پیراهن */}
+
 
             {/* Recently Viewed */}
             <section className="py-8 sm:py-12 bg-white dark:bg-primary-900 transition-colors" data-section="recent">

@@ -600,6 +600,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           images: imgs.length ? imgs : (img ? [img] : []),
           colors,
           sizes: Array.isArray(p.sizes) && p.sizes.length ? p.sizes : ['S', 'M', 'L', 'XL', 'XXL'],
+          featured_top: !!(p.featured_top ?? p.featuredTop ?? (p.payload && (p.payload.featured_top || p.payload.featuredTop))),
+          featuredTop: !!(p.featured_top ?? p.featuredTop ?? (p.payload && (p.payload.featured_top || p.payload.featuredTop))),
           status: p.status || 'active',
           seller: {
             id: sid || 'own',

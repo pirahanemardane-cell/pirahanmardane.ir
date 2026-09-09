@@ -100,11 +100,16 @@ export async function PATCH(request) {
     }
 
 
+    if (body.featured_top != null || body.featuredTop != null) {
+      patch.featured_top = !!(body.featured_top ?? body.featuredTop)
+    }
+
     const needPayload =
       body.stock != null || body.category != null || body.brand != null ||
       body.colors != null || body.sizes != null || body.tags != null ||
       body.attributes != null || body.payload != null ||
       body.amazing != null || body.popular != null || body.fastShip != null ||
+      body.featured_top != null || body.featuredTop != null ||
       body.fast_ship != null || body.discount != null || body.discount_percent != null ||
       body.dealEndsAt != null || body.deal_ends_at != null
 
@@ -124,6 +129,10 @@ export async function PATCH(request) {
         if (bid) { next.brandId = String(bid); next.brand_id = String(bid) }
       }
       if (body.amazing != null) next.amazing = !!body.amazing
+      if (body.featured_top != null || body.featuredTop != null) {
+        next.featured_top = !!(body.featured_top ?? body.featuredTop)
+        next.featuredTop = next.featured_top
+      }
       if (body.popular != null) next.popular = !!body.popular
       if (body.fastShip != null || body.fast_ship != null) {
         next.fastShip = !!(body.fastShip ?? body.fast_ship)

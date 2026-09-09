@@ -1998,6 +1998,7 @@ export default function AdminPanelContent() {
                   { key: 'amazing', label: 'شگفت‌انگیز', on: !!(p.amazing), cls: 'from-amber-500 to-orange-500 text-white' },
                   { key: 'popular', label: 'پرفروش', on: !!(p.popular), cls: 'bg-amber-500 text-white' },
                   { key: 'fastShip', label: 'ارسال سریع', on: !!(p.fastShip || p.fast_ship), cls: 'bg-emerald-600 text-white' },
+                  { key: 'featuredTop', label: 'برترین پیراهن', on: !!(p.featuredTop || p.featured_top), cls: 'bg-primary-900 text-white dark:bg-white dark:text-primary-900' },
                 ].map((b) => (
                   <button
                     key={b.key}
@@ -2009,7 +2010,7 @@ export default function AdminPanelContent() {
                           method: 'PATCH',
                           credentials: 'include',
                           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-                          body: JSON.stringify({ id: p.id, [b.key]: nextVal }),
+                          body: JSON.stringify({ id: p.id, [b.key]: nextVal, ...(b.key === 'featuredTop' ? { featured_top: nextVal, featuredTop: nextVal } : {}) }),
                         });
                         const data = await res.json().catch(() => ({}));
                         if (!res.ok || data.ok === false) {
@@ -2017,7 +2018,7 @@ export default function AdminPanelContent() {
                           return;
                         }
                         if (typeof setAdminProducts === 'function') {
-                          setAdminProducts((prev) => (prev || []).map((x) => String(x.id) === String(p.id) ? { ...x, [b.key]: nextVal, fast_ship: b.key === 'fastShip' ? nextVal : x.fast_ship } : x));
+                          setAdminProducts((prev) => (prev || []).map((x) => String(x.id) === String(p.id) ? { ...x, [b.key]: nextVal, fast_ship: b.key === 'fastShip' ? nextVal : x.fast_ship, featured_top: b.key === 'featuredTop' ? nextVal : x.featured_top, featuredTop: b.key === 'featuredTop' ? nextVal : x.featuredTop } : x));
                         }
                         try { showToast({ message: nextVal ? (b.label + ' فعال شد') : (b.label + ' برداشته شد'), variant: 'success', duration: 2000, position: 'top-center' }); } catch (_) {}
                         try { window.dispatchEvent(new CustomEvent('catalog-products-refetch')); } catch (_) {}
