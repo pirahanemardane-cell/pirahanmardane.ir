@@ -87,31 +87,42 @@ export function Breadcrumb({
           )}
 
           {crumbs.map((item, i) => {
-            const isLast = i === crumbs.length - 1 || item.current;
+            // فقط آخرین آیتم (یا current صریح بدون onClick) غیرقابل‌کلیک است
+            const hasNav = typeof item.onClick === 'function' || !!(item.href && item.href !== '#');
+            const isLast = item.current === true || (i === crumbs.length - 1 && !hasNav);
+            const showAsLink = hasNav && !isLast;
             return (
               <React.Fragment key={`${item.label}-${i}`}>
-                {isLast ? (
-                  <span
-                    className="truncate max-w-[11rem] sm:max-w-[18rem] text-apple-blue dark:text-[#4CCD99] font-semibold"
-                    aria-current="page"
-                  >
-                    {item.label}
-                  </span>
-                ) : (
+                {showAsLink ? (
                   <a
                     href={item.href || '#'}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      if (typeof item.onClick === 'function') item.onClick(e);
-                      else if (item.href && typeof window !== 'undefined') window.location.assign(item.href);
+                      try {
+                        if (typeof item.onClick === 'function') item.onClick(e);
+                        else if (item.href && item.href !== '#' && typeof window !== 'undefined') {
+                          window.location.assign(item.href);
+                        }
+                      } catch (_) {
+                        try {
+                          if (item.href && typeof window !== 'undefined') window.location.assign(item.href);
+                        } catch (__) {}
+                      }
                     }}
                     className={linkClass}
                   >
                     {item.label}
                   </a>
+                ) : (
+                  <span
+                    className="truncate max-w-[11rem] sm:max-w-[18rem] text-apple-blue dark:text-[#4CCD99] font-semibold"
+                    aria-current={isLast ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </span>
                 )}
-                {!isLast && (
+                {i < crumbs.length - 1 && (
                   <ChevronIcon className="text-primary-300 dark:text-white/30 w-4 h-4 sm:w-5 sm:h-5" />
                 )}
               </React.Fragment>

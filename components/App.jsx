@@ -16807,14 +16807,14 @@ const params = new URLSearchParams(window.location.search);
                 { label: activePlpTag.name || activePlpTag.label || 'برچسب', current: true },
               ] : []),
               ...(showPLP && activeSeller ? [
-                { label: 'فروشندگان', href: '/فروشندگان', onClick: () => { try { openSellersList(); } catch (_) {} } },
+                { label: 'فروشندگان', href: '/فروشندگان', onClick: () => { try { if (typeof openSellersList === 'function') openSellersList(); else navigateTo('/فروشندگان'); } catch (_) { try { window.location.assign('/فروشندگان'); } catch (__) {} } } },
                 { label: activeSeller.name, current: true },
               ] : []),
               ...(showSellersList && !activeSeller && !showPLP ? [
                 { label: 'فروشندگان', current: true },
               ] : []),
               ...(activeSeller && !showPLP ? [
-                { label: 'فروشندگان', href: '/فروشندگان', onClick: () => { try { openSellersList(); } catch (_) {} } },
+                { label: 'فروشندگان', href: '/فروشندگان', onClick: () => { try { if (typeof openSellersList === 'function') openSellersList(); else navigateTo('/فروشندگان'); } catch (_) { try { window.location.assign('/فروشندگان'); } catch (__) {} } } },
                 { label: activeSeller.name, current: true },
               ] : []),
               ...(showCartPage ? [{ label: 'سبد خرید', current: true }] : []),
@@ -16837,11 +16837,11 @@ const params = new URLSearchParams(window.location.search);
                 { label: 'همه برچسب‌ها', current: true },
               ] : []),
               ...(staticPage === 'blog-post' ? [
-                { label: 'مجله', href: '/مجله', onClick: () => { try { openStaticPage('blog'); } catch (_) {} } },
+                { label: 'مجله', href: '/مجله', onClick: () => { try { openStaticPage('blog'); } catch (_) { try { navigateTo('/مجله'); } catch (__) { try { window.location.assign('/مجله'); } catch (___) {} } } } },
                 { label: (typeof blogPostId !== 'undefined' && blogPosts?.find?.(b => b.id === blogPostId)?.title) || 'مطلب', current: true },
               ] : []),
               ...(staticPage === 'brands' && brandDetailId ? [
-                { label: 'برندها', href: '/برندها', onClick: () => { try { setBrandDetailId(null); openStaticPage('brands'); } catch (_) {} } },
+                { label: 'برندها', href: '/برندها', onClick: () => { try { setBrandDetailId(null); } catch (_) {} try { openStaticPage('brands'); } catch (_) { try { navigateTo('/برندها'); } catch (__) { try { window.location.assign('/برندها'); } catch (___) {} } } } },
                 { label: (() => {
                   const pool = [
                     ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
@@ -16867,7 +16867,7 @@ const params = new URLSearchParams(window.location.search);
               <Breadcrumb
                 fullWidth={showProfilePage || showSellerPanel}
                 homeHref="/"
-                homeOnClick={() => { try { goHome(); } catch (_) {} }}
+                homeOnClick={() => { try { goHome(); } catch (_) { try { navigateTo("/"); } catch (__) { try { window.location.assign("/"); } catch (___) {} } } }}
                 items={crumbItems}
               />
             );

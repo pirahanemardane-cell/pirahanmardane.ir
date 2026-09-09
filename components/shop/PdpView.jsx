@@ -163,10 +163,57 @@ export default function PdpView() {
                 />
                 {/* Breadcrumb */}
                 <Breadcrumb
-                  homeOnClick={() => { try { closePDP({ silent: true }); } catch(_){} try { if (window.__goHome) window.__goHome(); } catch(_){} try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(_){} }}
+                  homeHref="/"
+                  homeOnClick={() => {
+                    try { closePDP({ silent: true }); } catch (_) {}
+                    try { if (typeof window !== 'undefined' && window.__goHome) window.__goHome(); }
+                    catch (_) { try { window.location.assign('/'); } catch (__) {} }
+                  }}
                   items={[
-                    { label: 'فروشگاه', onClick: () => { try { closePDP({ silent: true }); } catch(_){} openPLP({ resetFilters: true, query: '', cats: [], colors: [], sizes: [] }); } },
-                    { label: p.category, onClick: () => { try { closePDP({ silent: true }); } catch(_){} openCategory(p.category); } },
+                    {
+                      label: 'فروشگاه',
+                      href: '/فروشگاه',
+                      onClick: () => {
+                        try { closePDP({ silent: true }); } catch (_) {}
+                        try {
+                          if (typeof openPLP === 'function') openPLP({ resetFilters: true, query: '', cats: [], colors: [], sizes: [] });
+                          else if (typeof goShop === 'function') goShop();
+                          else window.location.assign('/فروشگاه');
+                        } catch (_) { try { window.location.assign('/فروشگاه'); } catch (__) {} }
+                      },
+                    },
+                    ...((() => {
+                      const cat = String(p.category || (Array.isArray(p.categories) && p.categories[0]) || '').trim();
+                      if (!cat) return [];
+                      const catHref = '/' + String(cat).replace(/\s+/g, '_');
+                      return [{
+                        label: cat,
+                        href: catHref,
+                        onClick: () => {
+                          try { closePDP({ silent: true }); } catch (_) {}
+                          try {
+                            if (typeof openCategory === 'function') openCategory(cat);
+                            else if (typeof openPLP === 'function') openPLP({ cat });
+                            else window.location.assign(catHref);
+                          } catch (_) { try { window.location.assign(catHref); } catch (__) {} }
+                        },
+                      }];
+                    })()),
+                    ...((() => {
+                      const bname = String(p.brand || p.brandName || p.brand_name || '').trim();
+                      if (!bname) return [];
+                      return [{
+                        label: bname,
+                        href: '/' + bname.replace(/\s+/g, '_'),
+                        onClick: () => {
+                          try { closePDP({ silent: true }); } catch (_) {}
+                          try {
+                            if (typeof openBrand === 'function') openBrand({ name: bname });
+                            else window.location.assign('/' + encodeURIComponent(bname.replace(/\s+/g, '_')));
+                          } catch (_) {}
+                        },
+                      }];
+                    })()),
                     { label: p.name, current: true },
                   ]}
                 />
