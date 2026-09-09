@@ -1,0 +1,53 @@
+import { createStore } from './createStore.js';
+
+/** دامنه commerceUi — state موقت فرم/مودال/پنل */
+export const commerceUiStore = createStore({
+  pdpProduct: null,
+  pdpColorIdx: 0,
+  pdpGalleryIdx: 0,
+  pdpSize: 'M',
+  pdpAttrs: {},
+  pdpQty: 1,
+  pdpZoom: false,
+  pdpGiftWrap: false,
+  pdpExpress: false,
+  pdpQText: '',
+  pdpHeight: '',
+  pdpWeight: '',
+  pdpSizeRec: null,
+  pdpSticky: false,
+  pdpTouchX: null,
+  searchQuery: '',
+  searchActiveIdx: -1,
+  searchPhIdx: 0,
+  plpQuery: '',
+  plpCats: [],
+  plpColors: [],
+  plpSizes: [],
+  plpSort: '',
+  plpPriceMin: '',
+  plpPriceMax: '',
+  plpDiscountOnly: false,
+  plpMinDiscount: 0,
+  plpInStockOnly: false,
+  plpFastShipOnly: false,
+  plpCities: [],
+  plpCityInput: '',
+  plpVisible: 8,
+  plpSkeleton: false,
+  pdpTab: 'desc',
+  pdpReviewFilter: 'all',
+  pdpQaFilter: 'all',
+  searchCategories: [],
+  searchColors: [],
+  searchSizes: [],
+  plpTagFilter: [],
+  plpSellers: [],
+  plpFabrics: [],
+  plpView: 'grid',
+  plpFilterTab: 'all',
+});
+
+export function patchCommerceUi(partial) {
+  commerceUiStore.setState((s) => ({ ...s, ...partial }));
+}
