@@ -85,6 +85,13 @@ export async function PATCH(request) {
     }
     if (Array.isArray(body.images)) patch.images = body.images
 
+    if (body.brand_id != null || body.brandId != null) {
+      const bid = body.brand_id ?? body.brandId
+      if (bid) patch.brand_id = String(bid)
+      else patch.brand_id = null
+    }
+
+
     const needPayload =
       body.stock != null || body.category != null || body.brand != null ||
       body.colors != null || body.sizes != null || body.tags != null ||
@@ -104,6 +111,10 @@ export async function PATCH(request) {
       if (body.stock != null) next.stock = Number(body.stock) || 0
       if (body.category != null) next.category = String(body.category)
       if (body.brand != null) next.brand = String(body.brand)
+      if (body.brand_id != null || body.brandId != null) {
+        const bid = body.brand_id ?? body.brandId
+        if (bid) { next.brandId = String(bid); next.brand_id = String(bid) }
+      }
       if (body.amazing != null) next.amazing = !!body.amazing
       if (body.popular != null) next.popular = !!body.popular
       if (body.fastShip != null || body.fast_ship != null) {
