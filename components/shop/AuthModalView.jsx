@@ -366,60 +366,50 @@ export default function AuthModalView() {
             onSubmit={(e) => {
               e.preventDefault();
               try {
-                verifyOtp && verifyOtp();
+                if (typeof window !== 'undefined' && window.__pmSubmitAuthOtp) {
+                  window.__pmSubmitAuthOtp();
+                }
               } catch (_) {}
             }}
           >
+            <p className="text-sm text-center text-primary-600 dark:text-white/70">
+              کد ارسال‌شده به {authPhone || 'شماره شما'} را وارد کنید
+            </p>
             <OtpDigitBoxes
               value={String(authOtp || '').replace(/\D/g, '').slice(0, 6)}
-              onChange={(v) => { try { setAuthOtp(String(v || '').replace(/\D/g, '').slice(0, 6)); } catch (_) {} }}
+              onChange={(v) => {
+                try {
+                  setAuthOtp(String(v || '').replace(/\D/g, '').slice(0, 6));
+                  setAuthError('');
+                } catch (_) {}
+              }}
               length={6}
               checking={!!authLoading}
               disabled={!!authLoading}
             />
-              dir="ltr"
-              placeholder="------"
-              maxLength={6}
-              className="w-full px-4 py-3 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-center text-xl tracking-[0.4em] text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue"
-              autoFocus
-            />
+            {authError ? (
+              <p className="text-xs text-center text-red-500">{authError}</p>
+            ) : null}
             <button
               type="submit"
               disabled={authLoading || onlyDigits(authOtp || '').length < 4}
-              className="btn-cta w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition whitespace-nowrap shrink-0"
+              className="btn-cta w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition"
             >
-              {authLoading
-                ? 'در حال بررسی...'
-                : isSeller
-                  ? 'تأیید و ورود فروشنده'
-                  : 'تأیید و ادامه'}
+              {authLoading ? 'در حال بررسی...' : 'تأیید کد'}
             </button>
-            <div className="flex items-center justify-between text-xs text-primary-500">
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthStep('phone');
-                  setAuthOtp('');
-                  setAuthError('');
-                }}
-                className="hover:text-apple-blue"
-              >
-                تغییر شماره
-              </button>
-              {authOtpTimer > 0 ? (
-                <span>ارسال مجدد تا {toFa(authOtpTimer)} ثانیه</span>
-              ) : (
-                <button type="button" onClick={() => sendOtp && sendOtp()} className="text-apple-blue font-medium">
-                  ارسال مجدد کد
-                </button>
-              )}
-            </div>
+            <button
+              type="button"
+              className="w-full text-xs text-primary-500 dark:text-white/60"
+              onClick={() => {
+                try { setAuthStep('phone'); setAuthOtp(''); setAuthError(''); } catch (_) {}
+              }}
+            >
+              تغییر شماره
+            </button>
           </form>
         )}
 
-
-      {/* مرحله MFA: کد دو مرحله‌ای بعد از ورود با رمز */}
-      {authStep === 'mfa' && (
+        {authStep === 'mfa' && (
         <form
           className="space-y-4"
           onSubmit={(e) => {
