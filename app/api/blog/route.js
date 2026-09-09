@@ -112,7 +112,7 @@ export async function POST(request) {
       body: body.body || body.content || null,
       cover_image: body.cover_image || body.cover_url || null,
       cover_url: body.cover_url || body.cover_image || null,
-      status: body.status === 'draft' ? 'draft' : 'published',
+      status: ['draft','scheduled','archived'].includes(String(body.status||'')) ? String(body.status) : 'published',
       published_at: new Date().toISOString(),
       category_id: categoryId,
       tag_names: Array.isArray(body.tags)
@@ -149,7 +149,7 @@ export async function PATCH(request) {
       patch.cover_url = body.cover_url || body.cover_image
       patch.cover_image = body.cover_image || body.cover_url
     }
-    if (body.status != null) patch.status = body.status === 'draft' ? 'draft' : 'published'
+    if (body.status != null) { const st = String(body.status); patch.status = ['draft','scheduled','archived','published'].includes(st) ? st : 'published'; }
     if (body.category_id != null) patch.category_id = body.category_id || null
     if (body.category_id == null && (body.cat != null || body.category != null)) {
       const catName = String(body.cat || body.category || '').trim()

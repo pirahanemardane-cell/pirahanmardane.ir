@@ -1232,9 +1232,42 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         return () => { cancelled = true; };
       }, []);
 
-      const saveBlogPosts = (list) => {
-        setBlogPosts(list);
-        try { localStorage.setItem('siteBlogPosts', JSON.stringify(list)); } catch (_) {}
+      const saveBlogPosts = async (list) => {
+        const prev = Array.isArray(blogPosts) ? blogPosts : [];
+        const arr = Array.isArray(list) ? list : [];
+        setBlogPosts(arr);
+        try { localStorage.setItem('siteBlogPosts', JSON.stringify(arr)); } catch (_) {}
+        try {
+          const prevById = new Map(prev.map((x) => [String(x.id), x]));
+          const nextIds = new Set(arr.map((x) => String(x.id)));
+          for (const p of prev) {
+            if (p?.id != null && !nextIds.has(String(p.id))) {
+              const res = await fetch('/api/blog', {
+                method: 'DELETE', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: p.id }),
+              });
+              if (!res.ok) console.error('blog post DELETE', await res.text());
+            }
+          }
+          for (const p of arr) {
+            if (p?.id == null) continue;
+            const old = prevById.get(String(p.id));
+            if (!old) continue;
+            const st = String(p.status || '');
+            const oldSt = String(old.status || '');
+            if (st !== oldSt || String(p.title || '') !== String(old.title || '')) {
+              const res = await fetch('/api/blog', {
+                method: 'PATCH', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: p.id, status: st, title: p.title }),
+              });
+              if (!res.ok) console.error('blog post PATCH', await res.text());
+            }
+          }
+        } catch (e) {
+          console.error('saveBlogPosts', e);
+        }
       };
       const [blogForm, setBlogForm] = useStoreField(formsStore, 'blogForm');
       // انتشار خودکار مطالب زمان‌بندی‌شده
@@ -2279,14 +2312,132 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         { id: 'bc-other', name: 'سایر', active: true },
       ];
       const [adminBlogCategories, setAdminBlogCategories] = useStoreField(adminUiStore, 'adminBlogCategories');
-      const saveAdminBlogCategories = (next) => {
-        setAdminBlogCategories(next);
-        try { localStorage.setItem('adminBlogCategories', JSON.stringify(next)); } catch (_) {}
+      const saveAdminBlogCategories = async (next) => {
+        const prev = Array.isArray(adminBlogCategories) ? adminBlogCategories : [];
+        const list = typeof next === "function" ? next(prev) : next;
+        const arr = Array.isArray(list) ? list : [];
+        setAdminBlogCategories(arr);
+        try { localStorage.setItem('adminBlogCategories', JSON.stringify(arr)); } catch (_) {}
+        try {
+          const prevById = new Map(prev.map((x) => [String(x.id), x]));
+          const nextIds = new Set(arr.map((x) => String(x.id)));
+          for (const p of prev) {
+            if (!nextIds.has(String(p.id))) {
+              const res = await fetch('/api/blog/categories?id=' + encodeURIComponent(String(p.id)), {
+                method: 'DELETE', credentials: 'include',
+              });
+              if (!res.ok) console.error('blog cat DELETE', await res.text());
+            }
+          }
+          for (let i = 0; i < arr.length; i++) {
+            const c = arr[i];
+            const id = c?.id != null ? String(c.id) : '';
+            const active = !(String(c?.status || '').toLowerCase() === 'archived' || c?.active === false);
+            const payload = {
+              name: String(c.name || 'دسته').trim(),
+              slug: String(c.slug || c.name || 'cat').trim().replace(/\s+/g, '-').slice(0, 80),
+              active,
+              sort_order: Number.isFinite(Number(c.sort_order != null ? c.sort_order : c.sortOrder))
+                ? Number(c.sort_order != null ? c.sort_order : c.sortOrder) : i,
+            };
+            const old = prevById.get(id);
+            if (!old) {
+              const res = await fetch('/api/blog/categories', {
+                method: 'POST', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+              });
+              const data = await res.json().catch(() => ({}));
+              if (res.ok && data?.item?.id) arr[i] = { ...c, ...data.item, id: data.item.id };
+              else if (!res.ok) console.error('blog cat POST', data);
+            } else {
+              const changed =
+                String(old.name || '') !== payload.name ||
+                String(old.slug || '') !== payload.slug ||
+                ((old.active !== false) !== payload.active) ||
+                Number(old.sort_order ?? old.sortOrder ?? 0) !== payload.sort_order ||
+                String(old.status || '') !== String(c.status || '');
+              if (changed) {
+                const res = await fetch('/api/blog/categories', {
+                  method: 'PATCH', credentials: 'include',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ id, ...payload }),
+                });
+                if (!res.ok) console.error('blog cat PATCH', await res.text());
+              }
+            }
+          }
+          setAdminBlogCategories(arr.slice());
+          try { localStorage.setItem('adminBlogCategories', JSON.stringify(arr)); } catch (_) {}
+        } catch (e) {
+          console.error('saveAdminBlogCategories', e);
+          try { showToast && showToast({ message: 'ذخیره دسته مقالات روی سرور ناموفق', variant: 'error', duration: 4000, position: 'top-center' }); } catch (_) {}
+        }
       };
       const [adminBlogTags, setAdminBlogTags] = useStoreField(adminUiStore, 'adminBlogTags');
-      const saveAdminBlogTags = (next) => {
-        setAdminBlogTags(next || []);
-        try { localStorage.setItem('adminBlogTags', JSON.stringify(next || [])); } catch (_) {}
+      const saveAdminBlogTags = async (next) => {
+        const prev = Array.isArray(adminBlogTags) ? adminBlogTags : [];
+        const list = typeof next === "function" ? next(prev) : (next || []);
+        const arr = Array.isArray(list) ? list : [];
+        setAdminBlogTags(arr);
+        try { localStorage.setItem('adminBlogTags', JSON.stringify(arr)); } catch (_) {}
+        try {
+          const prevById = new Map(prev.map((x) => [String(x.id), x]));
+          const nextIds = new Set(arr.map((x) => String(x.id)));
+          for (const p of prev) {
+            if (!nextIds.has(String(p.id))) {
+              const res = await fetch('/api/blog/tags', {
+                method: 'DELETE', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: p.id }),
+              });
+              if (!res.ok) console.error('blog tag DELETE', await res.text());
+            }
+          }
+          for (let i = 0; i < arr.length; i++) {
+            const c = arr[i];
+            const id = c?.id != null ? String(c.id) : '';
+            const active = !(String(c?.status || '').toLowerCase() === 'archived' || c?.active === false);
+            const payload = {
+              name: String(c.name || 'برچسب').trim(),
+              slug: String(c.slug || c.name || 'tag').trim().replace(/\s+/g, '-').slice(0, 80),
+              active,
+              sort_order: Number.isFinite(Number(c.sort_order != null ? c.sort_order : c.sortOrder))
+                ? Number(c.sort_order != null ? c.sort_order : c.sortOrder) : i,
+            };
+            const old = prevById.get(id);
+            if (!old) {
+              const res = await fetch('/api/blog/tags', {
+                method: 'POST', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+              });
+              const data = await res.json().catch(() => ({}));
+              if (res.ok && data?.item?.id) arr[i] = { ...c, ...data.item, id: data.item.id };
+              else if (!res.ok) console.error('blog tag POST', data);
+            } else {
+              const changed =
+                String(old.name || '') !== payload.name ||
+                String(old.slug || '') !== payload.slug ||
+                ((old.active !== false) !== payload.active) ||
+                Number(old.sort_order ?? old.sortOrder ?? 0) !== payload.sort_order ||
+                String(old.status || '') !== String(c.status || '');
+              if (changed) {
+                const res = await fetch('/api/blog/tags', {
+                  method: 'PATCH', credentials: 'include',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ id, ...payload }),
+                });
+                if (!res.ok) console.error('blog tag PATCH', await res.text());
+              }
+            }
+          }
+          setAdminBlogTags(arr.slice());
+          try { localStorage.setItem('adminBlogTags', JSON.stringify(arr)); } catch (_) {}
+        } catch (e) {
+          console.error('saveAdminBlogTags', e);
+          try { showToast && showToast({ message: 'ذخیره برچسب مقالات روی سرور ناموفق', variant: 'error', duration: 4000, position: 'top-center' }); } catch (_) {}
+        }
       };
 
 
@@ -9865,6 +10016,46 @@ const verifyOtp = async () => {
         publishRealtime('adminCoupons', next);
         try { localStorage.setItem('adminCoupons', JSON.stringify(next || [])); } catch (_) {}
       };
+      
+      const hydrateAdminBlogTaxonomyFromApi = async () => {
+        try {
+          const [rc, rt] = await Promise.all([
+            fetch('/api/blog/categories', { credentials: 'include', cache: 'no-store' }),
+            fetch('/api/blog/tags', { credentials: 'include', cache: 'no-store' }),
+          ]);
+          const jc = await rc.json().catch(() => ({}));
+          const jt = await rt.json().catch(() => ({}));
+          if (jc?.ok && Array.isArray(jc.items)) {
+            const mapped = jc.items.map((c) => ({
+              ...c,
+              active: c.active !== false,
+              status: c.active === false ? 'archived' : 'active',
+            }));
+            setAdminBlogCategories(mapped);
+            try { localStorage.setItem('adminBlogCategories', JSON.stringify(mapped)); } catch (_) {}
+          }
+          if (jt?.ok && Array.isArray(jt.items)) {
+            const mapped = jt.items.map((c) => ({
+              ...c,
+              active: c.active !== false,
+              status: c.active === false ? 'archived' : 'active',
+            }));
+            setAdminBlogTags(mapped);
+            try { localStorage.setItem('adminBlogTags', JSON.stringify(mapped)); } catch (_) {}
+          }
+        } catch (e) {
+          console.error('hydrateAdminBlogTaxonomyFromApi', e);
+        }
+      };
+
+      
+      useEffect(() => {
+        if (typeof adminTab !== 'string') return;
+        if (adminTab === 'blog' || adminTab === 'blog-categories' || adminTab === 'blog-tags' || adminTab === 'blog-new') {
+          try { hydrateAdminBlogTaxonomyFromApi(); } catch (_) {}
+        }
+      }, [adminTab]);
+
       const hydrateBlogPostsFromApi = async () => {
         try {
           const res = await fetch('/api/blog?all=1', { credentials: 'include', cache: 'no-store' });
