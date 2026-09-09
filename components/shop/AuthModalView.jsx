@@ -308,10 +308,7 @@ export default function AuthModalView() {
               autoComplete="tel"
             />
             {uiLoginMethod === 'password' && (
-              <input
-                type="password"
-                value={uiPassword}
-                onChange={(e) => setUiPassword(e.target.value)}
+              <OtpDigitBoxes value={uiPassword} onChange={setUiPassword} length={6} checking={false} disabled={false} /> setUiPassword(e.target.value)}
                 placeholder="رمز عبور"
                 className="w-full px-4 py-3 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-center text-base text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue"
                 autoComplete="current-password"
