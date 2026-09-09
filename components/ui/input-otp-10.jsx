@@ -14,10 +14,12 @@ function CustomOTPSlot({ index, isSuccess }) {
   const { char, hasFakeCaret, isActive } = ctx?.slots?.[index] ?? {};
   const [pulseKey, setPulseKey] = useState(0);
   const prev = useRef(char);
+
   useEffect(() => {
     if (char && char !== prev.current) setPulseKey((p) => p + 1);
     prev.current = char;
   }, [char]);
+
   return (
     <div
       className={cn(
@@ -32,7 +34,7 @@ function CustomOTPSlot({ index, isSuccess }) {
       <AnimatePresence mode="popLayout">
         {char ? (
           <motion.span
-            key={char + index}
+            key={String(char) + index}
             initial={{ opacity: 0, scale: 0.5, y: 6 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.7, y: -6 }}
@@ -44,7 +46,7 @@ function CustomOTPSlot({ index, isSuccess }) {
         ) : null}
       </AnimatePresence>
       <AnimatePresence>
-        {pulseKey > 0 && (
+        {pulseKey > 0 ? (
           <motion.div
             key={pulseKey}
             className="absolute inset-0 rounded-xl border border-green-500 pointer-events-none"
@@ -52,9 +54,9 @@ function CustomOTPSlot({ index, isSuccess }) {
             animate={{ opacity: 0, scale: 1.5 }}
             transition={{ duration: 0.4 }}
           />
-        )}
+        ) : null}
       </AnimatePresence>
-      {hasFakeCaret && !isSuccess && (
+      {hasFakeCaret && !isSuccess ? (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <motion.div
             className="bg-green-500 h-6 w-0.5"
@@ -62,7 +64,7 @@ function CustomOTPSlot({ index, isSuccess }) {
             transition={{ repeat: Infinity, duration: 1 }}
           />
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -76,7 +78,12 @@ export default function InputOtp10({
   className,
 }) {
   const digits = String(value || "").replace(/\D/g, "").slice(0, 6);
-  const setValue = (v) => onChange?.(String(v || "").replace(/\D/g, "").slice(0, 6));
+  const setValue = (v) => {
+    if (typeof onChange === "function") {
+      onChange(String(v || "").replace(/\D/g, "").slice(0, 6));
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -85,24 +92,28 @@ export default function InputOtp10({
       )}
     >
       <div className="flex flex-col items-center gap-5">
-        {!compact && (
+        {!compact ? (
           <div className="relative w-36 h-36 flex items-center justify-center">
             <ParticleSphereAnimation className="w-28 h-28" />
-            {isVerifying && (
+            {isVerifying ? (
               <div className="absolute inset-0 flex items-center justify-center">
                 <ShieldCheck className="w-8 h-8 text-emerald-400" />
               </div>
-            )}
+            ) : null}
           </div>
-        )}
+        ) : null}
+
         <div className="text-center">
           <h3 className="text-sm font-bold text-primary-900 dark:text-white">
             {isVerifying ? "در حال بررسی کد…" : "کد تأیید را وارد کنید"}
           </h3>
           <p className="text-xs text-primary-500 dark:text-white/60 mt-1">
-            {phone ? `کد ۶ رقمی ارسال‌شده به ${phone}` : "کد ۶ رقمی پیامک را وارد کنید"}
+            {phone
+              ? `کد ۶ رقمی ارسال‌شده به ${phone}`
+              : "کد ۶ رقمی پیامک را وارد کنید"}
           </p>
         </div>
+
         <div className="w-full flex justify-center" dir="ltr">
           <OTPInput
             maxLength={6}
@@ -120,8 +131,13 @@ export default function InputOtp10({
             </div>
           </OTPInput>
         </div>
+
         <p className="text-xs font-mono text-primary-400 dark:text-white/50">
-          {isVerifying ? "در حال تأیید…" : digits.length < 6 ? `${digits.length} / 6` : "کد کامل شد"}
+          {isVerifying
+            ? "در حال تأیید…"
+            : digits.length < 6
+              ? `${digits.length} / 6`
+              : "کد کامل شد"}
         </p>
       </div>
     </div>
