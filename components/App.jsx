@@ -3754,29 +3754,46 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         return () => ro.disconnect();
       }, []);
 
-      // اعمال کلاس dark + ذخیره فقط وقتی کاربر صریحاً light/dark انتخاب کرده
-      // اگر theme در localStorage نباشد = auto (دنبال سیستم)
+      // هیدرات تم از localStorage — قبل از هر چیز، انتخاب کاربر حفظ شود
       useEffect(() => {
-        document.documentElement.classList.toggle('dark', dark);
         try {
           const saved = localStorage.getItem('theme');
-          // فقط وقتی قبلاً انتخاب صریح بوده، با state همگام کن (نه در اولین فریم SSR)
-          if (saved === 'dark' || saved === 'light') {
-            localStorage.setItem('theme', dark ? 'dark' : 'light');
+          if (saved === 'dark') {
+            setDark(true);
+            document.documentElement.classList.add('dark');
+          } else if (saved === 'light') {
+            setDark(false);
+            document.documentElement.classList.remove('dark');
+          } else {
+            // auto: فقط سیستم — چیزی در localStorage ننویس
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            setDark(!!prefersDark);
+            document.documentElement.classList.toggle('dark', !!prefersDark);
           }
+        } catch (_) {}
+      }, [setDark]);
+
+      // فقط کلاس DOM را با state هم‌تراز کن — هرگز localStorage را اینجا بازنویسی نکن
+      // (بازنویسی اشتباه باعث می‌شد بعد از ریلود dark→light شود)
+      useEffect(() => {
+        try {
+          document.documentElement.classList.toggle('dark', !!dark);
         } catch (_) {}
       }, [dark]);
 
-      // دکمه تم: همیشه انتخاب صریح ذخیره می‌شود
+      // دکمه تم: انتخاب صریح کاربر در localStorage ذخیره می‌شود
       const toggleDarkMode = () => {
         const next = !dark;
         setDark(next);
         try {
           localStorage.setItem('theme', next ? 'dark' : 'light');
         } catch (_) {}
+        try {
+          document.documentElement.classList.toggle('dark', next);
+        } catch (_) {}
       };
 
-      // اگر کاربر هنوز دستی انتخاب نکرده، با تغییر تم سیستم همگام شو
+      // فقط وقتی کاربر دستی انتخاب نکرده، با تم سیستم همگام شو
       useEffect(() => {
         let mq;
         try {
@@ -3787,8 +3804,9 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         const onChange = (e) => {
           try {
             const saved = localStorage.getItem('theme');
-            if (saved === 'dark' || saved === 'light') return; // انتخاب دستی اولویت دارد
+            if (saved === 'dark' || saved === 'light') return;
             setDark(!!e.matches);
+            document.documentElement.classList.toggle('dark', !!e.matches);
           } catch (_) {}
         };
         if (mq.addEventListener) mq.addEventListener('change', onChange);
