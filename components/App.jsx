@@ -488,6 +488,34 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const [oldPriceOpen, setOldPriceOpen] = useStoreField(modalUiStore, 'oldPriceOpen');
       const [hasMounted, setHasMounted] = useStoreField(shopUiStore, 'hasMounted');
       useEffect(() => { setHasMounted(true); }, []);
+      // تصویر شکسته/لودنشده → لوگوی تم (هدر/فوتر/favicon دست نخورده)
+      useEffect(() => {
+        const logoForTheme = () => {
+          try {
+            const dark = document.documentElement.classList.contains("dark");
+            return dark ? "/blue_w_bg.webp" : "/red_w_bg.webp";
+          } catch (_) {
+            return "/red_w_bg.webp";
+          }
+        };
+        const onImgError = (e) => {
+          const el = e.target;
+          if (!el || el.tagName !== "IMG") return;
+          if (el.dataset.pmLogoFallback === "1") return;
+          if (el.closest("header, footer, .site-header, .site-footer")) return;
+          const src = el.getAttribute("src") || "";
+          if (/red_w_bg\.webp|blue_w_bg\.webp|favicon|apple-touch|icon-192|icon-512/i.test(src)) {
+            el.dataset.pmLogoFallback = "1";
+            return;
+          }
+          el.dataset.pmLogoFallback = "1";
+          el.classList.add("img-broken");
+          el.src = logoForTheme();
+        };
+        document.addEventListener("error", onImgError, true);
+        return () => document.removeEventListener("error", onImgError, true);
+      }, []);
+
       // محصولات فعال از سرور (Supabase) — تا در فروشگاه دیده شوند
       const [serverProducts, setServerProducts] = useState([]);
       const [catalogFetchDone, setCatalogFetchDone] = useState(false);
@@ -13465,7 +13493,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
               </div>
             </div>
             <div className="relative aspect-[1/1] overflow-hidden bg-primary-50 dark:bg-black mx-2 my-1.5 sm:mx-2.5 sm:my-1.5 rounded-md sm:rounded-xl group/img">
-              <img src={activeColor.image || p?.image || '/logo.webp'} alt={`${p.name || ''} - ${activeColor.name || ''}`} loading="lazy" decoding="async" referrerPolicy="no-referrer" className={`w-full h-full object-cover transition-opacity duration-300 pointer-events-none ${colors.length > 1 ? 'group-hover/img:opacity-0' : ''}`} onError={(e) => { e.currentTarget.classList.add('img-broken'); e.currentTarget.src = '/logo.webp'; }} />
+              <img src={activeColor.image || p?.image || '/logo.webp'} alt={`${p.name || ''} - ${activeColor.name || ''}`} loading="lazy" decoding="async" referrerPolicy="no-referrer" className={`w-full h-full object-cover transition-opacity duration-300 pointer-events-none ${colors.length > 1 ? 'group-hover/img:opacity-0' : ''}`} onError={(e) => { e.currentTarget.classList.add('img-broken'); e.currentTarget.src = (document.documentElement.classList.contains('dark') ? '/blue_w_bg.webp' : '/red_w_bg.webp'); }} />
               {colors.length > 1 && colors[colorIdx === 0 ? 1 : 0]?.image && (
                 <img src={colors[colorIdx === 0 ? 1 : 0].image} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
               )}
@@ -15898,7 +15926,7 @@ const params = new URLSearchParams(window.location.search);
                                 className="absolute inset-0 w-full h-full object-cover group-hover:opacity-95 transition duration-700 rounded-2xl"
                                 loading="lazy"
                                 decoding="async"
-                                onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.svg'; } catch (_) {} }}
+                                onError={(e) => { try { e.currentTarget.onerror = null; e.currentTarget.src = (document.documentElement.classList.contains('dark') ? '/blue_w_bg.webp' : '/red_w_bg.webp'); } catch (_) {} }}
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                               <div className="absolute bottom-0 inset-x-0 p-4 text-white">
