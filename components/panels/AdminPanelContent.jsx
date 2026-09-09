@@ -500,10 +500,14 @@ export default function AdminPanelContent() {
  const { BarList, CarouselArrows, EmptyState, EmptyStateBox, ErrorState, Icon, Kpi, LoadingState, OWN_SELLER, PRODUCT_IMG, SeoPixelBars, SimpleEditor, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Textarea, TipText, activeSellerId, activeTip, add, addBlogComment, addBrandMention, addToCart, addressDeleteConfirm, addressForm, addressFormOpen, addresses, adm, adminAnalyticsRange, adminAnalyticsSub, adminAuthError, adminAuthLoading, adminAuthOpen, adminAuthOtp, adminAuthOtpTimer, adminAuthPhone, adminAuthStep, adminBlogCategories, adminBlogTags, adminBuyerDetailId, adminBuyerSearch, adminBuyers, adminCatalogAttributes, adminCatalogBrands, adminCatalogColors, adminCatalogSizes, adminCategories, adminContentTab, adminCouponForm, adminCouponFormOpen, adminCoupons, hydrateCatalogFromApi, setAdminOrderStatus, hydrateAdminStatsFromApi, requestSellerPayout, hydrateSellerPayouts, hydrateBlogPostsFromApi, hydrateAdminCoupons, persistCampaignOnServer, hydrateCampaignsFromApi, createAdminCouponOnServer, hydrateSellerOrdersFromApi, adminFrontEditForm, adminFrontEditOpen, adminGscDim, adminGscInspectResult, adminGscInspectUrl, adminGscRange, adminGscSub, adminLoading, adminModerationQueue, adminOrderDetailId, adminOrderFilter, adminOrderNote, adminOrderSearch, adminOrders, adminPageContent, adminPageSeoStep, adminProductDetailId, adminProductFilter, adminProductSearch, adminProducts, adminRejectReason, adminSellerDetailId, adminSellerFilter, adminSellerSearch, adminSellers, adminSeoHubKey, adminSettings, adminShippingMethods, adminStatusBadge, adminStatusLabel, adminTab, adminTags, adminTicketDetailId, adminTicketFilter, adminTicketReply, adminTickets, adminUser, aiGenerateSeoMeta, aiOptimizeTextHints, aiSuggestFaq, allLists, analyzeOnPageSeo, apply, applyCoupon, applyFromUrl, applyRealtimePayload, applySellerDescFormat, approveAdminProduct, assertNoUserLinks, attrsKeyPart, attrsMatch, authError, authFailCount, authLastName, authLoading, authLockedUntil, authMode, authName, authOpen, authOtp, authOtpTimer, authPhone, authReturnTo, authStep, authTermsAccepted, backupAdminProducts, backupDestPath, backupSellerProducts, bar, blankShippingMethod, blogCommentName, blogCommentText, blogComments, blogForm, blogPostId, blogPosts, brandDetailId, brandQuery, brandsList, buildArticleSchema, buildBreadcrumbSchema, buildCheckoutOrderDraft, buildFaqSchema, buildGa4Seed, buildGscSeed, buildImageAlt, buildLlmsTxt, buildLocalBusinessSchema, buildNewsSitemapXml, buildProductSchema, buildRobotsTxt, buildSitemapIndexXml, buildSitemapXml, buildVariantMatrix, buildVideoSitemapXml, buyerGifts, buyerTicketBody, buyerTicketDetailId, buyerTicketError, buyerTicketFormOpen, buyerTicketSubject, buyerTickets, campaignForm, campaignNow, campaignsList, canonicalBase, cardQtys, carouselIndex, cart, cartItemKey, cartItemLoading, cartOpen, cartesianAttrCombos, catOpen, catalogForm, catalogProducts, changeCartColor, checkoutContact, checkoutErrors, checkoutNewAddress, checkoutNote, checkoutPaymentMethod, checkoutPlacing, checkoutSelectedAddressId, checkoutShippingMethod, checkoutStep, checkoutUseNewAddress, classifyToastVariant, clearAllSearchFilters, clearCart, clearCartConfirm, clearCompare, clearFavorites, clearPlpFilters, clearRecentSearches, clearSellerListFilters, close, closeAdminAuth, closeAdminPanel, closeAuth, closeCartPage, closeCheckout, closeComparePage, closeMobileMenuOnWide, closePDP, closePLP, closeProfilePage, closeRecentPage, closeSeller, closeSellerPanel, closeSellersList, closeSiteDialog, closeStaticPage, closeWishlistPage, collect, collectFullSiteBackup, compare, compareOnlyDiffs, compareOpen, compareReplaceOpen, compareToast, completeRegister, confirmPaymentFail, confirmPaymentSuccess, consumeSeoAiQuota, contactForm, contactFormError, contentEditorTarget, conversationChannelLabel, cookieConsent, copyShareLink, copyTextToClipboard, countFor, couponApplied, couponInput, couponMsg, dark, dealsMinDiscount, dealsSort, defaultAdminBlogCategories, defaultAdminCategories, defaultAdminTags, defaultOrganizationSchema, defaultSeoConfig, defaultShippingMethods, demoOtpCode, deriveCollar, deriveFabric, deriveSleeve, detectImportSource, didYouMean, discountMode, discountPercent, discountPickIds, discountPrices, downloadBlobFile, downloadFullSiteBackup, downloadSeoFile, editingAddressId, editingCouponId, editingSellerProductId, emptyTaxonomyForm, enqueueModeration, ensureAdminSeed, ensureProductCode, esc, existingSellerOrders, expandQuery, exportRedirectsForServer, faqCat, faqQuery, favToast, favorites, fileToImage, finalizePaidOrder, findOpenChatConversation, findProductVariant, findSlider, finishAuthSuccess, fire, fmt, fmtMoney, formatPrice, ga4Aggregate, ga4FilterEvents, ga4Store, generateGiftCode, generateProductCode, generateTicketCode, getAttrDimensions, getCheckoutShippingCost, getCheckoutTaxRate, getCheckoutTotals, getCurrentPageSeoContext, getFavEntry, getPageCms, getPageShareUrl, getProductPublicPath, getProductPublicUrl, getResolvedPageSeo, getSellerEnabledShippingIds, getSellerMaxDiscount, getSellerMinPrice, getSeoAiQuota, getShippingOptions, getShopSeoBody, getUsedPromoCodes, getVariantPrice, getVariantStock, giftCodeForm, gscAggregate, gscInspect, gscStore, has, hasMounted, headerRevealedAfterHero, htmlToPlain, imgZoom, importExternalProductsCsv, installBuyerPwa, isBlogLiked, isDealActive, isFavorite, isLive, isNumericField, isSlider, isVerticalScrollable, ix, lastAutoBackupAt, likedBlogs, list, liveToasts, loadForm, loadGa4Store, loadGscStore, logSeo404, logout, logoutAdmin, hydrateAdminProducts, hydrateAdminSellers, hydrateAdminOrders, adminPatchProductStatus, adminDeleteProduct, adminPurgeProduct, adminBulkArchiveProducts, adminBulkPurgeProducts, adminBulkArchiveSellers, adminBulkPurgeSellers, adminPatchSellerStatus, adminDeleteSeller, adminPurgeSeller, adminPatchOrderStatus, adminListLoading, adminListError, logoutAllDevices, logoutSeller, mapExternalRowToProduct, markAllNotifsRead, markNotifRead, markPromoCodeUsed, matchCatalogBrand, matchCatalogColor, matchCatalogSize, matchCategory, measureSeoPx, mediaToolAssign, mediaToolOffset, mediaToolProcessing, mediaToolResult, mediaToolScale, mediaToolSearch, mediaToolSrc, mediaToolStep, megaOpen, mirrorConversationToAdmin, mirrorSellerOrderToBuyer, mobileMenuOpen, move, nativeShare, newestTab, newsletterPhone, normKey, normalize, normalizeAttrMap, normalizeCategoryKey, normalizeSearch, notifPanelOpen, notifPulling, notifications, oldPriceOpen, onBeforeInput, onBip, onClickCapture, onDragStart, onFocusIn, onInput, onInstalled, onKey, onKeyDown, onMouseDown, onMouseMove, onMouseUp, onPointer, onPointerDown, onScroll, onStorage, onWheel, onlyDigits, openAdminAuth, openAdminFrontEdit, openAdminPanel, openAuth, openCartPage, openCategory, openCheckout, openComparePage, openNewShippingMethod, openPDP, openPLP, openProfilePage, openQuickAdd, openRecentPage, openSeller, openSellerAuth, openSellerPanel, openSellersList, openStaticPage, openTagPage, openTaxonomyHub, openTaxonomyWizard, openWishlistPage, orderDetailId, orderFailed, orderRateDraft, orderReturnOpen, orderStatusColor, orderSuccess, orders, ordersFilter, pageSeoMap, parseCsvText, parseResponseHours, pct, pdpAttrs, pdpColorIdx, pdpExpress, pdpGalleryIdx, pdpGiftWrap, pdpHeight, pdpNotifyOpen, pdpProduct, pdpQText, pdpQaFilter, pdpQty, pdpReviewFilter, pdpSize, pdpSizeRec, pdpSizeRecOpen, pdpSticky, pdpTab, pdpTouchX, pdpWeight, pdpZoom, pendingPayOrder, persistBlogComments, persistCompare, persistFavorites, persistGa4, persistGsc, persistLikedBlogs, persistSession, pickField, pingIndexNow, placeOrder, plpCats, plpCities, plpCityInput, plpCityOpen, plpColors, plpDiscountOnly, plpFabrics, plpFastShipOnly, plpFilterOpen, plpFilterTab, plpInStockOnly, plpMinDiscount, plpPriceMax, plpPriceMin, plpQuery, plpSellers, plpSidebarOpen, plpSizes, plpSkeleton, plpSort, plpSortOpen, plpTagFilter, plpView, plpVisible, poll, portalMounted, pos, prev, printOrderInvoice, processToProductWebP, processProductImageFile, productBackupPayload, productImportReport, productSlugFromNameAndShop, products, productsToCsv, profileTab, publishRealtime, pullNotifications, pushImg, pushLiveToast, pushNotification, pushRecentSearch, pushSellerNotification, pwaInstallEvent, pwaInstalled, quickAdd, quickColorIdx, quickDescOpen, quickGalleryIdx, quickQty, quickSize, readFile, readSessionUser, recentOpen, recentSearches, recentlyViewed, releaseDrag, removeCoupon, removeFavoritesBulk, removeFromCart, removeRecentSearch, renderContentSeoBox, renderList, renderProductCard, renderShareBar, replaceCompareAt, restoreAdminProductsFromFile, restoreFullSiteBackup, restoreSellerProductsFromFile, row, run, runSeoHealthCheck, same, saveAddresses, saveAdminBlogCategories, saveAdminBlogTags, saveAdminBuyers, saveAdminCatalogAttributes, saveAdminCatalogBrands, saveAdminCatalogColors, saveAdminCatalogSizes, saveAdminCategories, saveAdminCoupons, saveAdminFrontEdit, saveAdminOrders, saveAdminPageContentMap, saveAdminProducts, saveAdminSellers, saveAdminSettings, saveAdminShippingMethods, saveAdminTags, saveAdminTickets, saveBlogPosts, saveBuyerGifts, saveBuyerOrders, saveBuyerTickets, saveCampaigns, saveModerationQueue, saveNotifications, savePageSeoMap, saveSellerGifts, saveSellerOrders, saveSellerProducts, saveSellerTickets, saveSellerUser, saveSeo404Log, saveSeoPatch, saveSeoRedirects, saveShippingMethodForm, saveSiteFaqs, saveTaxonomy, saveUser, scoreProduct, scrollCarousel, scrolled, searchActiveIdx, searchCategories, searchColors, searchOpen, searchPhIdx, searchQuery, searchSizes, searchSuggestOpen, seedAddresses, seedAdminData, seedNotifications, seedOrders, seedSellerOrders, seedSellerProducts, seedSellerTickets, selectColor, selectedColors, selectedSizes, sellerBannerIdx, sellerCanSell, sellerCancelForm, sellerCancelOrder, sellerCat, sellerCatMenuOpen, sellerCityInput, sellerCityOpen, sellerConfirmOrder, sellerDescDraft, sellerDescEditorOpen, sellerDescError, sellerDiscountOnly, sellerFaqOpen, sellerFilterSheetOpen, sellerFollowed, sellerGifts, sellerListCities, sellerListMaxResponse, sellerListMinProducts, sellerListMinRating, sellerListQuery, sellerListSort, sellerMarkPackingDone, sellerMediaToolOpen, sellerNewTicket, sellerNewTicketOpen, sellerOpenOrderTicket, sellerOrderDetailId, sellerOrderStatusColor, sellerOrders, sellerOrdersFilter, sellerPriceMap, sellerProductDeleteId, sellerProductFilter, sellerProductForm, sellerProductFormOpen, sellerProductSearch, sellerProductStep, sellerProducts, sellerPromoModal, sellerReportOpen, sellerReportSent, sellerSearchOpen, sellerShareToast, sellerShipOrder, sellerShopOpen, sellerSort, sellerSortMenuOpen, sellerStickyBar, sellerTab, sellerTaxonomyPicker, sellerTaxonomySearch, sellerTicketDetailId, sellerTicketReply, sellerTickets, sellerTrackForm, sellerUser, sendAdminOtp, sendOtp, seo404Log, seoAiDaily, seoCfg, seoCharHint, seoOnChange, seoPixelReport, seoRedirectForm, seoRedirects, setActiveSellerId, setActiveTip, setAddressDeleteConfirm, setAddressForm, setAddressFormOpen, setAddresses, setAdminAnalyticsRange, setAdminAnalyticsSub, setAdminAuthError, setAdminAuthLoading, setAdminAuthOpen, setAdminAuthOtp, setAdminAuthOtpTimer, setAdminAuthPhone, setAdminAuthStep, setAdminBlogCategories, setAdminBlogTags, setAdminBuyerDetailId, setAdminBuyerSearch, setAdminBuyers, setAdminCatalogAttributes, setAdminCatalogBrands, setAdminCatalogColors, setAdminCatalogSizes, setAdminCategories, setAdminContentTab, setAdminCouponForm, setAdminCouponFormOpen, setAdminCoupons, setAdminFrontEditForm, setAdminFrontEditOpen, setAdminGscDim, setAdminGscInspectResult, setAdminGscInspectUrl, setAdminGscRange, setAdminGscSub, setAdminLoading, setAdminModerationQueue, setAdminOrderDetailId, setAdminOrderFilter, setAdminOrderNote, setAdminOrderSearch, setAdminOrders, setAdminPageContent, setAdminPageSeoStep, setAdminProductDetailId, setAdminProductFilter, setAdminProductSearch, setAdminProducts, setAdminRejectReason, setAdminSellerDetailId, setAdminSellerFilter, setAdminSellerSearch, setAdminSellers, setAdminSeoHubKey, setAdminSettings, setAdminShippingMethods, setAdminTab, setAdminTags, setAdminTicketDetailId, setAdminTicketFilter, setAdminTicketReply, setAdminTickets, setAdminUser, setAuthError, setAuthFailCount, setAuthLastName, setAuthLoading, setAuthLockedUntil, setAuthMode, setAuthName, setAuthOpen, setAuthOtp, setAuthOtpTimer, setAuthPhone, setAuthReturnTo, setAuthStep, setAuthTermsAccepted, setBackupDestPath, setBlogCommentName, setBlogCommentText, setBlogComments, setBlogForm, setBlogPostId, setBlogPosts, setBrandDetailId, setBrandQuery, setBrandsList, setBuyerGifts, setBuyerTicketBody, setBuyerTicketDetailId, setBuyerTicketError, setBuyerTicketFormOpen, setBuyerTicketSubject, setBuyerTickets, setCampaignForm, setCampaignNow, setCampaignsList, setCanonicalLink, setCardQtys, setCarouselIndex, setCart, setCartItemLoading, setCartOpen, setCatOpen, setCatalogForm, setCheckoutContact, setCheckoutErrors, setCheckoutNewAddress, setCheckoutNote, setCheckoutPaymentMethod, setCheckoutPlacing, setCheckoutSelectedAddressId, setCheckoutShippingMethod, setCheckoutStep, setCheckoutUseNewAddress, setClearCartConfirm, setCompare, setCompareOnlyDiffs, setCompareOpen, setCompareReplaceOpen, setCompareToast, setContactForm, setContactFormError, setContentEditorTarget, setCookieConsent, setCouponApplied, setCouponInput, setCouponMsg, setDark, setDealsMinDiscount, setDealsSort, setDemoOtpCode, setDiscountMode, setDiscountPercent, setDiscountPickIds, setDiscountPrices, setEditingAddressId, setEditingCouponId, setEditingSellerProductId, setFaqCat, setFaqQuery, setFavToast, setFavorites, setGa4Store, setGiftCodeForm, setGscStore, setHasMounted, setHeaderRevealedAfterHero, setImgZoom, setLastAutoBackupAt, setLikedBlogs, setLiveToasts, setMediaToolAssign, setMediaToolOffset, setMediaToolProcessing, setMediaToolResult, setMediaToolScale, setMediaToolSearch, setMediaToolSrc, setMediaToolStep, setMegaOpen, setMeta, setMobileMenuOpen, setNewestTab, setNewsletterPhone, setNotifPanelOpen, setNotifPulling, setNotifications, setOldPriceOpen, setOrCreateMeta, setOrderDetailId, setOrderFailed, setOrderRateDraft, setOrderReturnOpen, setOrderSuccess, setOrders, setOrdersFilter, setPageSeoMap, setPdpAttrs, setPdpColorIdx, setPdpExpress, setPdpGalleryIdx, setPdpGiftWrap, setPdpHeight, setPdpNotifyOpen, setPdpProduct, setPdpQText, setPdpQaFilter, setPdpQty, setPdpReviewFilter, setPdpSize, setPdpSizeRec, setPdpSizeRecOpen, setPdpSticky, setPdpTab, setPdpTouchX, setPdpWeight, setPdpZoom, setPendingPayOrder, setPlpCats, setPlpCities, setPlpCityInput, setPlpCityOpen, setPlpColors, setPlpDiscountOnly, setPlpFabrics, setPlpFastShipOnly, setPlpFilterOpen, setPlpFilterTab, setPlpInStockOnly, setPlpMinDiscount, setPlpPriceMax, setPlpPriceMin, setPlpQuery, setPlpSellers, setPlpSidebarOpen, setPlpSizes, setPlpSkeleton, setPlpSort, setPlpSortOpen, setPlpTagFilter, setPlpView, setPlpViewPersist, setPlpVisible, setPortalMounted, setProductImportReport, setProfileTab, setPwaInstallEvent, setPwaInstalled, setQuickAdd, setQuickColorIdx, setQuickDescOpen, setQuickGalleryIdx, setQuickQty, setQuickSize, setRecentOpen, setRecentSearches, setRecentlyViewed, setScrolled, setSearchActiveIdx, setSearchCategories, setSearchColors, setSearchOpen, setSearchPhIdx, setSearchQuery, setSearchSizes, setSearchSuggestOpen, setSelectedColors, setSelectedSizes, setSellerBannerIdx, setSellerCancelForm, setSellerCat, setSellerCatMenuOpen, setSellerCityInput, setSellerCityOpen, setSellerDescDraft, setSellerDescEditorOpen, setSellerDescError, setSellerDiscountOnly, setSellerFaqOpen, setSellerFilterSheetOpen, setSellerFollowed, setSellerGifts, setSellerListCities, setSellerListMaxResponse, setSellerListMinProducts, setSellerListMinRating, setSellerListQuery, setSellerListSort, setSellerMediaToolOpen, setSellerNewTicket, setSellerNewTicketOpen, setSellerOrderDetailId, setSellerOrders, setSellerOrdersFilter, setSellerProductDeleteId, setSellerProductFilter, setSellerProductForm, setSellerProductFormOpen, setSellerProductOutOfStock, setSellerProductReorderPoint, setSellerProductSearch, setSellerProductStep, setSellerProducts, setSellerPromoModal, setSellerReportOpen, setSellerReportSent, setSellerSearchOpen, setSellerShareToast, setSellerShopOpen, setSellerSort, setSellerSortMenuOpen, setSellerStickyBar, setSellerTab, setSellerTaxonomyPicker, setSellerTaxonomySearch, setSellerTicketDetailId, setSellerTicketReply, setSellerTickets, setSellerTrackForm, setSellerUser, setSeo404Log, setSeoAiDaily, setSeoRedirectForm, setSeoRedirects, setShippingMethodForm, setShippingMethodFormOpen, setShowAdminPanel, setShowCartPage, setShowCheckout, setShowComparePage, setShowPLP, setShowProfilePage, setShowRecentPage, setShowSellerPanel, setShowSellersList, setShowTaxonomyHub, setShowTop, setShowTracking, setShowWishlistPage, setSiteDialog, setSiteFaqs, setStaticPage, setStep, setStockNotifyIds, setTaxonomyForm, setTaxonomyFormOpen, setTopSellersTab, setUser, setWishlistClearConfirm, setWishlistFilter, setWishlistOpen, setWishlistSelected, setWishlistSort, setWishlistView, shareSeller, shippingMethodForm, shippingMethodFormOpen, shopCodePrefix, shouldNormalize, show, showAdminPanel, showBrowserPush, showCartPage, showCheckout, showComparePage, showCompareToast, showPLP, showProfilePage, showRecentPage, showSellerPanel, showSellersList, showTaxonomyHub, showToast, showTop, showTracking, showWishlistPage, simulateBrandScan, siteConfirm, siteDialog, siteFaqs, sitePrompt, sitePromptFields, slugifyTaxonomy, smartScore, splitList, staticPage, statusBadge, statusLabel, statusOf, stockNotifyIds, stripHtmlSeo, stripLinksForDisplay, submitSearch, suggestInternalLinks, suggestSizeFromBody, sync, syncFormVariants, takeSnap, taxonomyForm, taxonomyFormOpen, taxonomyTypeLabel, textContainsForbiddenLink, tick, ticketMessagesToChatUI, toEnDigits, toFa, toggleBlogLike, toggleCompare, toggleFavorite, toggleSearchCategory, toggleSearchColor, toggleSearchSize, toggleSellerFollow, toggleSellerListCity, top, topSellersRanked, topSellersTab, trackGa4Event, up, updatePageCms, updateQty, updateSellerOrderStatus, updateSellerProductStock, upsertJsonLd, upsertRankKeyword, user, validateCheckout, validateProductBackup, variantKey, verifyAdminOtp, verifyOtp, warnFaKeyboard, wishlistClearConfirm, wishlistFilter, wishlistOpen, wishlistProducts, wishlistSelected, wishlistSort, wishlistView, wrap, yes } = api;
 
  const [adminSelectedProductIds, setAdminSelectedProductIds] = useState([]);
+  const [taxSelectedIds, setTaxSelectedIds] = useState([]);
+  const [taxFilter, setTaxFilter] = useState('active');
+  const [taxBusy, setTaxBusy] = useState(false);
  const [adminSelectedSellerIds, setAdminSelectedSellerIds] = useState([]);
  const [adminBulkBusy, setAdminBulkBusy] = useState(false);
 
  useEffect(() => { setAdminSelectedProductIds([]); }, [adminProductFilter, adminProductSearch]);
+  useEffect(() => { setTaxSelectedIds([]); }, [adminTab, taxFilter]);
  useEffect(() => { setAdminSelectedSellerIds([]); }, [adminSellerFilter, adminSellerSearch]);
 
  const toggleAdminProductSelect = (id) => {
@@ -679,6 +683,120 @@ export default function AdminPanelContent() {
     try { el.scrollIntoView({ block: 'start', behavior: 'auto' }); } catch (_) {}
    }
    scrollAdminPanelToTop();
+  };
+
+  const isTaxArchived = (item) => String(item?.status || '').toLowerCase() === 'archived';
+  const toggleTaxSelect = (id) => {
+    const sid = String(id);
+    setTaxSelectedIds((prev) => (prev.includes(sid) ? prev.filter((x) => x !== sid) : [...prev, sid]));
+  };
+  const filterTaxList = (list) => {
+    const arr = Array.isArray(list) ? list : [];
+    if (taxFilter === 'archived') return arr.filter(isTaxArchived);
+    return arr.filter((x) => !isTaxArchived(x));
+  };
+  const runTaxBulk = async (kind, mode) => {
+    const ids = new Set(taxSelectedIds.map(String));
+    if (!ids.size) {
+      try { showToast({ message: 'موردی انتخاب نشده', variant: 'error', duration: 2500, position: 'top-center' }); } catch (_) {}
+      return;
+    }
+    const isPurge = mode === 'purge';
+    const msg = isPurge
+      ? (`حذف دائم ${ids.size} مورد از آرشیو؟ برگشت‌پذیر نیست.`)
+      : (`آرشیو ${ids.size} مورد انتخاب‌شده؟`);
+    const ok = typeof siteConfirm === 'function'
+      ? await siteConfirm(msg, isPurge ? 'حذف دائم گروهی' : 'آرشیو گروهی')
+      : (typeof window !== 'undefined' && window.confirm(msg));
+    if (!ok) return;
+    setTaxBusy(true);
+    try {
+      const mapArchive = (list) => (list || []).map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived' } : x);
+      const mapPurge = (list) => (list || []).filter((x) => !ids.has(String(x.id)));
+      if (kind === 'category') {
+        if (isPurge) saveAdminCategories(mapPurge(adminCategories));
+        else saveAdminCategories(mapArchive(adminCategories));
+      } else if (kind === 'tag') {
+        if (isPurge) saveAdminTags(mapPurge(adminTags));
+        else saveAdminTags(mapArchive(adminTags));
+      } else if (kind === 'brand') {
+        if (isPurge) saveAdminCatalogBrands(mapPurge(adminCatalogBrands));
+        else saveAdminCatalogBrands(mapArchive(adminCatalogBrands));
+      } else if (kind === 'blog-category') {
+        if (isPurge) saveAdminBlogCategories(mapPurge(adminBlogCategories));
+        else saveAdminBlogCategories(mapArchive(adminBlogCategories));
+      } else if (kind === 'blog-tag') {
+        if (isPurge) saveAdminBlogTags(mapPurge(adminBlogTags));
+        else saveAdminBlogTags(mapArchive(adminBlogTags));
+      } else if (kind === 'blog') {
+        try {
+          if (isPurge && typeof deleteBlogPost === 'function') {
+            for (const id of ids) { try { await deleteBlogPost(id); } catch (_) {} }
+          } else if (typeof patchBlogPostStatus === 'function') {
+            for (const id of ids) { try { await patchBlogPostStatus(id, isPurge ? 'deleted' : 'archived'); } catch (_) {} }
+          } else if (typeof saveBlogPosts === 'function') {
+            const list = blogPosts || [];
+            saveBlogPosts(isPurge ? mapPurge(list) : mapArchive(list));
+          }
+          if (typeof hydrateBlogPostsFromApi === 'function') try { hydrateBlogPostsFromApi(); } catch (_) {}
+        } catch (_) {}
+      }
+      setTaxSelectedIds([]);
+      try { showToast({ message: isPurge ? 'حذف دائم انجام شد' : 'به آرشیو منتقل شد', variant: 'success', duration: 3000, position: 'top-center' }); } catch (_) {}
+    } finally {
+      setTaxBusy(false);
+    }
+  };
+  const taxToolbar = (kind, visibleList) => {
+    const allIds = (visibleList || []).map((x) => String(x.id));
+    const allSelected = allIds.length > 0 && allIds.every((id) => taxSelectedIds.includes(id));
+    return (
+      <div className="space-y-2 mb-3">
+        <div className="flex flex-wrap gap-1.5">
+          {[{ id: 'active', l: 'فعال‌ها' }, { id: 'archived', l: 'آرشیو شده‌ها' }].map((f) => (
+            <button key={f.id} type="button" onClick={() => setTaxFilter(f.id)}
+              className={`text-xs px-3 py-1.5 rounded-full border font-medium ${taxFilter === f.id ? 'bg-primary-900 text-white border-primary-900 dark:bg-white dark:text-primary-900' : 'border-primary-200 dark:border-white/20'}`}>{f.l}</button>
+          ))}
+        </div>
+        {taxSelectedIds.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
+            <span className="text-xs font-medium text-red-800 dark:text-red-200">{taxSelectedIds.length} مورد انتخاب شده</span>
+            <button type="button" disabled={taxBusy} onClick={() => runTaxBulk(kind, taxFilter === 'archived' ? 'purge' : 'archive')}
+              className="text-xs px-3 py-1.5 rounded-full bg-red-600 text-white font-medium disabled:opacity-50">
+              {taxBusy ? 'در حال اجرا…' : (taxFilter === 'archived' ? 'حذف دائم گروهی' : 'آرشیو گروهی')}
+            </button>
+            {taxFilter === 'archived' && (
+              <button type="button" disabled={taxBusy} onClick={async () => {
+                const ids = new Set(taxSelectedIds.map(String));
+                const ok = typeof siteConfirm === 'function' ? await siteConfirm('بازگردانی موارد انتخاب‌شده از آرشیو؟', 'بازگردانی') : window.confirm('بازگردانی؟');
+                if (!ok) return;
+                setTaxBusy(true);
+                try {
+                  const rest = (list) => (list || []).map((x) => ids.has(String(x.id)) ? { ...x, status: 'active' } : x);
+                  if (kind === 'category') saveAdminCategories(rest(adminCategories));
+                  else if (kind === 'tag') saveAdminTags(rest(adminTags));
+                  else if (kind === 'brand') saveAdminCatalogBrands(rest(adminCatalogBrands));
+                  else if (kind === 'blog-category') saveAdminBlogCategories(rest(adminBlogCategories));
+                  else if (kind === 'blog-tag') saveAdminBlogTags(rest(adminBlogTags));
+                  setTaxSelectedIds([]);
+                  try { showToast({ message: 'بازگردانی شد', variant: 'success', duration: 2500, position: 'top-center' }); } catch (_) {}
+                } finally { setTaxBusy(false); }
+              }} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50">بازگردانی گروهی</button>
+            )}
+            <button type="button" onClick={() => setTaxSelectedIds([])} className="text-xs px-3 py-1.5 rounded-full border border-primary-300 dark:border-white/30">لغو انتخاب</button>
+          </div>
+        )}
+        {allIds.length > 0 && (
+          <label className="flex items-center gap-2 text-xs text-primary-600 dark:text-white/70 cursor-pointer">
+            <input type="checkbox" checked={allSelected} onChange={() => {
+              if (allSelected) setTaxSelectedIds([]);
+              else setTaxSelectedIds(allIds);
+            }} className="rounded border-primary-300" />
+            انتخاب همه در این فهرست ({allIds.length})
+          </label>
+        )}
+      </div>
+    );
   };
   const id = requestAnimationFrame(run);
   const t = setTimeout(run, 50);
@@ -2318,8 +2436,10 @@ export default function AdminPanelContent() {
              </div>
             </div>
             <div className="space-y-2">
-             {(adminCategories || []).map((c) => (
-              <div key={c.id} className="flex flex-wrap items-center gap-3 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
+             {taxToolbar('category', filterTaxList(adminCategories))}
+            {filterTaxList(adminCategories).map((c) => (
+              <div key={c.id} className={`flex flex-wrap items-center gap-3 p-3 rounded-xl border bg-white dark:bg-primary-900 ${taxSelectedIds.includes(String(c.id)) ? 'border-apple-blue ring-1 ring-apple-blue/30' : 'border-primary-200 dark:border-white/15'}`}>
+               <input type="checkbox" checked={taxSelectedIds.includes(String(c.id))} onChange={() => toggleTaxSelect(c.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب" />
                {c.image ? <img src={c.image} alt="" className="w-14 h-14 rounded-lg object-cover flex-shrink-0" /> : <div className="w-14 h-14 rounded-lg bg-primary-100 dark:bg-primary-800 flex-shrink-0" />}
                <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-primary-900 dark:text-white">{c.name}</p>
@@ -2329,10 +2449,10 @@ export default function AdminPanelContent() {
                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">index</span>
                <button type="button" onClick={() => openCategory(c.name)} className="text-xs px-2 py-1 rounded-full border border-primary-200 dark:border-white/20 text-primary-600 dark:text-white">صفحه</button>
                <button type="button" onClick={() => openTaxonomyWizard('category', c)} className="p-1.5 rounded-full hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-500"><Icon name="pencil" size={14} /></button>
-               <button type="button" onClick={() => { siteConfirm('حذف این دسته؟').then(ok=>{ if(ok) saveAdminCategories((adminCategories || []).filter(x => x.id !== c.id)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
+               <button type="button" onClick={() => { siteConfirm(isTaxArchived(c) ? 'حذف دائم این دسته؟ برگشت‌پذیر نیست.' : 'این دسته به آرشیو منتقل شود؟').then(ok=>{ if(!ok) return; if(isTaxArchived(c)) saveAdminCategories((adminCategories || []).filter(x => x.id !== c.id)); else saveAdminCategories((adminCategories || []).map(x => x.id === c.id ? { ...x, status: 'archived' } : x)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
               </div>
              ))}
-             {!(adminCategories || []).length && <p className="text-sm text-primary-400 text-center py-8">دسته‌ای ثبت نشده</p>}
+             {!filterTaxList(adminCategories).length && <p className="text-sm text-primary-400 text-center py-8">{taxFilter === 'archived' ? 'آرشیو خالی است' : 'دسته‌ای ثبت نشده'}</p>}
             </div>
            </div>
 
@@ -2361,8 +2481,10 @@ export default function AdminPanelContent() {
              </div>
             </div>
             <div className="space-y-2">
-             {(adminTags || []).map((t) => (
-              <div key={t.id} className="flex flex-wrap items-center gap-3 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
+             {taxToolbar('tag', filterTaxList(adminTags))}
+            {filterTaxList(adminTags).map((t) => (
+              <div key={t.id} className={`flex flex-wrap items-center gap-3 p-3 rounded-xl border bg-white dark:bg-primary-900 ${taxSelectedIds.includes(String(t.id)) ? 'border-apple-blue ring-1 ring-apple-blue/30' : 'border-primary-200 dark:border-white/15'}`}>
+               <input type="checkbox" checked={taxSelectedIds.includes(String(t.id))} onChange={() => toggleTaxSelect(t.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب" />
                {t.image ? <img src={t.image} alt="" className="w-14 h-14 rounded-lg object-cover flex-shrink-0" /> : <div className="w-14 h-14 rounded-lg bg-primary-100 dark:bg-primary-800 flex-shrink-0" />}
                <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-primary-900 dark:text-white">{t.name}</p>
@@ -2372,7 +2494,7 @@ export default function AdminPanelContent() {
                <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">noindex</span>
                <button type="button" onClick={() => openTagPage(t.name)} className="text-xs px-2 py-1 rounded-full border border-primary-200 dark:border-white/20 text-primary-600 dark:text-white">صفحه</button>
                <button type="button" onClick={() => openTaxonomyWizard('tag', t)} className="p-1.5 rounded-full hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-500"><Icon name="pencil" size={14} /></button>
-               <button type="button" onClick={() => { siteConfirm('حذف این برچسب؟').then(ok=>{ if(ok) saveAdminTags((adminTags || []).filter(x => x.id !== t.id)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
+               <button type="button" onClick={() => { siteConfirm(isTaxArchived(t) ? 'حذف دائم این برچسب؟ برگشت‌پذیر نیست.' : 'این برچسب به آرشیو منتقل شود؟').then(ok=>{ if(!ok) return; if(isTaxArchived(t)) saveAdminTags((adminTags || []).filter(x => x.id !== t.id)); else saveAdminTags((adminTags || []).map(x => x.id === t.id ? { ...x, status: 'archived' } : x)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
               </div>
              ))}
              {!(adminTags || []).length && <p className="text-sm text-primary-400 text-center py-8">برچسبی ثبت نشده</p>}
@@ -2396,8 +2518,10 @@ export default function AdminPanelContent() {
              </div>
             </div>
             <div className="space-y-2">
-             {(adminCatalogBrands || []).map(b => (
+             {taxToolbar('brand', filterTaxList(adminCatalogBrands))}
+             {filterTaxList(adminCatalogBrands).map(b => (
               <div key={b.id} className="flex flex-wrap items-center gap-2 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
+               <input type="checkbox" checked={taxSelectedIds.includes(String(b.id))} onChange={() => toggleTaxSelect(b.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب" />
                <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-primary-900 dark:text-white">{b.name}</p>
                 {b.seoTitle && <p className="text-[10px] text-primary-400 truncate">SEO: {b.seoTitle}</p>}
@@ -2416,7 +2540,7 @@ export default function AdminPanelContent() {
                </label>
                <button type="button" onClick={() => saveAdminCatalogBrands((adminCatalogBrands || []).map(x => x.id === b.id ? { ...x, active: x.active === false } : x))} className={`text-xs px-2.5 py-1 rounded-full border font-medium ${b.active === false ? '!bg-red-100 !border-red-300 !text-red-700 dark:!bg-red-950/50 dark:!border-red-700 dark:!text-red-300' : '!bg-emerald-50 !border-emerald-200 !text-emerald-700 dark:!bg-emerald-950/40 dark:!border-emerald-800/60 dark:!text-emerald-300'}`}>{b.active === false ? 'غیرفعال' : 'فعال'}</button>
                <button type="button" onClick={() => openTaxonomyWizard('brand', b)} className="p-1.5 rounded-full hover:bg-primary-50 text-primary-500"><Icon name="pencil" size={14} /></button>
-               <button type="button" onClick={() => { siteConfirm('حذف این برند؟').then(ok=>{ if(ok) saveAdminCatalogBrands((adminCatalogBrands || []).filter(x => x.id !== b.id)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
+               <button type="button" onClick={() => { siteConfirm(isTaxArchived(b) ? 'حذف دائم این برند؟ برگشت‌پذیر نیست.' : 'این برند به آرشیو منتقل شود؟').then(ok=>{ if(!ok) return; if(isTaxArchived(b)) saveAdminCatalogBrands((adminCatalogBrands || []).filter(x => x.id !== b.id)); else saveAdminCatalogBrands((adminCatalogBrands || []).map(x => x.id === b.id ? { ...x, status: 'archived' } : x)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
               </div>
              ))}
             </div>
@@ -2910,15 +3034,17 @@ export default function AdminPanelContent() {
             </button>
            </div>
            <div className="space-y-2">
-            {(adminBlogCategories || []).map((c) => (
+            {taxToolbar('blog-category', filterTaxList(adminBlogCategories))}
+            {filterTaxList(adminBlogCategories).map((c) => (
              <div key={c.id} className="flex flex-wrap items-center gap-2 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
+               <input type="checkbox" checked={taxSelectedIds.includes(String(c.id))} onChange={() => toggleTaxSelect(c.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب" />
               <div className="flex-1 min-w-0">
                <p className="text-sm font-medium text-primary-900 dark:text-white">{c.name}</p>
                {c.slug ? <p className="text-[10px] text-primary-400 font-latin mt-0.5" dir="ltr">/مجله?cat={c.slug}</p> : null}
               </div>
               <button type="button" onClick={() => saveAdminBlogCategories((adminBlogCategories || []).map((x) => x.id === c.id ? { ...x, active: x.active === false } : x))} className={`text-xs px-2 py-1 rounded-full border ${c.active === false ? 'border-amber-300 text-amber-700' : 'border-emerald-300 text-emerald-700'}`}>{c.active === false ? 'غیرفعال' : 'فعال'}</button>
               <button type="button" onClick={() => openTaxonomyWizard('blog-category', c)} className="p-1.5 rounded-full hover:bg-primary-50 text-primary-500"><Icon name="pencil" size={14} /></button>
-              <button type="button" onClick={() => { siteConfirm('حذف این دسته بلاگ؟').then((ok) => { if (ok) saveAdminBlogCategories((adminBlogCategories || []).filter((x) => x.id !== c.id)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
+              <button type="button" onClick={() => { siteConfirm(isTaxArchived(c) ? 'حذف دائم این دسته؟ برگشت‌پذیر نیست.' : 'این دسته به آرشیو منتقل شود؟').then((ok) => { if (!ok) return; if (isTaxArchived(c)) saveAdminBlogCategories((adminBlogCategories || []).filter((x) => x.id !== c.id)); else saveAdminBlogCategories((adminBlogCategories || []).map((x) => x.id === c.id ? { ...x, status: 'archived' } : x)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
              </div>
             ))}
             {!(adminBlogCategories || []).length && <EmptyStateBox title="هنوز دسته‌ای تعریف نشده" className="py-6" />}
@@ -2935,12 +3061,14 @@ export default function AdminPanelContent() {
              </button>
             </div>
             <div className="space-y-2">
-             {(adminBlogTags || []).map((tg) => (
+             {taxToolbar('blog-tag', filterTaxList(adminBlogTags))}
+             {filterTaxList(adminBlogTags).map((tg) => (
               <div key={tg.id} className="flex flex-wrap items-center gap-2 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
+               <input type="checkbox" checked={taxSelectedIds.includes(String(tg.id))} onChange={() => toggleTaxSelect(tg.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب" />
                <p className="flex-1 text-sm font-medium text-primary-900 dark:text-white">{tg.name}</p>
                <button type="button" onClick={() => openTaxonomyWizard('blog-tag', tg)} className="p-1.5 rounded-full hover:bg-primary-50 text-primary-500"><Icon name="pencil" size={14} /></button>
                <button type="button" onClick={() => {
-                siteConfirm('حذف این برچسب؟').then(ok => { if (ok) saveAdminBlogTags((adminBlogTags || []).filter(x => x.id !== tg.id)); });
+                siteConfirm(isTaxArchived(tg) ? 'حذف دائم این برچسب؟ برگشت‌پذیر نیست.' : 'این برچسب به آرشیو منتقل شود؟').then(ok => { if (!ok) return; if (isTaxArchived(tg)) saveAdminBlogTags((adminBlogTags || []).filter(x => x.id !== tg.id)); else saveAdminBlogTags((adminBlogTags || []).map(x => x.id === tg.id ? { ...x, status: 'archived' } : x)); });
                }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
               </div>
              ))}
