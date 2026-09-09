@@ -10,7 +10,7 @@ const FAQMonochrome = dynamic(() => import('../ui/faq-monochrome').then(m => m.F
 
 /** StaticPagesView — code-split from App.jsx */
 export default function StaticPagesView() {
-  const {BRANDS_LIST, COMPARE_MAX, DEFAULT_SITE_FAQS, DEFAULT_SELLER_FAQS, EmptyStateBox, Icon, SimpleEditor, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Textarea, activeSellerId, addBlogComment, addToCart, blogCommentName, blogCommentText, blogComments, blogPostId, blogPosts, brandDetailId, brandsList, catalogProducts, brandQuery, campaignNow, campaignsList, cart, cartCount: cartCountProp, cartOpen, catOpen, clearCompare, clearFavorites, closeStaticPage, compare, compareOpen, compareReplaceOpen, contactForm, contactFormError, cookieConsent, dark, dealsMinDiscount, dealsSort, faqCat, faqQuery, favorites, getPageCms, hasMounted, headerRevealedAfterHero, imgZoom, isBlogLiked, isDealActive, markAllNotifsRead, markNotifRead, mobileMenuOpen, notifPanelOpen, notifications, unreadNotifCount: unreadNotifCountRaw, openAdminPanel, openAuth, openCartPage, openComparePage, openPDP, openPLP, openProfilePage, openRecentPage, openSellerAuth, openSellerPanel, openSellersList, openStaticPage, setPublicTrackOpen, openWishlistPage, orders, pdpProduct, products, pushLiveToast, quickAdd, quickColorIdx, quickDescOpen, quickGalleryIdx, quickQty, quickSize, recentOpen, recentlyViewed, renderShareBar, replaceCompareAt, searchCategories, searchColors, searchSizes, sellerUser, sellerTickets, setActiveSellerId, setBlogCommentName, setBlogCommentText, setBrandDetailId, setBrandQuery, setCartOpen, setCatOpen, setCompareOpen, setCompareReplaceOpen, setContactForm, setContactFormError, setCookieConsent, setDark, toggleDarkMode, setDealsMinDiscount, setDealsSort, setFaqCat, setFaqQuery, setImgZoom, setMobileMenuOpen, setNotifPanelOpen, setPdpProduct, setQuickAdd, setQuickColorIdx, setQuickDescOpen, setQuickGalleryIdx, setQuickQty, setQuickSize, setRecentOpen, setSearchQuery, setShowCartPage, setShowCheckout, setShowComparePage, setShowPLP, setShowProfilePage, setShowSellerPanel, setShowSellersList, setShowWishlistPage, setWishlistClearConfirm, setWishlistOpen, showAdminPanel, showCartPage, showCheckout, showComparePage, showPLP, showProfilePage, showRecentPage, showSellerPanel, showSellersList, showTaxonomyHub, showToast, showWishlistPage, siteFaqs, staticPage, toFa, toggleBlogLike, toggleCompare, toggleFavorite, toggleSearchCategory, toggleSearchColor, toggleSearchSize, categories, allColors, allSizes, user, wishlistClearConfirm, wishlistOpen, wishlistProducts, publicTrackOpen, openBrand} = useAppApi();
+  const {BRANDS_LIST, COMPARE_MAX, DEFAULT_SITE_FAQS, DEFAULT_SELLER_FAQS, EmptyStateBox, Icon, SimpleEditor, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Textarea, activeSellerId, addBlogComment, addToCart, blogCommentName, blogCommentText, blogComments, blogPostId, blogPosts, brandDetailId, brandsList, adminCatalogBrands, catalogProducts, brandQuery, campaignNow, campaignsList, cart, cartCount: cartCountProp, cartOpen, catOpen, clearCompare, clearFavorites, closeStaticPage, compare, compareOpen, compareReplaceOpen, contactForm, contactFormError, cookieConsent, dark, dealsMinDiscount, dealsSort, faqCat, faqQuery, favorites, getPageCms, hasMounted, headerRevealedAfterHero, imgZoom, isBlogLiked, isDealActive, markAllNotifsRead, markNotifRead, mobileMenuOpen, notifPanelOpen, notifications, unreadNotifCount: unreadNotifCountRaw, openAdminPanel, openAuth, openCartPage, openComparePage, openPDP, openPLP, openProfilePage, openRecentPage, openSellerAuth, openSellerPanel, openSellersList, openStaticPage, setPublicTrackOpen, openWishlistPage, orders, pdpProduct, products, pushLiveToast, quickAdd, quickColorIdx, quickDescOpen, quickGalleryIdx, quickQty, quickSize, recentOpen, recentlyViewed, renderShareBar, replaceCompareAt, searchCategories, searchColors, searchSizes, sellerUser, sellerTickets, setActiveSellerId, setBlogCommentName, setBlogCommentText, setBrandDetailId, setBrandQuery, setCartOpen, setCatOpen, setCompareOpen, setCompareReplaceOpen, setContactForm, setContactFormError, setCookieConsent, setDark, toggleDarkMode, setDealsMinDiscount, setDealsSort, setFaqCat, setFaqQuery, setImgZoom, setMobileMenuOpen, setNotifPanelOpen, setPdpProduct, setQuickAdd, setQuickColorIdx, setQuickDescOpen, setQuickGalleryIdx, setQuickQty, setQuickSize, setRecentOpen, setSearchQuery, setShowCartPage, setShowCheckout, setShowComparePage, setShowPLP, setShowProfilePage, setShowSellerPanel, setShowSellersList, setShowWishlistPage, setWishlistClearConfirm, setWishlistOpen, showAdminPanel, showCartPage, showCheckout, showComparePage, showPLP, showProfilePage, showRecentPage, showSellerPanel, showSellersList, showTaxonomyHub, showToast, showWishlistPage, siteFaqs, staticPage, toFa, toggleBlogLike, toggleCompare, toggleFavorite, toggleSearchCategory, toggleSearchColor, toggleSearchSize, categories, allColors, allSizes, user, wishlistClearConfirm, wishlistOpen, wishlistProducts, publicTrackOpen, openBrand} = useAppApi();
   const _sellerTickets = (typeof sellerTickets !== 'undefined' ? sellerTickets : (api && api.sellerTickets)) || [];
   const sellerUnreadTickets = (Array.isArray(sellerTickets) ? sellerTickets : []).filter((x) => x && x.unread).length;
 
@@ -680,16 +680,28 @@ export default function StaticPagesView() {
                 </div>
               )}
               {staticPage === 'brands' && brandDetailId && (() => {
-                const list = (Array.isArray(brandsList) && brandsList.length ? brandsList : (typeof BRANDS_LIST !== 'undefined' ? BRANDS_LIST : []));
-                const b = list.find(x => String(x.id) === String(brandDetailId)) || list[0];
+                const list = [
+                  ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
+                  ...(Array.isArray(brandsList) ? brandsList : []),
+                  ...((typeof BRANDS_LIST !== 'undefined' && Array.isArray(BRANDS_LIST)) ? BRANDS_LIST : []),
+                ];
+                const b = list.find(x => String(x.id) === String(brandDetailId))
+                  || list.find(x => String(x.slug || '') === String(brandDetailId) || String(x.name || '') === String(brandDetailId))
+                  || (brandDetailId ? { id: brandDetailId, name: String(brandDetailId), slug: String(brandDetailId) } : null);
                 if (!b) return null;
                 const brandName = String(b.name || '').trim().toLowerCase();
                 const brandId = String(b.id || '');
-                const brandProducts = (Array.isArray(catalogProducts) && catalogProducts.length ? catalogProducts : products).filter((p) => {
+                const brandSlug = String(b.slug || '').trim().toLowerCase();
+                const poolProducts = (Array.isArray(catalogProducts) && catalogProducts.length)
+                  ? catalogProducts
+                  : (Array.isArray(products) ? products : []);
+                const brandProducts = poolProducts.filter((p) => {
+                  if (!p) return false;
                   const pb = String(p.brand || p.brandName || p.brand_name || '').trim().toLowerCase();
                   const pid = String(p.brandId || p.brand_id || '');
-                  if (brandId && pid && pid === brandId) return true;
+                  if (brandId && pid && String(pid) === String(brandId)) return true;
                   if (brandName && pb && pb === brandName) return true;
+                  if (brandSlug && pb && pb === brandSlug) return true;
                   if (brandName && pb && (pb.includes(brandName) || brandName.includes(pb))) return true;
                   return false;
                 });

@@ -5476,7 +5476,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
                   openBrand(hitBrand, { silent: true });
                 } else if (!isKnownCategory) {
                   // تک‌مسیره ناشناخته: ترجیح برند PLP با همین نام (صفحه برند)
-                  openPLP({ brand: catLabel, brandSlug: catSlugRaw || catLabel, silent: true });
+                  openBrand({ name: catLabel, slug: catSlugRaw || catLabel }, { silent: true });
                 } else {
                   openPLP({ cat: catLabel, silent: true, reset: false });
                 }
@@ -5548,7 +5548,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
                   openBrand(hitBrand, { silent: true });
                 } else if (!isKnownCategory) {
                   // تک‌مسیره ناشناخته: ترجیح برند PLP با همین نام (صفحه برند)
-                  openPLP({ brand: catLabel, brandSlug: catSlugRaw || catLabel, silent: true });
+                  openBrand({ name: catLabel, slug: catSlugRaw || catLabel }, { silent: true });
                 } else {
                   openPLP({ cat: catLabel, silent: true, reset: false });
                 }
@@ -6534,19 +6534,43 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             const n = String(x.name || '').trim();
             const s = String(x.slug || '').trim();
             return n === key || s === key || norm(n) === t || norm(s) === t || String(x.id) === key;
-          }) || { name: key, slug: key };
+          }) || { name: key, slug: key, id: key };
         }
         const name = String(b.name || b.slug || '').trim();
         const slug = String(b.slug || b.name || '').trim();
         if (!name && !slug) return;
-        try { setBrandDetailId(null); } catch (_) {}
-        try { setStaticPage(null); } catch (_) {}
-        // PLP برند — URL اختصاصی /{slug}
-        openPLP({
-          brand: name || slug,
-          brandSlug: slug || name,
-          silent: !!opts.silent,
-        });
+        // صفحه مستقل برند — نه فیلتر PLP
+        try { setPlpBrand(''); } catch (_) {}
+        try { setShowPLP(false); } catch (_) {}
+        try { setPdpProduct(null); } catch (_) {}
+        try { setShowCartPage(false); } catch (_) {}
+        try { setShowCheckout(false); } catch (_) {}
+        try { setShowWishlistPage(false); } catch (_) {}
+        try { setShowRecentPage(false); } catch (_) {}
+        try { setShowComparePage(false); } catch (_) {}
+        try { setShowProfilePage(false); } catch (_) {}
+        try { setShowSellerPanel(false); } catch (_) {}
+        try { setShowAdminPanel(false); } catch (_) {}
+        try { setShowSellersList(false); } catch (_) {}
+        try { setActiveSellerId(null); } catch (_) {}
+        try { setShowTaxonomyHub(null); } catch (_) {}
+        try { setMobileMenuOpen(false); } catch (_) {}
+        try { setBrandDetailId(b.id || name || slug); } catch (_) {}
+        try { setStaticPage('brands'); } catch (_) {}
+        try {
+          const pathSlug = (typeof slugifyFa === 'function' ? slugifyFa(slug || name) : String(slug || name).replace(/\s+/g, '_'));
+          if (pathSlug && pathSlug !== 'مورد') {
+            const url = '/' + pathSlug;
+            if (!opts.silent) {
+              try { pushFaUrl(url, { brandPage: true, brand: name, brandId: b.id || null }); } catch (_) {
+                try { window.history.pushState({ brandPage: true }, '', url); } catch (__) {}
+              }
+            } else {
+              try { window.history.replaceState({ brandPage: true, brand: name }, '', url); } catch (_) {}
+            }
+          }
+        } catch (_) {}
+        try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
       };
       /** صفحهٔ هر برچسب — ساختار PLP، همیشه noindex */
       const openTagPage = (tagNameOrSlug) => {
