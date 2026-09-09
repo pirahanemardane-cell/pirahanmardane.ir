@@ -132,6 +132,7 @@ export default function PdpView() {
             const fullSeller = topSellers.find(s => s.id === (seller.id || 'own')) || { ...seller, products: 48, badges: ['ارسال سریع', 'ضمانت اصالت'], image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=200&h=200&fit=crop' };
 
             return (
+              <>
               <div className="flex-1 flex flex-col bg-primary-50 dark:bg-primary-950 pb-24 sm:pb-8">
                 {/* SEO Structured Data */}
                 <script
@@ -936,11 +937,7 @@ export default function PdpView() {
                   </div>
                 </div>
               </div>
-                  </div>
-                  <div className="w-10" aria-hidden />
-                </div>
-
-                {/* تصویر اصلی */}
+{/* تصویر اصلی */}
                 <div
                   className="flex-1 relative flex items-center justify-center min-h-0 px-2 sm:px-8 py-4"
                   onClick={() => setPdpZoom(false)}
@@ -1078,7 +1075,7 @@ export default function PdpView() {
                 )}
               </div>
             )}
-
+            </>
             );
           })()}
     </>
