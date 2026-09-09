@@ -88,14 +88,14 @@ export default function OtpBoxes({
     refs.current[Math.min(text.length, length - 1)]?.focus();
   };
 
+  // فوکوس اولیه فقط یک‌بار هنگام mount — بدون حلقه روی value
   useEffect(() => {
-    if (!checking && !disabled) {
-      const firstEmpty = digits.findIndex((c) => !c);
-      const idx = firstEmpty === -1 ? length - 1 : firstEmpty;
-      refs.current[idx]?.focus();
-    }
-    // فقط وقتی value از بیرون کامل می‌شود (مثلاً WebOTP)
-  }, [value, checking, disabled]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (checking || disabled) return;
+    const t = setTimeout(() => {
+      try { refs.current[0]?.focus(); } catch (_) {}
+    }, 50);
+    return () => clearTimeout(t);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={`w-full ${className}`} dir="ltr">
