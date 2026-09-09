@@ -366,9 +366,7 @@ export default function AuthModalView() {
             onSubmit={(e) => {
               e.preventDefault();
               try {
-                if (typeof window !== 'undefined' && window.__pmSubmitAuthOtp) {
-                  window.__pmSubmitAuthOtp();
-                }
+                verifyOtp && verifyOtp();
               } catch (_) {}
             }}
           >
@@ -395,17 +393,32 @@ export default function AuthModalView() {
               disabled={authLoading || onlyDigits(authOtp || '').length < 4}
               className="btn-cta w-full py-3 rounded-full bg-apple-blue dark:bg-[#13ABC4] text-white text-sm font-bold hover:opacity-90 disabled:opacity-60 transition"
             >
-              {authLoading ? 'در حال بررسی...' : 'تأیید کد'}
+              {authLoading
+                ? 'در حال بررسی...'
+                : isSeller
+                  ? 'تأیید و ورود فروشنده'
+                  : 'تأیید و ادامه'}
             </button>
-            <button
-              type="button"
-              className="w-full text-xs text-primary-500 dark:text-white/60"
-              onClick={() => {
-                try { setAuthStep('phone'); setAuthOtp(''); setAuthError(''); } catch (_) {}
-              }}
-            >
-              تغییر شماره
-            </button>
+            <div className="flex items-center justify-between text-xs text-primary-500">
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthStep('phone');
+                  setAuthOtp('');
+                  setAuthError('');
+                }}
+                className="hover:text-apple-blue"
+              >
+                تغییر شماره
+              </button>
+              {authOtpTimer > 0 ? (
+                <span>ارسال مجدد تا {toFa(authOtpTimer)} ثانیه</span>
+              ) : (
+                <button type="button" onClick={() => sendOtp && sendOtp()} className="text-apple-blue font-medium">
+                  ارسال مجدد کد
+                </button>
+              )}
+            </div>
           </form>
         )}
 
