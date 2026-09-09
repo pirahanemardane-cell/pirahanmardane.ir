@@ -972,12 +972,12 @@ export default function StaticPagesView() {
               {staticPage === 'error-404' && (
                 <div className="relative overflow-hidden rounded-3xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 px-4 sm:px-8 py-14 sm:py-16 text-center max-w-2xl mx-auto shadow-sm">
                   <div className="pointer-events-none absolute inset-0 opacity-[0.07] dark:opacity-[0.12]" aria-hidden>
-                    <div className="absolute -top-16 -left-16 w-56 h-56 rounded-full bg-[#FF0000] dark:bg-[#13ABC4] blur-3xl" />
+                    <div className="absolute -top-16 -left-16 w-56 h-56 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 dark:bg-[#13ABC4] blur-3xl" />
                     <div className="absolute -bottom-20 -right-10 w-64 h-64 rounded-full bg-[#AF0404] dark:bg-[#3161A3] blur-3xl" />
                   </div>
                   <div className="relative z-10 space-y-5">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-950 text-xs font-medium text-primary-600 dark:text-[#7EFAFF]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#FF0000] dark:bg-[#13ABC4]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 dark:bg-[#13ABC4]" />
                       خطا · صفحه موجود نیست
                     </div>
                     <p className="text-7xl sm:text-8xl font-black leading-none tracking-tight text-[#FF0000] dark:text-[#13ABC4] select-none">۴۰۴</p>
@@ -996,7 +996,7 @@ export default function StaticPagesView() {
                       />
                     </div>
                     <div className="flex flex-wrap justify-center gap-2.5 pt-1">
-                      <button type="button" onClick={() => { closeStaticPage(); window.scrollTo({ top: 0 }); }} className="px-6 py-2.5 rounded-full bg-[#FF0000] dark:bg-[#13ABC4] text-white text-sm font-semibold hover:bg-[#AF0404] dark:hover:bg-[#3161A3] transition shadow-md">خانه</button>
+                      <button type="button" onClick={() => { closeStaticPage(); window.scrollTo({ top: 0 }); }} className="px-6 py-2.5 rounded-full bg-transparent border border-primary-200 dark:border-white/25 dark:bg-[#13ABC4] text-primary-900 dark:text-white text-sm font-semibold hover:bg-[#AF0404] dark:hover:bg-[#3161A3] transition shadow-md">خانه</button>
                       <button type="button" onClick={() => openPLP()} className="px-5 py-2.5 rounded-full border border-primary-200 dark:border-white/25 bg-white dark:bg-primary-950 text-sm font-medium text-primary-900 dark:text-white hover:border-[#FF0000] dark:hover:border-[#7EFAFF] transition">فروشگاه</button>
                       <button type="button" onClick={() => openStaticPage('deals')} className="px-5 py-2.5 rounded-full border border-primary-200 dark:border-white/25 bg-white dark:bg-primary-950 text-sm font-medium text-primary-900 dark:text-white hover:border-[#FF0000] dark:hover:border-[#7EFAFF] transition">شگفت‌انگیز</button>
                     </div>
@@ -1159,7 +1159,7 @@ export default function StaticPagesView() {
                   >
                     <Icon name="bell" size={18} />
                     {unreadNotifCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">{toFa(unreadNotifCount > 9 ? '9+' : unreadNotifCount)}</span>
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white text-xs font-bold flex items-center justify-center">{toFa(unreadNotifCount > 9 ? '9+' : unreadNotifCount)}</span>
                     )}
                   </button>
                   <button
@@ -1779,7 +1779,7 @@ export default function StaticPagesView() {
                     {favorites.length > 0 && (
                       wishlistClearConfirm ? (
                         <div className="flex items-center gap-1">
-                          <button type="button" onClick={clearFavorites} className="btn-cta text-xs px-2 py-1 rounded-full bg-red-500 text-white">تأیید</button>
+                          <button type="button" onClick={clearFavorites} className="btn-cta text-xs px-2 py-1 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white">تأیید</button>
                           <button type="button" onClick={() => setWishlistClearConfirm(false)} className="text-xs px-2 py-1 rounded-full border border-primary-200 dark:border-white/30">لغو</button>
                         </div>
                       ) : (

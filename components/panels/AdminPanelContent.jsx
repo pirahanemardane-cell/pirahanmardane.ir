@@ -742,7 +742,7 @@ export default function AdminPanelContent() {
             className={`flex-shrink-0 flex w-full items-center gap-2.5 px-2.5 rounded-[6px] text-[13px] font-medium transition-all duration-200 whitespace-nowrap select-none text-right ${adminTab === t.id ? 'panel-nav-item panel-nav-item--active bg-apple-blue text-white shadow-md shadow-apple-blue/25' : 'panel-nav-item text-primary-700 dark:text-white/80 hover:bg-primary-50/90 dark:hover:bg-white/5'}`}>
             <Icon name={t.icon === 'home' ? 'shield' : t.icon === 'package' ? 'shoppingBag' : t.icon === 'message' ? 'headphones' : t.icon === 'settings' ? 'pencil' : t.icon === 'percent' ? 'dollar' : t.icon} size={16} />
             {t.label}
-            {t.id === 'tickets' && adminUnreadTickets > 0 && <span className="mr-auto text-xs bg-red-500 text-white rounded-full px-1.5 min-w-[18px] text-center">{toFa(adminUnreadTickets)}</span>}
+            {t.id === 'tickets' && adminUnreadTickets > 0 && <span className="mr-auto text-xs bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white rounded-full px-1.5 min-w-[18px] text-center">{toFa(adminUnreadTickets)}</span>}
            </button>
           ))}
          </div>
@@ -1095,7 +1095,7 @@ export default function AdminPanelContent() {
             {adminSelectedSellerIds.length > 0 && (
             <div className="mb-3 flex flex-wrap items-center gap-2 p-2.5 rounded-xl border border-red-200 bg-red-50/80 dark:bg-red-950/30 dark:border-red-500/30">
              <span className="text-xs font-medium text-red-800 dark:text-red-200">{adminSelectedSellerIds.length} فروشنده انتخاب شده</span>
-             <button type="button" disabled={adminBulkBusy} onClick={() => runAdminBulkSellers(adminSellerFilter === 'archived' ? 'purge' : 'archive')} className="text-xs px-3 py-1.5 rounded-full bg-red-600 text-white font-medium disabled:opacity-50">
+             <button type="button" disabled={adminBulkBusy} onClick={() => runAdminBulkSellers(adminSellerFilter === 'archived' ? 'purge' : 'archive')} className="text-xs px-3 py-1.5 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white font-medium disabled:opacity-50">
               {adminBulkBusy ? 'در حال اجرا…' : (adminSellerFilter === 'archived' ? 'حذف دائم گروهی' : 'آرشیو گروهی')}
              </button>
              <button type="button" disabled={adminBulkBusy} onClick={() => setAdminSelectedSellerIds([])} className="text-xs px-3 py-1.5 rounded-full border border-primary-300 dark:border-white/30">لغو انتخاب</button>
@@ -1170,7 +1170,7 @@ export default function AdminPanelContent() {
                <span className={`text-xs px-2 py-0.5 rounded-full ${adminStatusBadge(s.status)}`}>{adminStatusLabel(s.status)}</span>
                {s.status==='pending'&&(<>
                 <button type="button" onClick={()=>patchSellerStatus(s.id, 'approved')} className="text-xs px-2.5 py-1 rounded-full bg-emerald-600 text-white">تأیید</button>
-                <button type="button" onClick={()=>{sitePrompt('دلیل رد (اختیاری):').then((r)=>{patchSellerStatus(s.id, 'rejected');});}} className="text-xs px-2.5 py-1 rounded-full bg-red-500 text-white">رد</button>
+                <button type="button" onClick={()=>{sitePrompt('دلیل رد (اختیاری):').then((r)=>{patchSellerStatus(s.id, 'rejected');});}} className="text-xs px-2.5 py-1 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white">رد</button>
                </>)}
                {s.status==='approved'&&<button type="button" onClick={()=>patchSellerStatus(s.id, 'blocked')} className="text-xs px-2.5 py-1 rounded-full border border-red-200 text-red-600">محدود کردن</button>}
                {(s.status==='blocked'||s.status==='suspended')&&<button type="button" onClick={()=>patchSellerStatus(s.id, 'approved')} className="text-xs px-2.5 py-1 rounded-full border border-emerald-200 text-emerald-600">تأیید / رفع محدودیت</button>}
@@ -1464,7 +1464,7 @@ export default function AdminPanelContent() {
            {adminSelectedProductIds.length > 0 && (
             <div className="mb-3 flex flex-wrap items-center gap-2 p-2.5 rounded-xl border border-red-200 bg-red-50/80 dark:bg-red-950/30 dark:border-red-500/30">
              <span className="text-xs font-medium text-red-800 dark:text-red-200">{adminSelectedProductIds.length} محصول انتخاب شده</span>
-             <button type="button" disabled={adminBulkBusy} onClick={() => runAdminBulkProducts(adminProductFilter === 'archived' || adminProductFilter === 'purge_requested' ? 'purge' : 'archive')} className="text-xs px-3 py-1.5 rounded-full bg-red-600 text-white font-medium disabled:opacity-50">
+             <button type="button" disabled={adminBulkBusy} onClick={() => runAdminBulkProducts(adminProductFilter === 'archived' || adminProductFilter === 'purge_requested' ? 'purge' : 'archive')} className="text-xs px-3 py-1.5 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white font-medium disabled:opacity-50">
               {adminBulkBusy ? 'در حال اجرا…' : (adminProductFilter === 'archived' || adminProductFilter === 'purge_requested' ? 'حذف دائم گروهی' : 'آرشیو گروهی')}
              </button>
              <button type="button" disabled={adminBulkBusy} onClick={() => setAdminSelectedProductIds([])} className="text-xs px-3 py-1.5 rounded-full border border-primary-300 dark:border-white/30">لغو انتخاب</button>
@@ -1580,7 +1580,7 @@ export default function AdminPanelContent() {
                   }
                  } catch (_) {}
                 }}
-                className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-red-600 text-white hover:bg-red-700 transition"
+                className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-transparent border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white hover:bg-transparent border border-primary-200 dark:border-white/25 transition"
                >
                 <Icon name="copy" size={14} />
                 کپی لینک محصول
@@ -1592,7 +1592,7 @@ export default function AdminPanelContent() {
                 {p.status === 'pending' && (
                  <>
                   <button type="button" onClick={() => patchAdminProductStatus(p.id, 'active')} className="text-xs px-2 py-0.5 rounded-full bg-emerald-600 text-white">تأیید</button>
-                  <button type="button" onClick={() => { sitePrompt('دلیل رد:').then(() => { patchAdminProductStatus(p.id, 'rejected'); }); }} className="text-xs px-2 py-0.5 rounded-full bg-red-500 text-white">رد</button>
+                  <button type="button" onClick={() => { sitePrompt('دلیل رد:').then(() => { patchAdminProductStatus(p.id, 'rejected'); }); }} className="text-xs px-2 py-0.5 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white">رد</button>
                  </>
                 )}
                 {p.status === 'active' && (
@@ -1624,7 +1624,7 @@ export default function AdminPanelContent() {
                      if (typeof adminPurgeProduct === 'function') adminPurgeProduct(p.id);
                     });
                    }}
-                   className="text-xs px-2 py-0.5 rounded-full border border-red-500 bg-red-600 text-white font-medium"
+                   className="text-xs px-2 py-0.5 rounded-full border border-red-500 bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 text-primary-900 dark:text-white font-medium"
                   >
                    تأیید حذف دائم
                   </button>
@@ -1859,7 +1859,7 @@ export default function AdminPanelContent() {
               {p.status === 'inactive' && (<button type="button" onClick={() => patchAdminProductStatus(p.id, 'active')} className="text-xs px-3 py-2 rounded-full border border-emerald-200 text-emerald-600">فعال‌سازی</button>)}
               {p.status === 'purge_requested' ? (
                <>
-                <button type="button" onClick={() => { siteConfirm('درخواست فروشنده تأیید شود و محصول برای همیشه از پایگاه داده حذف شود؟ برگشت‌پذیر نیست.').then((ok) => { if (!ok) return; if (typeof adminPurgeProduct === 'function') adminPurgeProduct(p.id); setAdminProductDetailId(null); }); }} className="text-xs px-3 py-2 rounded-full border border-red-500 bg-red-600 text-white font-medium">تأیید حذف دائم</button>
+                <button type="button" onClick={() => { siteConfirm('درخواست فروشنده تأیید شود و محصول برای همیشه از پایگاه داده حذف شود؟ برگشت‌پذیر نیست.').then((ok) => { if (!ok) return; if (typeof adminPurgeProduct === 'function') adminPurgeProduct(p.id); setAdminProductDetailId(null); }); }} className="text-xs px-3 py-2 rounded-full border border-red-500 bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 text-primary-900 dark:text-white font-medium">تأیید حذف دائم</button>
                 <button type="button" onClick={() => { if (typeof adminPatchProductStatus === 'function') adminPatchProductStatus(p.id, 'archived'); else if (typeof patchAdminProductStatus === 'function') patchAdminProductStatus(p.id, 'archived'); setAdminProductDetailId(null); }} className="text-xs px-3 py-2 rounded-full border border-amber-300 text-amber-700">رد درخواست</button>
                </>
               ) : p.status === 'archived' ? (
@@ -2153,7 +2153,7 @@ export default function AdminPanelContent() {
               } catch (_) {}
              }} className="w-full p-3 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 text-right flex items-center justify-between gap-3">
               <div className="min-w-0">
-               <p className="text-sm font-medium text-primary-900 dark:text-white flex items-center gap-2 flex-wrap">{t.unread&&<span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"/>}{t.subject}
+               <p className="text-sm font-medium text-primary-900 dark:text-white flex items-center gap-2 flex-wrap">{t.unread&&<span className="w-2 h-2 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 flex-shrink-0"/>}{t.subject}
                 <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${(t.type==='seller'||t.from==='seller')?'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300':'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300'}`}>{(t.type==='seller'||t.from==='seller')?'فروشنده':'خریدار'}</span>
                 <span className="text-xs px-1.5 py-0.5 rounded-full font-bold bg-primary-100 text-primary-700 dark:bg-primary-800 dark:text-white/80">{conversationChannelLabel(t)}</span>
                </p>
@@ -3555,7 +3555,7 @@ export default function AdminPanelContent() {
                  if (item.type === 'seller_payout' && item.meta?.id) {
                   try { const su = JSON.parse(localStorage.getItem('sellerUser')||'null')||{}; const payouts=(su.payoutRequests||[]).map(r=>r.id===item.meta.id?{...r,status:'rejected'}:r); const next={...su,payoutRequests:payouts}; localStorage.setItem('sellerUser', JSON.stringify(next)); setSellerUser(next);} catch(_){}
                  }
-                }} className="px-3 py-1.5 rounded-full bg-red-500 text-white text-xs">رد</button>
+                }} className="px-3 py-1.5 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white text-xs">رد</button>
                </div>
               </div>
              ))}
@@ -5190,7 +5190,7 @@ export default function AdminPanelContent() {
                  <div className="flex h-3 rounded-full overflow-visible">
                   <div className="bg-emerald-500" style={{ width: `${(m.good / total) * 100}%` }} />
                   <div className="bg-amber-400" style={{ width: `${(m.needs / total) * 100}%` }} />
-                  <div className="bg-red-500" style={{ width: `${(m.poor / total) * 100}%` }} />
+                  <div className="bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25" style={{ width: `${(m.poor / total) * 100}%` }} />
                  </div>
                  <p className="text-[10px] text-primary-400 mt-1">Good {m.good}% · Needs improvement {m.needs}% · Poor {m.poor}%</p>
                 </div>

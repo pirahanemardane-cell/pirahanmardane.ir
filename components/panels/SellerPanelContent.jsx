@@ -1845,7 +1845,7 @@ export default function SellerPanelContent() {
                                           const ok = await requestSellerProductPurge(p.id);
                                           if (ok) setSellerProductDeleteId(null);
                                         }
-                                      }} className="text-xs px-2 py-1 rounded-full bg-red-600 text-white">ارسال درخواست</button>
+                                      }} className="text-xs px-2 py-1 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white">ارسال درخواست</button>
                                       <button type="button" onClick={() => setSellerProductDeleteId(null)} className="text-xs px-2 py-1 rounded-full border border-primary-200">لغو</button>
                                     </div>
                                   </div>
@@ -1860,7 +1860,7 @@ export default function SellerPanelContent() {
                                         saveSellerProducts((sellerProducts || []).filter(x => x.id !== p.id));
                                         setSellerProductDeleteId(null);
                                       }
-                                    }} className="text-xs px-2 py-1 rounded-full bg-red-500 text-white">آرشیو</button>
+                                    }} className="text-xs px-2 py-1 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white">آرشیو</button>
                                     <button type="button" onClick={() => setSellerProductDeleteId(null)} className="text-xs px-2 py-1 rounded-full border border-primary-200">لغو</button>
                                   </div>
                                 )}
@@ -2050,7 +2050,7 @@ export default function SellerPanelContent() {
                                           alts.splice(idx, 1);
                                           const feat = Math.min(f.featuredImageIndex || 0, Math.max(0, imgs.length - 1));
                                           return { ...f, images: imgs, imageAlts: alts, featuredImageIndex: feat, imageAlt: alts[feat] || '' };
-                                        })} className="absolute bottom-0.5 left-0.5 bg-red-500 text-white text-xs px-1 rounded">حذف</button>
+                                        })} className="absolute bottom-0.5 left-0.5 bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white text-xs px-1 rounded">حذف</button>
                                       </div>
                                       <input
                                         value={(sellerProductForm.imageAlts || [])[idx] || ''}
@@ -3793,7 +3793,7 @@ export default function SellerPanelContent() {
                                     return;
                                   }
                                   sellerCancelOrder(o, sellerCancelForm.reason.trim());
-                                }} className="px-4 py-2 rounded-full bg-red-600 text-white text-xs font-medium">تأیید لغو</button>
+                                }} className="px-4 py-2 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white text-xs font-medium">تأیید لغو</button>
                                 <button type="button" onClick={() => setSellerCancelForm({ open: false, orderId: null, reason: '' })} className="px-4 py-2 rounded-full border border-primary-200 dark:border-white/30 text-xs">انصراف</button>
                               </div>
                             </div>

@@ -15636,7 +15636,7 @@ const params = new URLSearchParams(window.location.search);
                   >
                     <Icon name={mobileMenuOpen ? "x" : "menu"} size={20} />
                     {!mobileMenuOpen && unreadNotifCount > 0 && (
-                      <span className="absolute top-1 right-1 min-w-[8px] h-2 w-2 rounded-full bg-red-500" aria-hidden />
+                      <span className="absolute top-1 right-1 min-w-[8px] h-2 w-2 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25" aria-hidden />
                     )}
                   </button>
                   </div>
@@ -16054,7 +16054,7 @@ const params = new URLSearchParams(window.location.search);
                                 keepSort: true,
                               });
                             }}
-                            className="h-7 px-2.5 rounded-full bg-[#FF0000] dark:bg-[#13ABC4] text-white text-[11px] font-medium whitespace-nowrap hover:opacity-90 active:scale-[0.98] transition flex-shrink-0 shadow-sm"
+                            className="h-7 px-2.5 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 dark:bg-[#13ABC4] text-primary-900 dark:text-white text-[11px] font-medium whitespace-nowrap hover:opacity-90 active:scale-[0.98] transition flex-shrink-0 shadow-sm"
                             title="اعمال فیلتر"
                           >
                             اعمال فیلتر
@@ -16246,7 +16246,7 @@ const params = new URLSearchParams(window.location.search);
                     <button type="button" onClick={() => { setNotifPanelOpen(v => !v); setCartOpen(false); setWishlistOpen(false); setCompareOpen(false); setRecentOpen(false); }} className="header-icon-btn w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full relative text-primary-800 hover:bg-primary-50 dark:bg-[#2A2C30] dark:text-white dark:border dark:border-white/25 dark:hover:bg-[#1A1C20] dark:hover:text-white" title="اعلان‌ها">
                       <Icon name="bell" size={18} />
                       {unreadNotifCount > 0 && (
-                        <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">{toFa(unreadNotifCount > 9 ? '9+' : unreadNotifCount)}</span>
+                        <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white text-xs font-bold flex items-center justify-center">{toFa(unreadNotifCount > 9 ? '9+' : unreadNotifCount)}</span>
                       )}
                     </button>
                   </div>
@@ -16673,7 +16673,7 @@ const params = new URLSearchParams(window.location.search);
                     {cart.length > 0 && (
                       clearCartConfirm ? (
                         <div className="flex items-center gap-1 ml-1">
-                          <button type="button" onClick={clearCart} className="text-xs px-2 py-1 rounded-full bg-red-500 text-white font-medium">تأیید حذف</button>
+                          <button type="button" onClick={clearCart} className="text-xs px-2 py-1 rounded-full bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white font-medium">تأیید حذف</button>
                           <button type="button" onClick={() => setClearCartConfirm(false)} className="text-xs px-2 py-1 rounded-full border border-primary-200 dark:border-white/30 text-primary-600 dark:text-white">لغو</button>
                         </div>
                       ) : (
@@ -16925,7 +16925,7 @@ const params = new URLSearchParams(window.location.search);
             <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[160] flex items-center gap-2 px-3 py-2 rounded-full bg-white/95 dark:bg-[#1a1a1a]/95 text-primary-900 dark:text-white shadow-2xl border border-primary-200 dark:border-white/15 backdrop-blur-xl max-w-[95vw]">
               <span className="text-xs sm:text-xs text-primary-900 dark:text-white/80 hidden sm:inline whitespace-nowrap font-medium">حالت ادمین</span>
               <span className="text-xs font-semibold text-primary-900 dark:text-white truncate max-w-[28vw] sm:max-w-[140px]">{getCurrentPageSeoContext().typeLabel}</span>
-              <button type="button" onClick={openAdminFrontEdit} className="text-xs px-3 py-1.5 rounded-full bg-red-600 hover:bg-red-500 text-white font-medium whitespace-nowrap shadow-sm">ویرایش SEO صفحه</button>
+              <button type="button" onClick={openAdminFrontEdit} className="text-xs px-3 py-1.5 rounded-full bg-transparent border border-primary-200 dark:border-white/25 hover:bg-transparent border border-primary-200 dark:border-white/25 text-primary-900 dark:text-white font-medium whitespace-nowrap shadow-sm">ویرایش SEO صفحه</button>
               <button type="button" onClick={() => openAdminPanel('seo')} className="text-xs px-2.5 py-1.5 rounded-full border border-primary-300 dark:border-white/30 text-primary-900 dark:text-white hover:bg-primary-50 dark:hover:bg-white/10 whitespace-nowrap hidden sm:inline font-medium">پنل سئو</button>
               <button type="button" onClick={() => openAdminPanel('dashboard')} className="text-xs px-2.5 py-1.5 rounded-full border border-primary-300 dark:border-white/30 text-primary-900 dark:text-white hover:bg-primary-50 dark:hover:bg-white/10 whitespace-nowrap font-medium">پنل</button>
             </div>
@@ -17216,7 +17216,7 @@ const params = new URLSearchParams(window.location.search);
                     <button
                       type="button"
                       onClick={() => addToCart(qp, { colorIdx: quickColorIdx, size: quickSize || '', qty: quickQty, requireSize: true })}
-                      className="w-full py-3.5 rounded-2xl bg-[#FF0000] dark:bg-[#13ABC4] text-white text-[15px] font-bold shadow-lg hover:opacity-95 active:scale-[0.99] transition"
+                      className="w-full py-3.5 rounded-2xl bg-transparent hover:bg-primary-50 dark:hover:bg-white/10 border border-primary-200 dark:border-white/25 dark:bg-[#13ABC4] text-primary-900 dark:text-white text-[15px] font-bold shadow-lg hover:opacity-95 active:scale-[0.99] transition"
                     >
                       افزودن به سبد خرید
                     </button>
