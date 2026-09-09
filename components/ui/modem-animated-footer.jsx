@@ -40,7 +40,7 @@ export function ModemAnimatedFooter({
   );
 
   return (
-    <section className={cn('relative w-full mt-0 overflow-hidden', className)} dir="rtl">
+    <section className={cn('relative w-full mt-0 overflow-x-hidden overflow-y-visible', className)} dir="rtl">
       <footer className="border-t border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-950 mt-10 sm:mt-16 relative">
         <div className="max-w-7xl flex flex-col justify-between mx-auto min-h-[22rem] sm:min-h-[26rem] md:min-h-[30rem] relative p-4 py-10">
           <div className="flex flex-col mb-10 sm:mb-14 w-full relative z-10 pb-4 sm:pb-0">
