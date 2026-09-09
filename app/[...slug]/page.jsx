@@ -41,7 +41,8 @@ function isAllowedSlug(slugParts) {
       .filter(Boolean),
   );
 
-  if (parts.length === 1 && knownFirst.has(first)) return true;
+  // تک‌بخشی: دسته یا برند (مثل /مجلسی)
+  if (parts.length === 1) return true;
 
   // مسیرهای اختصاصی
   if (first === 'product' || first === 'blog' || first === 'seller' || first === 'account') {

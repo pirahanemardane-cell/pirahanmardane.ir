@@ -3183,6 +3183,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const [adminLoading, setAdminLoading] = useStoreField(adminUiStore, 'adminLoading')
       const [plpQuery, setPlpQuery] = useStoreField(commerceUiStore, 'plpQuery')
       const [plpCats, setPlpCats] = useStoreField(commerceUiStore, 'plpCats')
+      const [plpBrand, setPlpBrand] = useStoreField(commerceUiStore, 'plpBrand');
       const [plpColors, setPlpColors] = useStoreField(commerceUiStore, 'plpColors')
       const [plpSizes, setPlpSizes] = useStoreField(commerceUiStore, 'plpSizes')
       const [plpSort, setPlpSort] = useStoreField(commerceUiStore, 'plpSort')
@@ -5434,7 +5435,22 @@ const generateProductCode = (sellerKey, productId, shopName) => {
 
             // تک‌بخشی + دستهٔ شناخته‌شده → همیشه PLP (قبل از جستجوی محصول)
             if (parsed.type === 'category_or_product' && isKnownCategory) {
-              openPLP({ cat: catLabel, silent: true, reset: false });
+              {
+                const norm = (x) => (typeof slugifyFa === 'function' ? slugifyFa(String(x || '')) : String(x || ''));
+                const target = norm(catLabel);
+                const brandPool = [
+                  ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
+                  ...(Array.isArray(brandsList) ? brandsList : []),
+                ];
+                const hitBrand = brandPool.find((br) => {
+                  if (!br) return false;
+                  const n = String(br.name || '').trim();
+                  const s = String(br.slug || '').trim();
+                  return (n && (norm(n) === target || n === catLabel)) || (s && (norm(s) === target || s === catSlugRaw));
+                });
+                if (hitBrand) openPLP({ brand: hitBrand.name || catLabel, brandSlug: hitBrand.slug || hitBrand.name || catLabel, silent: true });
+                else openPLP({ cat: catLabel, silent: true, reset: false });
+              }
               try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
               return;
             }
@@ -5475,7 +5491,22 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             // 2) محصول پیدا نشد — اگر کاندید دسته بود، PLP باز کن (نه ۴۰۴)
             if (parsed.type === 'category_or_product' || (parsed.maybeCatSlug && !parsed.shopSlug)) {
               if (catLabel) {
-                openPLP({ cat: catLabel, silent: true, reset: false });
+                {
+                const norm = (x) => (typeof slugifyFa === 'function' ? slugifyFa(String(x || '')) : String(x || ''));
+                const target = norm(catLabel);
+                const brandPool = [
+                  ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
+                  ...(Array.isArray(brandsList) ? brandsList : []),
+                ];
+                const hitBrand = brandPool.find((br) => {
+                  if (!br) return false;
+                  const n = String(br.name || '').trim();
+                  const s = String(br.slug || '').trim();
+                  return (n && (norm(n) === target || n === catLabel)) || (s && (norm(s) === target || s === catSlugRaw));
+                });
+                if (hitBrand) openPLP({ brand: hitBrand.name || catLabel, brandSlug: hitBrand.slug || hitBrand.name || catLabel, silent: true });
+                else openPLP({ cat: catLabel, silent: true, reset: false });
+              }
                 try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
                 return;
               }
@@ -6370,7 +6401,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           const key = normalizeCategoryKey(opts.cat);
           setPlpCats(key ? [key] : []);
           setPlpTagFilter([]);
-        } else if (opts.resetFilters || (opts.query == null && opts.tag === undefined && opts.cats === undefined && opts.cat === undefined)) {
+        } else if (opts.resetFilters || (opts.query == null && opts.tag === undefined && opts.cats === undefined && opts.cat === undefined && opts.brand === undefined)) {
           // فروشگاه عمومی / بازگشت از breadcrumb → همه فیلترها پاک
           setPlpCats([]);
           setPlpTagFilter([]);
@@ -6403,7 +6434,10 @@ const generateProductCode = (sellerKey, productId, shopName) => {
 
         try {
           if (!opts.silent) {
-            if (opts.resetFilters || (opts.cat == null && opts.tag == null && (opts.query == null || opts.query === '') && opts.cats === undefined)) {
+            if (opts.brand && !opts.tag && !opts.query && !opts.cat) {
+              const bSlug = opts.brandSlug || opts.brand;
+              pushFaUrl(pathForCategory(bSlug), { plp: true, brand: opts.brand });
+            } else if (opts.resetFilters || (opts.cat == null && opts.tag == null && opts.brand == null && (opts.query == null || opts.query === '') && opts.cats === undefined)) {
               pushFaUrl(FA_PATHS.shop || '/فروشگاه', { plp: true });
             } else if (opts.cat && !opts.tag && !opts.query) {
               pushFaUrl(pathForCategory(opts.cat), { plp: true, cat: opts.cat });
@@ -6418,6 +6452,13 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       };
       /** میانبر صریح: باز کردن هر دسته روی همان ساختار فروشگاه/PLP */
       const openCategory = (catName) => openPLP({ cat: catName });
+      const openBrand = (brandNameOrObj) => {
+        const b = brandNameOrObj && typeof brandNameOrObj === 'object' ? brandNameOrObj : null;
+        const name = b ? String(b.name || '').trim() : String(brandNameOrObj || '').trim();
+        const slug = b ? String(b.slug || b.name || '').trim() : name;
+        if (!name && !slug) { openPLP(); return; }
+        openPLP({ brand: name || slug, brandSlug: slug || name });
+      };
       /** صفحهٔ هر برچسب — ساختار PLP، همیشه noindex */
       const openTagPage = (tagNameOrSlug) => {
         const t = (adminTags || []).find(
@@ -13407,6 +13448,14 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
           const hay = `${p.name || ''} ${p.category || ''} ${(Array.isArray(p.categories) ? p.categories : []).join(' ')} ${(Array.isArray(p.tags) ? p.tags : []).join(' ')} ${p.seller?.name || ''} ${p.fabric || ''}`.toLowerCase();
           if (!hay.includes(q.toLowerCase())) return false;
         }
+        const _plpBrand = String(plpBrand || '').trim().toLowerCase();
+        if (_plpBrand) {
+          const pb = String(p.brand || p.brandName || p.brand_name || '').trim().toLowerCase();
+          const pid = String(p.brandId || p.brand_id || '');
+          const ok = (pb && (pb === _plpBrand || pb.includes(_plpBrand) || _plpBrand.includes(pb)))
+            || (pid && String(plpBrand) === pid);
+          if (!ok) return false;
+        }
         if (_plpCats.length > 0) {
           const prodCats = [
             p.category,
@@ -15066,6 +15115,7 @@ const params = new URLSearchParams(window.location.search);
         openAuth,
         openCartPage,
         openCategory,
+        openBrand,
         openCheckout,
         openComparePage,
         openNewShippingMethod,

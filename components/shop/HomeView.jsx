@@ -45,69 +45,7 @@ export default function HomeView() {
     })();
     return () => { cancelled = true; };
   }, []);
-  const {
-    CarouselArrows,
-    Icon,
-    activeSellerId,
-    features,
-    brands,
-    adminCatalogBrands,
-    topSellers,
-    blogs,
-    reviews,
-    stats,
-    categories,
-    catalogProducts,
-    dark,
-    isDealActive,
-    newestTab,
-    newsletterPhone,
-    openPLP,
-    openRecentPage,
-    openSellerPanel,
-    openSellersList,
-    openStaticPage,
-    setFaqQuery,
-    pdpProduct,
-    awaitingDeepProduct,
-    products,
-    pushLiveToast,
-    recentlyViewed,
-    renderProductCard,
-    sellerUser,
-    setActiveSellerId,
-    setHeaderRevealedAfterHero,
-    setNewestTab,
-    setNewsletterPhone,
-    setSellerCat,
-    setSellerSort,
-    showAdminPanel,
-    showCartPage,
-    showCheckout,
-    showComparePage,
-    showPLP,
-    showProfilePage,
-    showRecentPage,
-    showSellerPanel,
-    showSellersList,
-    showTaxonomyHub,
-    showToast,
-    showWishlistPage,
-    staticPage,
-    brandsTrackRef,
-    sellersTrackRef,
-    bestTrackRef,
-    newTrackRef,
-    amazingTrackRef,
-    reviewTrackRef,
-    recentTrackRef,
-    blogsTrackRef,
-    toFa,
-    setPublicTrackOpen,
-    setPublicTrackCode,
-    publicTrackOpen,
-    setBrandDetailId
-  } = useAppApi(); /* setPublicTrackOpen from context */
+  const {CarouselArrows, Icon, activeSellerId, features, brands, adminCatalogBrands, topSellers, blogs, reviews, stats, categories, catalogProducts, dark, isDealActive, newestTab, newsletterPhone, openPLP, openRecentPage, openSellerPanel, openSellersList, openStaticPage, setFaqQuery, pdpProduct, awaitingDeepProduct, products, pushLiveToast, recentlyViewed, renderProductCard, sellerUser, setActiveSellerId, setHeaderRevealedAfterHero, setNewestTab, setNewsletterPhone, setSellerCat, setSellerSort, showAdminPanel, showCartPage, showCheckout, showComparePage, showPLP, showProfilePage, showRecentPage, showSellerPanel, showSellersList, showTaxonomyHub, showToast, showWishlistPage, staticPage, brandsTrackRef, sellersTrackRef, bestTrackRef, newTrackRef, amazingTrackRef, reviewTrackRef, recentTrackRef, blogsTrackRef, toFa, setPublicTrackOpen, setPublicTrackCode, publicTrackOpen, setBrandDetailId, openBrand} = useAppApi(); /* setPublicTrackOpen from context */
   const [homeBlogs, setHomeBlogs] = useState([]);
   useEffect(() => {
     let cancelled = false;
@@ -282,7 +220,7 @@ export default function HomeView() {
                         key={b.id || b.name}
                         role="button"
                         tabIndex={0}
-                        onClick={() => { try { setBrandDetailId(b.id); openStaticPage('brands'); } catch (_) { try { openStaticPage('brands'); } catch (__) {} } }}
+                        onClick={() => { try { (typeof openBrand === 'function' ? openBrand(b) : openPLP({ brand: b.name, brandSlug: b.slug || b.name })); } catch (_) { openPLP({ brand: b.name }); } }}
                         onKeyDown={(e) => { if (e.key === 'Enter') { try { setBrandDetailId(b.id); openStaticPage('brands'); } catch (_) { try { openStaticPage('brands'); } catch (__) {} } } }}
                         className="flex-shrink-0 w-[104px] h-[88px] rounded-xl border border-primary-200 dark:border-white/25 bg-primary-50 dark:bg-primary-800 flex flex-col items-center justify-center text-center p-2 cursor-pointer transition hover:bg-primary-800 hover:border-primary-800 dark:hover:bg-primary-700 dark:hover:border-white/40 group/brand shadow-sm"
                       >
@@ -604,7 +542,7 @@ export default function HomeView() {
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        try { openPLP({ brand: name }); } catch (_) { openPLP(); }
+                        try { (typeof openBrand === 'function' ? openBrand({ name, slug: item.slug || name }) : openPLP({ brand: name, brandSlug: item.slug || name })); } catch (_) { openPLP({ brand: name }); }
                       }}
                       className="group relative rounded-2xl overflow-hidden bg-primary-50 dark:bg-primary-800 aspect-[4/5] flex flex-col items-center justify-center p-3 sm:p-4 transition hover:shadow-lg top-brand-card border border-transparent dark:border-white/15"
                     >
