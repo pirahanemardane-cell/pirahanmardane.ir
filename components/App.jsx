@@ -13930,8 +13930,8 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
             className={`gsap-card product-card bg-white dark:bg-black rounded-xl sm:rounded-2xl overflow-hidden shadow-sm flex flex-col cursor-pointer select-none border border-primary-100/80 dark:border-white/10 ${gridMode ? 'w-full h-full' : 'flex-shrink-0 w-[78%] min-[400px]:w-[70%] sm:w-[42%] md:w-[calc((100%-2.5rem)/3.3)] lg:w-[calc((100%-3.5rem)/4.3)] snap-start'}`}
           >
             <div className="px-2.5 pt-2 sm:px-2.5 sm:pt-2 sm:pb-0">
-              <h3 className="text-2xl font-bold text-primary-900 dark:text-white leading-snug">
-                <TipText text={p.name} className="font-bold text-primary-900 dark:text-white text-2xl leading-snug" />
+              <h3 className="text-[18px] sm:text-2xl font-bold text-primary-900 dark:text-white leading-snug">
+                <TipText text={p.name} className="font-bold text-primary-900 dark:text-white text-[18px] sm:text-2xl leading-snug" />
               </h3>
               <div className="mt-1 flex flex-col items-start gap-0.5 min-h-[2.5rem] sm:min-h-[2.25rem]">
                 <button

@@ -5184,3 +5184,12 @@ footer .select-none {
 }
 /* === END MOBILE FOOTER TOUCH SCROLL FIX === */
 
+/* تیتر کارت محصول — موبایل ۱۸px */
+@media (max-width: 639px) {
+  .product-card h3,
+  .product-card h3 .font-bold {
+    font-size: 18px !important;
+    line-height: 1.35 !important;
+  }
+}
+
