@@ -263,6 +263,17 @@ export default function AuthModalView() {
           <form
             className="space-y-4"
             onSubmit={(e) =>
+            {
+              e.preventDefault();
+              try {
+                verifyOtp && verifyOtp();
+              } catch (_) {}
+            }}
+          >
+            <p className="text-sm text-center text-primary-600 dark:text-white/70">
+              کد ارسال‌شده به {authPhone || 'شماره شما'} را وارد کنید
+            </p>
+            
             <InputOtp10
               value={String(authOtp || "")}
               onChange={(v) => {
@@ -274,33 +285,6 @@ export default function AuthModalView() {
               isVerifying={!!authLoading}
               phone={authPhone || ""}
               compact
-            /> {
-              e.preventDefault();
-              try {
-                verifyOtp && verifyOtp();
-              } catch (_) {}
-            }}
-          >
-            <p className="text-sm text-center text-primary-600 dark:text-white/70">
-              کد ارسال‌شده به {authPhone || 'شماره شما'} را وارد کنید
-            </p>
-            <input
-              type="text"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              name="one-time-code"
-              value={authOtp || ''}
-              onChange={(e) => {
-                const code = onlyDigits(e.target.value).slice(0, 6);
-                setAuthOtp(code);
-                setAuthError('');
-              }}
-              dir="ltr"
-              placeholder="------"
-              maxLength={6}
-              disabled={!!authLoading}
-              className="w-full px-4 py-3 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-center text-xl tracking-[0.4em] text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue"
-              autoFocus
             />
             {authError ? (
               <p className="text-xs text-center text-red-500">{authError}</p>
