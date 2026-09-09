@@ -5655,7 +5655,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
               if (res?.ok) {
                 setQuickAdd(null);
                 if (!opts.silent) {
-                  setCartOpen(true);
+                  window.setTimeout(() => setCartOpen(true), 80);
                   pushLiveToast(`«${p.name || p.title}» به سبد اضافه شد`, { type: 'success', action: 'cart' });
                 }
                 return;
@@ -5705,7 +5705,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           });
           setQuickAdd(null);
           if (!opts.silent) {
-            setCartOpen(true);
+            window.setTimeout(() => setCartOpen(true), 80);
             pushLiveToast(`«${p.name || p.title}» به سبد اضافه شد`, { type: 'success', action: 'cart' });
           }
         }
@@ -16623,7 +16623,7 @@ const params = new URLSearchParams(window.location.search);
 
 {cartOpen && (
             <>
-              <div className="cart-overlay fixed inset-0 z-[90] bg-black/40 backdrop-blur-xl" onClick={() => setCartOpen(false)} onWheel={(e) => e.preventDefault()} onTouchMove={(e) => e.preventDefault()} aria-hidden="true" />
+              <div className="cart-overlay fixed inset-0 z-[90] bg-black/40 backdrop-blur-xl animate-[pm-cart-overlay-in_0.32s_ease-out_both]" onClick={() => setCartOpen(false)} onWheel={(e) => e.preventDefault()} onTouchMove={(e) => e.preventDefault()} aria-hidden="true" />
               <div role="dialog" aria-modal="true" className="cart-panel fixed top-0 bottom-0 start-0 z-[200] w-full max-w-[360px] sm:max-w-[400px] bg-white dark:bg-primary-900 h-full min-h-0 max-h-[100dvh] shadow-2xl flex flex-col rounded-l-2xl overflow-hidden" role="dialog" aria-modal="true" aria-label="سبد خرید">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 sm:p-5 border-b border-primary-200 dark:border-white/30 bg-primary-50/50 dark:bg-primary-900/40">

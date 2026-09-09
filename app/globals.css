@@ -5006,15 +5006,15 @@ html.dark .review-shop-badge {
 }
 
 
-/* === cart drawer open animation (smooth) === */
+/* === cart drawer open animation v2 === */
 @keyframes pm-cart-overlay-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 @keyframes pm-cart-panel-in {
   from {
-    transform: translate3d(110%, 0, 0);
-    opacity: 0.85;
+    transform: translate3d(100%, 0, 0);
+    opacity: 0.7;
   }
   to {
     transform: translate3d(0, 0, 0);
@@ -5022,10 +5022,10 @@ html.dark .review-shop-badge {
   }
 }
 .cart-overlay {
-  animation: pm-cart-overlay-in 0.28s ease-out both;
+  animation: pm-cart-overlay-in 0.32s ease-out both !important;
 }
 .cart-panel {
-  animation: pm-cart-panel-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: pm-cart-panel-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) both !important;
   will-change: transform, opacity;
 }
 @media (prefers-reduced-motion: reduce) {
