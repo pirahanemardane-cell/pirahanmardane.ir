@@ -717,9 +717,9 @@ export default function StaticPagesView() {
                                   try { setBrandDetailId(b.id || b.name); } catch (__) {}
                                 }
                               }}
-                              className="group p-3 sm:p-4 rounded-3xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 text-center hover:border-apple-blue/50 hover:shadow-lg transition"
+                              className="group p-2 sm:p-2.5 rounded-2xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 text-center hover:border-apple-blue/50 hover:shadow-lg transition overflow-hidden"
                             >
-                              <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-2 rounded-2xl bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-700 dark:to-primary-600 flex items-center justify-center text-2xl font-bold text-primary-900 dark:!text-white border border-primary-200/80 dark:border-white/25 shadow-sm overflow-hidden transition group-hover:from-apple-blue group-hover:to-apple-blue group-hover:!text-white">
+                              <div className="w-full aspect-square mx-auto mb-2 rounded-xl bg-primary-50 dark:bg-primary-800 flex items-center justify-center text-2xl font-bold text-primary-900 dark:!text-white border border-primary-100 dark:border-white/15 overflow-hidden">
                                 {(b.logoUrl || b.logo_url || b.image)
                                   ? <img src={b.logoUrl || b.logo_url || b.image} alt="" className="w-full h-full object-cover" />
                                   : (b.name?.[0] || 'ب')}
