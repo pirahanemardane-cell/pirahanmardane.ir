@@ -5442,14 +5442,30 @@ const generateProductCode = (sellerKey, productId, shopName) => {
                   ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
                   ...(Array.isArray(brandsList) ? brandsList : []),
                 ];
-                const hitBrand = brandPool.find((br) => {
+                let hitBrand = brandPool.find((br) => {
                   if (!br) return false;
                   const n = String(br.name || '').trim();
                   const s = String(br.slug || '').trim();
-                  return (n && (norm(n) === target || n === catLabel)) || (s && (norm(s) === target || s === catSlugRaw));
+                  return (n && (norm(n) === target || n === catLabel)) || (s && (norm(s) === target || s === catSlugRaw || norm(s) === target));
                 });
-                if (hitBrand) { openBrand(hitBrand, { silent: true }); }
-                else openPLP({ cat: catLabel, silent: true, reset: false });
+                // اگر لیست برند هنوز لود نشده، از خود محصولات تشخیص بده
+                if (!hitBrand) {
+                  const prodHit = pools.some((p) => {
+                    if (!p) return false;
+                    const pb = String(p.brand || p.brandName || p.brand_name || '').trim();
+                    return pb && (norm(pb) === target || pb === catLabel);
+                  });
+                  if (prodHit) hitBrand = { name: catLabel, slug: catSlugRaw || catLabel };
+                }
+                // اگر در لیست دسته نبود ولی اسلاگ تک‌بخشی است و دسته شناخته‌شده نیست → برند فرض نکن فقط وقتی دسته نیست
+                if (hitBrand) {
+                  openBrand(hitBrand, { silent: true });
+                } else if (!isKnownCategory) {
+                  // تک‌مسیره ناشناخته: ترجیح برند PLP با همین نام (صفحه برند)
+                  openPLP({ brand: catLabel, brandSlug: catSlugRaw || catLabel, silent: true });
+                } else {
+                  openPLP({ cat: catLabel, silent: true, reset: false });
+                }
               }
               try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
               return;
@@ -5498,14 +5514,30 @@ const generateProductCode = (sellerKey, productId, shopName) => {
                   ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
                   ...(Array.isArray(brandsList) ? brandsList : []),
                 ];
-                const hitBrand = brandPool.find((br) => {
+                let hitBrand = brandPool.find((br) => {
                   if (!br) return false;
                   const n = String(br.name || '').trim();
                   const s = String(br.slug || '').trim();
-                  return (n && (norm(n) === target || n === catLabel)) || (s && (norm(s) === target || s === catSlugRaw));
+                  return (n && (norm(n) === target || n === catLabel)) || (s && (norm(s) === target || s === catSlugRaw || norm(s) === target));
                 });
-                if (hitBrand) { openBrand(hitBrand, { silent: true }); }
-                else openPLP({ cat: catLabel, silent: true, reset: false });
+                // اگر لیست برند هنوز لود نشده، از خود محصولات تشخیص بده
+                if (!hitBrand) {
+                  const prodHit = pools.some((p) => {
+                    if (!p) return false;
+                    const pb = String(p.brand || p.brandName || p.brand_name || '').trim();
+                    return pb && (norm(pb) === target || pb === catLabel);
+                  });
+                  if (prodHit) hitBrand = { name: catLabel, slug: catSlugRaw || catLabel };
+                }
+                // اگر در لیست دسته نبود ولی اسلاگ تک‌بخشی است و دسته شناخته‌شده نیست → برند فرض نکن فقط وقتی دسته نیست
+                if (hitBrand) {
+                  openBrand(hitBrand, { silent: true });
+                } else if (!isKnownCategory) {
+                  // تک‌مسیره ناشناخته: ترجیح برند PLP با همین نام (صفحه برند)
+                  openPLP({ brand: catLabel, brandSlug: catSlugRaw || catLabel, silent: true });
+                } else {
+                  openPLP({ cat: catLabel, silent: true, reset: false });
+                }
               }
                 try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
                 return;
@@ -6448,7 +6480,16 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           if (!opts.silent) {
             if (opts.brand && !opts.tag && !opts.query && !opts.cat) {
               const bSlug = opts.brandSlug || opts.brand;
-              pushFaUrl(pathForCategory(bSlug), { plp: true, brand: opts.brand });
+              const brandPath = pathForCategory(bSlug);
+              try {
+                const cur = decodeURIComponent(window.location.pathname || '').replace(/\/+$/, '') || '/';
+                const want = decodeURIComponent(brandPath).replace(/\/+$/, '') || '/';
+                if (!opts.silent || cur !== want) {
+                  pushFaUrl(brandPath, { plp: true, brand: opts.brand });
+                }
+              } catch (_) {
+                pushFaUrl(brandPath, { plp: true, brand: opts.brand });
+              }
             } else if (opts.resetFilters || (opts.cat == null && opts.tag == null && opts.brand == null && (opts.query == null || opts.query === '') && opts.cats === undefined)) {
               pushFaUrl(FA_PATHS.shop || '/فروشگاه', { plp: true });
             } else if (opts.cat && !opts.tag && !opts.query) {
@@ -6486,6 +6527,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         if (!name && !slug) return;
         try { setBrandDetailId(null); } catch (_) {}
         try { setStaticPage(null); } catch (_) {}
+        // PLP برند — URL اختصاصی /{slug}
         openPLP({
           brand: name || slug,
           brandSlug: slug || name,
@@ -13485,8 +13527,9 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         if (_plpBrand) {
           const pb = String(p.brand || p.brandName || p.brand_name || '').trim().toLowerCase();
           const pid = String(p.brandId || p.brand_id || '');
-          const ok = (pb && (pb === _plpBrand || pb.includes(_plpBrand) || _plpBrand.includes(pb)))
-            || (pid && String(plpBrand) === pid);
+          const normB = (x) => (typeof slugifyFa === 'function' ? slugifyFa(String(x || '')).toLowerCase() : String(x || '').toLowerCase().replace(/\s+/g, '_'));
+          const ok = (pb && (pb === _plpBrand || normB(pb) === normB(_plpBrand) || pb.includes(_plpBrand) || _plpBrand.includes(pb)))
+            || (pid && (String(plpBrand) === pid || String(p.brandId) === String(plpBrand)));
           if (!ok) return false;
         }
         if (_plpCats.length > 0) {
