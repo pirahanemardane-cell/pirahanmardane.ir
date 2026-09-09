@@ -715,8 +715,42 @@ export default function AdminPanelContent() {
  const [adminSelectedProductIds, setAdminSelectedProductIds] = useState([]);
   const [taxSelectedIds, setTaxSelectedIds] = useState([]);
   const [taxFilter, setTaxFilter] = useState('all');
+  const [adminProductTaxPicker, setAdminProductTaxPicker] = useState(null); // 'cats' | 'tags' | 'brand' | null
+  const [adminProductTaxSearch, setAdminProductTaxSearch] = useState('');
+  const [adminEditCats, setAdminEditCats] = useState([]);
+  const [adminEditTags, setAdminEditTags] = useState([]);
+  const [adminEditBrand, setAdminEditBrand] = useState({ id: '', name: '' });
   const [taxBusy, setTaxBusy] = useState(false);
   useEffect(() => { setTaxSelectedIds([]); }, [adminTab, taxFilter]);
+
+  // SYNC_ADMIN_EDIT_TAX — همگام‌سازی انتخاب taxonomy با محصول بازشده
+  useEffect(() => {
+    if (!adminProductDetailId) {
+      setAdminProductTaxPicker(null);
+      setAdminProductTaxSearch('');
+      setAdminEditCats([]);
+      setAdminEditTags([]);
+      setAdminEditBrand({ id: '', name: '' });
+      return;
+    }
+    const p = (adminProducts || []).find((x) => String(x.id) === String(adminProductDetailId));
+    if (!p) return;
+    const cats = Array.isArray(p.categories) && p.categories.length
+      ? p.categories.map((c) => (typeof c === 'string' ? c : c?.name || '')).filter(Boolean)
+      : (p.category ? [String(p.category)] : []);
+    const tags = Array.isArray(p.tags)
+      ? p.tags.map((tg) => (typeof tg === 'string' ? tg : tg?.name || '')).filter(Boolean)
+      : [];
+    const bname = String(p.brand || p.brandName || '').trim();
+    const bid = String(p.brandId || p.brand_id || '').trim();
+    setAdminEditCats(cats.slice(0, 3));
+    setAdminEditTags(tags.slice(0, 3));
+    setAdminEditBrand({ id: bid, name: bname });
+    setAdminProductTaxPicker(null);
+    setAdminProductTaxSearch('');
+  }, [adminProductDetailId]);
+
+
  const [adminSelectedSellerIds, setAdminSelectedSellerIds] = useState([]);
  const [adminBulkBusy, setAdminBulkBusy] = useState(false);
 
@@ -2025,9 +2059,12 @@ export default function AdminPanelContent() {
               const name = String(fd.get('name') || '').trim();
               const price = Number(String(fd.get('price') || '').replace(/[^\d.]/g, '')) || 0;
               const stock = Number(String(fd.get('stock') || '').replace(/[^\d]/g, '')) || 0;
-              const category = String(fd.get('category') || '').trim();
-              const brand = String(fd.get('brand') || '').trim();
-              const brandId = (() => {
+              const category = (Array.isArray(adminEditCats) && adminEditCats[0]) || String(fd.get('category') || '').trim();
+              const categories = (Array.isArray(adminEditCats) && adminEditCats.length)
+                ? adminEditCats.filter(Boolean).slice(0, 3)
+                : (category ? [category] : []);
+              const brand = (adminEditBrand && adminEditBrand.name) || String(fd.get('brand') || '').trim();
+              const brandId = (adminEditBrand && adminEditBrand.id) || String(fd.get('brand_id') || '').trim() || (() => {
                 try {
                   const checked = e.currentTarget.querySelector('input[name="brand"]:checked');
                   return checked ? String(checked.getAttribute('data-brand-id') || '').trim() : '';
@@ -2039,7 +2076,9 @@ export default function AdminPanelContent() {
               const sizesRaw = String(fd.get('sizes') || '').trim();
               const colors = colorsRaw ? colorsRaw.split(/[,،]/).map((s) => s.trim()).filter(Boolean) : [];
               const sizes = sizesRaw ? sizesRaw.split(/[,،]/).map((s) => s.trim()).filter(Boolean) : [];
-              const tags = Array.from(e.currentTarget.querySelectorAll('input[name="tag_pick"]:checked')).map((el) => String(el.value || '').trim()).filter(Boolean);
+              const tags = (Array.isArray(adminEditTags) && adminEditTags.length)
+                ? adminEditTags.slice(0, 3)
+                : Array.from(e.currentTarget.querySelectorAll('input[name="tag_pick"]:checked')).map((el) => String(el.value || '').trim()).filter(Boolean);
               if (!name) {
                try { showToast({ message: 'نام محصول الزامی است', variant: 'error', duration: 3000, position: 'top-center' }); } catch (_) {}
                return;
@@ -2049,7 +2088,7 @@ export default function AdminPanelContent() {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-                body: JSON.stringify({ id: p.id, name, title: name, price, base_price: price, stock, category, brand, brand_id: brandId || undefined, brandId: brandId || undefined, description, image, cover_image: image, colors, sizes, tags, categories: category ? [category] : [] }),
+                body: JSON.stringify({ id: p.id, name, title: name, price, base_price: price, stock, category: category || (categories[0] || ''), brand, brand_id: brandId || undefined, brandId: brandId || undefined, description, image, cover_image: image, colors, sizes, tags, categories }),
                });
                const data = await res.json().catch(() => ({}));
                if (!res.ok || !data?.ok) throw new Error(data?.error || ('خطا ' + res.status));
@@ -2067,80 +2106,131 @@ export default function AdminPanelContent() {
               <label className="text-xs text-primary-500 space-y-1"><span>نام محصول</span><input name="name" defaultValue={p.name || p.title || ''} className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm" /></label>
               <label className="text-xs text-primary-500 space-y-1"><span>قیمت (تومان)</span><input name="price" defaultValue={p.price || 0} inputMode="numeric" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm" dir="ltr" /></label>
               <label className="text-xs text-primary-500 space-y-1"><span>موجودی</span><input name="stock" defaultValue={p.stock || 0} inputMode="numeric" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm" dir="ltr" /></label>
-              <div className="sm:col-span-2 space-y-2">
-                <p className="text-xs text-primary-500 font-medium">دسته‌بندی محصول <span className="text-primary-400 font-normal">(از فهرست ادمین)</span></p>
-                <div className="flex flex-wrap gap-1.5">
-                  {(Array.isArray(adminCategories) ? adminCategories : []).filter((c) => c && c.active !== false && String(c.status || '') !== 'archived').map((c) => {
-                    const name = String(c.name || '').trim();
-                    if (!name) return null;
-                    const selected = String(p.category || '') === name || (Array.isArray(p.categories) && p.categories.includes(name));
-                    return (
-                      <label key={c.id || name} className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-xs cursor-pointer transition ${selected ? 'bg-apple-blue text-white border-apple-blue' : 'border-primary-200 dark:border-white/20 text-primary-800 dark:text-white'}`}>
-                        <input
-                          type="radio"
-                          name="category"
-                          value={name}
-                          defaultChecked={selected}
-                          className="sr-only"
-                        />
-                        {name}
-                      </label>
-                    );
-                  })}
-                </div>
-                {!(adminCategories || []).filter((c) => c && c.active !== false).length && (
+                            <div className="sm:col-span-2 space-y-2">
+                <p className="text-xs text-primary-500 font-medium">دسته‌بندی محصول <span className="text-primary-400 font-normal">(از فهرست ادمین — کلیک برای باز شدن زبانه)</span></p>
+                <button
+                  type="button"
+                  onClick={() => { setAdminProductTaxPicker((v) => v === 'cats' ? null : 'cats'); setAdminProductTaxSearch(''); }}
+                  className="w-full text-right px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white flex items-center justify-between gap-2"
+                >
+                  <span className="truncate">{adminEditCats.length ? adminEditCats.join('، ') : 'انتخاب دسته…'}</span>
+                  <span className="text-[11px] text-primary-400 shrink-0">{adminEditCats.length}/۳</span>
+                </button>
+                {!(adminCategories || []).filter((c) => c && c.active !== false && String(c.status || '') !== 'archived').length && (
                   <p className="text-[11px] text-amber-600">هنوز دسته‌ای تعریف نشده — از تب دسته‌بندی اضافه کنید</p>
                 )}
               </div>
               <div className="sm:col-span-2 space-y-2">
-                <p className="text-xs text-primary-500 font-medium">برند محصول <span className="text-primary-400 font-normal">(فقط از فهرست ادمین)</span></p>
-                <div className="flex flex-wrap gap-1.5">
-                  {(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []).filter((b) => b && b.active !== false && String(b.status || '') !== 'archived').map((b) => {
-                    const name = String(b.name || '').trim();
-                    if (!name) return null;
-                    const selected = String(p.brand || p.brandName || '') === name || String(p.brandId || p.brand_id || '') === String(b.id);
-                    return (
-                      <label key={b.id || name} className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-xs cursor-pointer transition ${selected ? 'bg-apple-blue text-white border-apple-blue' : 'border-primary-200 dark:border-white/20 text-primary-800 dark:text-white'}`}>
-                        <input
-                          type="radio"
-                          name="brand"
-                          value={name}
-                          data-brand-id={b.id || ''}
-                          defaultChecked={selected}
-                          className="sr-only"
-                        />
-                        {name}
-                      </label>
-                    );
-                  })}
-                </div>
-                {!(adminCatalogBrands || []).filter((b) => b && b.active !== false).length && (
+                <p className="text-xs text-primary-500 font-medium">برند محصول <span className="text-primary-400 font-normal">(فقط از فهرست ادمین — کلیک برای باز شدن زبانه)</span></p>
+                <button
+                  type="button"
+                  onClick={() => { setAdminProductTaxPicker((v) => v === 'brand' ? null : 'brand'); setAdminProductTaxSearch(''); }}
+                  className="w-full text-right px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white flex items-center justify-between gap-2"
+                >
+                  <span className="truncate">{adminEditBrand.name || 'انتخاب برند…'}</span>
+                  <span className="text-[11px] text-primary-400 shrink-0">تکی</span>
+                </button>
+                {!(adminCatalogBrands || []).filter((b) => b && b.active !== false && String(b.status || '') !== 'archived').length && (
                   <p className="text-[11px] text-amber-600">هنوز برندی تعریف نشده — از تب برندها اضافه کنید</p>
                 )}
               </div>
               <div className="sm:col-span-2 space-y-2">
-                <p className="text-xs text-primary-500 font-medium">برچسب محصول <span className="text-primary-400 font-normal">(چندتایی از فهرست ادمین)</span></p>
-                <div className="flex flex-wrap gap-1.5">
-                  {(Array.isArray(adminTags) ? adminTags : []).filter((tg) => tg && tg.active !== false && String(tg.status || '') !== 'archived').map((tg) => {
-                    const name = String(tg.name || '').trim();
-                    if (!name) return null;
-                    const cur = Array.isArray(p.tags) ? p.tags.map((x) => (typeof x === 'string' ? x : x?.name || '')) : [];
-                    const selected = cur.includes(name);
-                    return (
-                      <label key={tg.id || name} className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-xs cursor-pointer transition ${selected ? 'bg-apple-blue text-white border-apple-blue' : 'border-primary-200 dark:border-white/20 text-primary-800 dark:text-white'}`}>
-                        <input
-                          type="checkbox"
-                          name="tag_pick"
-                          value={name}
-                          defaultChecked={selected}
-                          className="sr-only"
-                        />
-                        {name}
-                      </label>
-                    );
-                  })}
-                </div>
+                <p className="text-xs text-primary-500 font-medium">برچسب محصول <span className="text-primary-400 font-normal">(چندتایی از فهرست ادمین — کلیک برای باز شدن زبانه)</span></p>
+                <button
+                  type="button"
+                  onClick={() => { setAdminProductTaxPicker((v) => v === 'tags' ? null : 'tags'); setAdminProductTaxSearch(''); }}
+                  className="w-full text-right px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white flex items-center justify-between gap-2"
+                >
+                  <span className="truncate">{adminEditTags.length ? adminEditTags.join('، ') : 'انتخاب برچسب…'}</span>
+                  <span className="text-[11px] text-primary-400 shrink-0">{adminEditTags.length}/۳</span>
+                </button>
+                {!(adminTags || []).filter((tg) => tg && tg.active !== false && String(tg.status || '') !== 'archived').length && (
+                  <p className="text-[11px] text-amber-600">هنوز برچسبی تعریف نشده — از تب برچسب محصولات اضافه کنید</p>
+                )}
               </div>
+              {adminProductTaxPicker && (
+                <div className="sm:col-span-2 rounded-2xl border border-primary-200 dark:border-white/15 bg-primary-50/80 dark:bg-primary-950/80 overflow-hidden">
+                  <div className="flex items-center justify-between gap-2 px-3 py-2.5 border-b border-primary-100 dark:border-white/10">
+                    <p className="text-xs font-bold text-primary-900 dark:text-white">
+                      {adminProductTaxPicker === 'cats' ? 'انتخاب دسته‌بندی'
+                        : adminProductTaxPicker === 'tags' ? 'انتخاب برچسب'
+                        : 'انتخاب برند'}
+                    </p>
+                    <button type="button" onClick={() => setAdminProductTaxPicker(null)} className="text-[11px] px-2 py-1 rounded-full border border-primary-200 dark:border-white/20">بستن</button>
+                  </div>
+                  <div className="px-3 py-2 border-b border-primary-100 dark:border-white/10">
+                    <input
+                      type="search"
+                      value={adminProductTaxSearch}
+                      onChange={(e) => setAdminProductTaxSearch(e.target.value)}
+                      placeholder="جستجو…"
+                      className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue"
+                    />
+                  </div>
+                  <div className="max-h-48 overflow-y-auto p-2 flex flex-wrap gap-1.5">
+                    {(() => {
+                      const q = String(adminProductTaxSearch || '').trim().toLowerCase();
+                      let items = [];
+                      if (adminProductTaxPicker === 'cats') {
+                        items = (adminCategories || []).filter((c) => c && c.active !== false && String(c.status || '') !== 'archived');
+                      } else if (adminProductTaxPicker === 'tags') {
+                        items = (adminTags || []).filter((tg) => tg && tg.active !== false && String(tg.status || '') !== 'archived');
+                      } else {
+                        items = (adminCatalogBrands || []).filter((b) => b && b.active !== false && String(b.status || '') !== 'archived');
+                      }
+                      if (q) items = items.filter((it) => String(it.name || '').toLowerCase().includes(q) || String(it.slug || '').toLowerCase().includes(q));
+                      if (!items.length) {
+                        return <p className="text-xs text-primary-400 w-full text-center py-4">موردی یافت نشد</p>;
+                      }
+                      return items.map((item) => {
+                        const name = String(item.name || '').trim();
+                        if (!name) return null;
+                        let selected = false;
+                        if (adminProductTaxPicker === 'cats') selected = adminEditCats.includes(name);
+                        else if (adminProductTaxPicker === 'tags') selected = adminEditTags.includes(name);
+                        else selected = adminEditBrand.name === name || String(adminEditBrand.id) === String(item.id);
+                        return (
+                          <label
+                            key={item.id || name}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-xs cursor-pointer transition ${selected ? 'bg-apple-blue text-white border-apple-blue' : 'border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-primary-800 dark:text-white'}`}
+                          >
+                            <input
+                              type={adminProductTaxPicker === 'brand' ? 'radio' : 'checkbox'}
+                              name={adminProductTaxPicker === 'brand' ? 'admin_brand_pick' : undefined}
+                              checked={selected}
+                              onChange={() => {
+                                if (adminProductTaxPicker === 'cats') {
+                                  setAdminEditCats((prev) => {
+                                    if (prev.includes(name)) return prev.filter((x) => x !== name);
+                                    if (prev.length >= 3) return prev;
+                                    return [...prev, name];
+                                  });
+                                } else if (adminProductTaxPicker === 'tags') {
+                                  setAdminEditTags((prev) => {
+                                    if (prev.includes(name)) return prev.filter((x) => x !== name);
+                                    if (prev.length >= 3) return prev;
+                                    return [...prev, name];
+                                  });
+                                } else {
+                                  setAdminEditBrand({ id: String(item.id || ''), name });
+                                }
+                              }}
+                              className="sr-only"
+                            />
+                            {name}
+                          </label>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+              )}
+              <input type="hidden" name="category" value={adminEditCats[0] || ''} />
+              <input type="hidden" name="brand" value={adminEditBrand.name || ''} />
+              <input type="hidden" name="brand_id" value={adminEditBrand.id || ''} />
+              {adminEditTags.map((tg) => (
+                <input key={`htag-${tg}`} type="hidden" name="tag_pick" value={tg} defaultChecked />
+              ))}
               <label className="text-xs text-primary-500 space-y-1"><span>آدرس تصویر شاخص</span><input name="image" defaultValue={p.image || ''} className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm" dir="ltr" /></label>
               <label className="text-xs text-primary-500 space-y-1 sm:col-span-2"><span>رنگ‌ها (با ویرگول)</span><input name="colors" defaultValue={(Array.isArray(p.colors) ? p.colors.map((c) => (typeof c === 'string' ? c : c?.name || '')).filter(Boolean) : []).join('، ')} className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm" /></label>
               <label className="text-xs text-primary-500 space-y-1 sm:col-span-2"><span>سایزها (با ویرگول)</span><input name="sizes" defaultValue={(Array.isArray(p.sizes) ? p.sizes : []).join('، ')} className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm" /></label>
