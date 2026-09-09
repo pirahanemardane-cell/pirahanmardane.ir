@@ -548,9 +548,7 @@ export default function HomeView() {
             </section>
 
             {/* Top brands — فقط show_on_home از پنل ادمین */}
-            {homeBrands.length > 0 && (
-            
-      {/* برترین‌های پیراهن — محصول */}
+            {/* برترین‌های پیراهن — محصول */}
       {(() => {
         const all = (typeof products !== 'undefined' && products) || (typeof catalogProducts !== 'undefined' && catalogProducts) || [];
         const list = (Array.isArray(all) ? all : [])
@@ -590,6 +588,8 @@ export default function HomeView() {
           </section>
         );
       })()}
+
+{homeBrands.length > 0 && (
 <section className="py-8 sm:py-12 bg-white dark:bg-primary-900 transition-colors">
               <div className="max-w-7xl mx-auto px-3 sm:px-4">
                 <h2 className="section-title text-right text-primary-900 dark:text-white mb-6 sm:mb-8 text-lg sm:text-xl">برترین برندها</h2>
