@@ -695,20 +695,30 @@ export default function StaticPagesView() {
                 });
                 return (
                   <div className="space-y-6">
-                    <button type="button" onClick={() => setBrandDetailId(null)} className="text-xs text-apple-blue hover:underline flex items-center gap-1"><Icon name="arrowRight" size={14} /> همه برندها</button>
+                    <nav className="flex flex-wrap items-center gap-1.5 text-xs text-primary-500 dark:text-white/70" aria-label="breadcrumb">
+                      <button type="button" onClick={() => { try { closeStaticPage(); } catch (_) {} try { if (typeof goHome === 'function') goHome(); else window.location.href = '/'; } catch (_) {} }} className="hover:text-apple-blue">خانه</button>
+                      <span aria-hidden>‹</span>
+                      <button type="button" onClick={() => { setBrandDetailId(null); try { openStaticPage('brands'); } catch (_) {} }} className="hover:text-apple-blue">برندها</button>
+                      <span aria-hidden>‹</span>
+                      <span className="text-primary-800 dark:text-white font-medium">{b.name}</span>
+                    </nav>
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full bg-primary-100 dark:bg-primary-700 flex items-center justify-center text-2xl font-bold text-primary-800 dark:!text-white border border-primary-200 dark:border-white/25 shadow-sm">{b.name[0]}</div>
+                      <div className="w-16 h-16 rounded-full bg-primary-100 dark:bg-primary-700 flex items-center justify-center text-2xl font-bold text-primary-800 dark:!text-white border border-primary-200 dark:border-white/25 shadow-sm overflow-hidden">
+                        {b.logoUrl || b.logo_url || b.image ? (
+                          <img src={b.logoUrl || b.logo_url || b.image} alt="" className="w-full h-full object-cover" />
+                        ) : (b.name?.[0] || 'ب')}
+                      </div>
                       <div>
                         <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white">{b.name}</h1>
-                        <p className="text-sm text-primary-500 dark:!text-white mt-1">{b.desc || 'برند منتخب فروشگاه'}</p>
-                        <p className="text-xs text-primary-400 dark:!text-white mt-0.5">{toFa(b.count)} محصول</p>
+                        <p className="text-sm text-primary-500 dark:!text-white mt-1">{b.desc || b.description || ('محصولات برند ' + b.name)}</p>
+                        <p className="text-xs text-primary-400 dark:!text-white mt-0.5">{toFa(brandProducts.length)} محصول</p>
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <button type="button" onClick={() => openPLP()} className="text-xs px-3 py-1.5 rounded-full bg-apple-blue text-white">مشاهده در فروشگاه</button>
-                    </div>
                     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
-                      {(brandProducts.length ? brandProducts : products.slice(0, 8)).map(p => (
+                      {!brandProducts.length && (
+                      <p className="col-span-full text-center text-sm text-primary-500 py-10">محصولی برای این برند ثبت نشده</p>
+                    )}
+                    {(brandProducts.length ? brandProducts : []).map(p => (
                         <button key={p.id} type="button" onClick={() => { closeStaticPage(); setBrandDetailId(null); openPDP(p); }} className="text-right rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 overflow-hidden hover:border-apple-blue/40 transition">
                           <img src={p.colors?.[0]?.image || p.image} alt="" className="aspect-[4/5] w-full object-cover" loading="lazy" />
                           <div className="p-2.5">

@@ -5448,7 +5448,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
                   const s = String(br.slug || '').trim();
                   return (n && (norm(n) === target || n === catLabel)) || (s && (norm(s) === target || s === catSlugRaw));
                 });
-                if (hitBrand) openPLP({ brand: hitBrand.name || catLabel, brandSlug: hitBrand.slug || hitBrand.name || catLabel, silent: true });
+                if (hitBrand) { openBrand(hitBrand, { silent: true }); }
                 else openPLP({ cat: catLabel, silent: true, reset: false });
               }
               try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
@@ -5504,7 +5504,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
                   const s = String(br.slug || '').trim();
                   return (n && (norm(n) === target || n === catLabel)) || (s && (norm(s) === target || s === catSlugRaw));
                 });
-                if (hitBrand) openPLP({ brand: hitBrand.name || catLabel, brandSlug: hitBrand.slug || hitBrand.name || catLabel, silent: true });
+                if (hitBrand) { openBrand(hitBrand, { silent: true }); }
                 else openPLP({ cat: catLabel, silent: true, reset: false });
               }
                 try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
@@ -6452,12 +6452,56 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       };
       /** میانبر صریح: باز کردن هر دسته روی همان ساختار فروشگاه/PLP */
       const openCategory = (catName) => openPLP({ cat: catName });
-      const openBrand = (brandNameOrObj) => {
-        const b = brandNameOrObj && typeof brandNameOrObj === 'object' ? brandNameOrObj : null;
-        const name = b ? String(b.name || '').trim() : String(brandNameOrObj || '').trim();
-        const slug = b ? String(b.slug || b.name || '').trim() : name;
-        if (!name && !slug) { openPLP(); return; }
-        openPLP({ brand: name || slug, brandSlug: slug || name });
+      const openBrand = (brandNameOrObj, opts = {}) => {
+        // لندینگ اختصاصی برند — نه فروشگاه/PLP
+        const pool = [
+          ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
+          ...(Array.isArray(brandsList) ? brandsList : []),
+        ];
+        let b = brandNameOrObj && typeof brandNameOrObj === 'object' ? brandNameOrObj : null;
+        if (!b) {
+          const key = String(brandNameOrObj || '').trim();
+          const norm = (x) => (typeof slugifyFa === 'function' ? slugifyFa(String(x || '')) : String(x || '').replace(/\s+/g, '_'));
+          const t = norm(key);
+          b = pool.find((x) => {
+            if (!x) return false;
+            const n = String(x.name || '').trim();
+            const s = String(x.slug || '').trim();
+            return n === key || s === key || norm(n) === t || norm(s) === t || String(x.id) === key;
+          }) || { name: key, slug: key };
+        }
+        const name = String(b.name || b.slug || '').trim();
+        const slug = String(b.slug || b.name || '').trim();
+        if (!name && !slug) return;
+        try { beginPageLoad('brand'); } catch (_) {}
+        try { setShowPLP(false); } catch (_) {}
+        try { setPlpBrand(''); } catch (_) {}
+        try { setPlpCats([]); } catch (_) {}
+        try { setPdpProduct(null); } catch (_) {}
+        try { setShowCartPage(false); } catch (_) {}
+        try { setShowCheckout(false); } catch (_) {}
+        try { setShowWishlistPage(false); } catch (_) {}
+        try { setShowRecentPage(false); } catch (_) {}
+        try { setShowComparePage(false); } catch (_) {}
+        try { setShowProfilePage(false); } catch (_) {}
+        try { setShowSellerPanel(false); } catch (_) {}
+        try { setShowAdminPanel(false); } catch (_) {}
+        try { setShowSellersList(false); } catch (_) {}
+        try { setShowTaxonomyHub(null); } catch (_) {}
+        try { setActiveSellerId(null); } catch (_) {}
+        try { setMobileMenuOpen(false); } catch (_) {}
+        try { setMegaOpen(null); } catch (_) {}
+        try { setBrandDetailId(b.id != null ? b.id : (slug || name)); } catch (_) {}
+        try { setStaticPage('brands'); } catch (_) {}
+        try {
+          if (!opts.silent) {
+            const path = (typeof pathForCategory === 'function')
+              ? pathForCategory(slug || name)
+              : ('/' + String(slug || name).replace(/\s+/g, '_'));
+            pushFaUrl(path, { brandLanding: true, brandId: b.id || null, brand: name });
+          }
+        } catch (_) {}
+        try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); else window.scrollTo(0, 0); } catch (_) {}
       };
       /** صفحهٔ هر برچسب — ساختار PLP، همیشه noindex */
       const openTagPage = (tagNameOrSlug) => {
@@ -14412,6 +14456,23 @@ const params = new URLSearchParams(window.location.search);
           let image = base + '/logo.webp';
           let canonical = base + (typeof window !== 'undefined' ? (window.location.pathname + window.location.search) : '/');
           let breadcrumbs = [{ name: 'خانه', path: '/' }];
+          if (staticPage === 'brands' && brandDetailId) {
+            const pool = [
+              ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
+              ...(Array.isArray(brandsList) ? brandsList : []),
+            ];
+            const br = pool.find((x) => x && String(x.id) === String(brandDetailId))
+              || pool.find((x) => x && (String(x.slug) === String(brandDetailId) || String(x.name) === String(brandDetailId)));
+            const bname = (br && br.name) || String(brandDetailId);
+            title = bname;
+            description = (br && (br.desc || br.description)) || ('محصولات برند ' + bname);
+            breadcrumbs = [
+              { name: 'خانه', path: '/' },
+              { name: 'برندها', path: (typeof FA_PATHS !== 'undefined' && FA_PATHS.brands) ? FA_PATHS.brands : '/برندها' },
+              { name: bname, path: '' },
+            ];
+          }
+
 
           if (pdpProduct) {
             title = pdpProduct.seoTitle || pdpProduct.name || title;
