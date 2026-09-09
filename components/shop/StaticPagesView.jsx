@@ -665,18 +665,78 @@ export default function StaticPagesView() {
                       <button key={ch} type="button" onClick={() => setBrandQuery(ch)} className={`min-w-[2rem] h-8 px-2 rounded-full text-xs font-semibold transition ${brandQuery === ch ? 'bg-apple-blue !text-white shadow-md' : 'bg-primary-100 dark:bg-primary-700 text-primary-800 dark:!text-white hover:bg-primary-200 dark:hover:bg-primary-600 border border-primary-200/80 dark:border-white/20'}`}>{ch}</button>
                     ))}
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    {BRANDS_LIST.filter(b => !brandQuery || b.name.includes(brandQuery) || b.name[0] === brandQuery).map(b => (
-                      <button key={b.id} type="button" onClick={() => { try { (typeof openBrand === 'function' ? openBrand(b) : openPLP({ brand: b.name, brandSlug: b.slug || b.name })); } catch (_) { setBrandDetailId(b.id); } }} className="group p-6 rounded-3xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 text-center hover:border-apple-blue/50 hover:shadow-lg transition">
-                        <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-700 dark:to-primary-600 flex items-center justify-center text-xl font-bold text-primary-900 dark:!text-white border border-primary-200/80 dark:border-white/25 shadow-sm transition group-hover:from-apple-blue group-hover:to-apple-blue group-hover:!text-white dark:group-hover:from-[#FF0000] dark:from-[#13ABC4] dark:group-hover:to-[#AF0404] dark:to-[#3161A3]">{b.name[0]}</div>
-                        <p className="text-sm font-bold text-primary-900 dark:text-white">{b.name}</p>
-                        <p className="text-xs text-primary-500 dark:!text-white mt-1">{toFa(b.count)} محصول</p>
-                      </button>
-                    ))}
-                  </div>
-                  {BRANDS_LIST.filter(b => !brandQuery || b.name.includes(brandQuery) || b.name[0] === brandQuery).length === 0 && (
-                    <p className="text-center text-sm text-primary-500 py-12">برندی با این فیلتر یافت نشد</p>
-                  )}
+                  {(() => {
+                    const pool = [
+                      ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
+                      ...(Array.isArray(brandsList) ? brandsList : []),
+                      ...((typeof BRANDS_LIST !== 'undefined' && Array.isArray(BRANDS_LIST)) ? BRANDS_LIST : []),
+                    ];
+                    const seen = new Set();
+                    const allBrands = pool.filter((b) => {
+                      if (!b || !b.name) return false;
+                      if (b.active === false || String(b.status || '') === 'archived') return false;
+                      const key = String(b.id || b.slug || b.name).trim().toLowerCase();
+                      if (seen.has(key)) return false;
+                      seen.add(key);
+                      return true;
+                    });
+                    const q = String(brandQuery || '').trim();
+                    const filtered = allBrands.filter((b) => {
+                      if (!q) return true;
+                      const n = String(b.name || '');
+                      return n.includes(q) || n[0] === q;
+                    });
+                    const productPool = (Array.isArray(catalogProducts) && catalogProducts.length)
+                      ? catalogProducts
+                      : (Array.isArray(products) ? products : []);
+                    const countFor = (b) => {
+                      if (typeof b.count === 'number') return b.count;
+                      const name = String(b.name || '').trim().toLowerCase();
+                      const id = String(b.id || '');
+                      return productPool.filter((p) => {
+                        if (!p) return false;
+                        const pb = String(p.brand || p.brandName || p.brand_name || '').trim().toLowerCase();
+                        const pid = String(p.brandId || p.brand_id || '');
+                        if (id && pid && pid === id) return true;
+                        if (name && pb && pb === name) return true;
+                        return false;
+                      }).length;
+                    };
+                    return (
+                      <>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                          {filtered.map((b) => (
+                            <button
+                              key={b.id || b.slug || b.name}
+                              type="button"
+                              onClick={() => {
+                                try {
+                                  if (typeof openBrand === 'function') openBrand(b);
+                                  else setBrandDetailId(b.id || b.slug || b.name);
+                                } catch (_) {
+                                  try { setBrandDetailId(b.id || b.name); } catch (__) {}
+                                }
+                              }}
+                              className="group p-6 rounded-3xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 text-center hover:border-apple-blue/50 hover:shadow-lg transition"
+                            >
+                              <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-700 dark:to-primary-600 flex items-center justify-center text-xl font-bold text-primary-900 dark:!text-white border border-primary-200/80 dark:border-white/25 shadow-sm overflow-hidden transition group-hover:from-apple-blue group-hover:to-apple-blue group-hover:!text-white">
+                                {(b.logoUrl || b.logo_url || b.image)
+                                  ? <img src={b.logoUrl || b.logo_url || b.image} alt="" className="w-full h-full object-cover" />
+                                  : (b.name?.[0] || 'ب')}
+                              </div>
+                              <p className="text-sm font-bold text-primary-900 dark:text-white">{b.name}</p>
+                              <p className="text-xs text-primary-500 dark:!text-white mt-1">{toFa(countFor(b))} محصول</p>
+                            </button>
+                          ))}
+                        </div>
+                        {filtered.length === 0 && (
+                          <p className="text-center text-sm text-primary-500 py-12">
+                            {allBrands.length === 0 ? 'هنوز برندی تعریف نشده — از پنل ادمین اضافه کنید' : 'برندی با این فیلتر یافت نشد'}
+                          </p>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               )}
               {staticPage === 'brands' && brandDetailId && (() => {
