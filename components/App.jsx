@@ -15978,10 +15978,10 @@ const params = new URLSearchParams(window.location.search);
         <AppApiProvider value={appApiValue}>
         <div className="min-h-screen flex flex-col">
           {(pageLoadingText || (awaitingDeepProduct && !pdpProduct)) ? (
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-[2px]" role="status" aria-live="polite">
-              <div className="flex flex-col items-center gap-3 px-6 py-5 rounded-2xl bg-white dark:bg-[#1a1c20] shadow-2xl border border-primary-100 dark:border-white/10 min-w-[200px]">
-                <div className="w-10 h-10 rounded-full border-[3px] border-primary-200 dark:border-white/15 border-t-[#0071e3] dark:border-t-[#13ABC4] animate-spin" aria-hidden />
-                <p className="text-sm font-medium text-primary-900 dark:text-white tracking-wide text-center">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 dark:bg-black/55 backdrop-blur-[2px]" role="status" aria-live="polite">
+              <div className="flex flex-col items-center gap-3 px-6 py-5 rounded-2xl min-w-[200px] shadow-2xl border bg-[#FF0000] border-[#FF0000] text-white dark:bg-[#13ABC4] dark:border-[#13ABC4] dark:text-[#0A0A0A]">
+                <div className="w-10 h-10 rounded-full border-[3px] border-white/35 border-t-white animate-spin dark:border-[#0A0A0A]/35 dark:border-t-[#0A0A0A]" aria-hidden />
+                <p className="text-sm font-medium tracking-wide text-center text-white dark:text-[#0A0A0A]">
                   {pageLoadingText || 'در حال بارگذاری…'}
                 </p>
               </div>
