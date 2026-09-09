@@ -5201,7 +5201,7 @@ export default function AdminPanelContent() {
             ].map(([key, label]) => (
              <div key={key}>
               <label className="text-xs text-primary-500 block mb-1">{label}</label>
-              <input id={`seo-v-${key}`} defaultValue={seoCfg()[key] || ''} dir="ltr" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-left text-primary-900 dark:text-white" placeholder="کد verification" />
+              <input autoComplete="one-time-code" inputMode="numeric" id={`seo-v-${key}`} defaultValue={seoCfg()[key] || ''} dir="ltr" className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-left text-primary-900 dark:text-white" placeholder="کد verification" />
              </div>
             ))}
             <div>

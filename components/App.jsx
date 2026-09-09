@@ -32,6 +32,7 @@ import {
 import { attachFocusTrap } from '@/lib/focus-trap';
 import { loadGsap } from '@/lib/load-gsap';
 import { useState, useEffect, useRef, useLayoutEffect, useCallback, useMemo, memo } from 'react';
+import { useWebOtp } from '../lib/useWebOtp';
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
 import ClientErrorBoundary from './ClientErrorBoundary';
@@ -1157,6 +1158,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const [showCheckout, setShowCheckout] = useStoreField(shopUiStore, 'showCheckout');
       const [publicTrackOpen, setPublicTrackOpen] = useState(false);
       const [publicTrackCode, setPublicTrackCode] = useState('');
+  useWebOtp((code) => { try { setPublicTrackCode(code); } catch (_) {} });
+
       const [publicTrackResult, setPublicTrackResult] = useState(null);
       const [publicTrackLoading, setPublicTrackLoading] = useState(false);
       const [publicTrackError, setPublicTrackError] = useState('');
