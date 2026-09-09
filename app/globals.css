@@ -5004,3 +5004,33 @@ html.dark .review-shop-badge {
     text-overflow: clip;
   }
 }
+
+
+/* === cart drawer open animation (smooth) === */
+@keyframes pm-cart-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pm-cart-panel-in {
+  from {
+    transform: translate3d(110%, 0, 0);
+    opacity: 0.85;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+.cart-overlay {
+  animation: pm-cart-overlay-in 0.28s ease-out both;
+}
+.cart-panel {
+  animation: pm-cart-panel-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-overlay,
+  .cart-panel {
+    animation: none !important;
+  }
+}
