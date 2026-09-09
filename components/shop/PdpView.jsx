@@ -132,7 +132,7 @@ export default function PdpView() {
             const fullSeller = topSellers.find(s => s.id === (seller.id || 'own')) || { ...seller, products: 48, badges: ['ارسال سریع', 'ضمانت اصالت'], image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=200&h=200&fit=crop' };
 
             return (
-              <div className="flex-1 flex flex-col bg-gradient-to-b from-primary-50 to-white dark:from-primary-950 dark:to-primary-950 pb-28 sm:pb-12">
+              <div className="flex-1 flex flex-col bg-[#f7f7f8] dark:bg-primary-950 pb-28 sm:pb-10">
                 {/* SEO Structured Data */}
                 <script
                   type="application/ld+json"
@@ -185,12 +185,13 @@ export default function PdpView() {
                   </div>
                 )}
 
-                <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 w-full">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-10">
-                    {/* ——— Gallery ——— */}
-                    <div className="relative">
+                <div className="max-w-6xl mx-auto px-3 sm:px-5 py-3 sm:py-8 w-full">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
+                    {/* ——— گالری (چپ / بالا) ——— */}
+                    <div className="lg:col-span-6 xl:col-span-7 relative">
                       <div
-                        className="relative aspect-[4/5] sm:aspect-[5/6] rounded-[1.75rem] overflow-hidden bg-white dark:bg-primary-900 border border-primary-100/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-none touch-pan-y"
+                        className="relative aspect-[3/4] sm:aspect-[4/5] lg:aspect-square rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden bg-[#f3f3f5] dark:bg-primary-900 ring-1 ring-black/5 dark:ring-white/10"
                         onTouchStart={(e) => setPdpTouchX(e.changedTouches[0].clientX)}
                         onTouchEnd={(e) => {
                           if (pdpTouchX == null || galleryImages.length < 2) return;
@@ -212,446 +213,251 @@ export default function PdpView() {
                         <button
                           type="button"
                           onClick={() => setPdpZoom(true)}
-                          className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs font-semibold tracking-wide bg-black/65 text-white px-4 py-2 rounded-full backdrop-blur-md hover:bg-black/80 transition shadow-lg"
+                          className="absolute bottom-4 left-4 text-[11px] font-semibold bg-white/90 dark:bg-primary-950/90 text-primary-900 dark:text-white px-3.5 py-2 rounded-full shadow-md backdrop-blur-md hover:bg-white transition"
                         >
-                          مشاهده بزرگ · گالری
+                          بزرگ‌نمایی
                         </button>
-                        {/* Badges — هم‌عرض و چسبیده به راست */}
-                        <div className="product-card-badges absolute top-3 right-3 z-10 flex flex-col items-stretch gap-1.5 w-max max-w-[40%] pointer-events-none">
+                        <div className="absolute top-3 right-3 z-10 flex flex-col gap-1.5">
                           {p.discount ? (
-                            <span className="product-card-badge bg-apple-blue text-white text-xs font-bold px-2 py-0.5 rounded-md shadow text-center whitespace-nowrap">{toFa(p.discount)}٪ تخفیف</span>
+                            <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow">{toFa(p.discount)}٪</span>
                           ) : null}
-                          {p.amazing && <span className="product-card-badge bg-gradient-to-l from-amber-500 to-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow text-center whitespace-nowrap">شگفت‌انگیز</span>}
-                          {p.popular && !p.amazing && <span className="product-card-badge bg-amber-500 text-white text-xs font-medium px-2 py-0.5 rounded-md shadow text-center whitespace-nowrap">پرفروش</span>}
-                          {(isProductFastShip ? isProductFastShip(p) : p.fastShip) && <span className="product-card-badge bg-emerald-600 text-white text-xs font-medium px-2 py-0.5 rounded-md shadow text-center whitespace-nowrap">ارسال سریع</span>}
-                          {!stockOk && <span className="product-card-badge bg-primary-800 text-white text-xs font-medium px-2 py-0.5 rounded-md shadow text-center whitespace-nowrap">ناموجود</span>}
+                          {p.amazing && <span className="bg-gradient-to-l from-amber-500 to-orange-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow">شگفت‌انگیز</span>}
+                          {(isProductFastShip ? isProductFastShip(p) : p.fastShip) && <span className="bg-emerald-600 text-white text-[11px] font-medium px-2.5 py-1 rounded-full shadow">ارسال سریع</span>}
+                          {!stockOk && <span className="bg-primary-800 text-white text-[11px] font-medium px-2.5 py-1 rounded-full shadow">ناموجود</span>}
                         </div>
-                        {/* Action buttons on image */}
                         <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
-                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleFavorite(p.id); }} className={`w-10 h-10 rounded-full shadow-lg backdrop-blur-md flex items-center justify-center transition ${isFav ? 'bg-apple-blue text-white' : 'bg-white/95 dark:bg-primary-900/90 text-primary-600 dark:text-white hover:scale-105'}`} aria-label="علاقه‌مندی">
-                            <Icon name={isFav ? 'heartFilled' : 'heart'} size={16} />
+                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleFavorite(p.id); }} className={`w-10 h-10 rounded-full shadow-md flex items-center justify-center backdrop-blur-md transition ${isFav ? 'bg-apple-blue text-white' : 'bg-white/95 dark:bg-primary-900 text-primary-700 dark:text-white'}`} aria-label="علاقه‌مندی">
+                            <Icon name={isFav ? 'heartFilled' : 'heart'} size={17} />
                           </button>
-                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompare(p); }} className={`w-10 h-10 rounded-full shadow-lg backdrop-blur-md flex items-center justify-center transition ${inCompare ? 'bg-apple-blue text-white' : 'bg-white/95 dark:bg-primary-900/90 text-primary-600 dark:text-white hover:scale-105'}`} aria-label="مقایسه">
-                            <Icon name="scale" size={16} />
+                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompare(p); }} className={`w-10 h-10 rounded-full shadow-md flex items-center justify-center backdrop-blur-md transition ${inCompare ? 'bg-apple-blue text-white' : 'bg-white/95 dark:bg-primary-900 text-primary-700 dark:text-white'}`} aria-label="مقایسه">
+                            <Icon name="scale" size={17} />
                           </button>
-                          <a href={`https://wa.me/?text=${shareText}`} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-full shadow-lg backdrop-blur-md flex items-center justify-center bg-white/95 dark:bg-primary-900/90 text-primary-600 dark:text-white hover:scale-105 transition" aria-label="اشتراک‌گذاری">
-                            <Icon name="share" size={16} />
-                          </a>
                         </div>
-                        {/* Gallery arrows */}
                         {galleryImages.length > 1 && (
                           <>
-                            <button type="button" onClick={() => setPdpGalleryIdx(i => (i - 1 + galleryImages.length) % galleryImages.length)} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 dark:bg-primary-800 shadow flex items-center justify-center text-primary-700 dark:text-white">
+                            <button type="button" onClick={() => setPdpGalleryIdx(i => (i - 1 + galleryImages.length) % galleryImages.length)} className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 dark:bg-primary-800 shadow flex items-center justify-center">
                               <Icon name="chevronRight" size={16} />
                             </button>
-                            <button type="button" onClick={() => setPdpGalleryIdx(i => (i + 1) % galleryImages.length)} className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 dark:bg-primary-800 shadow flex items-center justify-center text-primary-700 dark:text-white">
+                            <button type="button" onClick={() => setPdpGalleryIdx(i => (i + 1) % galleryImages.length)} className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 dark:bg-primary-800 shadow flex items-center justify-center">
                               <Icon name="chevronLeft" size={16} />
                             </button>
                           </>
                         )}
                       </div>
-                      {/* Thumbnails */}
                       {galleryImages.length > 1 && (
-                        <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar pb-1">
+                        <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar pb-1 px-0.5">
                           {galleryImages.map((img, i) => (
-                            <button key={i} type="button" onClick={() => { setPdpGalleryIdx(i); setPdpColorIdx(Math.min(i, colors.length - 1)); }} className={`flex-shrink-0 w-[4.25rem] h-[4.25rem] sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 transition ${pdpGalleryIdx === i ? 'border-apple-blue ring-2 ring-apple-blue/25 shadow-md scale-[1.02]' : 'border-primary-200/80 dark:border-white/15 opacity-85 hover:opacity-100'}`}>
+                            <button key={i} type="button" onClick={() => { setPdpGalleryIdx(i); }} className={`flex-shrink-0 w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] rounded-2xl overflow-hidden border-2 transition ${pdpGalleryIdx === i ? 'border-apple-blue ring-2 ring-apple-blue/20' : 'border-transparent opacity-70 hover:opacity-100'}`}>
                               <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" />
                             </button>
                           ))}
                         </div>
                       )}
+                    </div>
 
-                      {/* دسکتاپ: اعتماد + ارسال + فروشنده زیر تامبنیل */}
-                      <div className="hidden lg:block mt-5 space-y-3">
-                        <div className="grid grid-cols-4 gap-2">
+                    {/* ——— پنل خرید (راست / پایین) ——— */}
+                    <div className="lg:col-span-6 xl:col-span-5 lg:sticky lg:top-24">
+                      <div className="rounded-[1.75rem] bg-white dark:bg-primary-900 border border-primary-100/80 dark:border-white/10 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)] dark:shadow-none p-5 sm:p-6 space-y-5">
+
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2 text-[11px] text-primary-500 dark:text-white/50 mb-2">
+                            <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openCategory(p.category); }} className="hover:text-apple-blue transition">{p.category}</button>
+                            <span>·</span>
+                            <span className="font-latin" dir="ltr">{p.sku || `PM-${p.id}`}</span>
+                          </div>
+                          <h1 className="text-[1.35rem] sm:text-2xl font-black text-primary-900 dark:text-white leading-snug tracking-tight">{p.name}</h1>
+                          <div className="flex flex-wrap items-center gap-2 mt-3">
+                            <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-xs font-bold px-2 py-0.5 rounded-md">
+                              {toFa(Number(p.rating || 0).toFixed(1))}
+                              <Icon name="starFilled" size={11} />
+                            </span>
+                            <span className="text-xs text-primary-500 dark:text-white/60">{toFa(p.reviews || 0)} نظر</span>
+                            <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openSeller(seller.id || 'own'); }} className="text-xs text-primary-600 dark:text-white/70 hover:text-apple-blue mr-auto">
+                              {seller.name}
+                            </button>
+                          </div>
+                          {p.soldRecent > 0 && (
+                            <p className="mt-2 text-[11px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 inline-flex px-2.5 py-1 rounded-full">
+                              {toFa(p.soldRecent)} خرید در ۷ روز اخیر
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="flex items-end gap-3 flex-wrap border-t border-b border-primary-100 dark:border-white/10 py-4">
+                          <p className="text-3xl sm:text-[2.15rem] font-black text-primary-900 dark:text-white tracking-tight">
+                            {variantPriceText}
+                            <span className="text-sm font-medium text-primary-400 mr-1">تومان</span>
+                          </p>
+                          {p.oldPrice && (
+                            <div className="flex items-center gap-2 pb-1">
+                              <span className="text-sm text-primary-400 line-through">{p.oldPrice}</span>
+                              {p.discount && <span className="text-[11px] font-bold text-white bg-red-500 px-1.5 py-0.5 rounded-md">{toFa(p.discount)}٪</span>}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* رنگ */}
+                        {colors.length > 0 && (
+                          <div>
+                            <p className="text-xs font-bold text-primary-500 dark:text-white/50 mb-2.5">رنگ · <span className="text-primary-900 dark:text-white">{activeColor.name}</span></p>
+                            <div className="flex flex-wrap gap-2.5">
+                              {colors.map((c, i) => (
+                                <button
+                                  key={c.name}
+                                  type="button"
+                                  title={c.name}
+                                  onClick={() => { setPdpColorIdx(i); setPdpGalleryIdx(0); }}
+                                  className={`w-10 h-10 rounded-full border-[2.5px] transition shadow-sm ${pdpColorIdx === i ? 'border-apple-blue scale-110 ring-2 ring-apple-blue/20' : 'border-primary-200 dark:border-white/30 hover:scale-105'}`}
+                                  style={{ backgroundColor: c.hex || '#888' }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* سایز */}
+                        <div id="pdp-size-section">
+                          <div className="flex items-center justify-between mb-2.5">
+                            <p className="text-xs font-bold text-primary-500 dark:text-white/50">سایز <span className="text-red-500">*</span></p>
+                            <button type="button" onClick={() => openStaticPage('size-guide')} className="text-[11px] text-apple-blue dark:text-[#13ABC4] hover:underline">راهنمای سایز</button>
+                          </div>
+                          {!pdpSize && sizes.length > 0 && (
+                            <p className="text-[11px] text-amber-600 dark:text-amber-400 mb-2">یک سایز انتخاب کنید</p>
+                          )}
+                          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                            {sizes.map(sz => {
+                              const szStock = getVariantStock(p, activeColor.name, sz, activeAttrs);
+                              const disabled = szStock <= 0;
+                              const on = pdpSize === sz;
+                              return (
+                                <button
+                                  key={sz}
+                                  type="button"
+                                  disabled={disabled}
+                                  title={disabled ? 'ناموجود' : `موجودی: ${toFa(szStock)}`}
+                                  onClick={() => { setPdpSize(sz); setSelectedSizes(prev => ({ ...prev, [p.id]: sz })); setPdpGalleryIdx(0); }}
+                                  dir="ltr" lang="en"
+                                  className={`py-2.5 rounded-xl text-sm font-semibold border transition ${disabled ? 'opacity-35 cursor-not-allowed border-primary-100 text-primary-300 line-through' : on ? 'bg-primary-900 text-white border-primary-900 dark:bg-[#13ABC4] dark:border-[#13ABC4]' : 'border-primary-200 dark:border-white/20 text-primary-800 dark:text-white hover:border-primary-400 bg-primary-50/50 dark:bg-primary-950/40'}`}
+                                >{sz}</button>
+                              );
+                            })}
+                          </div>
+                          <button type="button" onClick={() => setPdpSizeRecOpen(v => !v)} className="mt-2 text-[11px] text-apple-blue dark:text-[#13ABC4] hover:underline">پیشنهاد سایز با قد و وزن</button>
+                          {pdpSizeRecOpen && (
+                            <div className="mt-2 p-3 rounded-2xl bg-primary-50 dark:bg-primary-950 border border-primary-100 dark:border-white/10 space-y-2">
+                              <div className="flex gap-2">
+                                <input type="number" placeholder="قد (سانتی‌متر)" value={pdpHeight} onChange={e => setPdpHeight(e.target.value)} className="flex-1 px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm" />
+                                <input type="number" placeholder="وزن (کیلو)" value={pdpWeight} onChange={e => setPdpWeight(e.target.value)} className="flex-1 px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm" />
+                              </div>
+                              <button type="button" onClick={suggestSizeFromBody} className="w-full py-2 rounded-xl bg-primary-800 dark:bg-[#13ABC4] text-white text-xs font-medium">محاسبه</button>
+                              {pdpSizeRec && <p className="text-xs text-center text-emerald-700 dark:text-emerald-400">پیشنهاد: <strong>{pdpSizeRec}</strong></p>}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* ویژگی‌های متغیر */}
+                        {attrDims.map(dim => (
+                          <div key={dim.id}>
+                            <p className="text-xs font-bold text-primary-500 dark:text-white/50 mb-2">{dim.name}: <span className="text-primary-900 dark:text-white">{activeAttrs[dim.id] || dim.options[0]}</span></p>
+                            <div className="flex flex-wrap gap-2">
+                              {dim.options.map(opt => {
+                                const on = (activeAttrs[dim.id] || dim.options[0]) === opt;
+                                const optAttrs = { ...activeAttrs, [dim.id]: opt };
+                                const optStock = getVariantStock(p, activeColor.name, activeSize, optAttrs);
+                                const gone = optStock <= 0;
+                                return (
+                                  <button
+                                    key={opt}
+                                    type="button"
+                                    disabled={gone}
+                                    onClick={() => { setPdpAttrs(prev => ({ ...prev, [dim.id]: opt })); setPdpGalleryIdx(0); }}
+                                    className={`min-w-[2.75rem] px-3 py-2 rounded-xl text-sm font-medium border transition ${gone ? 'opacity-40 cursor-not-allowed line-through' : on ? 'bg-primary-900 text-white border-primary-900 dark:bg-[#13ABC4] dark:border-[#13ABC4]' : 'border-primary-200 dark:border-white/20'}`}
+                                  >{opt}</button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+
+                        {/* تعداد */}
+                        <div className="flex flex-wrap items-center gap-3">
+                          <div className="flex items-center gap-1 rounded-2xl border border-primary-200 dark:border-white/20 bg-primary-50/60 dark:bg-primary-950/50 px-1">
+                            <button type="button" onClick={() => setPdpQty(q => Math.max(1, q - 1))} className="w-9 h-9 flex items-center justify-center rounded-xl" aria-label="کاهش"><Icon name="minus" size={16} /></button>
+                            <span className="w-8 text-center text-sm font-bold tabular-nums">{toFa(pdpQty)}</span>
+                            <button type="button" onClick={() => setPdpQty(q => Math.min(Math.max(1, variantStock || 1), Math.min(10, q + 1)))} className="w-9 h-9 flex items-center justify-center rounded-xl" aria-label="افزایش"><Icon name="plus" size={16} /></button>
+                          </div>
+                          {lowStock && <span className="text-[11px] text-amber-600 font-medium">فقط {toFa(variantStock)} عدد</span>}
+                          {stockOk && !lowStock && <span className="text-[11px] text-emerald-600">موجود</span>}
+                          {!stockOk && <span className="text-[11px] text-red-500">ناموجود</span>}
+                        </div>
+
+                        {p.giftWrap && (
+                          <label className="flex items-center gap-2 text-xs cursor-pointer">
+                            <input type="checkbox" checked={pdpGiftWrap} onChange={e => setPdpGiftWrap(e.target.checked)} className="rounded" />
+                            بسته‌بندی هدیه
+                          </label>
+                        )}
+                        {p.expressShipCost && (
+                          <label className="flex items-center gap-2 text-xs cursor-pointer">
+                            <input type="checkbox" checked={pdpExpress} onChange={e => setPdpExpress(e.target.checked)} className="rounded" />
+                            ارسال سریع‌تر (+{toFa(Math.round(p.expressShipCost / 1000))} هزار)
+                          </label>
+                        )}
+
+                        {stockOk ? (
+                          <button type="button" onClick={() => addToCart(p, { colorIdx: pdpColorIdx, size: pdpSize || '', qty: pdpQty, attrs: activeAttrs, requireSize: true })} className="w-full py-3.5 rounded-2xl bg-apple-blue text-white text-[15px] font-bold shadow-lg shadow-apple-blue/25 hover:opacity-95 active:scale-[0.99] transition">
+                            افزودن به سبد
+                          </button>
+                        ) : (
+                          <button type="button" onClick={() => setPdpNotifyOpen(v => !v)} className="w-full py-3.5 rounded-2xl bg-primary-800 dark:bg-[#13ABC4] text-white text-[15px] font-bold">
+                            خبرم کن وقتی موجود شد
+                          </button>
+                        )}
+                        {pdpNotifyOpen && (
+                          <div className="p-3 rounded-2xl border border-primary-200 dark:border-white/15 bg-primary-50 dark:bg-primary-950">
+                            {stockNotifyIds.includes(p.id) ? (
+                              <p className="text-xs text-apple-blue text-center">در لیست اطلاع‌رسانی هستید ✓</p>
+                            ) : (
+                              <>
+                                <input type="tel" defaultValue={user?.phone || ''} placeholder="شماره موبایل" id="pdp-notify-phone" className="w-full px-3 py-2 rounded-xl border text-sm mb-2" dir="ltr" />
+                                <button type="button" onClick={() => {
+                                  const phone = onlyDigits(document.getElementById('pdp-notify-phone')?.value || '');
+                                  if (phone.length !== 11) { showToast({ message: 'شماره موبایل معتبر وارد کنید', variant: 'default', duration: 4500, position: 'top-center' }); return; }
+                                  const next = [...new Set([...stockNotifyIds, p.id])];
+                                  setStockNotifyIds(next);
+                                  try { localStorage.setItem('stockNotifyIds', JSON.stringify(next)); } catch (_) {}
+                                  setPdpNotifyOpen(false);
+                                  showToast({ message: 'ثبت شد؛ وقتی موجود شود پیامک می‌گیرید (دمو).', variant: 'success', duration: 4500, position: 'top-center' });
+                                }} className="w-full py-2 rounded-xl bg-apple-blue text-white text-xs font-medium">ثبت</button>
+                              </>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-2 gap-2 pt-1">
                           {[
                             { icon: 'badge', t: 'ضمانت اصالت' },
                             { icon: 'refresh', t: '۷ روز بازگشت' },
                             { icon: 'truck', t: 'ارسال سریع' },
                             { icon: 'shield', t: 'پرداخت امن' },
                           ].map(item => (
-                            <div key={item.t} className="flex items-center gap-2.5 p-3 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100/80 dark:border-white/10 shadow-sm">
-                              <span className="trust-icon-wrap inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-800 border border-primary-200 dark:border-white/30 flex-shrink-0">
-                                <Icon name={item.icon} size={15} className="text-apple-blue dark:text-[#13ABC4]" />
-                              </span>
-                              <span className="text-xs font-medium text-primary-800 dark:!text-white">{item.t}</span>
+                            <div key={item.t} className="flex items-center gap-2 p-2.5 rounded-2xl bg-primary-50/80 dark:bg-primary-950/60 text-[11px] font-medium text-primary-700 dark:text-white/80">
+                              <Icon name={item.icon} size={14} className="text-apple-blue dark:text-[#13ABC4] shrink-0" />
+                              {item.t}
                             </div>
                           ))}
                         </div>
-                        <div className="p-3.5 rounded-xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 text-xs text-primary-600 dark:text-white/70 space-y-1.5">
-                          <p className="flex items-center gap-2"><Icon name="truck" size={14} /> ارسال تقریبی: ۱ تا ۳ روز کاری</p>
-                          <p>هزینه ارسال بر اساس روش انتخابی در تسویه حساب محاسبه می‌شود</p>
-                          <p>مبدأ ارسال: {fullSeller.city || 'تهران'}</p>
-                        </div>
-                        <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-primary-900 border border-primary-100/80 dark:border-white/10 shadow-sm">
-                          <div className="flex items-center gap-3">
-                            <img src={fullSeller.image || fullSeller.banner} alt="" className="w-12 h-12 rounded-xl object-cover" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-sm font-bold text-primary-900 dark:text-white truncate">{fullSeller.name}</p>
-                              <p className="text-xs text-primary-500 dark:!text-white">{toFa(Number(fullSeller.rating || seller.rating || 0).toFixed(1))}★ · {toFa(fullSeller.products || 0)} محصول</p>
-                            </div>
-                            <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openSeller(seller.id || 'own'); }} className="px-3 py-1.5 rounded-full text-xs font-medium border border-primary-200 dark:border-white/30 text-primary-800 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800">
-                              مشاهده فروشگاه
-                            </button>
-                          </div>
-                          {fullSeller.badges?.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5 mt-3">
-                              {fullSeller.badges.map(b => (
-                                <span key={b} className="text-xs px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-800 text-primary-700 dark:text-white/80">{b}</span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
 
-                    {/* ——— Info column ——— */}
-                    <div className="flex flex-col">
-                      <h1 className="text-2xl sm:text-[1.75rem] font-black text-primary-900 dark:text-white leading-snug tracking-tight">{p.name}</h1>
-                      {p.productCode && <p className="text-xs text-primary-400 dark:text-white/50 font-latin mt-1" dir="ltr">کد: {p.productCode}</p>}
-                      <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm">
-                        <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openCategory(p.category); }} className="text-apple-blue dark:text-[#13ABC4] hover:underline">{p.category}</button>
-                        <span className="text-primary-300">·</span>
-                        <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openSeller(seller.id || 'own'); }} className="text-primary-600 dark:text-white/80 hover:underline">فروشنده: {seller.name}</button>
-                        <span className="text-primary-300">·</span>
-                        <span className="text-primary-400 dark:!text-white">کد: {p.sku || `PM-${p.id}`}</span>
-                      </div>
-
-                      {/* Rating */}
-                      <div className="flex flex-wrap items-center gap-2.5 mt-3">
-                        <div className="inline-flex items-center gap-1.5 bg-emerald-600 text-white text-xs font-bold px-2.5 py-1 rounded-lg">
-                          <span>{toFa(Number(p.rating || 0).toFixed(1))}</span>
-                          <Icon name="starFilled" size={12} className="text-white" />
-                        </div>
-                        <div className="flex gap-0.5">
-                          {[1,2,3,4,5].map(n => (
-                            <Icon key={n} name={n <= Math.round(p.rating || 0) ? 'starFilled' : 'star'} size={14} className={n <= Math.round(p.rating || 0) ? 'text-amber-400' : 'text-primary-200 dark:text-primary-600'} />
-                          ))}
-                        </div>
-                        <span className="text-xs text-primary-500 dark:!text-white">{toFa(p.reviews || 0)} نظر خریداران</span>
-                        {fullSeller.rating && (
-                          <span className="text-xs text-primary-400 dark:!text-white mr-1">· امتیاز فروشنده {toFa(Number(fullSeller.rating).toFixed(1))}</span>
-                        )}
-                      </div>
-
-                      {/* Social proof */}
-                      {p.soldRecent > 0 && (
-                        <p className="mt-2 text-xs text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 inline-flex self-start px-2.5 py-1 rounded-full">
-                          {toFa(p.soldRecent)} نفر در ۷ روز گذشته خریده‌اند
-                        </p>
-                      )}
-
-                      {/* Price */}
-                      <div className="mt-5 p-5 sm:p-6 rounded-3xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 shadow-sm">
-                        <div className="flex items-end gap-3 flex-wrap">
-                          <p className="text-3xl sm:text-4xl font-black text-primary-900 dark:text-white tracking-tight">{variantPriceText} <span className="text-sm font-normal text-primary-500">تومان</span></p>
-                          {p.oldPrice && (
-                            <div className="flex items-center gap-2 pb-1">
-                              <span className="text-sm text-primary-400 line-through">{p.oldPrice}</span>
-                              {p.discount && <span className="text-xs font-bold text-white bg-red-500 px-1.5 py-0.5 rounded">{toFa(p.discount)}٪</span>}
-                            </div>
-                          )}
-                        </div>
-                        <p className="text-xs text-primary-400 dark:!text-white mt-1">قیمت برای ۱ عدد</p>
-                        {p.oldPrice && (
-                          <p className="text-xs text-primary-500 mt-1">قیمت قبلی: {p.oldPrice} تومان</p>
-                        )}
-                        {p.installment && (
-                          <p className="text-xs text-apple-blue dark:text-[#13ABC4] mt-2 font-medium">
-                            اقساط ۴ ماهه: از {toFa(Math.round(p.installment / 1000))}٬۰۰۰ تومان / ماه
-                          </p>
-                        )}
-                        {/* تاریخچه قیمت — نمودار روند (شبیه ترب) */}
-                        {p.priceHistory && p.priceHistory.length > 0 && (() => {
-                          const hist = p.priceHistory;
-                          const maxP = Math.max(...hist.map(x => x.price));
-                          const minP = Math.min(...hist.map(x => x.price));
-                          const range = maxP - minP || 1;
-                          const w = 280;
-                          const h = 100;
-                          const padX = 8;
-                          const padY = 12;
-                          const pts = hist.map((item, i) => {
-                            const x = padX + (i / (hist.length - 1)) * (w - padX * 2);
-                            const y = padY + (1 - (item.price - minP) / range) * (h - padY * 2);
-                            return { x, y, ...item };
-                          });
-                          const lineD = pts.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${pt.x} ${pt.y}`).join(' ');
-                          const areaD = `${lineD} L ${pts[pts.length - 1].x} ${h} L ${pts[0].x} ${h} Z`;
-                          const dropPct = maxP > 0 ? Math.round(((maxP - p.price) / maxP) * 100) : 0;
-                          return (
-                            <div className="mt-4 pt-4 border-t border-primary-100 dark:border-white/10">
-                              <div className="flex items-center justify-between mb-3">
-                                <p className="text-sm font-bold text-primary-800 dark:text-white">تاریخچه قیمت</p>
-                                {dropPct > 0 && (
-                                  <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
-                                    {toFa(dropPct)}٪ ارزان‌تر از بالاترین
-                                  </span>
-                                )}
-                              </div>
-                              <div className="rounded-xl bg-primary-50 dark:bg-primary-950 border border-primary-100 dark:border-white/10 p-3 sm:p-4">
-                                <svg viewBox={`0 0 ${w} ${h + 28}`} className="w-full h-auto" style={{ minHeight: '140px' }} role="img" aria-label="نمودار روند قیمت">
-                                  {/* grid lines */}
-                                  {[0, 0.25, 0.5, 0.75, 1].map((t, gi) => {
-                                    const gy = padY + t * (h - padY * 2);
-                                    return <line key={gi} x1={padX} y1={gy} x2={w - padX} y2={gy} stroke="currentColor" className="text-primary-200 dark:text-white/10" strokeWidth="1" strokeDasharray="4 4" />;
-                                  })}
-                                  {/* area fill */}
-                                  <path d={areaD} fill="url(#priceGrad)" opacity="0.35" />
-                                  <defs>
-                                    <linearGradient id="priceGrad" x1="0" y1="0" x2="0" y2="1">
-                                      <stop offset="0%" stopColor="#0071e3" stopOpacity="0.5" />
-                                      <stop offset="100%" stopColor="#0071e3" stopOpacity="0" />
-                                    </linearGradient>
-                                  </defs>
-                                  {/* line */}
-                                  <path d={lineD} fill="none" stroke="#0071e3" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="dark:stroke-[#FF0000]" />
-                                  {/* points */}
-                                  {pts.map((pt, i) => (
-                                    <g key={i}>
-                                      <circle cx={pt.x} cy={pt.y} r={i === pts.length - 1 ? 5 : 3.5} fill={i === pts.length - 1 ? '#0071e3' : '#fff'} stroke="#0071e3" strokeWidth="2" className="dark:stroke-[#FF0000]" style={i === pts.length - 1 ? { fill: '#0071e3' } : {}} />
-                                      {i === pts.length - 1 && (
-                                        <text x={pt.x} y={pt.y - 10} textAnchor="middle" className="fill-primary-800 dark:fill-white" style={{ fontSize: '11px', fontWeight: 700 }}>
-                                          {toFa((pt.price).toLocaleString('en-US'))}
-                                        </text>
-                                      )}
-                                    </g>
-                                  ))}
-                                  {/* x labels */}
-                                  {pts.map((pt, i) => (
-                                    <text key={`l-${i}`} x={pt.x} y={h + 18} textAnchor="middle" className="fill-primary-500 dark:fill-white/50" style={{ fontSize: '10px' }}>
-                                      {pt.label}
-                                    </text>
-                                  ))}
-                                </svg>
-                                <div className="flex flex-wrap items-center justify-between gap-2 mt-2 text-xs sm:text-sm text-primary-600 dark:text-white/70">
-                                  <span>کمینه: <strong className="text-primary-900 dark:text-white">{toFa(minP.toLocaleString('en-US'))}</strong> تومان</span>
-                                  <span>بیشینه: <strong className="text-primary-900 dark:text-white">{toFa(maxP.toLocaleString('en-US'))}</strong> تومان</span>
-                                </div>
-                                {p.oldPrice && (
-                                  <p className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 mt-2 font-medium">
-                                    قیمت فعلی نسبت به ۶ ماه گذشته روند کاهشی داشته است.
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })()}
-                      </div>
-
-                      {/* انتخاب ویژگی‌ها */}
-                      <div className="mt-5 p-4 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 space-y-5">
-                      {/* Color */}
-                      <div>
-                        <p className="text-xs font-bold text-primary-600 dark:text-white/70 mb-2">رنگ: <span className="text-primary-900 dark:text-white font-medium">{activeColor.name}</span></p>
-                        <div className="flex flex-wrap gap-2">
-                          {colors.map((c, i) => (
-                            <button
-                              key={c.name}
-                              type="button"
-                              title={c.name}
-                              onClick={() => { setPdpColorIdx(i); setPdpGalleryIdx(0); }}
-                              className={`color-swatch w-9 h-9 rounded-full border-2 transition relative ${pdpColorIdx === i ? 'color-swatch--active border-apple-blue' : 'border-primary-200 dark:border-white/60'}`}
-                              style={{ ["--swatch-color"]: c.hex || '#888', backgroundColor: c.hex || '#888' }}
-                            >
-                              {(c.name === 'سفید' || c.name === 'کرم') && <span className="absolute inset-0 rounded-full border border-primary-200" />}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Size */}
-                      <div className="mt-5" id="pdp-size-section">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-xs font-bold text-primary-600 dark:text-white/70">سایز <span className="text-red-500">*</span></p>
-                          <button type="button" onClick={() => openStaticPage('size-guide')} className="text-xs text-apple-blue dark:text-[#13ABC4] hover:underline">راهنمای سایز</button>
-                        </div>
-                        {!pdpSize && sizes.length > 0 && (
-                          <p className="text-xs text-amber-600 dark:text-amber-400 mb-2">برای افزودن به سبد، یک سایز انتخاب کنید</p>
-                        )}
-                        <div className="flex flex-wrap gap-2">
-                          {sizes.map(sz => {
-                            const szStock = getVariantStock(p, activeColor.name, sz, activeAttrs);
-                            const disabled = szStock <= 0;
-                            const on = pdpSize === sz;
-                            return (
-                              <button
-                                key={sz}
-                                type="button"
-                                disabled={disabled}
-                                title={disabled ? 'ناموجود' : `موجودی: ${toFa(szStock)}`}
-                                onClick={() => { setPdpSize(sz); setSelectedSizes(prev => ({ ...prev, [p.id]: sz })); setPdpGalleryIdx(0); }}
-                                dir="ltr" lang="en"
-                                className={`latin-label size-chip min-w-[2.75rem] px-3 py-2 rounded-xl text-sm font-medium border transition ${disabled ? 'opacity-40 cursor-not-allowed border-primary-200 text-primary-400 line-through' : on ? 'size-chip--active bg-primary-800 text-white border-primary-800 dark:bg-[#13ABC4] dark:!text-white dark:border-[#13ABC4]' : 'border-primary-200 dark:border-white/30 text-primary-800 dark:!text-white hover:border-primary-400'}`}
-                              >{sz}</button>
-                            );
-                          })}
-                        </div>
-                        {p.modelInfo && <p className="text-xs text-primary-400 mt-2">{p.modelInfo}</p>}
-                        <button type="button" onClick={() => setPdpSizeRecOpen(v => !v)} className="mt-2 text-xs text-apple-blue dark:text-[#13ABC4] hover:underline">پیشنهاد سایز بر اساس قد و وزن</button>
-                        {pdpSizeRecOpen && (
-                          <div className="mt-2 p-3 rounded-xl bg-primary-50 dark:bg-primary-900 border border-primary-100 dark:border-white/10 space-y-2">
-                            <div className="flex gap-2">
-                              <input type="number" placeholder="قد (سانتی‌متر)" value={pdpHeight} onChange={e => setPdpHeight(e.target.value)} className="flex-1 px-3 py-2 rounded-lg border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white" />
-                              <input type="number" placeholder="وزن (کیلو)" value={pdpWeight} onChange={e => setPdpWeight(e.target.value)} className="flex-1 px-3 py-2 rounded-lg border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white" />
-                            </div>
-                            <button type="button" onClick={suggestSizeFromBody} className="btn-cta w-full py-2 rounded-lg bg-primary-800 dark:bg-[#13ABC4] text-white dark:text-white text-xs font-medium">محاسبه سایز</button>
-                            {pdpSizeRec && <p className="text-xs text-center text-emerald-700 dark:text-emerald-400">سایز پیشنهادی: <strong>{pdpSizeRec}</strong></p>}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* ویژگی‌های متغیر */}
-                      {attrDims.map(dim => (
-                        <div key={dim.id} className="mt-5">
-                          <p className="text-xs font-bold text-primary-600 dark:text-white/70 mb-2">{dim.name}: <span className="text-primary-900 dark:text-white font-medium">{activeAttrs[dim.id] || dim.options[0]}</span></p>
-                          <div className="flex flex-wrap gap-2">
-                            {dim.options.map(opt => {
-                              const on = (activeAttrs[dim.id] || dim.options[0]) === opt;
-                              const optAttrs = { ...activeAttrs, [dim.id]: opt };
-                              const optStock = getVariantStock(p, activeColor.name, activeSize, optAttrs);
-                              const gone = optStock <= 0;
-                              return (
-                                <button
-                                  key={opt}
-                                  type="button"
-                                  disabled={gone}
-                                  title={gone ? 'ناموجود' : `موجودی: ${toFa(optStock)}`}
-                                  onClick={() => { setPdpAttrs(prev => ({ ...prev, [dim.id]: opt })); setPdpGalleryIdx(0); }}
-                                  className={`min-w-[2.75rem] px-3 py-2 rounded-xl text-sm font-medium border transition ${gone ? 'opacity-40 cursor-not-allowed border-primary-200 text-primary-400 line-through' : on ? 'bg-primary-800 text-white border-primary-800 dark:bg-[#13ABC4] dark:!text-white dark:border-[#13ABC4]' : 'border-primary-200 dark:border-white/30 text-primary-800 dark:!text-white hover:border-primary-400'}`}
-                                >{opt}</button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
-
-                      {/* Qty + stock */}
-                      <div className="mt-5 flex flex-wrap items-center gap-4">
-                        <div className="flex items-center gap-1 border border-primary-200 dark:border-white/25 rounded-2xl bg-white dark:bg-primary-900 shadow-sm">
-                          <button type="button" onClick={() => setPdpQty(q => Math.max(1, q - 1))} className="w-9 h-9 flex items-center justify-center text-primary-900 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800 rounded-full" aria-label="کاهش تعداد">
-                            <Icon name="minus" size={16} />
-                          </button>
-                          <span className="w-8 text-center text-sm font-medium tabular-nums text-primary-900 dark:text-white">{toFa(pdpQty)}</span>
-                          <button type="button" onClick={() => setPdpQty(q => Math.min(Math.max(1, variantStock || 1), Math.min(10, q + 1)))} className="w-9 h-9 flex items-center justify-center text-primary-900 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800 rounded-full" aria-label="افزایش تعداد">
-                            <Icon name="plus" size={16} />
-                          </button>
-                        </div>
-                        {lowStock && <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">فقط {toFa(variantStock)} عدد از این ترکیب باقی مانده</span>}
-                        {stockOk && !lowStock && <span className="text-xs text-emerald-600 dark:text-emerald-400">این ترکیب موجود است</span>}
-                        {!stockOk && <span className="text-xs text-red-500">این ترکیب ناموجود است</span>}
-                      </div>
-                      {variantNote ? (
-                        <div className="mt-4 p-3 rounded-xl border border-primary-100 dark:border-white/10 bg-primary-50/60 dark:bg-primary-900/50">
-                          <p className="text-xs font-bold text-primary-700 dark:text-white mb-1">درباره این ترکیب</p>
-                          <p className="text-sm text-primary-800 dark:text-white/90 leading-relaxed">{variantNote}</p>
-                        </div>
-                      ) : null}
-
-                      {/* Gift + express */}
-                      <div className="mt-4 space-y-2">
-                        {p.giftWrap && (
-                          <label className="flex items-center gap-2 text-xs text-primary-700 dark:text-white/80 cursor-pointer">
-                            <input type="checkbox" checked={pdpGiftWrap} onChange={e => setPdpGiftWrap(e.target.checked)} className="rounded border-primary-300" />
-                            بسته‌بندی هدیه
-                          </label>
-                        )}
-                        {p.expressShipCost && (
-                          <label className="flex items-center gap-2 text-xs text-primary-700 dark:text-white/80 cursor-pointer">
-                            <input type="checkbox" checked={pdpExpress} onChange={e => setPdpExpress(e.target.checked)} className="rounded border-primary-300" />
-                            ارسال سریع‌تر (+{toFa(Math.round(p.expressShipCost / 1000))} هزار تومان)
-                          </label>
-                        )}
-                      </div>
-                      </div>
-
-                      {/* CTA */}
-                      <div className="mt-5 flex flex-col sm:flex-row gap-2.5">
-                        {stockOk ? (
-                          <button type="button" onClick={() => addToCart(p, { colorIdx: pdpColorIdx, size: pdpSize || '', qty: pdpQty, attrs: activeAttrs, requireSize: true })} className="flex-1 py-3.5 rounded-2xl bg-apple-blue text-white text-[15px] font-bold hover:opacity-95 active:scale-[0.99] transition shadow-lg shadow-apple-blue/20">
-                            افزودن به سبد
-                          </button>
-                        ) : (
-                          <button type="button" onClick={() => setPdpNotifyOpen(v => !v)} className="flex-1 py-3 rounded-full bg-primary-800 dark:bg-[#13ABC4] text-white dark:text-white text-sm font-bold">
-                            خبرم کن وقتی موجود شد
-                          </button>
-                        )}
-                      </div>
-                      {pdpNotifyOpen && (
-                        <div className="mt-2 p-3 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900">
-                          {stockNotifyIds.includes(p.id) ? (
-                            <p className="text-xs text-apple-blue text-center py-1">در لیست اطلاع‌رسانی هستید ✓</p>
-                          ) : (
-                            <>
-                              <input type="tel" defaultValue={user?.phone || ''} placeholder="شماره موبایل" id="pdp-notify-phone" className="w-full px-3 py-2 rounded-lg border border-primary-200 dark:border-white/20 bg-primary-50 dark:bg-primary-950 text-sm mb-2 text-primary-900 dark:text-white" dir="ltr" />
-                              <button type="button" onClick={() => {
-                                const phone = onlyDigits(document.getElementById('pdp-notify-phone')?.value || '');
-                                if (phone.length !== 11) { showToast({ message: 'شماره موبایل معتبر وارد کنید', variant: 'default', duration: 4500, position: 'top-center' }); return; }
-                                const next = [...new Set([...stockNotifyIds, p.id])];
-                                setStockNotifyIds(next);
-                                try { localStorage.setItem('stockNotifyIds', JSON.stringify(next)); } catch (_) {}
-                                setPdpNotifyOpen(false);
-                                showToast({ message: 'ثبت شد؛ وقتی موجود شود پیامک می‌گیرید (دمو).', variant: 'success', duration: 4500, position: 'top-center' });
-                              }} className="w-full py-2 rounded-lg bg-apple-blue text-white text-xs font-medium">ثبت اطلاع‌رسانی</button>
-                            </>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Return summary under CTA */}
-                      <p className="mt-3 text-xs text-primary-500 dark:!text-white leading-relaxed">
-                        ۷ روز ضمانت بازگشت کالا · ضمانت اصالت · ارسال از {fullSeller.city || 'تهران'}
-                      </p>
-
-                      {/* Trust bar — موبایل/تبلت */}
-                      <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-2 lg:hidden">
-                        {[
-                          { icon: 'badge', t: 'ضمانت اصالت' },
-                          { icon: 'refresh', t: '۷ روز بازگشت' },
-                          { icon: 'truck', t: 'ارسال سریع' },
-                          { icon: 'shield', t: 'پرداخت امن' },
-                        ].map(item => (
-                          <div key={item.t} className="flex items-center gap-2.5 p-3 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100/80 dark:border-white/10 shadow-sm">
-                            <span className="trust-icon-wrap inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-800 border border-primary-200 dark:border-white/30 flex-shrink-0">
-                              <Icon name={item.icon} size={15} className="text-apple-blue dark:text-[#13ABC4]" />
-                            </span>
-                            <span className="text-xs font-medium text-primary-800 dark:!text-white">{item.t}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Shipping info — موبایل/تبلت */}
-                      <div className="mt-4 p-3.5 rounded-xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 text-xs text-primary-600 dark:text-white/70 space-y-1.5 lg:hidden">
-                        <p className="flex items-center gap-2"><Icon name="truck" size={14} /> ارسال تقریبی: ۱ تا ۳ روز کاری</p>
-                        <p>هزینه ارسال بر اساس روش انتخابی در تسویه حساب محاسبه می‌شود</p>
-                        <p>مبدأ ارسال: {fullSeller.city || 'تهران'}</p>
-                      </div>
-
-                      {/* Seller card — موبایل/تبلت */}
-                      <div className="mt-4 p-4 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 lg:hidden">
-                        <div className="flex items-center gap-3">
-                          <img src={fullSeller.image || fullSeller.banner} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                        <div className="flex items-center gap-3 pt-1 border-t border-primary-100 dark:border-white/10">
+                          <img src={fullSeller.image || fullSeller.banner} alt="" className="w-11 h-11 rounded-2xl object-cover" />
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm font-bold text-primary-900 dark:text-white truncate">{fullSeller.name}</p>
-                            <p className="text-xs text-primary-500 dark:!text-white">{toFa(Number(fullSeller.rating || seller.rating || 0).toFixed(1))}★ · {toFa(fullSeller.products || 0)} محصول</p>
+                            <p className="text-sm font-bold truncate">{fullSeller.name}</p>
+                            <p className="text-[11px] text-primary-500">{toFa(Number(fullSeller.rating || seller.rating || 0).toFixed(1))}★ · {toFa(fullSeller.products || 0)} محصول</p>
                           </div>
-                          <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openSeller(seller.id || 'own'); }} className="px-3 py-1.5 rounded-full text-xs font-medium border border-primary-200 dark:border-white/30 text-primary-800 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800">
-                            مشاهده فروشگاه
+                          <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openSeller(seller.id || 'own'); }} className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-primary-200 dark:border-white/20 hover:bg-primary-50 dark:hover:bg-primary-800">
+                            فروشگاه
                           </button>
                         </div>
-                        {fullSeller.badges?.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 mt-3">
-                            {fullSeller.badges.map(b => (
-                              <span key={b} className="text-xs px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-800 text-primary-700 dark:text-white/80">{b}</span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Stylist note */}
-                      <div className="mt-4 p-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/30 text-xs text-amber-900 dark:text-amber-200/90 leading-relaxed">
-                        <strong className="font-bold">نظر استایلیست: </strong>
-                        این مدل با شلوار پارچه‌ای تیره و کفش رسمی برای محیط اداری و مجالس روزانه انتخاب بسیار مناسبی است.
                       </div>
                     </div>
                   </div>
