@@ -8718,42 +8718,22 @@ const verifyOtp = async () => {
         };
       }, [showSellerPanel, sellerUser?.id]);
 
+      // هر بار باز شدن پنل ادمین: فیلتر همه + بارگذاری اجباری
+      useEffect(() => {
+        if (!showAdminPanel) return;
+        try { if (typeof setAdminSellerFilter === 'function') setAdminSellerFilter('all'); } catch (_) {}
+        try { if (typeof setAdminProductFilter === 'function') setAdminProductFilter('all'); } catch (_) {}
+        const t1 = setTimeout(() => { try { if (typeof hydrateAdminSellers === 'function') hydrateAdminSellers(); } catch (_) {} }, 0);
+        const t2 = setTimeout(() => { try { if (typeof hydrateAdminProducts === 'function') hydrateAdminProducts(); } catch (_) {} }, 50);
+        return () => { clearTimeout(t1); clearTimeout(t2); };
+      }, [showAdminPanel]); /* admin-open-reset-filters */
+
       // ادمین: لیست فروشنده‌ها را زنده نگه دار
       useEffect(() => {
         if (!showAdminPanel) return;
         let cancelled = false;
-        const loadSellers = async () => {
-          try {
-            const res = await fetch('/api/admin/sellers', { credentials: 'include' });
-            const data = await res.json().catch(() => null);
-            if (cancelled || !res.ok || !data?.ok) return;
-            const mapped = (data.sellers || []).map((s) => ({
-              id: s.id,
-              shopName: s.shop_name || s.shopName || 'فروشگاه',
-              name: s.shop_name || s.shopName || 'فروشگاه',
-              slug: s.slug || '',
-              status: s.status || 'pending',
-              ownerId: s.owner_id,
-              ownerName: s.owner_name || s.ownerName || '',
-              phone: s.phone || '',
-              city: s.city || '',
-              address: s.address || '',
-              about: s.about || '',
-              logo: s.logo_url || s.logo || '',
-              banner: s.banner_url || '',
-              sheba: s.sheba || '',
-              rating: s.rating != null ? Number(s.rating) : 0,
-              ratingCount: s.rating_count != null ? Number(s.rating_count) : 0,
-              productsCount: s.products_count != null ? Number(s.products_count) : 0,
-              activeProductsCount: s.active_products_count != null ? Number(s.active_products_count) : 0,
-              kycStatus: s.kyc_status || 'pending',
-              createdAt: s.created_at,
-              updatedAt: s.updated_at,
-              licenseApproved: s.status === 'approved',
-            }));
-            try { setAdminSellers(mapped); } catch (_) {}
-          } catch (_) {}
-        };
+        const loadSellers = async () => { try { if (typeof hydrateAdminSellers === 'function') await hydrateAdminSellers(); } catch (_) {} };
+        // defer: hydrate تعریف پایین‌تر است — از event
         loadSellers();
         const iv = setInterval(loadSellers, 30000);
         const onRefetch = () => loadSellers();
@@ -12566,9 +12546,16 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         setAdminListLoading((s) => ({ ...s, products: true }));
         setAdminListError((s) => ({ ...s, products: '' }));
         try {
-          const { ok, status, body } = await adminFetchJson('/api/admin/products');
+          const { ok, status, body } = await adminFetchJson('/api/admin/products?limit=500');
           if (!ok) {
-            setAdminListError((s) => ({ ...s, products: (body && (body.error || body.message)) || ('خطا ' + status) }));
+            const msg = (body && (body.error || body.message)) || ('خطا ' + status);
+            setAdminListError((s) => ({ ...s, products: msg }));
+            if (status === 401 || status === 403) {
+              if ((body && body.code) === 'ADMIN_SESSION_EXPIRED' || status === 401) {
+                try { if (typeof setAdminAuthOpen === 'function') setAdminAuthOpen(true); } catch (_) {}
+                try { if (typeof showToast === 'function') showToast({ message: 'نشست ادمین منقضی شد — دوباره وارد شوید', variant: 'error', duration: 4500, position: 'top-center' }); } catch (_) {}
+              }
+            }
             return;
           }
           const list = (body && (body.products || body.data || body.items)) || (Array.isArray(body) ? body : []);
@@ -12641,17 +12628,31 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         try {
           const { ok, status, body } = await adminFetchJson('/api/admin/sellers');
           if (!ok) {
+            const code = body && body.code;
             const msg = (body && (body.error || body.message)) || ('خطا ' + status);
             setAdminListError((s) => ({ ...s, sellers: msg }));
-            if (typeof setAdminSellers === 'function') setAdminSellers([]);
+            // فقط وقتی واقعاً دسترسی نداریم لیست را خالی کن؛ روی خطای موقت داده قبلی بماند
+            if (status === 403 || status === 401) {
+              if (typeof setAdminSellers === 'function') setAdminSellers([]);
+              if (code === 'ADMIN_SESSION_EXPIRED' || status === 401) {
+                try {
+                  if (typeof setAdminAuthOpen === 'function') setAdminAuthOpen(true);
+                  if (typeof showToast === 'function') showToast({ message: 'نشست ادمین منقضی شد — دوباره وارد شوید', variant: 'error', duration: 4500, position: 'top-center' });
+                } catch (_) {}
+              }
+            }
             return;
           }
           const list = (body && (body.sellers || body.data || body.items)) || (Array.isArray(body) ? body : []);
           const mapped = (Array.isArray(list) ? list : []).map(mapAdminSellerRow).filter(Boolean);
           if (typeof setAdminSellers === 'function') setAdminSellers(mapped);
+          // اگر خالی بود ولی سرور ok است، پیام راهنما
+          if (!mapped.length) {
+            setAdminListError((s) => ({ ...s, sellers: '' }));
+          }
         } catch (e) {
           setAdminListError((s) => ({ ...s, sellers: 'خطای شبکه در دریافت فروشندگان' }));
-          if (typeof setAdminSellers === 'function') setAdminSellers([]);
+          // لیست قبلی را پاک نکن
         } finally {
           setAdminListLoading((s) => ({ ...s, sellers: false }));
         }

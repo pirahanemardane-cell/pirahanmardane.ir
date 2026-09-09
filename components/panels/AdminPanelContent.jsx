@@ -1473,14 +1473,17 @@ export default function AdminPanelContent() {
            <div className="space-y-2">
             {(() => {
              const visibleProducts = (adminProducts||[]).filter(p=>{
-             const stt = p.status || '';
+             const stt = String(p.status || '').toLowerCase();
+             const sttNorm = stt === 'approved' ? 'active' : stt;
              if (adminProductFilter === 'archived') {
-              if (stt !== 'archived') return false;
+              if (sttNorm !== 'archived') return false;
              } else if (adminProductFilter === 'purge_requested') {
-              if (stt !== 'purge_requested') return false;
+              if (sttNorm !== 'purge_requested') return false;
              } else if (adminProductFilter === 'all') {
-              if (stt === 'archived' || stt === 'purge_requested') return false;
-             } else if (stt !== adminProductFilter) {
+              if (sttNorm === 'archived' || sttNorm === 'purge_requested') return false;
+             } else if (adminProductFilter === 'active') {
+              if (sttNorm !== 'active') return false;
+             } else if (sttNorm !== String(adminProductFilter || '').toLowerCase()) {
               return false;
              }
              const q=adminProductSearch.trim().toLowerCase();

@@ -6,7 +6,7 @@ export async function GET(request) {
   try {
     const gate = await requireAdmin()
     if (gate.error) return gate.error
-    const limit = Math.min(Number(new URL(request.url).searchParams.get('limit') || 200), 500)
+    const limit = Math.min(Math.max(Number(new URL(request.url).searchParams.get('limit') || 500) || 500, 1), 1000)
     // بدون embed شکننده sellers(...) — جوین جدا تا یک ستون/رابطه کل لیست را خالی نکند
     const baseSelect =
       'id, name, title, slug, base_price, status, seller_id, cover_image, category_id, brand_id, description, images, payload, product_code, created_at, updated_at'
@@ -45,7 +45,7 @@ export async function GET(request) {
       const { invalidateCatalogCache } = await import('@/lib/catalog-cache')
       if (typeof invalidateCatalogCache === 'function') invalidateCatalogCache()
     } catch (_) {}
-    return NextResponse.json({ ok: true, products: rows, count: rows.length })
+    return NextResponse.json({ ok: true, products: rows, count: rows.length }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (e) {
     try { await logCritical('app/api/admin/products/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })

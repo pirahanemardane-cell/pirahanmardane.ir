@@ -46,7 +46,7 @@ export async function GET() {
       }
     } catch (_) { try { await logCritical('app/api/admin/sellers/route.js', _) } catch (_lc) {} }
 
-    return NextResponse.json({ ok: true, sellers, count: sellers.length })
+    return NextResponse.json({ ok: true, sellers, count: sellers.length }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (e) {
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
