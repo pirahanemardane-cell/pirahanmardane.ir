@@ -5034,3 +5034,40 @@ html.dark .review-shop-badge {
     animation: none !important;
   }
 }
+
+/* === panel overflow fix (auto) === */
+.panel-ui,
+.panel-ui--admin,
+.panel-ui--seller,
+.panel-ui--buyer {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+.admin-panel-shell,
+.seller-panel-shell,
+.buyer-panel-shell {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+.panel-ui table,
+.panel-ui .table-wrap {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.panel-ui td,
+.panel-ui th {
+  max-width: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.panel-ui .min-w-0 { min-width: 0; }
+.panel-ui img { max-width: 100%; height: auto; }
+/* === end panel overflow fix === */

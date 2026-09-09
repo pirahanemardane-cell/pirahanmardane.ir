@@ -735,7 +735,7 @@ export default function AdminPanelContent() {
            { id: 'search-console', label: 'سرچ کنسول', icon: 'search' },
            { id: 'backup', label: 'بک‌آپ و بازیابی', icon: 'download' },
            { id: 'site-licenses', label: 'مجوزهای سایت', icon: 'shield' },
-           { id: 'settings', label: 'تنظیمات', icon: 'settings' },
+
            { id: 'profile', label: 'پروفایل', icon: 'user' },
           ].map(t => (
            <button key={t.id} type="button" onClick={() => { setAdminTab(t.id); if (t.id === 'campaigns' && typeof hydrateCampaignsFromApi === 'function') { try { hydrateCampaignsFromApi(true); } catch(_){} } if (t.id === 'dashboard' && typeof hydrateAdminStatsFromApi === 'function') { try { hydrateAdminStatsFromApi(); } catch(_){} } if (t.id === 'coupons' && typeof hydrateAdminCoupons === 'function') { try { hydrateAdminCoupons(); } catch(_){} } if (t.id === 'blog-new') { const defCat = ((adminBlogCategories || []).find(c => c.active !== false) || {}).name || 'راهنمای خرید'; setBlogForm({ id: '', title: '', cat: defCat, excerpt: '', body: '', status: 'published', author: 'تحریریه', read: '۵ دقیقه', publishAtDate: '', publishAtTime: '10:00', publishAtMs: null, publishAtFa: '', seoTitle: '', seoDescription: '', seoFocusKeywords: '', seoCanonical: '', seoOgImage: '', imageAlt: '', image: '', seoNoindex: false, seoFaq: [] }); } else if (t.id === 'blog') { setBlogForm(null); if (typeof hydrateBlogPostsFromApi === 'function') try { hydrateBlogPostsFromApi(); } catch(_){} } setAdminSellerDetailId(null); setAdminProductDetailId(null); setAdminOrderDetailId(null); setAdminTicketDetailId(null); setAdminBuyerDetailId(null); setAdminLoading(true); setTimeout(() => setAdminLoading(false), 200); requestAnimationFrame(() => scrollAdminPanelToTop()); }}
@@ -5773,33 +5773,6 @@ export default function AdminPanelContent() {
          showToast={showToast}
         />
        )}
-
-         {!adminLoading && adminTab === 'settings' && (
-          <div className="max-w-none w-full space-y-4">
-           <h2 className="text-base font-bold text-primary-900 dark:text-white">تنظیمات سایت</h2>
-           <div><label className="text-xs text-primary-500 block mb-1">نام فروشگاه</label>
-            <input defaultValue={adminSettings?.siteName||''} id="adm-site" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" /></div>
-           <div><label className="text-xs text-primary-500 block mb-1">متن کوتاه فوتر</label>
-            <input defaultValue={adminSettings?.footerText||''} id="adm-footer" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" /></div>
-           <div><label className="text-xs text-primary-500 block mb-1">نرخ مالیات نمایشی (٪)</label>
-            <input defaultValue={adminSettings?.taxRate||0} id="adm-tax" type="number" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" /></div>
-
-           <button type="button" onClick={()=>{
-            saveAdminSettings({
-             ...adminSettings,
-             siteName: document.getElementById('adm-site')?.value||adminSettings.siteName,
-             footerText: document.getElementById('adm-footer')?.value||adminSettings.footerText,
-
-             taxRate: Number(document.getElementById('adm-tax')?.value)||0,
-             shopSeoText: document.getElementById('adm-shop-seo')?.value||'',
-             categoriesIndexSeoText: document.getElementById('adm-cats-seo')?.value||'',
-             tagsIndexSeoText: document.getElementById('adm-tags-seo')?.value||'',
-            });
-            showToast({ message: 'تنظیمات ذخیره شد', variant: 'success', duration: 4500, position: 'top-center' });
-           }} className="w-full py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium">ذخیره</button>
-          </div>
-         )}
-
          {/* Admin profile */}
          {!adminLoading && adminTab === 'profile' && (
           <div className="w-full max-w-none space-y-4">
