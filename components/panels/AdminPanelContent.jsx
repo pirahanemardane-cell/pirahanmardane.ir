@@ -623,6 +623,39 @@ export default function AdminPanelContent() {
     }
   };
 
+  const filterTaxBlogPosts = (list) => {
+    const arr = Array.isArray(list) ? list : [];
+    if (taxFilter === 'archived') return arr.filter(isTaxArchived);
+    if (taxFilter === 'active') return arr.filter((x) => !isTaxArchived(x));
+    return arr;
+  };
+  const runTaxBulkBlogPost = async (mode) => {
+    if (typeof saveBlogPosts !== 'function') return;
+    const ids = new Set(taxSelectedIds.map(String));
+    if (!ids.size) { try { showToast({ message: 'موردی انتخاب نشده', variant: 'error', duration: 2500, position: 'top-center' }); } catch (_) {} return; }
+    const isPurge = mode === 'purge';
+    const isRestore = mode === 'restore';
+    let msg = 'آرشیو ' + ids.size + ' مطلب؟';
+    if (isPurge) msg = 'حذف دائم ' + ids.size + ' مطلب؟';
+    if (isRestore) msg = 'بازگردانی ' + ids.size + ' مطلب؟';
+    const ok = typeof siteConfirm === 'function' ? await siteConfirm(msg) : window.confirm(msg);
+    if (!ok) return;
+    setTaxBusy(true);
+    try {
+      const list = blogPosts || [];
+      if (isPurge) {
+        saveBlogPosts(list.filter((x) => !ids.has(String(x.id))));
+        if (blogForm && ids.has(String(blogForm.id))) setBlogForm(null);
+      } else if (isRestore) {
+        saveBlogPosts(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'draft' } : x));
+      } else {
+        saveBlogPosts(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived' } : x));
+      }
+      setTaxSelectedIds([]);
+      try { showToast({ message: 'انجام شد', variant: 'success', duration: 2500, position: 'top-center' }); } catch (_) {}
+    } finally { setTaxBusy(false); }
+  };
+
   const filterTaxBlogCategories = (list) => {
     const arr = Array.isArray(list) ? list : [];
     if (taxFilter === 'archived') return arr.filter(isTaxArchived);
@@ -4591,25 +4624,67 @@ export default function AdminPanelContent() {
             {!(blogPosts || []).length && (
              <p className="text-sm text-primary-500 text-center py-10">هنوز مطلبی ثبت نشده · از «افزودن بلاگ» مطلب جدید بنویسید</p>
             )}
-            {(blogPosts || []).map(p => (
-             <div
-              key={p.id}
-              className={`flex flex-wrap items-center gap-2 p-3 rounded-xl border bg-white dark:bg-primary-900 transition ${blogForm && blogForm.id === p.id ? 'border-apple-blue dark:border-[#4CCD99] ring-1 ring-apple-blue/30' : 'border-primary-200 dark:border-white/15'}`}
-             >
-              <button
-               type="button"
-               onClick={() => setBlogForm({ ...p })}
-               className="flex-1 min-w-0 text-right"
+            {(<>
+            <div className="flex flex-wrap gap-1.5 mb-1">
+              {[{ id: 'all', l: 'همه' }, { id: 'active', l: 'فعال' }, { id: 'archived', l: 'آرشیو شده‌ها' }].map((f) => (
+                <button key={f.id} type="button" onClick={() => setTaxFilter(f.id)}
+                  className={`text-xs px-3 py-1.5 rounded-full border font-medium ${taxFilter === f.id ? 'bg-primary-900 text-white border-primary-900 dark:bg-white dark:text-primary-900' : 'border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900'}`}>{f.l}</button>
+              ))}
+            </div>
+            {filterTaxBlogPosts(blogPosts).length > 0 && (
+              <label className="flex items-center gap-2 px-1 py-1 text-xs text-primary-600 dark:text-white/70 cursor-pointer select-none">
+                <input type="checkbox"
+                  checked={filterTaxBlogPosts(blogPosts).every((x) => taxSelectedIds.includes(String(x.id)))}
+                  onChange={() => {
+                    const ids = filterTaxBlogPosts(blogPosts).map((x) => String(x.id));
+                    setTaxSelectedIds(ids.every((id) => taxSelectedIds.includes(id)) ? [] : ids);
+                  }}
+                  className="rounded border-primary-300"
+                />
+                انتخاب همه در این فهرست ({filterTaxBlogPosts(blogPosts).length})
+              </label>
+            )}
+            {taxSelectedIds.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
+                <span className="text-xs font-medium text-red-800 dark:text-red-200">{taxSelectedIds.length} مورد انتخاب شده</span>
+                {taxFilter === 'archived' ? (
+                  <>
+                    <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogPost('restore')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">بازگردانی گروهی</button>
+                    <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogPost('purge')} className="text-xs px-3 py-1.5 rounded-full bg-red-600 text-white font-medium disabled:opacity-50">حذف دائم گروهی</button>
+                  </>
+                ) : (
+                  <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBlogPost('archive')} className="text-xs px-3 py-1.5 rounded-full bg-red-600 text-white font-medium disabled:opacity-50">آرشیو گروهی</button>
+                )}
+                <button type="button" onClick={() => setTaxSelectedIds([])} className="text-xs px-3 py-1.5 rounded-full border border-primary-300 dark:border-white/30">لغو انتخاب</button>
+              </div>
+            )}
+            {filterTaxBlogPosts(blogPosts).map((p) => (
+              <div
+                key={p.id}
+                className={`flex flex-wrap items-center gap-2 p-3 rounded-xl border bg-white dark:bg-primary-900 transition ${taxSelectedIds.includes(String(p.id)) ? 'border-apple-blue ring-1 ring-apple-blue/30' : (blogForm && blogForm.id === p.id ? 'border-apple-blue dark:border-[#4CCD99] ring-1 ring-apple-blue/30' : 'border-primary-200 dark:border-white/15')}`}
               >
-               <p className="text-sm font-bold text-primary-900 dark:text-white truncate">{p.title || 'بدون عنوان'}</p>
-               <p className="text-xs text-primary-500">
-                {p.cat || '—'} · {p.status === 'draft' ? 'پیش‌نویس' : p.status === 'scheduled' ? `زمان‌بندی‌شده${p.publishAtFa ? ' · ' + p.publishAtFa : ''}` : 'منتشر'} · {p.date || '—'}
-               </p>
-              </button>
-              <button type="button" onClick={() => setBlogForm({ ...p })} className="text-xs px-2.5 py-1 rounded-full border border-primary-200 dark:border-white/20 text-primary-800 dark:text-white">ویرایش</button>
-              <button type="button" onClick={() => { siteConfirm('حذف این مطلب؟').then(ok=>{ if(ok) { saveBlogPosts((blogPosts || []).filter(x => x.id !== p.id)); if (blogForm && blogForm.id === p.id) setBlogForm(null); } }); }} className="text-xs px-2.5 py-1 rounded-full border border-red-200 text-red-600">حذف</button>
-             </div>
+                <input type="checkbox" checked={taxSelectedIds.includes(String(p.id))} onChange={() => toggleTaxSelect(p.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب" />
+                <button type="button" onClick={() => setBlogForm({ ...p })} className="flex-1 min-w-0 text-right">
+                  <p className="text-sm font-bold text-primary-900 dark:text-white truncate">{p.title || 'بدون عنوان'}</p>
+                  <p className="text-xs text-primary-500">
+                    {p.cat || '—'} · {isTaxArchived(p) ? 'آرشیو' : p.status === 'draft' ? 'پیش‌نویس' : p.status === 'scheduled' ? `زمان‌بندی‌شده${p.publishAtFa ? ' · ' + p.publishAtFa : ''}` : 'منتشر'} · {p.date || '—'}
+                  </p>
+                </button>
+                <button type="button" onClick={() => setBlogForm({ ...p })} className="text-xs px-2.5 py-1 rounded-full border border-primary-200 dark:border-white/20 text-primary-800 dark:text-white">ویرایش</button>
+                {isTaxArchived(p) ? (
+                  <>
+                    <button type="button" onClick={() => { siteConfirm('بازگردانی این مطلب؟').then((ok) => { if (!ok) return; saveBlogPosts((blogPosts || []).map((x) => x.id === p.id ? { ...x, status: 'draft' } : x)); }); }} className="text-xs px-2.5 py-1 rounded-full border border-emerald-300 text-emerald-700">بازگردانی</button>
+                    <button type="button" onClick={() => { siteConfirm('حذف دائم این مطلب؟').then((ok) => { if (!ok) return; saveBlogPosts((blogPosts || []).filter((x) => x.id !== p.id)); if (blogForm && blogForm.id === p.id) setBlogForm(null); }); }} className="text-xs px-2.5 py-1 rounded-full border border-red-200 text-red-600">حذف دائم</button>
+                  </>
+                ) : (
+                  <button type="button" onClick={() => { siteConfirm('این مطلب به آرشیو منتقل شود؟').then((ok) => { if (!ok) return; saveBlogPosts((blogPosts || []).map((x) => x.id === p.id ? { ...x, status: 'archived' } : x)); if (blogForm && blogForm.id === p.id) setBlogForm(null); }); }} className="text-xs px-2.5 py-1 rounded-full border border-red-300 text-red-600">آرشیو</button>
+                )}
+              </div>
             ))}
+            {!filterTaxBlogPosts(blogPosts).length && (
+              <p className="text-sm text-primary-500 text-center py-10">{taxFilter === 'archived' ? 'آرشیو خالی است' : 'هنوز مطلبی ثبت نشده · از «افزودن بلاگ» مطلب جدید بنویسید'}</p>
+            )}
+          </>)}
            </div>
           </div>
          )}
