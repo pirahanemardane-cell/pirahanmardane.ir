@@ -5131,6 +5131,16 @@ html.dark .review-shop-badge {
 .panel-ui img { max-width: 100%; height: auto; }
 /* === end panel overflow fix === */
 
+
+
+/* متن لودر بین صفحات — دارک: تیره روی فیروزه‌ای */
+.pm-page-loader-text {
+  color: #ffffff !important;
+}
+html.dark .pm-page-loader-text {
+  color: #0A0A0A !important;
+}
+
 /* === MOBILE FOOTER TOUCH SCROLL FIX === */
 /* جلوگیری از گیر کردن لمس در انتهای فوتر روی موبایل */
 html, body {
@@ -5173,12 +5183,4 @@ footer .select-none {
   }
 }
 /* === END MOBILE FOOTER TOUCH SCROLL FIX === */
-
-/* متن لودر بین صفحات — دارک: تیره روی فیروزه‌ای */
-.pm-page-loader-text {
-  color: #ffffff !important;
-}
-html.dark .pm-page-loader-text {
-  color: #0A0A0A !important;
-}
 

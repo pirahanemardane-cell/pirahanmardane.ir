@@ -940,6 +940,40 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         };
       }, []);
 
+
+      // موبایل: اگر قفل اسکرول روی body مانده، با لمس/اسکرول آزاد شود
+      useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+        const unlockIfSafe = () => {
+          try {
+            if (document.body.classList.contains('site-modal-open')) return;
+            if (document.body.dataset.drawerScrollLock === '1') return;
+            if (document.body.dataset.panelLock) return;
+            if (document.body.style.overflow === 'hidden') {
+              document.body.style.overflow = '';
+              document.documentElement.style.overflow = '';
+              document.body.style.touchAction = '';
+              document.documentElement.style.touchAction = '';
+            }
+            if (document.body.style.position === 'fixed') {
+              document.body.style.position = '';
+              document.body.style.top = '';
+              document.body.style.width = '';
+            }
+          } catch (_) {}
+        };
+        const onScroll = () => unlockIfSafe();
+        const onTouch = () => unlockIfSafe();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('touchstart', onTouch, { passive: true });
+        window.addEventListener('touchend', onTouch, { passive: true });
+        return () => {
+          window.removeEventListener('scroll', onScroll);
+          window.removeEventListener('touchstart', onTouch);
+          window.removeEventListener('touchend', onTouch);
+        };
+      }, []);
+
       useEffect(() => {
         const closeMobileMenuOnWide = () => {
           if (typeof window === 'undefined') return;
