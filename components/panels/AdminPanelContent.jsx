@@ -901,8 +901,8 @@ export default function AdminPanelContent() {
            { id: 'taxonomy', label: 'رنگ / سایز / ویژگی', icon: 'grid' },
            { id: 'shipping', label: 'روش‌های ارسال', icon: 'truck' },
            // { id: 'content', label: 'محتوا و تأیید', icon: 'pencil' }, // موقتاً مخفی
-           { id: 'blog-categories', label: 'دسته‌بندی بلاگ', icon: 'pencil' },
-            { id: 'blog-tags', label: 'برچسب بلاگ', icon: 'pencil' },
+           { id: 'blog-categories', label: 'دسته‌بندی مقالات', icon: 'pencil' },
+            { id: 'blog-tags', label: 'برچسب مقالات', icon: 'pencil' },
            { id: 'blog-new', label: 'افزودن بلاگ', icon: 'pencil' },
            { id: 'blog', label: 'مطالب بلاگ', icon: 'pencil' },
            { id: 'campaigns', label: 'کمپین‌ها', icon: 'gift' },
@@ -3318,7 +3318,7 @@ export default function AdminPanelContent() {
 
         {!adminLoading && adminTab === 'blog-tags' && (
           <div className="space-y-6">
-<div className="pt-6 border-t border-primary-100 dark:border-white/10 space-y-3">
+<div className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
              <div>
               <h2 className="text-base font-bold text-primary-900 dark:text-white">برچسب مقالات مجله</h2>
