@@ -549,9 +549,50 @@ export default function HomeView() {
 
             {/* Top brands — فقط show_on_home از پنل ادمین */}
             {homeBrands.length > 0 && (
-            <section className="py-8 sm:py-12 bg-white dark:bg-primary-900 transition-colors">
+            
+      {/* برترین‌های پیراهن — محصول */}
+      {(() => {
+        const all = (typeof products !== 'undefined' && products) || (typeof catalogProducts !== 'undefined' && catalogProducts) || [];
+        const list = (Array.isArray(all) ? all : [])
+          .filter((p) => p && (p.status === 'active' || !p.status))
+          .map((p) => ({
+            ...p,
+            _sales: Number(p.soldRecent || p.sold_count || p.sales || p.sold || 0) || 0,
+            _feat: !!(p.featured_top || p.featuredTop),
+          }))
+          .sort((a, b) => {
+            if (a._feat !== b._feat) return a._feat ? -1 : 1;
+            return b._sales - a._sales;
+          })
+          .slice(0, 8);
+        if (!list.length) return null;
+        return (
+          <section className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
+            <h2 className="text-lg sm:text-xl font-black text-primary-900 dark:text-white mb-4 text-center">برترین‌های پیراهن</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {list.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => { try { if (typeof openPDP === 'function') openPDP(p); } catch (_) {} }}
+                  className="text-right rounded-2xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900 overflow-hidden shadow-sm hover:shadow-md transition"
+                >
+                  <div className="aspect-[3/4] bg-primary-50 dark:bg-primary-950">
+                    <img src={p.image || p.images?.[0] || p.thumb || ''} alt={p.name || ''} className="w-full h-full object-cover" loading="lazy" />
+                  </div>
+                  <div className="p-2.5">
+                    <p className="text-xs sm:text-sm font-bold text-primary-900 dark:text-white line-clamp-2">{p.name}</p>
+                    {p.priceText && <p className="text-xs text-primary-600 dark:text-white/70 mt-1">{p.priceText} تومان</p>}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+        );
+      })()}
+<section className="py-8 sm:py-12 bg-white dark:bg-primary-900 transition-colors">
               <div className="max-w-7xl mx-auto px-3 sm:px-4">
-                <h2 className="section-title text-right text-primary-900 dark:text-white mb-6 sm:mb-8 text-lg sm:text-xl">برترین‌های پیراهن</h2>
+                <h2 className="section-title text-right text-primary-900 dark:text-white mb-6 sm:mb-8 text-lg sm:text-xl">برترین برندها</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-5">
                   {homeBrands.slice(0, 12).map((item) => {
                     const img = item.logo_url || item.logoUrl || item.image || '';

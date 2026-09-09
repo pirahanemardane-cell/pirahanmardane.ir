@@ -43,7 +43,7 @@ export async function GET(_request, context) {
 
       const { data: variants } = await supabase
         .from('product_variants')
-        .select('id, color_name, color_hex, size, sku, stock, price_override, image_url')
+        .select('id, color_name, color_hex, size, sku, stock, price_override, image_url,featured_top')
         .eq('product_id', product.id)
 
       return NextResponse.json(

@@ -34,7 +34,7 @@ export async function GET(req) {
       if (ids.length) {
         const { data: prows } = await sb
           .from('products')
-          .select('id, seller_id, status')
+          .select('id, seller_id, status,featured_top')
           .in('seller_id', ids);
         for (const pr of prows || []) {
           countMap[pr.seller_id] = (countMap[pr.seller_id] || 0) + 1;

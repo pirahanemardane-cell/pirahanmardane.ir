@@ -31,7 +31,7 @@ export async function GET(request) {
       if (sids.length) {
         const { data: sellers } = await gate.admin
           .from('sellers')
-          .select('id, shop_name, slug, status')
+          .select('id, shop_name, slug, status,featured_top')
           .in('id', sids)
         const map = {}
         for (const s of sellers || []) map[s.id] = s
@@ -96,7 +96,7 @@ export async function PATCH(request) {
     if (needPayload) {
       const { data: cur } = await gate.admin
         .from('products')
-        .select('payload')
+        .select('payload,featured_top')
         .eq('id', id)
         .maybeSingle()
       const prev = (cur && cur.payload && typeof cur.payload === 'object') ? cur.payload : {}

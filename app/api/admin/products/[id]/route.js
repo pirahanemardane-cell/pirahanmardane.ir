@@ -159,7 +159,7 @@ export async function DELETE(request, { params }) {
 
     const { data, error } = await admin
       .from('products')
-      .update({ status: 'archived', updated_at: new Date().toISOString() })
+      .update({ ...(typeof featured_top === 'boolean' ? { featured_top } : {}), status: 'archived', updated_at: new Date().toISOString() })
       .eq('id', id)
       .select('id, name, title, slug, status, seller_id, updated_at')
       .maybeSingle()

@@ -9,13 +9,13 @@ async function promoteTopBrands(sb) {
   try {
     const { data: brands } = await sb
       .from('catalog_brands')
-      .select('id,name,active,show_on_home,home_opt_out')
+      .select('id,name,active,show_on_home,home_opt_out,featured_top')
       .eq('active', true);
     if (!brands || !brands.length) return;
 
     const { data: products } = await sb
       .from('products')
-      .select('brand_id,brand_name,brand,sold_count,status')
+      .select('brand_id,brand_name,brand,sold_count,status,featured_top')
       .eq('status', 'active')
       .limit(500);
     if (!products || !products.length) return;

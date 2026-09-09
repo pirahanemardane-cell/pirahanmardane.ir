@@ -1,0 +1,5036 @@
+
+/* Design tokens — light: charcoal+red | dark: mint+cyan+blue */
+:root {
+  --site-glass-blur: 24px;
+  --site-glass-saturate: 1.25;
+  --pm-bg: #f5f5f7;
+  --pm-bg-elevated: #ffffff;
+  --pm-fg: #252525;
+  --pm-fg-muted: #414141;
+  --pm-border: rgba(37, 37, 37, 0.16);
+  --pm-accent: #FF0000;
+  --pm-radius: 1rem;
+  --pm-font: "IRANYekanX", sans-serif;
+
+  --color-primary-50: #f5f5f7;
+  --color-primary-100: #e8e8ed;
+  --color-primary-200: #d2d2d7;
+  --color-primary-300: #b0b0b5;
+  --color-primary-400: #86868b;
+  --color-primary-500: #6e6e73;
+  --color-primary-600: #414141;
+  --color-primary-700: #333333;
+  --color-primary-800: #2a2a2a;
+  --color-primary-900: #252525;
+  --color-primary-950: #141414;
+  --color-apple-blue: #FF0000;
+  --color-apple-blue-link: #AF0404;
+  --color-apple-blue-dark: #AF0404;
+  --color-apple-blue-hover: #AF0404;
+  --color-grok-orange: #FF0000;
+  --color-grok-orange-hover: #AF0404;
+}
+html.dark {
+  --pm-bg: #0a0a0a;
+  --pm-bg-elevated: #1a1c20;
+  --pm-fg: #EBFFFB;
+  --pm-fg-muted: rgba(126, 250, 255, 0.72);
+  --pm-border: rgba(126, 250, 255, 0.18);
+  --pm-accent: #13ABC4;
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* ========== Dark mode — mint / cyan / blue palette ========== */
+.dark {
+  /* surfaces kept as background structure */
+  --color-primary-50: #1A1C20;
+  --color-primary-100: #191919;
+  --color-primary-200: #212327;
+  --color-primary-300: #363A3F;
+  --color-primary-400: #7D8187;
+  --color-primary-500: #9E9E9E;
+  --color-primary-600: #EBFFFB;
+  --color-primary-700: #212121;
+  --color-primary-800: #181818;
+  --color-primary-900: #0A0A0A;
+  --color-primary-950: #0A0A0A;
+
+  /* Accent — dark: cyan family */
+  --color-apple-blue: #13ABC4;
+  --color-apple-blue-link: #12ABC4;
+  --color-apple-blue-dark: #3161A3;
+  --color-apple-blue-hover: #3161A3;
+  --color-grok-orange: #13ABC4;
+  --color-grok-orange-hover: #7EFAFF;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes slideUp {
+  0% { opacity: 0; transform: translateY(28px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(0); }
+}
+@keyframes kenBurns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+
+/* IRANYekanX — local public/fonts */
+@font-face {
+  font-family: "IRANYekanX";
+  src: url("/fonts/IRANYekanX-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IRANYekanX";
+  src: url("/fonts/IRANYekanX-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IRANYekanX";
+  src: url("/fonts/IRANYekanX-ExtraBold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IRANYekanX";
+  src: url("/fonts/IRANYekanX-Heavy.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+:root {
+  --font-latin: "IRANYekanX", sans-serif;
+  --font-app: "IRANYekanX", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  font-family: var(--font-app) !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, button, input, textarea, select, option,
+span, p, a, li, label, td, th, h1, h2, h3, h4, h5, h6, div,
+code, kbd, samp, pre {
+  font-family: var(--font-app) !important;
+}
+
+/* متن انگلیسی هرگز invisible نشود: fill از color ارث ببرد */
+button, a, span, p, label, li, td, th {
+  -webkit-text-fill-color: currentColor;
+}
+
+
+/* ========== Unified type scale (sizes only) — headings 2x ========== */
+h1 { font-size: 2.5rem; line-height: 1.25; }
+h2 { font-size: 2.25rem; line-height: 1.3; }
+h3 { font-size: 2rem; line-height: 1.35; }
+h4 { font-size: 1.75rem; line-height: 1.4; }
+h5 { font-size: 1.5rem; line-height: 1.4; }
+h6 { font-size: 1.25rem; line-height: 1.45; }
+@media (min-width: 640px) {
+  h1 { font-size: 3rem; }
+  h2 { font-size: 2.5rem; }
+  h3 { font-size: 2rem; }
+  h4 { font-size: 1.75rem; }
+  h5 { font-size: 1.5rem; }
+  h6 { font-size: 1.25rem; }
+}
+h1,h2,h3,h4,h5,h6,.font-bold,.font-extrabold { font-weight: 700; }
+.font-medium { font-weight: 500; }
+.font-black, .font-extrablack { font-weight: 950; }
+.section-title {
+  font-weight: 950 !important;
+  letter-spacing: -0.01em;
+  /* mobile: keep longest section titles (e.g. پرفروش ترین محصولات) on one line */
+  font-size: 1.15rem !important;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+@media (min-width: 640px) {
+  .section-title { font-size: 1.5rem !important; white-space: normal; }
+}
+@media (min-width: 1024px) {
+  .section-title { font-size: 2rem !important; }
+}
+body {
+  font-size: 0.875rem !important;
+  line-height: 1.6;
+}
+input, select, textarea {
+  font-size: 16px !important;
+  /* لاتین + فارسی هر دو خوانا */
+  font-family: "IRANYekanX", sans-serif !important;
+  color: #1d1d1f !important;
+  -webkit-text-fill-color: #1d1d1f !important;
+  caret-color: #1d1d1f !important;
+}
+.dark input,
+.dark select,
+.dark textarea {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  caret-color: #FFFFFF !important;
+}
+input::placeholder,
+textarea::placeholder {
+  color: #9E9E9E !important;
+  -webkit-text-fill-color: #9E9E9E !important;
+  opacity: 1 !important;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgba(255, 255, 255, 0.45) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.45) !important;
+  opacity: 1 !important;
+}
+/* autofill Safari/Chrome نباید متن را سفید/نامرئی کند */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #1d1d1f !important;
+  caret-color: #1d1d1f !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+.dark input:-webkit-autofill,
+.dark textarea:-webkit-autofill,
+.dark select:-webkit-autofill {
+  -webkit-text-fill-color: #FFFFFF !important;
+  caret-color: #FFFFFF !important;
+}
+button {
+  font-size: 0.875rem;
+}
+.text-xs { font-size: 0.75rem; line-height: 1.4; }
+.text-sm { font-size: 0.875rem; line-height: 1.5; }
+.text-base { font-size: 1rem; }
+.text-\[9px\],
+.text-\[10px\],
+.text-\[11px\],
+.text-\[12px\],
+.text-\[13px\] {
+  font-size: 0.75rem !important;
+  line-height: 1.4;
+}
+
+/* ========== Icons — size + color ========== */
+.header-icon-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0;
+}
+@media (min-width: 640px) {
+  .header-icon-btn svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
+.product-card button svg,
+.product-card .absolute svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+.dark .header-icon-btn,
+.dark .header-icon-btn svg {
+  color: #FFFFFF !important;
+}
+.dark svg {
+  color: inherit;
+}
+
+/* ========== گوشه‌ها: بدون شکل کپسولی (pill) در سراسر سایت ==========
+   دکمه‌ها و بلوک‌های کلیک‌پذیر: گوشه نرم ۱۲px
+   فقط آیکون‌دکمه‌های مربعی کوچک دایره می‌مانند */
+button:not([class*="overflow-hidden"]):not(.product-card),
+[type="button"]:not([class*="overflow-hidden"]),
+[type="submit"],
+[type="reset"],
+[role="button"]:not([class*="overflow-hidden"]),
+a.bg-apple-blue,
+a[class*="bg-apple-blue"],
+.header-icon-btn,
+.seller-rank-tab,
+.size-chip,
+.seller-follow-off,
+.seller-follow-on,
+.hero-shop-btn {
+  border-radius: 12px !important;
+  corner-shape: initial !important;
+  -webkit-corner-shape: initial !important;
+}
+
+/* آیکون‌دکمه مربعی — دایره مجاز */
+button.rounded-full.w-8,
+button.rounded-full.w-9,
+button.rounded-full.w-10,
+button.rounded-full.w-11,
+button.w-8.h-8.rounded-full,
+button.w-9.h-9.rounded-full,
+button.w-10.h-10.rounded-full,
+button.w-11.h-11.rounded-full,
+.header-icon-btn.rounded-full {
+  border-radius: 9999px !important;
+}
+
+/* ردیف/کارت تمام‌عرض هرگز کپسول نشود */
+button.w-full,
+[role="button"].w-full,
+button[class*="w-full"] {
+  border-radius: 12px !important;
+}
+
+/* Primary filled (white in dark) */
+.dark button.bg-white,
+.dark a.bg-white,
+.dark .dark\:bg-white {
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+/* Orange/blue accent buttons — white text + white icons (light & dark) */
+.bg-apple-blue,
+button.bg-apple-blue,
+a.bg-apple-blue,
+.bg-\[\#13ABC4\],
+button.bg-\[\#13ABC4\],
+a.bg-\[\#13ABC4\],
+.dark .bg-apple-blue,
+.dark button.bg-apple-blue,
+.dark a.bg-apple-blue,
+.dark button.bg-\[\#13ABC4\],
+.dark a.bg-\[\#13ABC4\] {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Force SVG icons on blue/orange buttons to pure white — both themes */
+.bg-apple-blue svg,
+button.bg-apple-blue svg,
+a.bg-apple-blue svg,
+.bg-\[\#13ABC4\] svg,
+button.bg-\[\#13ABC4\] svg,
+a.bg-\[\#13ABC4\] svg,
+.dark .bg-apple-blue svg,
+.dark button.bg-apple-blue svg,
+.dark a.bg-apple-blue svg,
+.dark .bg-\[\#13ABC4\] svg,
+.dark button.bg-\[\#13ABC4\] svg,
+[class*="bg-apple-blue"] svg,
+[class*="bg-[#13ABC4]"] svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  fill: none !important;
+}
+/* Filled icons (heart etc.) need fill white when on blue bg */
+.bg-apple-blue svg [fill="currentColor"],
+.bg-apple-blue svg[fill="currentColor"],
+button.bg-apple-blue svg path[fill="currentColor"],
+.dark .bg-apple-blue svg path[fill="currentColor"] {
+  fill: #FFFFFF !important;
+}
+
+/* ========== Light / Dark surface + text color structure ========== */
+html {
+  background-color: #FDFDFD;
+  color: #252525;
+}
+.dark,
+.dark body,
+html.dark {
+  background-color: #0A0A0A !important;
+  color: #EBFFFB;
+}
+.dark body {
+  background-color: #0A0A0A !important;
+}
+
+/* Text hierarchy dark */
+.dark h1, .dark h2, .dark h3, .dark h4,
+.dark .text-primary-900,
+.dark .text-primary-800 {
+  color: #EBFFFB !important;
+}
+.dark .text-primary-600,
+.dark .text-primary-700 {
+  color: rgba(126, 250, 255, 0.85) !important;
+}
+.dark .text-primary-400,
+.dark .text-primary-500 {
+  color: #B0B4BA !important;
+}
+.dark .text-white {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Accent color utility */
+.bg-apple-blue { background-color: var(--color-apple-blue); }
+.text-apple-blue { color: var(--color-apple-blue); }
+.text-apple-link { color: var(--color-apple-blue-link); }
+a.text-apple-link:hover,
+button.text-apple-link:hover {
+  color: var(--color-apple-blue);
+  -webkit-text-fill-color: var(--color-apple-blue);
+}
+.border-apple-blue { border-color: var(--color-apple-blue); }
+
+/* Hide ALL horizontal scrollbars site-wide (scroll/drag still work) */
+* {
+  scrollbar-width: thin; /* default vertical stays usable */
+}
+.no-scrollbar,
+.carousel-track,
+.product-slider,
+.overflow-x-auto,
+[class*="overflow-x-auto"],
+[class*="carousel-track"] {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+.no-scrollbar::-webkit-scrollbar,
+.carousel-track::-webkit-scrollbar,
+.product-slider::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar,
+[class*="overflow-x-auto"]::-webkit-scrollbar,
+[class*="carousel-track"]::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  background: transparent !important;
+}
+/* WebKit: kill horizontal scrollbar tracks everywhere */
+::-webkit-scrollbar:horizontal {
+  height: 0 !important;
+  display: none !important;
+  background: transparent !important;
+}
+::-webkit-scrollbar-track:horizontal,
+::-webkit-scrollbar-thumb:horizontal {
+  display: none !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* Horizontal carousels — Digikala style on desktop + mobile (always scrollable row) */
+.product-slider,
+.carousel-track {
+  display: flex !important;
+  gap: 0.75rem;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+  padding-top: 4px;
+  padding-bottom: 4px; /* was 12px — no empty strip under track */
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.product-slider > *,
+.carousel-track > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Drag-to-scroll helpers */
+.overflow-x-auto,
+.carousel-track,
+.product-slider {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+}
+.cursor-grab { cursor: grab; }
+.cursor-grabbing,
+.cursor-grabbing * { cursor: grabbing !important; }
+.overflow-x-auto img,
+.product-slider img,
+.carousel-track img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========== Scroll Video Hero (from OARNURE-style) ========== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-scrub-video {
+    display: none !important;
+  }
+  .reduced-motion-fallback {
+    display: block !important;
+  }
+}
+
+.reduced-motion-fallback {
+  display: none;
+}
+
+.hero-video-section {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  /* Mobile gap fix: svh alone leaves a white strip when Safari chrome
+     shows/hides during ScrollTrigger pin. Prefer dynamic viewport + fill. */
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+  min-height: 100svh;
+  min-height: -webkit-fill-available;
+  overflow: hidden;
+  background: #0A0A0A;
+}
+
+/* GSAP pin-spacer: keep dark so no white flash under pinned hero on mobile */
+.pin-spacer {
+  background-color: #0A0A0A !important;
+  z-index: 0 !important;
+}
+header[data-home-hero-header="1"] {
+  isolation: isolate;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.hero-frame-img {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  z-index: 1;
+}
+
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.08) 0%,
+    transparent 25%,
+    transparent 70%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  z-index: 2;
+}
+
+/* Scroll cue — centered in hero, premium glass + mouse + chevrons */
+.hero-scroll-cue {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+.hero-scroll-cue.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.hero-scroll-cue-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 1rem 1.35rem 0.9rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(var(--site-glass-blur)) saturate(var(--site-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--site-glass-blur)) saturate(var(--site-glass-saturate));
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 0 40px rgba(255, 255, 255, 0.08);
+}
+
+/* Classic mouse outline */
+.hero-scroll-mouse {
+  width: 22px;
+  height: 34px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+}
+
+.hero-scroll-wheel {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  width: 3px;
+  height: 7px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  animation: hero-scroll-wheel 1.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+@keyframes hero-scroll-wheel {
+  0%   { transform: translateY(0); opacity: 1; }
+  60%  { transform: translateY(8px); opacity: 0.15; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.hero-scroll-cue-text {
+  font-family: "IRANYekanX", sans-serif !important;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: #ffffff;
+
+
+  direction: ltr;
+
+  -webkit-text-fill-color: #ffffff !important;
+  font-family: var(--font-app) !important;
+  font-size: 1.125rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(255, 0, 0, 0.3);
+}
+.hero-shop-btn:hover {
+  background: #e00000;
+  border-color: #e00000;
+  transform: scale(1.03);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 3px 12px rgba(255, 0, 0, 0.4);
+}
+.hero-shop-btn:active {
+  transform: scale(0.98);
+}
+html.dark .hero-shop-btn {
+  border-color: #13ABC4;
+  background: #13ABC4;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(19, 171, 196, 0.35);
+}
+html.dark .hero-shop-btn:hover {
+  background: #0f96ad;
+  border-color: #0f96ad;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 3px 12px rgba(19, 171, 196, 0.45);
+}
+@media (max-width: 768px) {
+  .hero-shop-btn {
+    padding: 0.45rem 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+/* Product card conversion helpers — badge colors unified below */
+.product-card-add-btn {
+  background: #0A84FF !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 700 !important;
+  border: 1px solid #0A84FF !important;
+  min-height: 2.25rem;
+}
+.product-card-add-btn:hover {
+  filter: brightness(1.06);
+}
+
+/* Sequential body texts on hero (same neon white) */
+.hero-body-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.hero-body-text {
+  margin: 0;
+  font-family: var(--font-app) !important;
+  font-weight: 950;
+  font-size: 40px; /* same range as title ~60–100px desktop */
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  color: #ffffff;
+
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: #1d1d1f !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  position: relative;
+  z-index: 2;
+}
+.product-seller-badge span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+.dark .product-seller-badge {
+  background: #ffffff !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+  border-color: #ffffff !important;
+}
+.dark .product-seller-badge span {
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+.product-seller-badge:hover {
+  opacity: 0.92;
+}
+.product-category-badge {
+  background: #E5E5EA !important;
+  color: #1d1d1f !important;
+  -webkit-text-fill-color: #1d1d1f !important;
+  border-color: #C7C7CC !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  position: relative;
+  z-index: 2;
+}
+.dark .product-category-badge {
+  background: #3A3A3C !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: rgba(255,255,255,0.3) !important;
+}
+
+
+/* Trust icons — visible circle bg + border in dark */
+.trust-icon-wrap {
+  background-color: #F3F4F6;
+  border: 1px solid #D1D5DB;
+}
+.dark .trust-icon-wrap {
+  background-color: #2A2C30 !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+}
+.dark .trust-icon-wrap svg {
+  color: #13ABC4 !important;
+  stroke: #13ABC4 !important;
+}
+
+
+/* Checkout stepper — readable in dark mode */
+.checkout-step-chip--todo {
+  background-color: #F3F4F6;
+  color: #1F2937 !important;
+  -webkit-text-fill-color: #1F2937 !important;
+  border-color: #D1D5DB;
+}
+.dark .checkout-step-chip--todo {
+  background-color: #2A2C30 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+.dark .checkout-step-chip--todo .checkout-step-num {
+  background-color: #3F3F46 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+}
+/* Completed checkout steps — green */
+.checkout-step-chip--done {
+  background-color: #D1FAE5 !important;
+  color: #065F46 !important;
+  -webkit-text-fill-color: #065F46 !important;
+  border-color: #34D399 !important;
+}
+.checkout-step-chip--done .checkout-step-num {
+  background-color: #10B981 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: #059669 !important;
+}
+.dark .checkout-step-chip--done {
+  background-color: #14532D !important;
+  color: #D1FAE5 !important;
+  -webkit-text-fill-color: #D1FAE5 !important;
+  border-color: #34D399 !important;
+}
+.dark .checkout-step-chip--done .checkout-step-num {
+  background-color: #10B981 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: #6EE7B7 !important;
+}
+.dark .checkout-step-chip--active {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* Compare page — light accent CLEARED (await new palette); dark kept below */
+.compare-add-all-btn,
+html:not(.dark) .compare-add-all-btn,
+html:not(.dark) button.compare-add-all-btn {
+  background-color: #FF0000 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: #FF0000 !important;
+}
+html:not(.dark) .compare-add-all-btn:hover,
+html:not(.dark) button.compare-add-all-btn:hover {
+  background-color: #AF0404 !important;
+  border-color: #AF0404 !important;
+}
+.dark .compare-add-all-btn,
+html.dark .compare-add-all-btn,
+html.dark button.compare-add-all-btn {
+  background-color: #FFFFFF !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+  border-color: #FFFFFF !important;
+}
+.dark .compare-add-all-btn:hover,
+html.dark button.compare-add-all-btn:hover {
+  background-color: #E8E8E8 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+
+/* Seller gifts secondary button — readable text in dark */
+.seller-gift-secondary-btn {
+  background-color: #FFFFFF !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  border: 1px solid #D1D5DB !important;
+}
+.seller-gift-secondary-btn svg {
+  color: #111827 !important;
+  stroke: #111827 !important;
+}
+.dark .seller-gift-secondary-btn {
+  background-color: #2A2C30 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+.dark .seller-gift-secondary-btn svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+.dark .seller-gift-secondary-btn:hover {
+  border-color: #13ABC4 !important;
+}
+
+
+/* SimpleEditor — heading hierarchy & colored text */
+.simple-editor-surface h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin: 0.6em 0 0.35em;
+}
+.simple-editor-surface h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0.55em 0 0.3em;
+}
+.simple-editor-surface h3 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0.5em 0 0.25em;
+}
+.simple-editor-surface h4 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0.45em 0 0.2em;
+}
+.simple-editor-surface h5,
+.simple-editor-surface h6 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0.4em 0 0.2em;
+}
+.simple-editor-surface p {
+  margin: 0.35em 0;
+}
+.simple-editor-surface blockquote {
+  border-right: 3px solid #13ABC4;
+  padding-right: 0.75rem;
+  margin: 0.5em 0;
+  opacity: 0.9;
+}
+.simple-editor-surface strong,
+.simple-editor-surface b {
+  font-weight: 700;
+}
+
+
+/* Drawer secondary actions — readable in dark */
+.drawer-secondary-btn {
+  background-color: #FFFFFF !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  border: 1px solid #D1D5DB !important;
+}
+.dark .drawer-secondary-btn {
+  background-color: #2A2C30 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+}
+.dark .drawer-secondary-btn:hover {
+  background-color: #35373C !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* Seller panel header actions */
+.seller-header-btn {
+  background-color: #FFFFFF !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  border: 1px solid #D1D5DB !important;
+}
+.seller-header-btn svg {
+  color: #111827 !important;
+  stroke: #111827 !important;
+}
+.dark .seller-header-btn {
+  background-color: #2A2C30 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+.dark .seller-header-btn svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+.seller-logout-btn {
+  background-color: transparent !important;
+  color: #DC2626 !important;
+  -webkit-text-fill-color: #DC2626 !important;
+  border: 1px solid #FCA5A5 !important;
+}
+.seller-logout-btn svg {
+  color: #DC2626 !important;
+  stroke: #DC2626 !important;
+}
+.dark .seller-logout-btn {
+  background-color: rgba(127, 29, 29, 0.25) !important;
+  color: #FCA5A5 !important;
+  -webkit-text-fill-color: #FCA5A5 !important;
+  border: 1px solid rgba(248, 113, 113, 0.7) !important;
+}
+.dark .seller-logout-btn svg {
+  color: #FCA5A5 !important;
+  stroke: #FCA5A5 !important;
+}
+
+
+/* Search dropdown trend / recent chips */
+.search-trend-chip {
+  background-color: #FFFFFF !important;
+  color: #1F2937 !important;
+  -webkit-text-fill-color: #1F2937 !important;
+  border: 1px solid #D1D5DB !important;
+}
+.dark .search-trend-chip {
+  background-color: #2A2C30 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+}
+.dark .search-trend-chip:hover {
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* PLP / filter chips — readable in dark */
+.plp-filter-chip {
+  background-color: #FFFFFF !important;
+  color: #1F2937 !important;
+  -webkit-text-fill-color: #1F2937 !important;
+  border-color: #D1D5DB !important;
+}
+.dark .plp-filter-chip {
+  background-color: #2A2C30 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+}
+.dark .plp-filter-chip:hover {
+  border-color: #13ABC4 !important;
+}
+
+/* Coupon input readability */
+.coupon-input {
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+.coupon-input::placeholder {
+  color: #6B7280 !important;
+  -webkit-text-fill-color: #6B7280 !important;
+  opacity: 1 !important;
+}
+.dark .coupon-input {
+  background-color: #1A1C20 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+.dark .coupon-input::placeholder {
+  color: rgba(255, 255, 255, 0.72) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.72) !important;
+  opacity: 1 !important;
+}
+
+/* PLP filter aside section titles */
+.dark .plp-filter-aside p.text-xs.font-bold,
+.dark .plp-mobile-filters p.text-xs.font-bold {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+
+/* Fallback: unselected chips inside filter panels */
+.dark .plp-filter-aside button.rounded-full:not([class*="bg-apple"]):not([class*="bg-sky"]):not([class*="bg-emerald"]):not([class*="bg-amber"]):not([class*="bg-primary-800"]):not([class*="bg-\[#13ABC4\]"]):not(.color-swatch),
+.dark .plp-mobile-filters button.rounded-full:not([class*="bg-apple"]):not([class*="bg-sky"]):not([class*="bg-emerald"]):not([class*="bg-amber"]) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* ========== Dark mode: outline / chip buttons readable ========== */
+html.dark button.border:not([class*="bg-apple-blue"]):not([class*="bg-[#13ABC4]"]):not([class*="bg-\[\#13ABC4\]"]):not(.bg-apple-blue):not([class*="bg-red-"]):not([class*="bg-emerald-"]):not([class*="bg-sky-"]):not([class*="bg-amber-"]):not([class*="bg-green-"]):not(.seller-rank-tab--active):not(.plp-chip--on):not(.search-filter-chip--on):not(.seller-banner-cta):not(.offer-view-all-btn):not(.plp-toggle-on):not(.color-swatch):not(.seller-follow-on),
+html.dark [type="button"].border:not([class*="bg-apple-blue"]):not([class*="bg-[#13ABC4]"]):not([class*="bg-\[\#13ABC4\]"]):not(.bg-apple-blue):not([class*="bg-red-"]):not([class*="bg-emerald-"]):not([class*="bg-sky-"]):not(.seller-banner-cta):not(.offer-view-all-btn):not(.plp-toggle-on):not(.color-swatch):not(.seller-follow-on),
+html.dark a.border.rounded-full:not([class*="bg-apple"]):not([class*="bg-[#13ABC4]"]):not(.seller-banner-cta):not(.offer-view-all-btn):not(.plp-toggle-on):not(.color-swatch):not(.seller-follow-on) {
+  background-color: #2A2C30 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+html.dark button.border:not([class*="bg-apple-blue"]):not([class*="bg-[#13ABC4]"]):not([class*="bg-\[\#13ABC4\]"]):not(.bg-apple-blue) svg,
+html.dark [type="button"].border:not([class*="bg-apple-blue"]):not([class*="bg-[#13ABC4]"]) svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Logout / danger outline stays red-readable */
+html.dark button.border-red-200,
+html.dark button.border-red-300,
+html.dark button.border-red-400,
+html.dark button[class*="border-red-"] {
+  background-color: rgba(127, 29, 29, 0.35) !important;
+  color: #FCA5A5 !important;
+  -webkit-text-fill-color: #FCA5A5 !important;
+  border-color: rgba(248, 113, 113, 0.75) !important;
+}
+html.dark button[class*="border-red-"] svg {
+  color: #FCA5A5 !important;
+  stroke: #FCA5A5 !important;
+}
+
+/* Filled primary accents stay white text */
+html.dark button.bg-apple-blue,
+html.dark button[class*="bg-[#13ABC4]"],
+html.dark button[class*="bg-\[\#13ABC4\]"],
+html.dark a.bg-apple-blue {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Inputs + placeholders globally in dark */
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+html.dark textarea,
+html.dark select {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  background-color: #1A1C20 !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.7) !important;
+  opacity: 1 !important;
+}
+
+/* Secondary full-width outline buttons (ادامه خرید etc.) */
+html.dark button.w-full.border:not(.bg-apple-blue):not([class*="bg-[#13ABC4]"]):not([class*="bg-\[\#13ABC4\]"]):not([class*="bg-red-"]) {
+  background-color: #2A2C30 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+
+/* Footer social icons — default + hover from site palette */
+.social-icon-btn,
+html:not(.dark) a.social-icon-btn {
+  background-color: #F3F4F6 !important;
+  color: #252525 !important;
+  -webkit-text-fill-color: #252525 !important;
+  border: 1px solid #D1D5DB !important;
+}
+.social-icon-btn svg,
+html:not(.dark) a.social-icon-btn svg {
+  color: #252525 !important;
+  stroke: #252525 !important;
+  fill: none !important;
+  opacity: 1 !important;
+}
+html.dark .social-icon-btn,
+html.dark a.social-icon-btn {
+  background-color: #2A2C30 !important;
+  color: #EBFFFB !important;
+  -webkit-text-fill-color: #EBFFFB !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+}
+html.dark .social-icon-btn svg,
+html.dark a.social-icon-btn svg {
+  color: #EBFFFB !important;
+  stroke: #EBFFFB !important;
+  fill: none !important;
+  opacity: 1 !important;
+}
+/* Light hover — red palette */
+html:not(.dark) .social-icon-btn:hover,
+html:not(.dark) .social-icon-btn:focus-visible,
+html:not(.dark) a.social-icon-btn:hover,
+html:not(.dark) a.social-icon-btn:focus-visible {
+  background-color: #FF0000 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: #FF0000 !important;
+}
+html:not(.dark) .social-icon-btn:hover svg,
+html:not(.dark) .social-icon-btn:focus-visible svg,
+html:not(.dark) a.social-icon-btn:hover svg,
+html:not(.dark) a.social-icon-btn:focus-visible svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  opacity: 1 !important;
+}
+/* Dark hover — teal palette (#13ABC4 / #3161A3) */
+html.dark .social-icon-btn:hover,
+html.dark .social-icon-btn:focus-visible,
+html.dark a.social-icon-btn:hover,
+html.dark a.social-icon-btn:focus-visible,
+.dark .social-icon-btn:hover,
+.dark .social-icon-btn:focus-visible,
+.dark a.social-icon-btn:hover,
+.dark a.social-icon-btn:focus-visible {
+  background-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: #13ABC4 !important;
+}
+html.dark .social-icon-btn:hover svg,
+html.dark .social-icon-btn:focus-visible svg,
+html.dark a.social-icon-btn:hover svg,
+html.dark a.social-icon-btn:focus-visible svg,
+.dark .social-icon-btn:hover svg,
+.dark .social-icon-btn:focus-visible svg,
+.dark a.social-icon-btn:hover svg,
+.dark a.social-icon-btn:focus-visible svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  fill: none !important;
+  opacity: 1 !important;
+}
+
+
+/* ========== Selected states — light mode colors CLEARED (await new palette) ========== */
+/* Dark mode selected states kept below */
+
+
+/* Product color swatches — visible borders in dark mode */
+.color-swatch {
+  border: 2px solid rgba(0, 0, 0, 0.2) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+html.dark .color-swatch {
+  border-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  outline: 1px solid rgba(255, 255, 255, 0.2);
+  outline-offset: 1px;
+}
+html.dark .color-swatch.color-swatch--active {
+  border-color: #13ABC4 !important;
+  box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.55);
+  outline-color: #13ABC4;
+}
+.color-swatch.color-swatch--active {
+  border-color: #FF0000 !important;
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.35);
+  outline-color: #FF0000;
+}
+
+
+/* Seller product form primary step button — readable text on white in dark */
+.seller-form-primary-btn {
+  background-color: #1F2937 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html.dark .seller-form-primary-btn,
+html.dark button.seller-form-primary-btn {
+  background-color: #FFFFFF !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+}
+html.dark .seller-form-primary-btn:hover {
+  background-color: #E8E8E8 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+
+/* Followed seller — pastel green (selected / on) */
+button.seller-follow-on,
+.seller-follow-on {
+  background-color: #D1FAE5 !important;
+  border-color: #34D399 !important;
+  color: #065F46 !important;
+  -webkit-text-fill-color: #065F46 !important;
+  font-weight: 600;
+}
+/* Light: force readable dark green text (never white on mint) */
+html:not(.dark) button.seller-follow-on,
+html:not(.dark) .seller-follow-on {
+  background-color: #D1FAE5 !important;
+  border-color: #34D399 !important;
+  color: #065F46 !important;
+  -webkit-text-fill-color: #065F46 !important;
+}
+html:not(.dark) button.seller-follow-on:hover,
+html:not(.dark) .seller-follow-on:hover {
+  background-color: #A7F3D0 !important;
+  border-color: #10B981 !important;
+  color: #064E3B !important;
+  -webkit-text-fill-color: #064E3B !important;
+}
+html.dark button.seller-follow-on,
+html.dark .seller-follow-on {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  box-shadow: 0 0 0 1px rgba(19, 171, 196, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ========== Dark mode: selected filter chips = pastel (global) ========== */
+html.dark .search-filter-chip--on,
+html.dark button.search-filter-chip--on,
+html.dark .plp-chip--on,
+html.dark button.plp-chip--on,
+html.dark .seller-rank-tab--active,
+html.dark button.seller-rank-tab--active,
+html.dark .size-chip--active,
+html.dark button.size-chip--active,
+html.dark button.plp-toggle-on,
+html.dark .plp-filter-chip--on {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  box-shadow: 0 0 0 1px rgba(19, 171, 196, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+html.dark button.plp-toggle-on--sky {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  box-shadow: 0 0 0 1px rgba(19, 171, 196, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+html.dark button.plp-toggle-on--emerald {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  box-shadow: 0 0 0 1px rgba(19, 171, 196, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+/* Tailwind dark:bg-[#13ABC4] on selected filter-like rounded chips */
+html.dark button.rounded-full.dark\:bg-\[\#13ABC4\],
+html.dark button[class*="dark:bg-[#13ABC4]"],
+html.dark button[class*="dark:bg-\[\#13ABC4\]"].rounded-full {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+/* Selected chips that use solid orange bg class in dark */
+html.dark button.bg-\[\#13ABC4\].rounded-full,
+html.dark button[class*="bg-[#13ABC4]"].rounded-full,
+html.dark button[class*="bg-\[\#13ABC4\]"].rounded-full:not(.seller-banner-cta):not(.offer-view-all-btn) {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* Mega menu panel — dark surface slightly above pure black page */
+html.dark .mega-menu-panel {
+  background-color: #1A1C20 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+
+/* Header icon buttons — readable background in dark */
+html.dark .header-icon-btn {
+  background-color: #2A2C30 !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  color: #FFFFFF !important;
+}
+html.dark .header-icon-btn svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+html.dark .header-icon-btn:hover {
+  background-color: #1A1C20 !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+
+/* PLP filter column — selected toggles/chips MUST use pastel in dark */
+html.dark aside.plp-filter-aside button.plp-toggle-on,
+html.dark aside.plp-filter-aside button.plp-toggle-on.plp-toggle-on--sky,
+html.dark aside.plp-filter-aside button.plp-toggle-on.plp-toggle-on--emerald,
+html.dark .plp-filter-aside button.plp-toggle-on,
+html.dark .plp-filter-aside button.plp-toggle-on--sky,
+html.dark .plp-filter-aside button.plp-toggle-on--emerald {
+  font-weight: 600 !important;
+}
+html.dark aside.plp-filter-aside button.plp-toggle-on--sky,
+html.dark .plp-filter-aside button.plp-toggle-on--sky {
+  background-color: #2C3D4F !important;
+  border-color: #A8CDEF !important;
+  color: #EAF5FF !important;
+  -webkit-text-fill-color: #EAF5FF !important;
+}
+html.dark aside.plp-filter-aside button.plp-toggle-on--emerald,
+html.dark .plp-filter-aside button.plp-toggle-on--emerald {
+  background-color: #2C4038 !important;
+  border-color: #A8E0C2 !important;
+  color: #E8FAF0 !important;
+  -webkit-text-fill-color: #E8FAF0 !important;
+}
+html.dark aside.plp-filter-aside button.plp-chip--on,
+html.dark .plp-filter-aside button.plp-chip--on,
+html.dark aside.plp-filter-aside button.search-filter-chip--on,
+html.dark .plp-filter-aside button[class*="bg-[#13ABC4]"],
+html.dark .plp-filter-aside button[class*="bg-\[\#13ABC4\]"] {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* شروع فروش CTA — light: red | dark: cyan */
+html:not(.dark) button.seller-banner-cta,
+html:not(.dark) button.seller-banner-cta.seller-banner-cta {
+  background-color: #FF0000 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border: 1px solid #FF0000 !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+html:not(.dark) button.seller-banner-cta:hover,
+html:not(.dark) button.seller-banner-cta:focus-visible {
+  background-color: #AF0404 !important;
+  border-color: #AF0404 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html.dark button.seller-banner-cta,
+html.dark button.seller-banner-cta.seller-banner-cta {
+  background-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border: 1px solid #13ABC4 !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+html.dark button.seller-banner-cta:hover,
+html.dark button.seller-banner-cta:focus-visible {
+  background-color: #3161A3 !important;
+  border-color: #3161A3 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html button.seller-banner-cta svg,
+html.dark button.seller-banner-cta svg,
+html button.seller-banner-cta:hover svg,
+html.dark button.seller-banner-cta:hover svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+
+/* Light mode text-link / accent colors CLEARED — await new palette */
+
+/* Dark mode: all text links mint */
+html.dark a:not([class*="bg-"]):not(.bg-apple-blue):not(.seller-banner-cta):not(.offer-view-all-btn):not(.social-icon-btn):not(.header-icon-btn) {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+}
+html.dark a:not([class*="bg-"]):not(.bg-apple-blue):not(.seller-banner-cta):not(.offer-view-all-btn):not(.social-icon-btn):hover {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+}
+/* Tailwind text-apple-blue links also mint in dark */
+html.dark .text-apple-blue,
+html.dark a.text-apple-blue,
+html.dark button.text-apple-blue {
+  color: #7EFAFF !important;
+  -webkit-text-fill-color: #7EFAFF !important;
+}
+html.dark a.text-apple-blue:hover,
+html.dark button.text-apple-blue:hover {
+  color: #EBFFFB !important;
+  -webkit-text-fill-color: #EBFFFB !important;
+}
+
+
+/* Force active state for موجودی و ارسال toggles */
+html.dark button.plp-toggle-on.plp-toggle-on--sky,
+html.dark .plp-filter-aside button.plp-toggle-on--sky {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html.dark button.plp-toggle-on.plp-toggle-on--emerald,
+html.dark .plp-filter-aside button.plp-toggle-on--emerald {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html:not(.dark) button.plp-toggle-on,
+html:not(.dark) button.plp-toggle-on.plp-toggle-on--sky,
+html:not(.dark) button.plp-toggle-on.plp-toggle-on--emerald {
+  background-color: #FF0000 !important;
+  border-color: #FF0000 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* Color swatches — ALWAYS show real color in dark (override chip rules) */
+html.dark .color-swatch,
+html.dark button.color-swatch,
+html.dark span.color-swatch {
+  background-color: var(--swatch-color, #888) !important;
+  background-image: none !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+html.dark .color-swatch.color-swatch--active,
+html.dark button.color-swatch.color-swatch--active {
+  border-color: #13ABC4 !important;
+  box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.5) !important;
+}
+
+
+/* SimpleEditor text-color palette — real colors in dark */
+html.dark button.se-text-color-swatch,
+html.dark .se-text-color-swatch {
+  background-color: var(--swatch-color, #888) !important;
+  background-image: none !important;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25) !important;
+}
+
+
+/* Wishlist toolbar selects — readable chevron (light + dark) */
+.wishlist-toolbar-select {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  padding-inline-start: 1.65rem !important;
+  padding-inline-end: 0.55rem !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M7 10l5 5 5-5' stroke='%231d1d1f' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: left 0.45rem center !important;
+  background-size: 14px 14px !important;
+}
+html.dark .wishlist-toolbar-select,
+.dark .wishlist-toolbar-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M7 10l5 5 5-5' stroke='%23FFFFFF' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: left 0.45rem center !important;
+  background-size: 14px 14px !important;
+}
+
+
+/* Footer titles — اسلات ارتفاع‌ثابت تا در موبایل کاملاً همسطح شوند */
+.footer-title-slot {
+  height: 28px;
+  min-height: 28px;
+  max-height: 28px;
+  margin: 0 0 12px 0;
+  padding: 0;
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+.footer-col-title {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  line-height: 1.25 !important;
+  display: block !important;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (min-width: 640px) {
+  .footer-title-slot {
+    height: 30px;
+    min-height: 30px;
+    max-height: 30px;
+    margin-bottom: 16px;
+  }
+}
+
+/* موبایل: تیتر «دسترسی سریع» کمی بالاتر تا دقیق هم‌تراز «خدمات مشتریان» */
+@media (max-width: 767px) {
+  footer .grid > div:nth-child(1) .footer-title-slot {
+    transform: translateY(-3px);
+  }
+  footer .grid > div:nth-child(1) > .footer-col-title {
+    transform: translateY(-3px);
+  }
+}
+
+
+/* content-visibility باعث پرش در اسکرول لیست می‌شد */
+.product-card {
+  content-visibility: visible;
+  contain: layout style;
+}
+.product-card img {
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  width: 100%;
+}
+
+
+/* Site form/step modals — always above sticky header (z-100) & drawers; 90% width
+   Applies to buyer / seller / admin form dialogs (not side drawers). */
+.site-modal-root {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 20000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.75rem !important;
+  isolation: isolate;
+  pointer-events: auto !important;
+}
+@media (max-width: 639px) {
+  .site-modal-root {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+}
+.site-modal-root > .site-modal-backdrop {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 0 !important;
+}
+/* Panel width: mobile full, desktop 40% of viewport — گوشه گرد (backdrop دست نخورد) */
+.site-modal-panel,
+.site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
+  position: relative !important;
+  z-index: 1 !important;
+  width: min(80vw, 960px) !important;
+  max-width: min(80vw, 960px) !important;
+  max-height: 90dvh !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 1rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box !important;
+}
+@media (max-width: 639px) {
+  .site-modal-panel,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]) {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92dvh !important;
+    border-radius: 1rem 1rem 0 0 !important;
+  }
+}
+/* Explicit quick-add force (same 40%) */
+.site-modal-root > .quick-add-popup,
+div.quick-add-popup {
+  width: min(80vw, 960px) !important;
+  max-width: min(80vw, 960px) !important;
+}
+@media (max-width: 639px) {
+  .site-modal-root > .quick-add-popup,
+  div.quick-add-popup {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Normalize non-standard backdrops inside site-modal-root */
+.site-modal-root > div.absolute.inset-0,
+.site-modal-root > .absolute.inset-0 {
+  position: absolute !important;
+  inset: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  z-index: 0 !important;
+}
+
+/* Admin login modal — گوشه‌های گرد (بقیه مودال‌ها دست نخورند) */
+.site-modal-panel.admin-auth-modal {
+  border-radius: 1rem !important;
+}
+@media (max-width: 639px) {
+  .site-modal-panel.admin-auth-modal {
+    border-radius: 1rem 1rem 0 0 !important;
+  }
+}
+
+/* Product card image badges — equal width, flush right */
+.product-card-badges {
+  width: max-content;
+  max-width: 45%;
+  align-items: stretch;
+}
+.product-card-badge {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+
+/* === frontend-ux-polish === */
+/* No global color/font/hero changes — layout, a11y, motion, overflow only */
+
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body.site-modal-open {
+  overflow: hidden !important;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+/* Prevent accidental horizontal scroll on mobile */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Keyboard focus — uses existing brand token only */
+:focus-visible {
+  outline: 2px solid var(--color-apple-blue, #0071e3);
+  outline-offset: 2px;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Broken image fallback surface */
+img.img-broken {
+  object-fit: contain;
+  background: color-mix(in srgb, var(--color-primary-100, #f5f5f7) 80%, transparent);
+  opacity: 0.7;
+}
+
+/* Touch-friendly icon controls on coarse pointers */
+@media (pointer: coarse) {
+  .header-icon-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Sticky tab strips in panels stay usable under header */
+.admin-panel-shell .admin-tabs-strip,
+.seller-panel-shell .seller-tabs-strip {
+  position: sticky;
+  top: var(--site-header-h, 6.75rem);
+  z-index: 30;
+  backdrop-filter: blur(var(--site-glass-blur));
+  -webkit-backdrop-filter: blur(var(--site-glass-blur));
+}
+
+/* Site modal panel keyboard scroll */
+.site-modal-panel {
+  overscroll-behavior: contain;
+}
+
+/* Safe area for fixed bottom bars */
+.safe-area-pb {
+  padding-bottom: max(0.625rem, env(safe-area-inset-bottom, 0px));
+}
+
+/* Selection readability */
+::selection {
+  background: color-mix(in srgb, var(--color-apple-blue, #0071e3) 35%, transparent);
+}
+
+/* Reduce layout shift for lazy product images */
+.product-card img {
+  background-color: var(--color-primary-50, #fafafa);
+}
+
+
+/* Light mode links & accent text */
+html:not(.dark) .text-apple-blue,
+html:not(.dark) a.text-apple-blue,
+html:not(.dark) button.text-apple-blue {
+  color: #AF0404 !important;
+  -webkit-text-fill-color: #AF0404 !important;
+}
+html:not(.dark) a.text-apple-blue:hover,
+html:not(.dark) button.text-apple-blue:hover {
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+}
+html:not(.dark) a:not([class*="bg-"]):not(.social-icon-btn) {
+  /* keep default link behavior readable */
+}
+
+
+/* ===== FORCE: product / site popups = 40% viewport on desktop ===== */
+@media (min-width: 640px) {
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+  .site-modal-root > .quick-add-popup,
+  .quick-add-popup,
+  .site-modal-panel {
+    width: min(80vw, 960px) !important;
+    max-width: min(80vw, 960px) !important;
+  }
+}
+@media (max-width: 639px) {
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+  .site-modal-root > .quick-add-popup,
+  .quick-add-popup,
+  .site-modal-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+
+/* Light mode: selected filter chips = red accent */
+html:not(.dark) .search-filter-chip--on,
+html:not(.dark) button.search-filter-chip--on,
+html:not(.dark) .plp-chip--on,
+html:not(.dark) button.plp-chip--on,
+html:not(.dark) .size-chip--active,
+html:not(.dark) button.size-chip--active,
+html:not(.dark) .plp-filter-chip--on,
+html:not(.dark) button.plp-filter-chip--on {
+  background-color: #FF0000 !important;
+  border-color: #FF0000 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html:not(.dark) button[class*="bg-[#FF0000]"].rounded-full,
+html:not(.dark) button[class*="bg-\[#FF0000\]"].rounded-full {
+  background-color: #FF0000 !important;
+  border-color: #FF0000 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* Light mode FORCE: all active PLP filters/toggles = red */
+html:not(.dark) button.plp-toggle-on,
+html:not(.dark) button.plp-toggle-on--sky,
+html:not(.dark) button.plp-toggle-on--emerald,
+html:not(.dark) .plp-toggle-on,
+html:not(.dark) button.plp-chip--on,
+html:not(.dark) .plp-chip--on,
+html:not(.dark) button.search-filter-chip--on,
+html:not(.dark) .search-filter-chip--on,
+html:not(.dark) button.plp-filter-chip--on,
+html:not(.dark) .plp-filter-chip--on {
+  background-color: #FF0000 !important;
+  border-color: #FF0000 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+/* removed: do not force emerald/sky semantic buttons to brand red */
+
+
+
+/* text-apple-link — same as site link accent */
+html:not(.dark) .text-apple-link,
+html:not(.dark) a.text-apple-link,
+html:not(.dark) button.text-apple-link {
+  color: #AF0404 !important;
+  -webkit-text-fill-color: #AF0404 !important;
+}
+html:not(.dark) a.text-apple-link:hover,
+html:not(.dark) button.text-apple-link:hover {
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+}
+html.dark .text-apple-link,
+html.dark a.text-apple-link,
+html.dark button.text-apple-link {
+  color: #7EFAFF !important;
+  -webkit-text-fill-color: #7EFAFF !important;
+}
+html.dark a.text-apple-link:hover,
+html.dark button.text-apple-link:hover {
+  color: #EBFFFB !important;
+  -webkit-text-fill-color: #EBFFFB !important;
+}
+
+/* ========== Light mode HOVER only (selected/active states unchanged) ==========
+   پالت روشن: #FF0000 اکسنت · #AF0404 هاور · متن روی پس‌زمینه قرمز = سفید */
+html:not(.dark) .bg-apple-blue:hover,
+html:not(.dark) button.bg-apple-blue:hover,
+html:not(.dark) a.bg-apple-blue:hover,
+html:not(.dark) [class*="bg-apple-blue"]:hover,
+html:not(.dark) button[class*="bg-[#FF0000]"]:hover,
+html:not(.dark) a[class*="bg-[#FF0000]"]:hover,
+html:not(.dark) button[class*="bg-\[#FF0000\]"]:hover,
+html:not(.dark) [class*="bg-[#AF0404]"]:hover,
+html:not(.dark) button[class*="bg-[#AF0404]"]:hover {
+  background-color: #AF0404 !important;
+  border-color: #AF0404 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+/* متن و آیکون داخل المان‌های هاور قرمز — سفید (خوانایی) */
+html:not(.dark) .bg-apple-blue:hover *,
+html:not(.dark) button.bg-apple-blue:hover *,
+html:not(.dark) a.bg-apple-blue:hover *,
+html:not(.dark) [class*="bg-apple-blue"]:hover *,
+html:not(.dark) button[class*="bg-[#FF0000]"]:hover *,
+html:not(.dark) a[class*="bg-[#FF0000]"]:hover *,
+html:not(.dark) [class*="bg-[#AF0404]"]:hover * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html:not(.dark) .bg-apple-blue:hover svg,
+html:not(.dark) button.bg-apple-blue:hover svg,
+html:not(.dark) a.bg-apple-blue:hover svg,
+html:not(.dark) [class*="bg-apple-blue"]:hover svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* لینک‌ها: پایه #AF0404 · هاور #FF0000 */
+html:not(.dark) a.text-apple-link:hover,
+html:not(.dark) button.text-apple-link:hover,
+html:not(.dark) .text-apple-link:hover {
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+}
+html:not(.dark) a.text-apple-blue:hover,
+html:not(.dark) button.text-apple-blue:hover,
+html:not(.dark) .text-apple-blue:hover {
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+}
+
+/* بوردر اکسنت روی هاور */
+html:not(.dark) .border-apple-blue:hover,
+html:not(.dark) button.border-apple-blue:hover {
+  border-color: #AF0404 !important;
+}
+
+/* تب / چیپ غیرفعال که هاور می‌گیرد (نه حالت selected) */
+html:not(.dark) button.plp-filter-chip:hover:not(.plp-chip--on):not(.search-filter-chip--on):not(.plp-toggle-on),
+html:not(.dark) .plp-filter-chip:hover:not(.plp-chip--on):not(.search-filter-chip--on):not(.plp-toggle-on) {
+  border-color: #AF0404 !important;
+  color: #AF0404 !important;
+  -webkit-text-fill-color: #AF0404 !important;
+}
+
+/* دکمه‌های outline با هاور ملایم قرمز */
+html:not(.dark) button.rounded-full.border:hover:not(.bg-apple-blue):not([class*="bg-[#FF0000]"]):not([class*="bg-\[#FF0000\]"]):not(.plp-chip--on):not(.search-filter-chip--on):not(.plp-toggle-on):not(.seller-banner-cta):not(.seller-follow-on):not(.seller-follow-off):not([class*="bg-red-"]) {
+  border-color: #AF0404 !important;
+}
+
+/* product-add و opacity-hover روی دکمه قرمز */
+html:not(.dark) .product-add-btn:hover,
+html:not(.dark) .product-add-btn:focus-visible {
+  background-color: #AF0404 !important;
+  border-color: #AF0404 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  opacity: 1 !important;
+}
+
+/* Solid red selected / filled — white text on children too (light) */
+html:not(.dark) .bg-apple-blue:not([class*="bg-apple-blue/"]),
+html:not(.dark) button.bg-apple-blue,
+html:not(.dark) a.bg-apple-blue,
+html:not(.dark) .plp-chip--on,
+html:not(.dark) .search-filter-chip--on,
+html:not(.dark) .size-chip--active,
+html:not(.dark) .plp-toggle-on,
+html:not(.dark) .seller-rank-tab--active,
+html:not(.dark) .seller-banner-cta,
+html:not(.dark) button[class*="bg-[#FF0000]"]:not([class*="/"]),
+html:not(.dark) a[class*="bg-[#FF0000]"]:not([class*="/"]) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html:not(.dark) .bg-apple-blue:not([class*="bg-apple-blue/"]) *,
+html:not(.dark) button.bg-apple-blue *,
+html:not(.dark) a.bg-apple-blue *,
+html:not(.dark) .plp-chip--on *,
+html:not(.dark) .search-filter-chip--on *,
+html:not(.dark) .size-chip--active *,
+html:not(.dark) .plp-toggle-on *,
+html:not(.dark) .seller-rank-tab--active *,
+html:not(.dark) .seller-banner-cta * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* جلوگیری از hover:opacity کم‌رنگ شدن روی دکمه‌های اکسنت روشن */
+html:not(.dark) button.bg-apple-blue:hover,
+html:not(.dark) a.bg-apple-blue:hover {
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* ========== DARK: force accent palette on selected buttons/tabs/chips ========== */
+html.dark button.seller-rank-tab--active,
+html.dark .seller-rank-tab--active,
+html.dark button.plp-chip--on,
+html.dark .plp-chip--on,
+html.dark button.search-filter-chip--on,
+html.dark .search-filter-chip--on,
+html.dark button.size-chip--active,
+html.dark .size-chip--active,
+html.dark button.plp-toggle-on,
+html.dark .plp-toggle-on,
+html.dark button.plp-filter-chip--on,
+html.dark .plp-filter-chip--on,
+html.dark button.seller-follow-on,
+html.dark .seller-follow-on,
+html.dark button[class*="bg-[#13ABC4]"],
+html.dark button[class*="bg-\[#13ABC4\]"],
+html.dark button[class*="dark:bg-[#13ABC4]"],
+html.dark button[class*="dark:bg-\[#13ABC4\]"],
+html.dark button[class*="border-[#13ABC4]"],
+html.dark a[class*="bg-[#13ABC4]"] {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  box-shadow: none !important;
+}
+/* Dark hover on selected / primary CTAs */
+html.dark button.seller-rank-tab--active:hover,
+html.dark button.plp-chip--on:hover,
+html.dark button.search-filter-chip--on:hover,
+html.dark button.plp-toggle-on:hover,
+html.dark button.seller-follow-on:hover,
+html.dark button.bg-apple-blue:hover,
+html.dark a.bg-apple-blue:hover,
+html.dark button[class*="bg-[#13ABC4]"]:hover {
+  background-color: #3161A3 !important;
+  border-color: #3161A3 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+/* Category / mega selected — no leftover red/brown */
+html.dark .mega-cat-item--active,
+html.dark button.mega-cat-item--active,
+html.dark .cat-tile--active,
+html.dark button.cat-tile--active {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+}
+html.dark .mega-cat-item--active .mega-cat-icon,
+html.dark .cat-tile--active .cat-tile-icon,
+html.dark button.mega-cat-item--active span.rounded-full,
+html.dark button.cat-tile--active span.rounded-full {
+  border-color: #13ABC4 !important;
+  color: #13ABC4 !important;
+}
+/* Outline selected (ring style) in dark → cyan */
+html.dark button.ring-2[class*="ring-apple"],
+html.dark button[class*="ring-[#FF0000]"],
+html.dark button[class*="ring-\[#FF0000\]"],
+html.dark button[class*="border-[#FF0000]"],
+html.dark button[class*="border-\[#FF0000\]"] {
+  --tw-ring-color: rgba(19, 171, 196, 0.45) !important;
+  border-color: #13ABC4 !important;
+}
+
+/* ========== Dark mode HOVER only (selected/active states unchanged) ==========
+   پالت دارک: #13ABC4 اکسنت · #3161A3 هاور · #7EFAFF لینک · #EBFFFB متن */
+/* دکمه‌های اکسنت / CTA */
+html.dark .bg-apple-blue:hover,
+html.dark button.bg-apple-blue:hover,
+html.dark a.bg-apple-blue:hover,
+html.dark [class*="bg-apple-blue"]:hover,
+html.dark button[class*="bg-[#13ABC4]"]:hover,
+html.dark a[class*="bg-[#13ABC4]"]:hover,
+html.dark button[class*="bg-\[#13ABC4\]"]:hover {
+  background-color: #3161A3 !important;
+  border-color: #3161A3 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* لینک‌ها: پایه #7EFAFF · هاور #EBFFFB */
+html.dark a.text-apple-link:hover,
+html.dark button.text-apple-link:hover,
+html.dark .text-apple-link:hover {
+  color: #EBFFFB !important;
+  -webkit-text-fill-color: #EBFFFB !important;
+}
+html.dark a.text-apple-blue:hover,
+html.dark button.text-apple-blue:hover,
+html.dark .text-apple-blue:hover {
+  color: #EBFFFB !important;
+  -webkit-text-fill-color: #EBFFFB !important;
+}
+
+/* بوردر اکسنت روی هاور */
+html.dark .border-apple-blue:hover,
+html.dark button.border-apple-blue:hover {
+  border-color: #3161A3 !important;
+}
+
+/* چیپ/تب غیرفعال — فقط هاور (نه selected) */
+html.dark button.plp-filter-chip:hover:not(.plp-chip--on):not(.search-filter-chip--on):not(.plp-toggle-on):not(.seller-rank-tab--active):not(.seller-follow-on),
+html.dark .plp-filter-chip:hover:not(.plp-chip--on):not(.search-filter-chip--on):not(.plp-toggle-on):not(.seller-rank-tab--active) {
+  border-color: #7EFAFF !important;
+  color: #7EFAFF !important;
+  -webkit-text-fill-color: #7EFAFF !important;
+}
+
+/* تب‌های غیرفعال ردیف (مثل مرتب‌سازی فروشندگان) */
+html.dark button.seller-rank-tab:hover:not(.seller-rank-tab--active) {
+  border-color: #7EFAFF !important;
+  color: #7EFAFF !important;
+  -webkit-text-fill-color: #7EFAFF !important;
+}
+
+/* هاور روی حالت انتخاب‌شده — عمیق‌تر #3161A3 (رنگ انتخاب #13ABC4 سر جایش) */
+html.dark button.seller-rank-tab--active:hover,
+html.dark button.plp-chip--on:hover,
+html.dark button.search-filter-chip--on:hover,
+html.dark button.size-chip--active:hover,
+html.dark button.plp-toggle-on:hover,
+html.dark button.seller-follow-on:hover,
+html.dark .seller-follow-on:hover {
+  background-color: #3161A3 !important;
+  border-color: #3161A3 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* product-add در دارک */
+html.dark .product-add-btn:hover,
+html.dark .product-add-btn:focus-visible {
+  background-color: #3161A3 !important;
+  border-color: #3161A3 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  opacity: 1 !important;
+}
+
+/* seller banner CTA hover already set; reinforce */
+html.dark button.seller-banner-cta:hover,
+html.dark .seller-banner-cta:hover {
+  background-color: #3161A3 !important;
+  border-color: #3161A3 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* اعلان‌ها (پروفایل): در هاور روشن روی پس‌زمینه قرمز — آیکون و متن سفید و واضح */
+html:not(.dark) .notif-item--unread:hover {
+  background-color: #AF0404 !important;
+  border-color: #AF0404 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html:not(.dark) .notif-item--unread:hover p,
+html:not(.dark) .notif-item--unread:hover .notif-item-action,
+html:not(.dark) .notif-item--unread:hover .notif-item-action svg {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  stroke: currentColor !important;
+}
+html:not(.dark) .notif-item--unread:hover .notif-item-action {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+html:not(.dark) .notif-item--unread:hover .notif-item-action:hover {
+  background-color: rgba(255, 255, 255, 0.28) !important;
+}
+
+
+/* === FOLLOW-ON LIGHT READABILITY (final) === */
+html:not(.dark) button.seller-follow-on,
+html:not(.dark) .seller-follow-on,
+button.seller-follow-on {
+  background-color: #D1FAE5 !important;
+  background-image: none !important;
+  border: 1.5px solid #059669 !important;
+  color: #064E3B !important;
+  -webkit-text-fill-color: #064E3B !important;
+  opacity: 1 !important;
+  filter: none !important;
+  font-weight: 700 !important;
+}
+html:not(.dark) button.seller-follow-on:hover,
+html:not(.dark) .seller-follow-on:hover,
+button.seller-follow-on:hover {
+  background-color: #A7F3D0 !important;
+  border-color: #047857 !important;
+  color: #022C22 !important;
+  -webkit-text-fill-color: #022C22 !important;
+  opacity: 1 !important;
+}
+/* Dark keeps teal + white */
+html.dark button.seller-follow-on,
+html.dark .seller-follow-on {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* === LIGHT: on red hover/selected backgrounds, text ALWAYS white (beats text-apple-blue:hover) === */
+html:not(.dark) [class*="bg-apple-blue"]:hover,
+html:not(.dark) [class*="bg-apple-blue"]:hover *,
+html:not(.dark) [class*="bg-apple-blue"]:hover .text-apple-blue,
+html:not(.dark) [class*="bg-apple-blue"]:hover .text-apple-link,
+html:not(.dark) .bg-apple-blue:hover,
+html:not(.dark) .bg-apple-blue:hover *,
+html:not(.dark) .bg-apple-blue:hover .text-apple-blue,
+html:not(.dark) button.bg-apple-blue:hover,
+html:not(.dark) button.bg-apple-blue:hover *,
+html:not(.dark) a.bg-apple-blue:hover,
+html:not(.dark) a.bg-apple-blue:hover *,
+html:not(.dark) [class*="bg-[#FF0000]"]:hover,
+html:not(.dark) [class*="bg-[#FF0000]"]:hover *:not(.offer-view-all-btn):not(.offer-view-all-btn *):not(.offer-time-sub),
+html:not(.dark) [class*="bg-[#AF0404]"]:hover,
+html:not(.dark) [class*="bg-[#AF0404]"]:hover *:not(.offer-view-all-btn):not(.offer-view-all-btn *):not(.offer-time-sub),
+html:not(.dark) .plp-chip--on,
+html:not(.dark) .plp-chip--on *,
+html:not(.dark) .search-filter-chip--on,
+html:not(.dark) .search-filter-chip--on *,
+html:not(.dark) .size-chip--active,
+html:not(.dark) .plp-toggle-on,
+html:not(.dark) button[class*="bg-[#FF0000]"],
+html:not(.dark) button[class*="bg-[#FF0000]"] * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+/* Element that is itself text-apple-blue + red bg on hover */
+html:not(.dark) .text-apple-blue[class*="bg-apple-blue"]:hover,
+html:not(.dark) .text-apple-blue.bg-apple-blue:hover,
+html:not(.dark) span.text-apple-blue[class*="bg-"]:hover {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+/* product-card price stays dark on white; if parent forces red hover, go white */
+html:not(.dark) [class*="bg-apple-blue"]:hover .product-card-price,
+html:not(.dark) .bg-apple-blue:hover .product-card-price {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* shipping-dynamic-note readability — never inherit white/red from parent hover */
+html:not(.dark) .shipping-dynamic-note,
+html:not(.dark) [class*="bg-apple-blue"] .shipping-dynamic-note,
+html:not(.dark) [class*="bg-apple-blue"]:hover .shipping-dynamic-note,
+html:not(.dark) label:hover .shipping-dynamic-note {
+  color: #78350F !important;
+  -webkit-text-fill-color: #78350F !important;
+  background-color: #FFFBEB !important;
+  border: 1px solid #F59E0B !important;
+  opacity: 1 !important;
+}
+html.dark .shipping-dynamic-note {
+  color: #FDE68A !important;
+  -webkit-text-fill-color: #FDE68A !important;
+  background-color: rgba(120, 53, 15, 0.35) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+}
+
+/* Ticket status badge readable on red hover (light) */
+html:not(.dark) [class*="bg-apple-blue"]:hover .ticket-status-badge,
+html:not(.dark) .bg-apple-blue\/5:hover .ticket-status-badge,
+html:not(.dark) button[class*="bg-apple-blue"]:hover .ticket-status-badge {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+html:not(.dark) [class*="bg-apple-blue"]:hover .text-primary-500,
+html:not(.dark) [class*="bg-apple-blue"]:hover .text-primary-400,
+html:not(.dark) button[class*="bg-apple-blue"]:hover .text-primary-500,
+html:not(.dark) button[class*="bg-apple-blue"]:hover .text-primary-400 {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  opacity: 0.9;
+}
+
+
+/* === FINAL: dark mode social icon hover (palette) === */
+html.dark a.social-icon-btn:hover,
+html.dark a.social-icon-btn:focus-visible,
+.dark a.social-icon-btn:hover,
+.dark a.social-icon-btn:focus-visible {
+  background-color: #13ABC4 !important;
+  background-image: none !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html.dark a.social-icon-btn:hover svg,
+html.dark a.social-icon-btn:focus-visible svg,
+.dark a.social-icon-btn:hover svg,
+.dark a.social-icon-btn:focus-visible svg,
+html.dark a.social-icon-btn:hover svg *,
+.dark a.social-icon-btn:hover svg * {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  opacity: 1 !important;
+}
+
+
+/* Wishlist: two columns — products (right) | blogs (left) */
+.wishlist-two-col {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+  gap: 1.5rem !important;
+  width: 100% !important;
+}
+.wishlist-two-col > .wishlist-col-products,
+.wishlist-two-col > .wishlist-col-blogs {
+  flex: 1 1 300px !important;
+  min-width: 260px !important;
+  max-width: 100% !important;
+}
+
+
+/* Breadcrumb همیشه زیر هدر fixed — نه زیر آن */
+nav[aria-label="breadcrumb"] {
+  position: relative;
+  z-index: 10;
+  background-color: inherit;
+}
+html.dark nav[aria-label="breadcrumb"] {
+  background-color: rgb(var(--color-primary-950, 10 10 12) / 1);
+}
+nav[aria-label="breadcrumb"] {
+  background-color: #fafafa;
+}
+html.dark nav[aria-label="breadcrumb"] {
+  background-color: #0a0a0c;
+}
+header[data-home-hero-header="1"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 100 !important;
+}
+
+
+/* Shop mega menu — light mode category icons (unselected must be dark/readable) */
+html:not(.dark) .shop-menu-cat-icon {
+  color: #1A1A1A !important;
+}
+html:not(.dark) .shop-menu-cat-icon svg {
+  color: #1A1A1A !important;
+  stroke: #1A1A1A !important;
+  opacity: 1 !important;
+}
+html:not(.dark) .shop-menu-cat-icon:hover,
+html:not(.dark) .group:hover .shop-menu-cat-icon {
+  color: #FFFFFF !important;
+}
+html:not(.dark) .group:hover .shop-menu-cat-icon svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+
+/* === CHECKOUT STICKY HARD (final override) === */
+.checkout-page-shell,
+.checkout-page-shell *,
+.cart-page-shell,
+.cart-page-shell * {
+  /* do not set overflow:hidden on ancestors of sticky */
+}
+.checkout-page-shell,
+.cart-page-shell {
+  overflow: visible !important;
+}
+@media (min-width: 1024px) {
+  /* cart: sticky on the aside itself */
+  aside.order-summary-col:not(.checkout-summary-col) {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: calc(var(--site-header-h, 6.75rem) + 0.75rem) !important;
+    align-self: flex-start !important;
+    z-index: 40 !important;
+  }
+  /* checkout: sticky is on the inner panel; column stretches full height */
+  aside.checkout-summary-col.order-summary-col {
+    position: relative !important;
+    align-self: stretch !important;
+    top: auto !important;
+    z-index: 30 !important;
+  }
+}
+
+
+/* === CHECKOUT LAYOUT STICKY DEFINITIVE === */
+.checkout-page-shell,
+.checkout-page-shell > div {
+  overflow: visible !important;
+}
+.checkout-grid-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5rem;
+  width: 100%;
+}
+.checkout-main-col {
+  width: 100%;
+  min-width: 0;
+}
+.checkout-summary-col {
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .checkout-grid-layout {
+    display: grid !important;
+    /* در RTL: ستون ۱ از راست شروع می‌شود → فرم راست، خلاصه چپ (مثل سبد) */
+    grid-template-columns: minmax(0, 1fr) 320px !important;
+    align-items: stretch !important;
+    column-gap: 1.5rem !important;
+    row-gap: 0 !important;
+    width: 100% !important;
+  }
+  /* خلاصه = ستون چپ (col 2 در RTL) — ستون کشیده تا sticky تا قبل فوتر جا داشته باشد */
+  .checkout-grid-layout > .checkout-summary-col {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 320px !important;
+    max-width: 320px !important;
+    position: relative !important;
+    align-self: stretch !important;
+    z-index: 30 !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow: visible !important;
+  }
+  .checkout-grid-layout > .checkout-main-col {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+  /* پنل خلاصه سفارش: چسبان عمودی داخل ستون چپ تا قبل فوتر */
+  .checkout-summary-panel {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: calc(var(--site-header-h, 6.75rem) + 0.75rem) !important;
+    width: 100% !important;
+    overflow: visible !important;
+    z-index: 30 !important;
+  }
+}
+
+
+/* === header auth overflow guard === */
+/* فقط نوار ورود هدر — جلوگیری از بیرون‌زدن وقتی لاگین است */
+header .header-auth,
+header [data-header-auth],
+.site-header .header-auth {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+header .header-auth a,
+header .header-auth button,
+header [data-header-auth] a,
+header [data-header-auth] button {
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+}
+@media (min-width: 640px) {
+  header .header-auth a,
+  header .header-auth button,
+  header [data-header-auth] a,
+  header [data-header-auth] button {
+    font-size: 0.8125rem;
+  }
+}
+
+
+/* === header-auth-btn overflow === */
+.header-auth-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  max-width: 100%;
+}
+header, .site-header {
+  overflow-x: clip;
+}
+
+
+/* Spacer under fixed header — JS sets exact height; fallback keeps content clear of header */
+.site-header-spacer {
+  height: var(--site-header-h, 6.75rem);
+  min-height: var(--site-header-h, 6.75rem);
+  flex-shrink: 0;
+  pointer-events: none;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: 100%;
+}
+.admin-panel-shell .admin-tabs-strip,
+.seller-panel-shell .seller-tabs-strip {
+  top: var(--site-header-h, 6.75rem) !important;
+}
+.plp-shell,
+.pdp-shell,
+.cart-page-shell,
+.checkout-page-shell,
+.sellers-list-shell,
+.static-page-shell {
+  position: relative;
+  z-index: 1;
+}
+/* پنل‌ها: بدون z-index پایین — وگرنه site-modal زیر هدر (z-100) می‌ماند */
+.seller-panel-shell,
+.admin-panel-shell,
+.profile-page-shell,
+.profile-panel-shell {
+  position: relative;
+  z-index: auto;
+}
+nav[aria-label="breadcrumb"] {
+  position: relative;
+  z-index: 10;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+/* Keyboard / focus: no black gap under mobile chrome */
+html { background-color: var(--pm-bg, #f5f5f7); }
+html.dark { background-color: var(--pm-bg, #0a0a0a); }
+body {
+  background-color: var(--pm-bg, #f5f5f7);
+  min-height: 100%;
+  min-height: 100dvh;
+}
+html.dark body { background-color: var(--pm-bg, #0a0a0a); }
+input, textarea, select { scroll-margin: 0; }
+
+
+/* ========== C1–C3: UI polish — colors, mobile, panels ========== */
+
+/* C2: prevent iOS zoom on focus (inputs < 16px zoom the page) */
+@media (max-width: 639px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* C2: larger touch targets for primary actions on coarse pointers */
+@media (pointer: coarse) {
+  button.rounded-xl,
+  button.rounded-2xl,
+  a.rounded-xl,
+  a.rounded-2xl {
+    min-height: 44px;
+  }
+  .header-icon-btn,
+  .site-header button,
+  .site-header a[aria-label] {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* C2: safe areas for fixed header / bottom UI */
+.site-header,
+header.site-header {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.safe-area-pt {
+  padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+}
+.safe-area-inset {
+  padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
+  padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+}
+
+/* C3: panel tab strips scroll cleanly on mobile */
+/* لبه محو روی موبایل — ۲ تب کامل + لبه تب سوم */
+@media (max-width: 767px) {
+  .profile-tabs-outer {
+    overflow: hidden;
+  }
+  .profile-tabs-strip {
+    /* بدون mask قوی روی خود دکمه‌ها — overlay جدا در JSX */
+    scroll-padding-inline: 0.5rem;
+  }
+  .profile-tabs-fade {
+    z-index: 2;
+  }
+}
+
+
+.admin-panel-shell .admin-tabs-strip,
+.seller-panel-shell .seller-tabs-strip,
+.profile-tabs-strip {
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c4c4c4 transparent;
+}
+html.dark .admin-panel-shell .admin-tabs-strip,
+html.dark .seller-panel-shell .seller-tabs-strip,
+html.dark .profile-tabs-strip {
+  scrollbar-color: #666 transparent;
+}
+/* موبایل افقی: اسکرول‌بار نازک بماند؛ دسکتاپ عمودی دیده شود */
+@media (min-width: 768px) {
+  .admin-panel-shell .admin-tabs-strip,
+  .seller-panel-shell .seller-tabs-strip {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: calc(100vh - 7rem);
+  }
+}
+.admin-panel-shell .admin-tabs-strip::-webkit-scrollbar,
+.seller-panel-shell .seller-tabs-strip::-webkit-scrollbar,
+.profile-tabs-strip::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+.admin-panel-shell .admin-tabs-strip::-webkit-scrollbar-thumb,
+.seller-panel-shell .seller-tabs-strip::-webkit-scrollbar-thumb,
+.profile-tabs-strip::-webkit-scrollbar-thumb {
+  background: #c4c4c4;
+  border-radius: 8px;
+}
+html.dark .admin-panel-shell .admin-tabs-strip::-webkit-scrollbar-thumb,
+html.dark .seller-panel-shell .seller-tabs-strip::-webkit-scrollbar-thumb {
+  background: #666;
+}
+
+/* C3: پنل‌ها هم‌عرض خریدار — بدون padding اضافه روی شِل (فقط panel-content-wrap: px-2) */
+@media (max-width: 639px) {
+  .admin-panel-shell,
+  .seller-panel-shell,
+  .profile-page-shell,
+  .profile-panel-shell {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* C1: consistent accent on primary CTA in light mode */
+html:not(.dark) .btn-primary,
+html:not(.dark) button.btn-primary {
+  background-color: #FF0000;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+}
+html:not(.dark) .btn-primary:hover,
+html:not(.dark) button.btn-primary:hover {
+  background-color: #AF0404;
+}
+html.dark .btn-primary,
+html.dark button.btn-primary {
+  background-color: #13ABC4;
+  color: #0a0a0a;
+  -webkit-text-fill-color: #0a0a0a;
+}
+
+/* C2: product cards — avoid overflow clipping on mobile carousels */
+@media (max-width: 639px) {
+  .product-card {
+    contain-intrinsic-size: 280px 360px;
+  }
+}
+
+/* C3: modal bottom sheet handle affordance on mobile */
+@media (max-width: 639px) {
+  .site-modal-panel::before,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"])::before {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 0.25rem;
+    margin: 0.5rem auto 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--pm-fg, #252525) 22%, transparent);
+    flex-shrink: 0;
+  }
+  html.dark .site-modal-panel::before,
+  html.dark .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"])::before {
+    background: color-mix(in srgb, var(--pm-fg, #EBFFFB) 28%, transparent);
+  }
+}
+
+
+img[src*="PM-CHK-GRN-004.webp"],
+img[src*="PM-DEN-LBL-007.webp"],
+img[src*="PM-FLN-BRN-009.webp"],
+img[src*="PM-LIN-BLU-002.webp"],
+img[src*="PM-OXF-GRY-008.webp"],
+img[src*="PM-OXF-WHT-001.webp"],
+img[src*="PM-PRT-NVY-010.webp"],
+img[src*="PM-SLK-BLK-005.webp"],
+img[src*="PM-STR-RED-006.webp"],
+img[src*="PM-TWL-NVY-003.webp"],
+img[src*="blue_t_bg.webp"],
+img[src*="blue_w_bg.webp"],
+img[src*="frame-001.jpg"],
+img[src*="frame-002.jpg"],
+img[src*="frame-003.jpg"],
+img[src*="frame-004.jpg"],
+img[src*="frame-005.jpg"],
+img[src*="frame-006.jpg"],
+img[src*="frame-007.jpg"],
+img[src*="frame-008.jpg"],
+img[src*="frame-009.jpg"],
+img[src*="frame-010.jpg"],
+img[src*="frame-011.jpg"],
+img[src*="frame-012.jpg"],
+img[src*="frame-013.jpg"],
+img[src*="frame-014.jpg"],
+img[src*="frame-015.jpg"],
+img[src*="frame-016.jpg"],
+img[src*="frame-017.jpg"],
+img[src*="frame-018.jpg"],
+img[src*="frame-019.jpg"],
+img[src*="frame-020.jpg"],
+img[src*="frame-021.jpg"],
+img[src*="frame-022.jpg"],
+img[src*="frame-023.jpg"],
+img[src*="frame-024.jpg"],
+img[src*="frame-025.jpg"],
+img[src*="frame-026.jpg"],
+img[src*="frame-027.jpg"],
+img[src*="frame-028.jpg"],
+img[src*="frame-029.jpg"],
+img[src*="frame-030.jpg"],
+img[src*="frame-031.jpg"],
+img[src*="frame-032.jpg"],
+img[src*="frame-033.jpg"],
+img[src*="frame-034.jpg"],
+img[src*="frame-035.jpg"],
+img[src*="frame-036.jpg"],
+img[src*="frame-037.jpg"],
+img[src*="frame-038.jpg"],
+img[src*="frame-039.jpg"],
+img[src*="frame-040.jpg"],
+img[src*="frame-041.jpg"],
+img[src*="frame-042.jpg"],
+img[src*="frame-043.jpg"],
+img[src*="frame-044.jpg"],
+img[src*="frame-045.jpg"],
+img[src*="frame-046.jpg"],
+img[src*="frame-047.jpg"],
+img[src*="frame-048.jpg"],
+img[src*="frame-049.jpg"],
+img[src*="frame-050.jpg"],
+img[src*="frame-051.jpg"],
+img[src*="frame-052.jpg"],
+img[src*="frame-053.jpg"],
+img[src*="frame-054.jpg"],
+img[src*="frame-055.jpg"],
+img[src*="frame-056.jpg"],
+img[src*="frame-057.jpg"],
+img[src*="frame-058.jpg"],
+img[src*="frame-059.jpg"],
+img[src*="frame-060.jpg"],
+img[src*="frame-061.jpg"],
+img[src*="frame-062.jpg"],
+img[src*="frame-063.jpg"],
+img[src*="frame-064.jpg"],
+img[src*="frame-065.jpg"],
+img[src*="frame-066.jpg"],
+img[src*="frame-067.jpg"],
+img[src*="frame-068.jpg"],
+img[src*="frame-069.jpg"],
+img[src*="frame-070.jpg"],
+img[src*="hero-poster.jpg"],
+img[src*="hero-poster.webp"],
+img[src*="red_t_bg.webp"],
+img[src*="red_w_bg.webp"] {
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+}
+
+html.dark img[src*="PM-CHK-GRN-004.webp"],
+img[src*="PM-DEN-LBL-007.webp"],
+img[src*="PM-FLN-BRN-009.webp"],
+img[src*="PM-LIN-BLU-002.webp"],
+img[src*="PM-OXF-GRY-008.webp"],
+img[src*="PM-OXF-WHT-001.webp"],
+img[src*="PM-PRT-NVY-010.webp"],
+img[src*="PM-SLK-BLK-005.webp"],
+img[src*="PM-STR-RED-006.webp"],
+img[src*="PM-TWL-NVY-003.webp"],
+img[src*="blue_t_bg.webp"],
+img[src*="blue_w_bg.webp"],
+img[src*="frame-001.jpg"],
+img[src*="frame-002.jpg"],
+img[src*="frame-003.jpg"],
+img[src*="frame-004.jpg"],
+img[src*="frame-005.jpg"],
+img[src*="frame-006.jpg"],
+img[src*="frame-007.jpg"],
+img[src*="frame-008.jpg"],
+img[src*="frame-009.jpg"],
+img[src*="frame-010.jpg"],
+img[src*="frame-011.jpg"],
+img[src*="frame-012.jpg"],
+img[src*="frame-013.jpg"],
+img[src*="frame-014.jpg"],
+img[src*="frame-015.jpg"],
+img[src*="frame-016.jpg"],
+img[src*="frame-017.jpg"],
+img[src*="frame-018.jpg"],
+img[src*="frame-019.jpg"],
+img[src*="frame-020.jpg"],
+img[src*="frame-021.jpg"],
+img[src*="frame-022.jpg"],
+img[src*="frame-023.jpg"],
+img[src*="frame-024.jpg"],
+img[src*="frame-025.jpg"],
+img[src*="frame-026.jpg"],
+img[src*="frame-027.jpg"],
+img[src*="frame-028.jpg"],
+img[src*="frame-029.jpg"],
+img[src*="frame-030.jpg"],
+img[src*="frame-031.jpg"],
+img[src*="frame-032.jpg"],
+img[src*="frame-033.jpg"],
+img[src*="frame-034.jpg"],
+img[src*="frame-035.jpg"],
+img[src*="frame-036.jpg"],
+img[src*="frame-037.jpg"],
+img[src*="frame-038.jpg"],
+img[src*="frame-039.jpg"],
+img[src*="frame-040.jpg"],
+img[src*="frame-041.jpg"],
+img[src*="frame-042.jpg"],
+img[src*="frame-043.jpg"],
+img[src*="frame-044.jpg"],
+img[src*="frame-045.jpg"],
+img[src*="frame-046.jpg"],
+img[src*="frame-047.jpg"],
+img[src*="frame-048.jpg"],
+img[src*="frame-049.jpg"],
+img[src*="frame-050.jpg"],
+img[src*="frame-051.jpg"],
+img[src*="frame-052.jpg"],
+img[src*="frame-053.jpg"],
+img[src*="frame-054.jpg"],
+img[src*="frame-055.jpg"],
+img[src*="frame-056.jpg"],
+img[src*="frame-057.jpg"],
+img[src*="frame-058.jpg"],
+img[src*="frame-059.jpg"],
+img[src*="frame-060.jpg"],
+img[src*="frame-061.jpg"],
+img[src*="frame-062.jpg"],
+img[src*="frame-063.jpg"],
+img[src*="frame-064.jpg"],
+img[src*="frame-065.jpg"],
+img[src*="frame-066.jpg"],
+img[src*="frame-067.jpg"],
+img[src*="frame-068.jpg"],
+img[src*="frame-069.jpg"],
+img[src*="frame-070.jpg"],
+img[src*="hero-poster.jpg"],
+img[src*="hero-poster.webp"],
+img[src*="red_t_bg.webp"],
+img[src*="red_w_bg.webp"],
+nav img,
+.dark img[src*="PM-CHK-GRN-004.webp"],
+img[src*="PM-DEN-LBL-007.webp"],
+img[src*="PM-FLN-BRN-009.webp"],
+img[src*="PM-LIN-BLU-002.webp"],
+img[src*="PM-OXF-GRY-008.webp"],
+img[src*="PM-OXF-WHT-001.webp"],
+img[src*="PM-PRT-NVY-010.webp"],
+img[src*="PM-SLK-BLK-005.webp"],
+img[src*="PM-STR-RED-006.webp"],
+img[src*="PM-TWL-NVY-003.webp"],
+img[src*="blue_t_bg.webp"],
+img[src*="blue_w_bg.webp"],
+img[src*="frame-001.jpg"],
+img[src*="frame-002.jpg"],
+img[src*="frame-003.jpg"],
+img[src*="frame-004.jpg"],
+img[src*="frame-005.jpg"],
+img[src*="frame-006.jpg"],
+img[src*="frame-007.jpg"],
+img[src*="frame-008.jpg"],
+img[src*="frame-009.jpg"],
+img[src*="frame-010.jpg"],
+img[src*="frame-011.jpg"],
+img[src*="frame-012.jpg"],
+img[src*="frame-013.jpg"],
+img[src*="frame-014.jpg"],
+img[src*="frame-015.jpg"],
+img[src*="frame-016.jpg"],
+img[src*="frame-017.jpg"],
+img[src*="frame-018.jpg"],
+img[src*="frame-019.jpg"],
+img[src*="frame-020.jpg"],
+img[src*="frame-021.jpg"],
+img[src*="frame-022.jpg"],
+img[src*="frame-023.jpg"],
+img[src*="frame-024.jpg"],
+img[src*="frame-025.jpg"],
+img[src*="frame-026.jpg"],
+img[src*="frame-027.jpg"],
+img[src*="frame-028.jpg"],
+img[src*="frame-029.jpg"],
+img[src*="frame-030.jpg"],
+img[src*="frame-031.jpg"],
+img[src*="frame-032.jpg"],
+img[src*="frame-033.jpg"],
+img[src*="frame-034.jpg"],
+img[src*="frame-035.jpg"],
+img[src*="frame-036.jpg"],
+img[src*="frame-037.jpg"],
+img[src*="frame-038.jpg"],
+img[src*="frame-039.jpg"],
+img[src*="frame-040.jpg"],
+img[src*="frame-041.jpg"],
+img[src*="frame-042.jpg"],
+img[src*="frame-043.jpg"],
+img[src*="frame-044.jpg"],
+img[src*="frame-045.jpg"],
+img[src*="frame-046.jpg"],
+img[src*="frame-047.jpg"],
+img[src*="frame-048.jpg"],
+img[src*="frame-049.jpg"],
+img[src*="frame-050.jpg"],
+img[src*="frame-051.jpg"],
+img[src*="frame-052.jpg"],
+img[src*="frame-053.jpg"],
+img[src*="frame-054.jpg"],
+img[src*="frame-055.jpg"],
+img[src*="frame-056.jpg"],
+img[src*="frame-057.jpg"],
+img[src*="frame-058.jpg"],
+img[src*="frame-059.jpg"],
+img[src*="frame-060.jpg"],
+img[src*="frame-061.jpg"],
+img[src*="frame-062.jpg"],
+img[src*="frame-063.jpg"],
+img[src*="frame-064.jpg"],
+img[src*="frame-065.jpg"],
+img[src*="frame-066.jpg"],
+img[src*="frame-067.jpg"],
+img[src*="frame-068.jpg"],
+img[src*="frame-069.jpg"],
+img[src*="frame-070.jpg"],
+img[src*="hero-poster.jpg"],
+img[src*="hero-poster.webp"],
+img[src*="red_t_bg.webp"],
+img[src*="red_w_bg.webp"] {
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+}
+
+/* === BODY CTA BUTTON EFFECT === */
+.btn-cta {
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #171717 !important;
+  background-image: none !important;
+  border: none !important;
+  border-radius: 0.6rem !important;
+  position: relative !important;
+  cursor: pointer;
+  overflow: hidden !important;
+  isolation: isolate;
+  transition: transform 0.15s ease;
+  z-index: 0;
+}
+.btn-cta::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #FF0000;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 1.5s ease;
+  z-index: -1;
+  pointer-events: none;
+}
+.btn-cta:hover::before {
+  transform: translate(-50%, -50%) scale(14);
+}
+.btn-cta:active {
+  transform: scale(0.98);
+}
+html.dark .btn-cta {
+  background-color: #0a0a0a !important;
+}
+html.dark .btn-cta::before {
+  background-color: #13ABC4;
+}
+/* === END BODY CTA BUTTON EFFECT === */
+
+
+.hero-weight-thin {
+  font-weight: 400 !important;
+}
+.hero-accent-word {
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+  font-weight: 950 !important;
+}
+html.dark .hero-accent-word {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+}
+
+
+/* پیراهن مردانه — رنگ + سایه سفید دور */
+.hero-accent-word {
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+  font-weight: 950 !important;
+
+}
+html.dark .hero-accent-word {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+
+}
+
+.hero-weight-thin {
+  font-weight: 400 !important;
+}
+
+/* فقط کلمه «تنوع» — کادر گرد */
+.hero-body-line1 {
+  display: inline-block !important;
+  background-color: #FF0000;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 950 !important;
+  border-radius: 0.5rem;
+  padding: 0.12em 0.45em;
+  line-height: 1.25;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+html.dark .hero-body-line1 {
+  background-color: #13ABC4;
+}
+
+.hero-body-line2 {
+  display: inline !important;
+}
+.hero-body-space {
+  display: inline !important;
+}
+
+/* SCROLL cue — no border/shadow/chip */
+.hero-scroll-cue,
+.hero-scroll-cue *,
+.hero-scroll-cue-text,
+.hero-scroll-cue-label,
+.hero-scroll-wheel,
+.hero-scroll-chevron {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  filter: none !important;
+}
+.hero-scroll-cue-text {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  border-radius: 0 !important;
+}
+
+
+/* لایت: بدون کادر، فقط قرمز */
+html:not(.dark) .hero-accent-word {
+  background: transparent !important;
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+}
+/* پیراهن مردانه — رنگ + سایه سفید دور */
+.hero-accent-word {
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+  font-weight: 950 !important;
+
+}
+html.dark .hero-accent-word {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+
+}
+
+.hero-weight-thin {
+  font-weight: 400 !important;
+}
+
+/* فقط کلمه «تنوع» — کادر گرد */
+.hero-body-line1 {
+  display: inline-block !important;
+  background-color: #FF0000;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 950 !important;
+  border-radius: 0.5rem;
+  padding: 0.12em 0.45em;
+  line-height: 1.25;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+html.dark .hero-body-line1 {
+  background-color: #13ABC4;
+}
+
+.hero-body-line2 {
+  display: inline !important;
+}
+.hero-body-space {
+  display: inline !important;
+}
+
+/* Hero body1/body2 layout, accent glow, تنوع badge */
+.hero-body1-line1 {
+  display: block !important;
+  white-space: normal;
+}
+.hero-body1-line2,
+.hero-accent-word {
+  display: block !important;
+}
+.hero-body1-space {
+  display: none !important;
+}
+
+/* پیراهن مردانه — رنگ + سایه سفید دور */
+.hero-accent-word {
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+  font-weight: 950 !important;
+
+}
+html.dark .hero-accent-word {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+
+}
+
+.hero-weight-thin {
+  font-weight: 400 !important;
+}
+
+/* فقط کلمه «تنوع» — کادر گرد */
+.hero-body-line1 {
+  display: inline-block !important;
+  background-color: #FF0000;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 950 !important;
+  border-radius: 0.5rem;
+  padding: 0.12em 0.45em;
+  line-height: 1.25;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+html.dark .hero-body-line1 {
+  background-color: #13ABC4;
+}
+
+.hero-body-line2 {
+  display: inline !important;
+}
+.hero-body-space {
+  display: inline !important;
+}
+/* accent پیراهن مردانه — بدون بردر؛ کادر سفید گرد فقط دارک */
+.hero-accent-word {
+  display: inline-block !important;
+  border-radius: 0.5rem;
+  padding: 0.08em 0.4em;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  background: transparent !important;
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+  font-weight: 950 !important;
+}
+html.dark .hero-accent-word {
+  background-color: #ffffff !important;
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+html:not(.dark) .hero-accent-word {
+  background: transparent !important;
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+}
+
+/* hero-title-url — 20px + thinnest weight */
+.hero-title-url {
+  margin: 0;
+  font-family: "IRANYekanX", sans-serif !important;
+  font-size: clamp(20px, 4.5vw, 75px) !important;
+  font-weight: 400 !important;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-align: center;
+  direction: ltr;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.55),
+    0 0 18px rgba(255, 255, 255, 0.35),
+    0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+
+/* hero title — اسکرول اول: 40px، سنگین‌ترین وزن، قرمز لایت / فیروزه‌ای دارک */
+.hero-title-first {
+  margin: 0;
+  font-family: "IRANYekanX", sans-serif !important;
+  font-size: 120px !important;
+  font-weight: 950 !important;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-align: center;
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+}
+html.dark .hero-title-first {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+}
+
+
+/* ========== Hero title (اسکرول اول) ========== */
+.hero-title-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.hero-title-main {
+  margin: 0;
+  font-family: "IRANYekanX", sans-serif !important;
+  font-size: clamp(50px, 7.5vw, 120px) !important;
+  font-weight: 800 !important;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-align: center;
+  color: #FF0000 !important;
+  -webkit-text-fill-color: #FF0000 !important;
+  -webkit-text-stroke: 2px #ffffff;
+  paint-order: stroke fill;
+  text-shadow:
+    -1px -1px 0 #fff,
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff;
+}
+
+html.dark .hero-title-main {
+  color: #13ABC4 !important;
+  -webkit-text-fill-color: #13ABC4 !important;
+}
+
+
+.hero-title-divider {
+  width: clamp(2.5rem, 8vw, 5rem);
+  height: clamp(2px, 0.25vw, 3px);
+  margin-top: clamp(0.5rem, 1.2vw, 0.85rem);
+  margin-bottom: clamp(0.5rem, 1.2vw, 0.85rem);
+  border-radius: 9999px;
+  background: #ffffff !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* ========== Hero body1 — اسکرول دوم ========== */
+.hero-body1 .hero-body-text--split {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.35rem, 1vw, 0.75rem);
+  margin: 0;
+}
+
+.hero-body1-line1 {
+  display: block !important;
+  margin: 0;
+  font-family: "IRANYekanX", sans-serif !important;
+  font-size: clamp(40px, 6vw, 120px) !important;
+  font-weight: 800 !important;
+  line-height: 1.25;
+  text-align: center;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.hero-body1-line2 {
+  display: inline-block !important;
+  margin: 0;
+  font-family: "IRANYekanX", sans-serif !important;
+  font-size: clamp(20px, 4vw, 80px) !important;
+  font-weight: 400 !important;
+  line-height: 1.3;
+  text-align: center;
+  border-radius: 0.5rem;
+  padding: 0.12em 0.45em;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #FF0000 !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+html.dark .hero-body1-line2 {
+  background-color: #13ABC4 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Hero shop button — متن سفید؛ اکسنت قرمز لایت / فیروزه دارک */
+.hero-title-overlay .hero-shop-btn {
+  pointer-events: auto !important;
+  margin-top: 1rem;
+}
+.hero-title-overlay .hero-shop-btn span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+html.dark .hero-title-overlay .hero-shop-btn span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* ========== Hero body2 — اسکرول آخر ========== */
+.hero-body2 .hero-body-text--split {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.35rem, 1vw, 0.75rem);
+  margin: 0;
+}
+
+.hero-body2-line1 {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  font-family: "IRANYekanX", sans-serif !important;
+  font-size: clamp(40px, 6vw, 120px) !important;
+  font-weight: 800 !important;
+  line-height: 1.25;
+  text-align: center;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.hero-body2-badge {
+  display: inline-block !important;
+  border-radius: 0.5rem;
+  padding: 0.12em 0.45em;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #FF0000 !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+html.dark .hero-body2-badge {
+  background-color: #13ABC4 !important;
+}
+
+.hero-body2-suffix {
+  font-weight: 100 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.hero-body2-line2 {
+  display: block !important;
+  margin: 0;
+  font-family: "IRANYekanX", sans-serif !important;
+  font-size: clamp(20px, 4.5vw, 75px) !important;
+  font-weight: 400 !important;
+  line-height: 1.3;
+  text-align: center;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Hero title — موبایل: stroke نازک‌تر */
+@media (max-width: 768px) {
+  .hero-title-main {
+    -webkit-text-stroke: 1.25px #ffffff;
+  }
+}
+
+/* Modal — backdrop تیز می‌ماند؛ پنل همیشه گرد */
+.site-modal-root > .site-modal-backdrop,
+.site-modal-backdrop,
+.site-modal-backdrop.open {
+  border-radius: 0 !important;
+}
+.site-modal-panel,
+.site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+.site-modal-root > .quick-add-popup,
+div.quick-add-popup {
+  border-radius: 1rem !important;
+}
+@media (max-width: 639px) {
+  .site-modal-panel,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+  .site-modal-root > .quick-add-popup,
+  div.quick-add-popup {
+    border-radius: 1rem 1rem 0 0 !important;
+  }
+}
+/* مودال‌های ثابت خارج از site-modal-root (اگر پنل سفید مرکزی باشند) */
+.fixed.inset-0.z-\[20000\] > div.bg-white,
+.fixed.inset-0[class*="z-"] > div.relative.bg-white,
+.fixed.inset-0[class*="z-"] > div.relative.bg-primary-900 {
+  border-radius: 1rem !important;
+}
+
+
+/* role-gate-backdrop sharp — must override global button radius */
+.role-gate-backdrop,
+div.role-gate-backdrop,
+[role="button"].role-gate-backdrop {
+  border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+
+/* role-gate: backdrop sharp, white modal rounded */
+.role-gate-backdrop,
+div.role-gate-backdrop,
+[role="button"].role-gate-backdrop {
+  border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+}
+.role-gate-modal {
+  border-radius: 1.5rem !important;
+  -webkit-border-radius: 1.5rem !important;
+}
+
+
+/* role-gate-cart-icon animation */
+@keyframes role-gate-cart-bounce {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  25% { transform: translateY(-3px) rotate(-4deg); }
+  50% { transform: translateY(0) rotate(3deg); }
+  75% { transform: translateY(-1px) rotate(-2deg); }
+}
+@keyframes role-gate-wheel-spin {
+  from { transform: rotate(0deg); transform-origin: center; }
+  to { transform: rotate(360deg); transform-origin: center; }
+}
+.group:hover .role-gate-cart-body {
+  animation: role-gate-cart-bounce 1.2s ease-in-out 1;
+}
+.group:hover .role-gate-cart-wheel {
+  animation: role-gate-wheel-spin 0.9s linear 1;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+
+/* role-gate-store-icon animation */
+@keyframes role-gate-store-pop {
+  0%, 100% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-3px) scale(1.06); }
+  70% { transform: translateY(-1px) scale(1.02); }
+}
+.group:hover .role-gate-store-icon {
+  animation: role-gate-store-pop 0.9s ease-in-out 1;
+}
+.group:hover .role-gate-store-door {
+  stroke: currentColor;
+}
+
+
+/* Hover effect for "مشاهده همه" button in dashboard cards */
+.dashboard-card .view-all-btn {
+  transition: all 0.2s ease;
+}
+
+.dashboard-card . {
+  
+  text-decoration: underline;
+}
+
+
+/* Hover effect for "مشاهده همه" button in dashboard cards */
+.dashboard-card .view-all-btn {
+  transition: all 0.2s ease;
+}
+
+.dashboard-card . {
+  color: #fff !important;
+  background-color: #ff4d4d !important;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+}
+
+
+/* Hover effect for "مشاهده همه" button in dashboard cards */
+.dashboard-card .view-all-btn {
+  transition: all 0.2s ease;
+}
+
+.dashboard-card . {
+             /* رنگ تیره متن */
+  background-color: #f3f4f6 !important;
+  text-decoration: underline;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect for "مشاهده همه" button in dashboard cards */
+.dashboard-card .view-all-btn {
+  transition: all 0.2s ease;
+}
+
+.dashboard-card . {
+             /* رنگ مشکی متن */
+  background-color: #f3f4f6 !important;
+  text-decoration: underline;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Hover effect for "مشاهده همه" button in dashboard cards */
+.dashboard-card .view-all-btn {
+  transition: all 0.2s ease;
+}
+
+.dashboard-card .view-all-btn:hover {
+  color: #1f2937 !important;           /* رنگ تیره متن */
+  background-color: #f3f4f6 !important;
+  text-decoration: underline;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+/* آفرتایم — دکمه مشاهده همه: متن و آیکون همیشه مشکی (حتی وقتی روی کارت قرمز هاور می‌شود) */
+html a.offer-view-all-btn,
+html a.offer-view-all-btn:hover,
+html a.offer-view-all-btn:focus,
+html a.offer-view-all-btn:active,
+html:not(.dark) a.offer-view-all-btn,
+html:not(.dark) a.offer-view-all-btn:hover,
+html:not(.dark) a.offer-view-all-btn:focus,
+html:not(.dark) a.offer-view-all-btn:active,
+html.dark a.offer-view-all-btn,
+html.dark a.offer-view-all-btn:hover,
+html.dark a.offer-view-all-btn:focus,
+html.dark a.offer-view-all-btn:active,
+html:not(.dark) [class*="bg-[#FF0000]"] a.offer-view-all-btn,
+html:not(.dark) [class*="bg-[#FF0000]"]:hover a.offer-view-all-btn,
+html:not(.dark) [class*="bg-[#FF0000]"] a.offer-view-all-btn:hover,
+html:not(.dark) [class*="bg-[#FF0000]"]:hover a.offer-view-all-btn:hover {
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+html a.offer-view-all-btn svg,
+html a.offer-view-all-btn:hover svg,
+html a.offer-view-all-btn:focus svg,
+html a.offer-view-all-btn:active svg,
+html:not(.dark) [class*="bg-[#FF0000]"] a.offer-view-all-btn svg,
+html:not(.dark) [class*="bg-[#FF0000]"]:hover a.offer-view-all-btn svg,
+html:not(.dark) [class*="bg-[#FF0000]"] a.offer-view-all-btn:hover svg {
+  color: #0A0A0A !important;
+  stroke: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+
+/* آفرتایم — زیرعنوان ثابت، بدون هیچ هاور (specificity بالا) */
+html:not(.dark) [class*="bg-[#FF0000]"]:hover p.offer-time-sub.offer-time-sub,
+html:not(.dark) [class*="bg-[#FF0000]"] p.offer-time-sub.offer-time-sub,
+html:not(.dark) p.offer-time-sub.offer-time-sub,
+html p.offer-time-sub.offer-time-sub,
+html.dark p.offer-time-sub.offer-time-sub {
+  color: rgba(255, 255, 255, 0.85) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  pointer-events: none !important;
+  cursor: default !important;
+  transition: none !important;
+}
+
+/* === PANEL UI SYSTEM (visual only — no logic) === */
+/*
+ * ظاهر از dashboard-sidebar (shadcn-like):
+ * bg-card/50, border-border/50, active = black/5 | white/10,
+ * text 13px, rounded-[6px], muted-foreground
+ * فونت: همان فونت سایت (ارث‌بری) — منطق پنل دست‌نخورده
+ */
+
+.panel-ui {
+  --p-bg: hsl(0 0% 98%);
+  --p-card: hsl(0 0% 100%);
+  --p-card-50: color-mix(in srgb, hsl(0 0% 100%) 50%, transparent);
+  --p-border: color-mix(in srgb, hsl(240 5.9% 90%) 50%, transparent);
+  --p-border-solid: hsl(240 5.9% 90%);
+  --p-fg: hsl(240 10% 3.9%);
+  --p-muted: hsl(240 3.8% 46.1%);
+  --p-muted-50: color-mix(in srgb, hsl(240 3.8% 46.1%) 50%, transparent);
+  --p-muted-70: color-mix(in srgb, hsl(240 3.8% 46.1%) 70%, transparent);
+  --p-hover: rgba(0, 0, 0, 0.05);
+  --p-active: rgba(0, 0, 0, 0.05);
+  --p-content-tint: rgba(0, 0, 0, 0.02);
+  --p-primary: hsl(240 5.9% 10%);
+  --p-primary-fg: hsl(0 0% 98%);
+  --p-primary-10: color-mix(in srgb, hsl(240 5.9% 10%) 10%, transparent);
+  --p-radius: 0.75rem;
+  --p-radius-nav: 6px;
+  --p-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --p-ring: 0 0 0 1px rgba(0, 0, 0, 0.05);
+  background: var(--p-bg);
+  color: var(--p-fg);
+  /* فونت خانوادهٔ سایت حفظ می‌شود */
+}
+
+html.dark .panel-ui {
+  --p-bg: hsl(240 10% 3.9%);
+  --p-card: hsl(240 10% 3.9%);
+  --p-card-50: color-mix(in srgb, hsl(240 10% 8%) 50%, transparent);
+  --p-border: color-mix(in srgb, hsl(240 3.7% 15.9%) 50%, transparent);
+  --p-border-solid: hsl(240 3.7% 15.9%);
+  --p-fg: hsl(0 0% 98%);
+  --p-muted: hsl(240 5% 64.9%);
+  --p-muted-50: color-mix(in srgb, hsl(240 5% 64.9%) 50%, transparent);
+  --p-muted-70: color-mix(in srgb, hsl(240 5% 64.9%) 70%, transparent);
+  --p-hover: rgba(255, 255, 255, 0.05);
+  --p-active: rgba(255, 255, 255, 0.10);
+  --p-content-tint: rgba(255, 255, 255, 0.02);
+  --p-primary: hsl(0 0% 98%);
+  --p-primary-fg: hsl(240 5.9% 10%);
+  --p-primary-10: color-mix(in srgb, hsl(0 0% 98%) 10%, transparent);
+  --p-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.35);
+  --p-ring: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: var(--p-bg);
+  color: var(--p-fg);
+}
+
+.panel-ui.admin-panel-shell,
+.panel-ui.seller-panel-shell,
+.panel-ui.panel-ui--admin,
+.panel-ui.panel-ui--seller,
+.panel-ui.panel-ui--buyer {
+  background: var(--p-bg) !important;
+}
+
+/* —— سایدبار —— */
+.panel-ui .panel-nav,
+.panel-ui .admin-tabs-strip,
+.panel-ui .seller-tabs-strip {
+  background: var(--p-card-50) !important;
+  border: 1px solid var(--p-border) !important;
+  border-radius: var(--p-radius) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  padding: 0.75rem !important;
+  gap: 0.125rem !important;
+}
+
+/* آیتم ناو — مثل NavItem */
+.panel-ui .panel-nav-item {
+  position: relative !important;
+  border-radius: var(--p-radius-nav) !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em !important;
+  color: var(--p-muted) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-left: none !important;
+  border-bottom: none !important;
+  transition: background 0.2s ease, color 0.2s ease !important;
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
+}
+
+.panel-ui .panel-nav-item:hover {
+  background: var(--p-hover) !important;
+  color: color-mix(in srgb, var(--p-fg) 90%, transparent) !important;
+}
+
+/* تب فعال: لایت قرمز+متن سفید | دارک فیروزه‌ای+متن تیره */
+.panel-ui .panel-nav-item--active,
+.panel-ui .panel-nav-item.panel-nav-item--active,
+.panel-ui .panel-nav-item.bg-apple-blue,
+.panel-ui .panel-nav-item--active.bg-apple-blue,
+.panel-ui .panel-nav-item.panel-nav-item--active.text-white {
+  background: #FF0000 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+.panel-ui .panel-nav-item--active *,
+.panel-ui .panel-nav-item--active svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  fill: none;
+}
+
+html.dark .panel-ui .panel-nav-item--active,
+html.dark .panel-ui .panel-nav-item.panel-nav-item--active,
+html.dark .panel-ui .panel-nav-item.bg-apple-blue,
+html.dark .panel-ui .panel-nav-item--active.bg-apple-blue {
+  background: #13ABC4 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+  font-weight: 600 !important;
+}
+html.dark .panel-ui .panel-nav-item--active *,
+html.dark .panel-ui .panel-nav-item--active svg {
+  color: #0A0A0A !important;
+  stroke: #0A0A0A !important;
+}
+
+/* —— محتوای اصلی —— */
+.panel-ui .panel-main {
+  background: var(--p-content-tint) !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+}
+
+/* —— کارت‌ها —— */
+.panel-ui .rounded-2xl.border,
+.panel-ui [class*="rounded-2xl"][class*="border"],
+.panel-ui [class*="rounded-xl"][class*="border"] {
+  border-radius: var(--p-radius) !important;
+  border-color: var(--p-border) !important;
+  background-color: var(--p-card) !important;
+  box-shadow: var(--p-shadow) !important;
+}
+
+.panel-ui .rounded-2xl.border.bg-white,
+.panel-ui .rounded-2xl.border.bg-primary-900,
+.panel-ui [class*="rounded-2xl"][class*="border"][class*="bg-white"],
+.panel-ui [class*="rounded-2xl"][class*="border"][class*="bg-primary-900"] {
+  background-color: var(--p-card) !important;
+  border-color: var(--p-border) !important;
+  box-shadow: var(--p-shadow) !important;
+}
+
+/* —— فرم —— */
+.panel-ui input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]),
+.panel-ui select,
+.panel-ui textarea {
+  border-radius: 8px !important;
+  border: 1px solid var(--p-border-solid) !important;
+  background-color: var(--p-card) !important;
+  color: var(--p-fg) !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+}
+
+.panel-ui input::placeholder,
+.panel-ui textarea::placeholder {
+  color: var(--p-muted-50) !important;
+}
+
+.panel-ui input:focus,
+.panel-ui select:focus,
+.panel-ui textarea:focus {
+  outline: none !important;
+  border-color: var(--p-fg) !important;
+  box-shadow: var(--p-ring) !important;
+}
+
+.panel-ui select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='1.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: left 0.7rem center !important;
+  padding-left: 2.1rem !important;
+  cursor: pointer;
+}
+
+.panel-ui label.text-xs,
+.panel-ui label.text-\[11px\],
+.panel-ui label[class*="text-xs"] {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em;
+  color: var(--p-muted) !important;
+}
+
+/* —— دکمه‌ها —— */
+.panel-ui button.border {
+  border-color: var(--p-border) !important;
+  background: transparent;
+  color: var(--p-muted);
+  border-radius: var(--p-radius-nav) !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+.panel-ui button.border:hover {
+  background: var(--p-hover) !important;
+  color: var(--p-fg) !important;
+}
+
+.panel-ui button.bg-apple-blue,
+.panel-ui button[class*="bg-apple-blue"] {
+  background-color: var(--p-primary) !important;
+  color: var(--p-primary-fg) !important;
+  box-shadow: var(--p-shadow) !important;
+  font-weight: 500 !important;
+  border-radius: var(--p-radius-nav) !important;
+}
+.panel-ui button.bg-apple-blue:hover {
+  filter: brightness(1.05);
+}
+
+/* —— تیتر —— */
+.panel-ui h1,
+.panel-ui h2,
+.panel-ui h3 {
+  color: var(--p-fg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.panel-ui .text-primary-400,
+.panel-ui .text-primary-500,
+.panel-ui p.text-xs.text-primary-500 {
+  color: var(--p-muted) !important;
+}
+
+/* —— ویزارد —— */
+.panel-ui .panel-wizard-head {
+  background: var(--p-card) !important;
+  border: 1px solid var(--p-border) !important;
+  border-radius: var(--p-radius) !important;
+  box-shadow: var(--p-shadow) !important;
+}
+.panel-ui .panel-progress {
+  height: 4px !important;
+  background: var(--p-hover) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+.panel-ui .panel-progress__bar {
+  background: var(--p-fg) !important;
+  background-image: none !important;
+  border-radius: 999px !important;
+}
+.panel-ui .panel-step--active {
+  background: var(--p-active) !important;
+  border-color: transparent !important;
+  color: var(--p-fg) !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
+}
+
+/* —— جدول —— */
+.panel-ui thead th {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--p-muted-50) !important;
+  border-bottom: 1px solid var(--p-border) !important;
+}
+.panel-ui tbody td {
+  border-bottom: 1px solid var(--p-border) !important;
+  font-size: 13px;
+}
+
+/* اسکرول‌بار عمودی سایدبار — قابل دیدن */
+.panel-ui .panel-nav,
+.panel-ui .admin-tabs-strip,
+.panel-ui .seller-tabs-strip {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #c4c4c4 transparent !important;
+}
+html.dark .panel-ui .panel-nav,
+html.dark .panel-ui .admin-tabs-strip,
+html.dark .panel-ui .seller-tabs-strip {
+  scrollbar-color: #555 transparent !important;
+}
+.panel-ui .panel-nav::-webkit-scrollbar,
+.panel-ui .admin-tabs-strip::-webkit-scrollbar,
+.panel-ui .seller-tabs-strip::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+  display: block !important;
+}
+.panel-ui .panel-nav::-webkit-scrollbar-track,
+.panel-ui .admin-tabs-strip::-webkit-scrollbar-track,
+.panel-ui .seller-tabs-strip::-webkit-scrollbar-track {
+  background: transparent !important;
+  border-radius: 8px;
+}
+.panel-ui .panel-nav::-webkit-scrollbar-thumb,
+.panel-ui .admin-tabs-strip::-webkit-scrollbar-thumb,
+.panel-ui .seller-tabs-strip::-webkit-scrollbar-thumb {
+  background: #c4c4c4 !important;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+html.dark .panel-ui .panel-nav::-webkit-scrollbar-thumb,
+html.dark .panel-ui .admin-tabs-strip::-webkit-scrollbar-thumb,
+html.dark .panel-ui .seller-tabs-strip::-webkit-scrollbar-thumb {
+  background: #666 !important;
+  background-clip: padding-box;
+}
+
+/* تراز راست + تمام‌عرض آیتم‌های تب (RTL) */
+.panel-ui .panel-nav,
+.panel-ui .admin-tabs-strip,
+.panel-ui .seller-tabs-strip {
+  align-items: stretch !important;
+}
+.panel-ui .panel-nav-item {
+  width: 100% !important;
+  max-width: 100% !important;
+  justify-content: flex-start !important;
+  text-align: right !important;
+  flex-shrink: 0 !important;
+}
+
+@media (max-width: 767px) {
+  .panel-ui .panel-nav {
+    flex-direction: row !important;
+    overflow-x: auto;
+    max-height: none;
+  }
+  .panel-ui .panel-nav-item {
+    flex-shrink: 0;
+  }
+}
+
+
+/* —— یکدستی بج / چیپ / کادر پنل —— */
+/* بدون تغییر منطق؛ فقط radius و اندازه ظاهری */
+
+.panel-ui {
+  --p-chip-radius: 8px;
+  --p-chip-h: 28px;
+  --p-badge-radius: 8px;
+  --p-card-radius: 12px;
+  --p-btn-radius: 8px;
+}
+
+/* کادر / کارت: گوشه یکسان (نه بیضی) */
+.panel-ui .rounded-2xl,
+.panel-ui .rounded-3xl,
+.panel-ui .rounded-xl,
+.panel-ui [class*="rounded-2xl"],
+.panel-ui [class*="rounded-3xl"],
+.panel-ui [class*="rounded-xl"] {
+  border-radius: var(--p-card-radius) !important;
+}
+
+/* دکمه‌ها و کنترل‌های rounded-full داخل پنل → گوشه ۸px (نه کپسول کامل) */
+.panel-ui button.rounded-full,
+.panel-ui a.rounded-full,
+.panel-ui span.rounded-full,
+.panel-ui div.rounded-full,
+.panel-ui [class*="rounded-full"] {
+  border-radius: var(--p-chip-radius) !important;
+}
+
+/* بج / چیپ وضعیت و فیلتر: ارتفاع و پدینگ یکدست */
+.panel-ui button.rounded-full,
+.panel-ui span.rounded-full,
+.panel-ui [class*="rounded-full"].text-xs,
+.panel-ui [class*="rounded-full"].text-\[10px\],
+.panel-ui [class*="rounded-full"].text-\[11px\],
+.panel-ui button.text-xs.px-3,
+.panel-ui button.text-xs.px-2\.5,
+.panel-ui button.text-xs.px-2,
+.panel-ui span.text-xs.px-2,
+.panel-ui span.text-xs.px-2\.5,
+.panel-ui span.text-xs.px-3 {
+  min-height: var(--p-chip-h);
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+  line-height: 1.25 !important;
+  box-sizing: border-box;
+  border-radius: var(--p-chip-radius) !important;
+}
+
+/* آواتار دایره‌ای بماند (استثنا) */
+.panel-ui .rounded-full[class*="w-8"][class*="h-8"],
+.panel-ui .rounded-full[class*="w-9"][class*="h-9"],
+.panel-ui .rounded-full[class*="w-10"][class*="h-10"],
+.panel-ui .rounded-full[class*="w-12"][class*="h-12"],
+.panel-ui img.rounded-full,
+.panel-ui .avatar,
+.panel-ui [class*="Avatar"] {
+  border-radius: 9999px !important;
+}
+
+/* input داخل پنل */
+.panel-ui input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.panel-ui select,
+.panel-ui textarea {
+  border-radius: var(--p-btn-radius) !important;
+}
+
+/* دکمه‌های اصلی action هم گوشه یکسان */
+.panel-ui button.bg-apple-blue,
+.panel-ui button[class*="bg-apple-blue"],
+.panel-ui button[class*="bg-red-"],
+.panel-ui button[class*="bg-emerald-"] {
+  border-radius: var(--p-btn-radius) !important;
+}
+
+
+
+/* === END PANEL UI SYSTEM === */
+
+/* ===== FORCE: panel filter chips active readable ===== */
+html:not(.dark) .panel-ui button.panel-filter-chip--on,
+html:not(.dark) .panel-ui .panel-filter-chip--on,
+html:not(.dark) button.panel-filter-chip--on,
+html:not(.dark) .panel-filter-chip--on {
+  background: #FF0000 !important;
+  background-color: #FF0000 !important;
+  border-color: #FF0000 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  opacity: 1 !important;
+  filter: none !important;
+  font-weight: 600 !important;
+}
+html:not(.dark) .panel-ui button.panel-filter-chip--on *,
+html:not(.dark) button.panel-filter-chip--on * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.dark .panel-ui button.panel-filter-chip--on,
+html.dark .panel-ui .panel-filter-chip--on,
+html.dark button.panel-filter-chip--on,
+html.dark .panel-filter-chip--on {
+  background: #13ABC4 !important;
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+  opacity: 1 !important;
+  filter: none !important;
+  font-weight: 600 !important;
+}
+html.dark .panel-ui button.panel-filter-chip--on *,
+html.dark button.panel-filter-chip--on * {
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+/* اگر هنوز bg-primary-800 مانده باشد */
+html:not(.dark) .panel-ui button[class*="bg-primary-800"].text-xs {
+  background: #FF0000 !important;
+  border-color: #FF0000 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+html.dark .panel-ui button[class*="bg-primary-800"].text-xs,
+html.dark .panel-ui button[class*="bg-[#4CCD99]"].text-xs {
+  background: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+/* ===== FORCE: sidebar nav unified (admin/seller/buyer) ===== */
+.panel-ui .panel-nav-item,
+.profile-tabs-strip .panel-nav-item,
+.seller-tabs-strip .panel-nav-item,
+.admin-tabs-strip .panel-nav-item {
+  color: #71717a !important;
+  -webkit-text-fill-color: #71717a !important;
+  background: transparent !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+  width: 100% !important;
+  justify-content: flex-start !important;
+  text-align: right !important;
+  box-shadow: none !important;
+}
+html.dark .panel-ui .panel-nav-item,
+html.dark .profile-tabs-strip .panel-nav-item,
+html.dark .seller-tabs-strip .panel-nav-item,
+html.dark .admin-tabs-strip .panel-nav-item {
+  color: #a1a1aa !important;
+  -webkit-text-fill-color: #a1a1aa !important;
+}
+.panel-ui .panel-nav-item:hover,
+.profile-tabs-strip .panel-nav-item:hover,
+.seller-tabs-strip .panel-nav-item:hover,
+.admin-tabs-strip .panel-nav-item:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #18181b !important;
+  -webkit-text-fill-color: #18181b !important;
+}
+html.dark .panel-ui .panel-nav-item:hover,
+html.dark .profile-tabs-strip .panel-nav-item:hover,
+html.dark .seller-tabs-strip .panel-nav-item:hover,
+html.dark .admin-tabs-strip .panel-nav-item:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #fafafa !important;
+  -webkit-text-fill-color: #fafafa !important;
+}
+
+/* فعال — مثل ادمین */
+.panel-ui .panel-nav-item--active,
+.panel-ui .panel-nav-item.panel-nav-item--active,
+.profile-tabs-strip .panel-nav-item--active,
+.seller-tabs-strip .panel-nav-item--active,
+.admin-tabs-strip .panel-nav-item--active,
+html:not(.dark) .panel-ui .panel-nav-item--active.bg-apple-blue,
+html:not(.dark) .profile-tabs-strip .panel-nav-item--active,
+html:not(.dark) .seller-tabs-strip .panel-nav-item--active {
+  background: #FF0000 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+html:not(.dark) .panel-nav-item--active *,
+html:not(.dark) .panel-nav-item--active svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.dark .panel-ui .panel-nav-item--active,
+html.dark .profile-tabs-strip .panel-nav-item--active,
+html.dark .seller-tabs-strip .panel-nav-item--active,
+html.dark .admin-tabs-strip .panel-nav-item--active {
+  background: #13ABC4 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+  font-weight: 600 !important;
+}
+html.dark .panel-nav-item--active *,
+html.dark .panel-nav-item--active svg {
+  color: #0A0A0A !important;
+  stroke: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+/* ===== FORCE: modal above site header (all panels) ===== */
+/* هدر fixed z-[100] است؛ مودال داخل شل پنل بود و زیر هدر دیده می‌شد */
+.seller-panel-shell:has(.site-modal-root),
+.admin-panel-shell:has(.site-modal-root),
+.profile-page-shell:has(.site-modal-root),
+.profile-panel-shell:has(.site-modal-root),
+.panel-ui:has(.site-modal-root),
+.admin-panel-shell:has([role="dialog"]),
+.seller-panel-shell:has([role="dialog"]),
+.profile-page-shell:has([role="dialog"]) {
+  z-index: 20050 !important;
+  position: relative !important;
+}
+
+.site-modal-root {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 20000 !important;
+}
+
+/* هدر زیر مودال بماند وقتی مودال باز است */
+body:has(.site-modal-root) header.site-header,
+body:has(.site-modal-root) .site-header,
+body.site-modal-open header.site-header,
+body.site-modal-open .site-header {
+  z-index: 90 !important;
+}
+
+/* خود هدر هرگز از مودال بالاتر نیاید اگر مودال در body باشد */
+header.site-header {
+  z-index: 100;
+}
+
+/* ===== SEMANTIC PASTEL BUTTONS (toast-aligned) ===== */
+/*
+ * فقط دکمه‌های معنایی — بقیه (برند قرمز، apple-blue، فیلتر، ناو) دست نخورند
+ * success=سبز پاستیلی · error=قرمز پاستیلی · warning=نارنجی پاستیلی · info=بنفش پاستیلی
+ * پالت = components/ui/toast.jsx getPalette
+ */
+
+/* —— موفقیت / تأیید (سبز) —— */
+html:not(.dark) button[class*="bg-emerald-"]:not(.plp-filter-chip--on):not(.panel-filter-chip--on):not(.panel-nav-item),
+html:not(.dark) button[class*="bg-green-"]:not(.plp-filter-chip--on):not(.panel-filter-chip--on):not(.panel-nav-item),
+html:not(.dark) a[class*="bg-emerald-"],
+html:not(.dark) a[class*="bg-green-500"],
+html:not(.dark) a[class*="bg-green-600"] {
+  background-color: #D1FAE5 !important;
+  border-color: #34D399 !important;
+  color: #065F46 !important;
+  -webkit-text-fill-color: #065F46 !important;
+}
+html:not(.dark) button[class*="bg-emerald-"]:hover:not(.plp-filter-chip--on):not(.panel-filter-chip--on),
+html:not(.dark) button[class*="bg-green-"]:hover:not(.plp-filter-chip--on):not(.panel-filter-chip--on) {
+  background-color: #A7F3D0 !important;
+  border-color: #10B981 !important;
+  color: #064E3B !important;
+  -webkit-text-fill-color: #064E3B !important;
+}
+html.dark button[class*="bg-emerald-"]:not(.plp-filter-chip--on):not(.panel-filter-chip--on):not(.panel-nav-item),
+html.dark button[class*="bg-green-"]:not(.plp-filter-chip--on):not(.panel-filter-chip--on):not(.panel-nav-item) {
+  background-color: #16382C !important;
+  border-color: #86EFAC !important;
+  color: #ECFDF5 !important;
+  -webkit-text-fill-color: #ECFDF5 !important;
+}
+
+/* —— خطا (قرمز پاستیلی) — نه برند #FF0000 / apple-blue / فیلتر فعال —— */
+html:not(.dark) button[class*="bg-red-500"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on):not(.bg-apple-blue),
+html:not(.dark) button[class*="bg-red-600"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html:not(.dark) button[class*="bg-red-700"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html:not(.dark) button[class*="!bg-red-"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on) {
+  background-color: #FEE2E2 !important;
+  border-color: #F87171 !important;
+  color: #991B1B !important;
+  -webkit-text-fill-color: #991B1B !important;
+}
+html:not(.dark) button[class*="bg-red-500"]:hover:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html:not(.dark) button[class*="bg-red-600"]:hover:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html:not(.dark) button[class*="bg-red-700"]:hover:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on) {
+  background-color: #FECACA !important;
+  border-color: #EF4444 !important;
+  color: #7F1D1D !important;
+  -webkit-text-fill-color: #7F1D1D !important;
+}
+html.dark button[class*="bg-red-500"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html.dark button[class*="bg-red-600"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html.dark button[class*="bg-red-700"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on),
+html.dark button[class*="!bg-red-"]:not(.panel-nav-item):not(.panel-filter-chip--on):not(.plp-filter-chip--on) {
+  background-color: #3B1F24 !important;
+  border-color: #FCA5A5 !important;
+  color: #FEF2F2 !important;
+  -webkit-text-fill-color: #FEF2F2 !important;
+}
+
+/* —— هشدار (نارنجی پاستیلی) —— */
+html:not(.dark) button[class*="bg-amber-"]:not(.panel-nav-item):not(.panel-filter-chip--on),
+html:not(.dark) button[class*="bg-orange-"]:not(.panel-nav-item):not(.panel-filter-chip--on),
+html:not(.dark) button[class*="bg-yellow-"]:not(.panel-nav-item):not(.panel-filter-chip--on) {
+  background-color: #FFEDD5 !important;
+  border-color: #FB923C !important;
+  color: #9A3412 !important;
+  -webkit-text-fill-color: #9A3412 !important;
+}
+html:not(.dark) button[class*="bg-amber-"]:hover:not(.panel-nav-item),
+html:not(.dark) button[class*="bg-orange-"]:hover:not(.panel-nav-item) {
+  background-color: #FED7AA !important;
+  border-color: #F97316 !important;
+  color: #7C2D12 !important;
+  -webkit-text-fill-color: #7C2D12 !important;
+}
+html.dark button[class*="bg-amber-"]:not(.panel-nav-item):not(.panel-filter-chip--on),
+html.dark button[class*="bg-orange-"]:not(.panel-nav-item):not(.panel-filter-chip--on),
+html.dark button[class*="bg-yellow-"]:not(.panel-nav-item):not(.panel-filter-chip--on) {
+  background-color: #3B2A14 !important;
+  border-color: #FCD34D !important;
+  color: #FFFBEB !important;
+  -webkit-text-fill-color: #FFFBEB !important;
+}
+
+/* —— اطلاع‌رسانی (بنفش پاستیلی = toast default/info) —— */
+html:not(.dark) button[class*="bg-violet-"]:not(.panel-nav-item),
+html:not(.dark) button[class*="bg-purple-"]:not(.panel-nav-item),
+html:not(.dark) button[class*="bg-indigo-"]:not(.panel-nav-item) {
+  background-color: #EDE9FE !important;
+  border-color: #A78BFA !important;
+  color: #5B21B6 !important;
+  -webkit-text-fill-color: #5B21B6 !important;
+}
+html:not(.dark) button[class*="bg-violet-"]:hover:not(.panel-nav-item),
+html:not(.dark) button[class*="bg-purple-"]:hover:not(.panel-nav-item) {
+  background-color: #DDD6FE !important;
+  border-color: #8B5CF6 !important;
+  color: #4C1D95 !important;
+  -webkit-text-fill-color: #4C1D95 !important;
+}
+html.dark button[class*="bg-violet-"]:not(.panel-nav-item),
+html.dark button[class*="bg-purple-"]:not(.panel-nav-item),
+html.dark button[class*="bg-indigo-"]:not(.panel-nav-item) {
+  background-color: #2E2348 !important;
+  border-color: #DDD6FE !important;
+  color: #F5F3FF !important;
+  -webkit-text-fill-color: #F5F3FF !important;
+}
+
+/* کلاس‌های صریح اختیاری */
+button.btn-success, .btn-success {
+  background-color: #D1FAE5 !important;
+  border-color: #34D399 !important;
+  color: #065F46 !important;
+}
+html.dark button.btn-success, html.dark .btn-success {
+  background-color: #16382C !important;
+  border-color: #86EFAC !important;
+  color: #ECFDF5 !important;
+}
+button.btn-error, .btn-error {
+  background-color: #FEE2E2 !important;
+  border-color: #F87171 !important;
+  color: #991B1B !important;
+}
+html.dark button.btn-error, html.dark .btn-error {
+  background-color: #3B1F24 !important;
+  border-color: #FCA5A5 !important;
+  color: #FEF2F2 !important;
+}
+button.btn-warning, .btn-warning {
+  background-color: #FFEDD5 !important;
+  border-color: #FB923C !important;
+  color: #9A3412 !important;
+}
+html.dark button.btn-warning, html.dark .btn-warning {
+  background-color: #3B2A14 !important;
+  border-color: #FCD34D !important;
+  color: #FFFBEB !important;
+}
+button.btn-info, .btn-info {
+  background-color: #EDE9FE !important;
+  border-color: #A78BFA !important;
+  color: #5B21B6 !important;
+}
+html.dark button.btn-info, html.dark .btn-info {
+  background-color: #2E2348 !important;
+  border-color: #DDD6FE !important;
+  color: #F5F3FF !important;
+}
+
+/* ===== FORCE: modal panel width ~80% ===== */
+.site-modal-panel,
+.site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+.site-modal-panel.admin-auth-modal {
+  width: min(80vw, 960px) !important;
+  max-width: min(80vw, 960px) !important;
+}
+@media (max-width: 639px) {
+  .site-modal-panel,
+  .site-modal-root > div:not(.site-modal-backdrop):not([class*="inset-0"]),
+  .site-modal-panel.admin-auth-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+
+/* ===== breadcrumb separators ===== */
+nav[aria-label="breadcrumb"] ol,
+nav[aria-label="Breadcrumb"] ol,
+nav[aria-label="breadcrumb"] .flex,
+nav[aria-label="breadcrumb"] {
+  /* handled in component */
+}
+/* جداکننده بین آیتم‌های breadcrumb اگر فقط flex باشند */
+.pm-breadcrumb-item:not(:last-child)::after {
+  content: "‹";
+  display: inline-block;
+  margin-inline: 0.35rem 0.15rem;
+  opacity: 0.45;
+  font-weight: 400;
+  pointer-events: none;
+}
+
+/* ===== SEO page list rows (not brand-red buttons) ===== */
+.panel-ui button.seo-page-row,
+.panel-ui .seo-page-row,
+button.seo-page-row {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04) !important;
+  border-radius: 12px !important;
+  font-weight: 500 !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+html.dark .panel-ui button.seo-page-row,
+html.dark .panel-ui .seo-page-row,
+html.dark button.seo-page-row {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+  -webkit-text-fill-color: #f4f4f5 !important;
+}
+.panel-ui button.seo-page-row:hover,
+.panel-ui .seo-page-row:hover {
+  background: #f9fafb !important;
+  border-color: #d1d5db !important;
+}
+html.dark .panel-ui button.seo-page-row:hover {
+  background: #27272a !important;
+}
+.panel-ui button.seo-page-row.is-active,
+.panel-ui .seo-page-row.is-active {
+  border-color: #93c5fd !important;
+  background: #eff6ff !important;
+  box-shadow: 0 0 0 1px #bfdbfe !important;
+}
+html.dark .panel-ui button.seo-page-row.is-active {
+  border-color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.12) !important;
+}
+.seo-page-row .seo-badge-ok {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  -webkit-text-fill-color: #065f46 !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 2px 8px !important;
+}
+.seo-page-row .seo-badge-off {
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+  -webkit-text-fill-color: #6b7280 !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  padding: 2px 8px !important;
+}
+html.dark .seo-page-row .seo-badge-ok {
+  background: #16382c !important;
+  color: #a7f3d0 !important;
+  -webkit-text-fill-color: #a7f3d0 !important;
+}
+html.dark .seo-page-row .seo-badge-off {
+  background: #27272a !important;
+  color: #a1a1aa !important;
+  -webkit-text-fill-color: #a1a1aa !important;
+}
+
+/* ===== SEO page list = pages-tab style (no brand red) ===== */
+.panel-ui .seo-page-list,
+.seo-page-list {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 1rem !important;
+}
+html.dark .panel-ui .seo-page-list,
+html.dark .seo-page-list {
+  background: #18181b !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+.panel-ui button.seo-page-list-row,
+button.seo-page-list-row,
+.seo-page-list-row {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  font-weight: 500 !important;
+  filter: none !important;
+  opacity: 1 !important;
+  min-height: 3rem !important;
+}
+html.dark .panel-ui button.seo-page-list-row,
+html.dark button.seo-page-list-row {
+  color: #f4f4f5 !important;
+  -webkit-text-fill-color: #f4f4f5 !important;
+  background: transparent !important;
+}
+.panel-ui button.seo-page-list-row:hover,
+button.seo-page-list-row:hover {
+  background: #f9fafb !important;
+  background-color: #f9fafb !important;
+}
+html.dark .panel-ui button.seo-page-list-row:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+.panel-ui button.seo-page-list-row.is-active,
+button.seo-page-list-row.is-active {
+  background: #f3f4f6 !important;
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+html.dark .panel-ui button.seo-page-list-row.is-active {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #fafafa !important;
+  -webkit-text-fill-color: #fafafa !important;
+}
+.panel-ui button.seo-page-list-row *,
+button.seo-page-list-row * {
+  color: inherit;
+}
+.seo-page-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.25rem 0.65rem !important;
+  border-radius: 9999px !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  border: 1px solid #e5e7eb !important;
+  background: #ffffff !important;
+  color: #6b7280 !important;
+  -webkit-text-fill-color: #6b7280 !important;
+  white-space: nowrap !important;
+}
+html.dark .seo-page-badge {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #a1a1aa !important;
+  -webkit-text-fill-color: #a1a1aa !important;
+}
+.seo-page-badge--ok {
+  border-color: #d1d5db !important;
+  color: #374151 !important;
+  -webkit-text-fill-color: #374151 !important;
+  background: #fff !important;
+}
+.seo-page-badge--muted {
+  border-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
+}
+.seo-page-badge--warn {
+  border-color: #fcd34d !important;
+  color: #b45309 !important;
+  -webkit-text-fill-color: #b45309 !important;
+  background: #fffbeb !important;
+}
+html.dark .seo-page-badge--warn {
+  background: rgba(245, 158, 11, 0.12) !important;
+  color: #fcd34d !important;
+  -webkit-text-fill-color: #fcd34d !important;
+}
+
+/* ===== seller rank period chips ===== */
+.panel-ui button.seller-rank-chip,
+button.seller-rank-chip {
+  border-radius: 9999px !important;
+  border: 1px solid #e5e7eb !important;
+  background: #ffffff !important;
+  color: #374151 !important;
+  -webkit-text-fill-color: #374151 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+html.dark .panel-ui button.seller-rank-chip,
+html.dark button.seller-rank-chip {
+  background: #2A2C30 !important;
+  border-color: rgba(255,255,255,0.35) !important;
+  color: #EBFFFB !important;
+  -webkit-text-fill-color: #EBFFFB !important;
+}
+.panel-ui button.seller-rank-chip--on,
+button.seller-rank-chip--on,
+.panel-ui button.seller-rank-chip.panel-filter-chip--on {
+  background: #FF0000 !important;
+  background-color: #FF0000 !important;
+  border-color: #FF0000 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 600 !important;
+}
+html.dark .panel-ui button.seller-rank-chip--on,
+html.dark button.seller-rank-chip--on {
+  background: #13ABC4 !important;
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+
+
+
+/* همه کانتینرهای داخل پنل تمام‌عرض */
+.panel-ui .panel-main,
+.panel-ui .panel-main > *,
+.admin-panel-shell .panel-main,
+.seller-panel-shell .panel-main {
+  width: 100% !important;
+  max-width: none !important;
+}
+.panel-ui .max-w-md,
+.panel-ui .max-w-lg,
+.panel-ui .max-w-xl,
+.panel-ui .max-w-2xl,
+.panel-ui .max-w-3xl,
+.panel-ui .max-w-4xl,
+.panel-ui .max-w-5xl,
+.panel-ui .max-w-6xl,
+.panel-ui .max-w-7xl,
+.panel-ui .max-w-prose {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+
+
+
+/* تمام‌عرض داخل پنل */
+.panel-ui .panel-main,
+.admin-panel-shell .panel-main,
+.seller-panel-shell .panel-main {
+  width: 100% !important;
+  max-width: none !important;
+}
+.panel-ui .max-w-md,
+.panel-ui .max-w-lg,
+.panel-ui .max-w-xl,
+.panel-ui .max-w-2xl,
+.panel-ui .max-w-3xl,
+.panel-ui .max-w-4xl,
+.panel-ui .max-w-5xl,
+.panel-ui .max-w-6xl,
+.panel-ui .max-w-7xl,
+.panel-ui .max-w-prose {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+
+
+/* products-toolbar-order: دکمه‌ها زیر فیلتر، سرچ بالا */
+.admin-products-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; }
+.admin-products-actions { display: flex; flex-wrap: wrap; gap: 0.375rem; width: 100%; order: 3; margin-bottom: 1rem; }
+.admin-products-filters { order: 2; width: 100%; margin-bottom: 0.5rem; }
+.admin-products-search { order: 1; }
+
+
+/* UI FIX: modal overlay + broken logo + sticky under modal */
+.site-modal-root {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  isolation: isolate !important;
+}
+.site-modal-root .site-modal-backdrop {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,0.55) !important;
+  z-index: 0 !important;
+  pointer-events: auto !important;
+}
+.site-modal-root .site-modal-panel {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* وقتی هر مودال باز است: زیرلایه‌های sticky/carousel بیرون نزنند */
+body.site-modal-open {
+  overflow: hidden !important;
+  touch-action: none !important;
+}
+body.site-modal-open header,
+body.site-modal-open .carousel-track,
+body.site-modal-open [class*="sticky"],
+body.site-modal-open nav[aria-label="breadcrumb"] {
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+body.site-modal-open .site-modal-root,
+body.site-modal-open .site-modal-root * {
+  pointer-events: auto !important;
+}
+
+/* لوگو شکسته در منوی موبایل / هدر → باکس P قرمز */
+img[src="/logo.webp"],
+img[src="/logo.png"],
+img[src*="logo.webp"] {
+  object-fit: cover;
+}
+img[src="/logo.webp"]:not([data-logo-ok="1"]),
+img[src="/logo.png"]:not([data-logo-ok="1"]) {
+  /* اگر فایل نبود مرورگر broken icon می‌دهد؛ با onError JS جایگزین می‌شود */
+}
+
+.site-logo-fallback,
+.mobile-menu-panel .site-logo-fallback {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  border-radius: 0.75rem !important;
+  background: #E11D48 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-size: 1.125rem !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+}
+
+
+/* PANEL MOBILE TABS: 2 full + ~20% peek */
+@media (max-width: 767px) {
+  /*
+    عرض هر تب ≈ 100% / 2.2
+    → دو تب کامل + حدود ۲۰٪ تب سوم در دید
+  */
+  .admin-tabs-strip,
+  .seller-tabs-strip,
+  .buyer-tabs-strip,
+  .profile-tabs-strip,
+  .panel-tabs-strip,
+  .panel-ui--admin .panel-tabs,
+  .panel-ui--seller .panel-tabs,
+  .panel-ui--buyer .panel-tabs,
+  .admin-panel-shell .admin-tabs-strip,
+  .seller-panel-shell .seller-tabs-strip {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 0.5rem !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 1rem;
+    padding-inline: 0.25rem;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  .admin-tabs-strip::-webkit-scrollbar,
+  .seller-tabs-strip::-webkit-scrollbar,
+  .buyer-tabs-strip::-webkit-scrollbar,
+  .profile-tabs-strip::-webkit-scrollbar,
+  .panel-tabs-strip::-webkit-scrollbar {
+    display: none !important;
+    height: 0 !important;
+  }
+
+  .admin-tabs-strip > *,
+  .seller-tabs-strip > *,
+  .buyer-tabs-strip > *,
+  .profile-tabs-strip > *,
+  .panel-tabs-strip > *,
+  .panel-ui--admin .panel-tabs > *,
+  .panel-ui--seller .panel-tabs > *,
+  .panel-ui--buyer .panel-tabs > *,
+  .admin-panel-shell .admin-tabs-strip > *,
+  .seller-panel-shell .seller-tabs-strip > * {
+    flex: 0 0 calc((100% - 0.5rem) / 2.2) !important;
+    width: calc((100% - 0.5rem) / 2.2) !important;
+    min-width: calc((100% - 0.5rem) / 2.2) !important;
+    max-width: calc((100% - 0.5rem) / 2.2) !important;
+    scroll-snap-align: start;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+  }
+}
+
+
+/* fix: force admin panel page scroll */
+html, body {
+  overflow-y: auto !important;
+  height: auto !important;
+  max-height: none !important;
+}
+.panel-ui--admin,
+.admin-panel-shell,
+[data-admin-scroll],
+[data-panel="admin"] {
+  overflow-y: auto !important;
+  max-height: none !important;
+  height: auto !important;
+}
+
+/* ===== Mobile tabs: 3 full + peek of 4th (admin / seller / buyer) ===== */
+@media (max-width: 767px) {
+  .panel-ui .panel-nav,
+  .admin-panel-shell .admin-tabs-strip,
+  .seller-panel-shell .seller-tabs-strip,
+  .profile-tabs-strip,
+  .profile-page-shell .profile-tabs-strip {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 0.25rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .panel-ui .panel-nav-item,
+  .admin-tabs-strip .panel-nav-item,
+  .seller-tabs-strip .panel-nav-item,
+  .profile-tabs-strip .panel-nav-item {
+    flex: 0 0 calc((100% - 0.75rem) / 3.25) !important;
+    width: calc((100% - 0.75rem) / 3.25) !important;
+    max-width: calc((100% - 0.75rem) / 3.25) !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding-left: 0.3rem !important;
+    padding-right: 0.3rem !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .panel-ui .panel-nav-item span,
+  .admin-tabs-strip .panel-nav-item span,
+  .seller-tabs-strip .panel-nav-item span,
+  .profile-tabs-strip .panel-nav-item span {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: 100% !important;
+  }
+}
+
+
+/* hero-click-only-shop-btn */
+/* کل هیرو غیرقابل کلیک؛ فقط دکمه فروشگاه */
+.hero-video-section,
+.hero-video-section .hero-video,
+.hero-video-section .hero-frame-img,
+.hero-video-section .video-overlay,
+.hero-title-overlay,
+.hero-body-overlay,
+.hero-body1,
+.hero-body2,
+.hero-scroll-cue {
+  pointer-events: none !important;
+}
+.hero-title-overlay .hero-shop-btn,
+.hero-title-overlay button.hero-shop-btn {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  position: relative;
+  z-index: 20;
+}
+
+
+/* footer-logo-theme */
+.footer-site-logo {
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+
+/* همان تصویر هدر — بدون فیلتر و بدون پس‌زمینه */
+.footer-site-logo {
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+html.dark .footer-site-logo {
+  background: transparent !important;
+  filter: none !important;
+}
+
+
+/* view-all-link-dark */
+/* همه لینک/دکمه مشاهده همه در دارک = #12ABC4 بدون استثنا */
+html.dark .text-apple-link,
+html.dark a.text-apple-link,
+html.dark button.text-apple-link,
+html.dark .text-apple-blue,
+html.dark a.text-apple-blue,
+html.dark button.text-apple-blue {
+  color: #12ABC4 !important;
+  -webkit-text-fill-color: #12ABC4 !important;
+}
+html.dark .text-apple-link svg,
+html.dark a.text-apple-link svg,
+html.dark button.text-apple-link svg,
+html.dark .text-apple-blue svg,
+html.dark a.text-apple-blue svg,
+html.dark button.text-apple-blue svg {
+  color: #12ABC4 !important;
+  stroke: #12ABC4 !important;
+}
+html.dark a.text-apple-link:hover,
+html.dark button.text-apple-link:hover,
+html.dark a.text-apple-blue:hover,
+html.dark button.text-apple-blue:hover {
+  color: #0e9aaf !important;
+  -webkit-text-fill-color: #0e9aaf !important;
+}
+/* اگر جایی فقط با رنگ ثابت فیروزه‌ای قبلی آمده */
+html.dark a[class*="text-[#13ABC4]"],
+html.dark button[class*="text-[#13ABC4]"],
+html.dark a[class*="text-[#7EFAFF]"],
+html.dark button[class*="text-[#7EFAFF]"] {
+  color: #12ABC4 !important;
+  -webkit-text-fill-color: #12ABC4 !important;
+}
+
+
+
+/* product-add-btn-white */
+html.dark .product-add-btn,
+html.dark button.product-add-btn {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html.dark .product-add-btn:hover,
+html.dark button.product-add-btn:hover {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* product-seller-badge-dark */
+html.dark .product-seller-badge,
+html.dark button.product-seller-badge {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html.dark .product-seller-badge span,
+html.dark button.product-seller-badge span {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+/* review-shop-badge-dark */
+html.dark .review-shop-badge {
+  background-color: #FFFFFF !important;
+  color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
+}
+
+
+/* hero-body1-line1-mobile-oneline */
+/* فقط موبایل: مرکز فروش تخصصی یک خط، بدون اورفلو — دسکتاپ دست‌نخورده */
+@media (max-width: 768px) {
+  .hero-body1-line1 {
+    white-space: nowrap !important;
+    font-size: clamp(1.25rem, 6.6vw, 2.1rem) !important;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+}
+
+
+/* === cart drawer open animation v2 === */
+@keyframes pm-cart-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pm-cart-panel-in {
+  from {
+    transform: translate3d(100%, 0, 0);
+    opacity: 0.7;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+.cart-overlay {
+  animation: pm-cart-overlay-in 0.32s ease-out both !important;
+}
+.cart-panel {
+  animation: pm-cart-panel-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-overlay,
+  .cart-panel {
+    animation: none !important;
+  }
+}

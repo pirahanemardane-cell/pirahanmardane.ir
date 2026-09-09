@@ -124,7 +124,7 @@ export async function GET(req) {
       const sb = createAdminClient();
       let q = sb
         .from("products")
-        .select("*, sellers(id, shop_name), categories(id, name)")
+        .select("*, sellers(id, shop_name), categories(id, name),featured_top")
         .order("updated_at", { ascending: false })
         .limit(500);
       if (sellerId && isUuid(sellerId)) q = q.eq("seller_id", sellerId);
@@ -136,7 +136,7 @@ export async function GET(req) {
       const { data, error } = await q;
       if (error) {
         console.error("[catalog/products GET]", error);
-        let q2 = sb.from("products").select("*").order("updated_at", { ascending: false }).limit(500);
+        let q2 = sb.from("products").select("*,featured_top").order("updated_at", { ascending: false }).limit(500);
         if (sellerId && isUuid(sellerId)) q2 = q2.eq("seller_id", sellerId);
         if (status) q2 = q2.eq("status", status);
         else q2 = q2.eq("status", "active");

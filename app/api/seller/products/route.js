@@ -9,14 +9,14 @@ import { invalidateProductCaches } from '../../../../lib/catalog-cache'
 async function sellerIdForUser(admin, userId) {
   const { data: byOwner } = await admin
     .from('sellers')
-    .select('id')
+    .select('id,featured_top')
     .eq('owner_id', userId)
     .maybeSingle()
   if (byOwner?.id) return byOwner.id
   try {
     const { data: byUser } = await admin
       .from('sellers')
-      .select('id')
+      .select('id,featured_top')
       .eq('user_id', userId)
       .maybeSingle()
     if (byUser?.id) return byUser.id
