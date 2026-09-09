@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server'
 import { logCritical } from '../../../../lib/critical-log'
 import { requireAdmin } from '../../../../lib/api/admin-guard'
 
+function isUuid(v) {
+  const s = String(v || '').trim()
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s)
+}
+
+
 export async function GET(request) {
   try {
     const gate = await requireAdmin()
@@ -87,7 +93,9 @@ export async function PATCH(request) {
 
     if (body.brand_id != null || body.brandId != null) {
       const bid = body.brand_id ?? body.brandId
-      if (bid) patch.brand_id = String(bid)
+      // ستون products.brand_id فقط UUID می‌پذیرد (FK به brands)
+      // شناسه‌های catalog_brands مثل br-... فقط در payload نگه داشته می‌شوند
+      if (bid && isUuid(bid)) patch.brand_id = String(bid).trim()
       else patch.brand_id = null
     }
 
