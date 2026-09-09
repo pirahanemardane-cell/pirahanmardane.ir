@@ -132,7 +132,7 @@ export default function PdpView() {
             const fullSeller = topSellers.find(s => s.id === (seller.id || 'own')) || { ...seller, products: 48, badges: ['ارسال سریع', 'ضمانت اصالت'], image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=200&h=200&fit=crop' };
 
             return (
-              <div className="flex-1 flex flex-col bg-primary-50 dark:bg-primary-950 pb-24 sm:pb-8">
+              <div className="flex-1 flex flex-col bg-gradient-to-b from-primary-50 to-white dark:from-primary-950 dark:to-primary-950 pb-28 sm:pb-12">
                 {/* SEO Structured Data */}
                 <script
                   type="application/ld+json"
@@ -190,7 +190,7 @@ export default function PdpView() {
                     {/* ——— Gallery ——— */}
                     <div className="relative">
                       <div
-                        className="relative aspect-[4/5] sm:aspect-square rounded-2xl overflow-hidden bg-primary-100 dark:bg-primary-900 border border-primary-100 dark:border-white/10 touch-pan-y"
+                        className="relative aspect-[4/5] sm:aspect-[5/6] rounded-[1.75rem] overflow-hidden bg-white dark:bg-primary-900 border border-primary-100/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-none touch-pan-y"
                         onTouchStart={(e) => setPdpTouchX(e.changedTouches[0].clientX)}
                         onTouchEnd={(e) => {
                           if (pdpTouchX == null || galleryImages.length < 2) return;
@@ -212,7 +212,7 @@ export default function PdpView() {
                         <button
                           type="button"
                           onClick={() => setPdpZoom(true)}
-                          className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs bg-black/55 text-white px-3 py-1.5 rounded-full backdrop-blur-sm hover:bg-black/70 transition"
+                          className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs font-semibold tracking-wide bg-black/65 text-white px-4 py-2 rounded-full backdrop-blur-md hover:bg-black/80 transition shadow-lg"
                         >
                           مشاهده بزرگ · گالری
                         </button>
@@ -228,13 +228,13 @@ export default function PdpView() {
                         </div>
                         {/* Action buttons on image */}
                         <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
-                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleFavorite(p.id); }} className={`w-9 h-9 rounded-full shadow-md flex items-center justify-center ${isFav ? 'bg-apple-blue text-white' : 'bg-white/95 dark:bg-primary-900 text-primary-600 dark:text-white'}`} aria-label="علاقه‌مندی">
+                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleFavorite(p.id); }} className={`w-10 h-10 rounded-full shadow-lg backdrop-blur-md flex items-center justify-center transition ${isFav ? 'bg-apple-blue text-white' : 'bg-white/95 dark:bg-primary-900/90 text-primary-600 dark:text-white hover:scale-105'}`} aria-label="علاقه‌مندی">
                             <Icon name={isFav ? 'heartFilled' : 'heart'} size={16} />
                           </button>
-                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompare(p); }} className={`w-9 h-9 rounded-full shadow-md flex items-center justify-center ${inCompare ? 'bg-apple-blue text-white' : 'bg-white/95 dark:bg-primary-900 text-primary-600 dark:text-white'}`} aria-label="مقایسه">
+                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompare(p); }} className={`w-10 h-10 rounded-full shadow-lg backdrop-blur-md flex items-center justify-center transition ${inCompare ? 'bg-apple-blue text-white' : 'bg-white/95 dark:bg-primary-900/90 text-primary-600 dark:text-white hover:scale-105'}`} aria-label="مقایسه">
                             <Icon name="scale" size={16} />
                           </button>
-                          <a href={`https://wa.me/?text=${shareText}`} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="w-9 h-9 rounded-full shadow-md flex items-center justify-center bg-white/95 dark:bg-primary-900 text-primary-600 dark:text-white" aria-label="اشتراک‌گذاری">
+                          <a href={`https://wa.me/?text=${shareText}`} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-full shadow-lg backdrop-blur-md flex items-center justify-center bg-white/95 dark:bg-primary-900/90 text-primary-600 dark:text-white hover:scale-105 transition" aria-label="اشتراک‌گذاری">
                             <Icon name="share" size={16} />
                           </a>
                         </div>
@@ -254,7 +254,7 @@ export default function PdpView() {
                       {galleryImages.length > 1 && (
                         <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar pb-1">
                           {galleryImages.map((img, i) => (
-                            <button key={i} type="button" onClick={() => { setPdpGalleryIdx(i); setPdpColorIdx(Math.min(i, colors.length - 1)); }} className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition ${pdpGalleryIdx === i ? 'border-apple-blue ring-2 ring-apple-blue/30' : 'border-primary-200 dark:border-white/20'}`}>
+                            <button key={i} type="button" onClick={() => { setPdpGalleryIdx(i); setPdpColorIdx(Math.min(i, colors.length - 1)); }} className={`flex-shrink-0 w-[4.25rem] h-[4.25rem] sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 transition ${pdpGalleryIdx === i ? 'border-apple-blue ring-2 ring-apple-blue/25 shadow-md scale-[1.02]' : 'border-primary-200/80 dark:border-white/15 opacity-85 hover:opacity-100'}`}>
                               <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" />
                             </button>
                           ))}
@@ -270,7 +270,7 @@ export default function PdpView() {
                             { icon: 'truck', t: 'ارسال سریع' },
                             { icon: 'shield', t: 'پرداخت امن' },
                           ].map(item => (
-                            <div key={item.t} className="flex items-center gap-2 p-2.5 rounded-xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/15">
+                            <div key={item.t} className="flex items-center gap-2.5 p-3 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100/80 dark:border-white/10 shadow-sm">
                               <span className="trust-icon-wrap inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-800 border border-primary-200 dark:border-white/30 flex-shrink-0">
                                 <Icon name={item.icon} size={15} className="text-apple-blue dark:text-[#13ABC4]" />
                               </span>
@@ -283,7 +283,7 @@ export default function PdpView() {
                           <p>هزینه ارسال بر اساس روش انتخابی در تسویه حساب محاسبه می‌شود</p>
                           <p>مبدأ ارسال: {fullSeller.city || 'تهران'}</p>
                         </div>
-                        <div className="p-4 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10">
+                        <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-primary-900 border border-primary-100/80 dark:border-white/10 shadow-sm">
                           <div className="flex items-center gap-3">
                             <img src={fullSeller.image || fullSeller.banner} alt="" className="w-12 h-12 rounded-xl object-cover" />
                             <div className="min-w-0 flex-1">
@@ -307,7 +307,7 @@ export default function PdpView() {
 
                     {/* ——— Info column ——— */}
                     <div className="flex flex-col">
-                      <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white leading-snug">{p.name}</h1>
+                      <h1 className="text-2xl sm:text-[1.75rem] font-black text-primary-900 dark:text-white leading-snug tracking-tight">{p.name}</h1>
                       {p.productCode && <p className="text-xs text-primary-400 dark:text-white/50 font-latin mt-1" dir="ltr">کد: {p.productCode}</p>}
                       <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm">
                         <button type="button" onClick={() => { try { closePDP({ silent: true }); } catch(_){} openCategory(p.category); }} className="text-apple-blue dark:text-[#13ABC4] hover:underline">{p.category}</button>
@@ -318,14 +318,17 @@ export default function PdpView() {
                       </div>
 
                       {/* Rating */}
-                      <div className="flex items-center gap-2 mt-3">
+                      <div className="flex flex-wrap items-center gap-2.5 mt-3">
+                        <div className="inline-flex items-center gap-1.5 bg-emerald-600 text-white text-xs font-bold px-2.5 py-1 rounded-lg">
+                          <span>{toFa(Number(p.rating || 0).toFixed(1))}</span>
+                          <Icon name="starFilled" size={12} className="text-white" />
+                        </div>
                         <div className="flex gap-0.5">
                           {[1,2,3,4,5].map(n => (
-                            <Icon key={n} name={n <= Math.round(p.rating || 0) ? 'starFilled' : 'star'} size={16} className={n <= Math.round(p.rating || 0) ? 'text-amber-400' : 'text-primary-200 dark:text-primary-600'} />
+                            <Icon key={n} name={n <= Math.round(p.rating || 0) ? 'starFilled' : 'star'} size={14} className={n <= Math.round(p.rating || 0) ? 'text-amber-400' : 'text-primary-200 dark:text-primary-600'} />
                           ))}
                         </div>
-                        <span className="text-sm font-medium text-primary-800 dark:text-white">{toFa(Number(p.rating || 0).toFixed(1))}</span>
-                        <span className="text-xs text-primary-500 dark:!text-white">({toFa(p.reviews || 0)} نظر)</span>
+                        <span className="text-xs text-primary-500 dark:!text-white">{toFa(p.reviews || 0)} نظر خریداران</span>
                         {fullSeller.rating && (
                           <span className="text-xs text-primary-400 dark:!text-white mr-1">· امتیاز فروشنده {toFa(Number(fullSeller.rating).toFixed(1))}</span>
                         )}
@@ -339,9 +342,9 @@ export default function PdpView() {
                       )}
 
                       {/* Price */}
-                      <div className="mt-4 p-4 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10">
+                      <div className="mt-5 p-5 sm:p-6 rounded-3xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 shadow-sm">
                         <div className="flex items-end gap-3 flex-wrap">
-                          <p className="text-2xl sm:text-3xl font-bold text-primary-900 dark:text-white">{variantPriceText} <span className="text-sm font-normal text-primary-500">تومان</span></p>
+                          <p className="text-3xl sm:text-4xl font-black text-primary-900 dark:text-white tracking-tight">{variantPriceText} <span className="text-sm font-normal text-primary-500">تومان</span></p>
                           {p.oldPrice && (
                             <div className="flex items-center gap-2 pb-1">
                               <span className="text-sm text-primary-400 line-through">{p.oldPrice}</span>
@@ -525,7 +528,7 @@ export default function PdpView() {
 
                       {/* Qty + stock */}
                       <div className="mt-5 flex flex-wrap items-center gap-4">
-                        <div className="flex items-center gap-1 border border-primary-200 dark:border-white/25 rounded-full">
+                        <div className="flex items-center gap-1 border border-primary-200 dark:border-white/25 rounded-2xl bg-white dark:bg-primary-900 shadow-sm">
                           <button type="button" onClick={() => setPdpQty(q => Math.max(1, q - 1))} className="w-9 h-9 flex items-center justify-center text-primary-900 dark:text-white hover:bg-primary-50 dark:hover:bg-primary-800 rounded-full" aria-label="کاهش تعداد">
                             <Icon name="minus" size={16} />
                           </button>
@@ -565,7 +568,7 @@ export default function PdpView() {
                       {/* CTA */}
                       <div className="mt-5 flex flex-col sm:flex-row gap-2.5">
                         {stockOk ? (
-                          <button type="button" onClick={() => addToCart(p, { colorIdx: pdpColorIdx, size: pdpSize || '', qty: pdpQty, attrs: activeAttrs, requireSize: true })} className="flex-1 py-3 rounded-full bg-apple-blue text-white text-sm font-bold hover:opacity-90 transition shadow-md">
+                          <button type="button" onClick={() => addToCart(p, { colorIdx: pdpColorIdx, size: pdpSize || '', qty: pdpQty, attrs: activeAttrs, requireSize: true })} className="flex-1 py-3.5 rounded-2xl bg-apple-blue text-white text-[15px] font-bold hover:opacity-95 active:scale-[0.99] transition shadow-lg shadow-apple-blue/20">
                             افزودن به سبد
                           </button>
                         ) : (
@@ -608,7 +611,7 @@ export default function PdpView() {
                           { icon: 'truck', t: 'ارسال سریع' },
                           { icon: 'shield', t: 'پرداخت امن' },
                         ].map(item => (
-                          <div key={item.t} className="flex items-center gap-2 p-2.5 rounded-xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/15">
+                          <div key={item.t} className="flex items-center gap-2.5 p-3 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100/80 dark:border-white/10 shadow-sm">
                             <span className="trust-icon-wrap inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-800 border border-primary-200 dark:border-white/30 flex-shrink-0">
                               <Icon name={item.icon} size={15} className="text-apple-blue dark:text-[#13ABC4]" />
                             </span>
@@ -668,7 +671,7 @@ export default function PdpView() {
                         </button>
                       ))}
                     </div>
-                    <div className="bg-white dark:bg-black rounded-2xl border border-primary-100 dark:border-white/10 p-4 sm:p-6 text-sm text-primary-700 dark:text-white/80 leading-relaxed">
+                    <div className="bg-white dark:bg-primary-900 rounded-3xl border border-primary-100/80 dark:border-white/10 p-5 sm:p-7 text-sm text-primary-700 dark:text-white/80 leading-relaxed shadow-sm">
                       {pdpTab === 'desc' && (
                         <div className="space-y-3">
                           <p>{p.description}</p>
@@ -918,14 +921,14 @@ export default function PdpView() {
                 </div>
 
                 {/* Mobile sticky CTA */}
-                <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-primary-950/95 backdrop-blur-xl border-t border-primary-100 dark:border-white/15 px-3 py-2.5 safe-pb safe-area-pb">
+                <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-primary-950/95 backdrop-blur-xl border-t border-primary-100 dark:border-white/15 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] safe-pb safe-area-pb">
                   <div className="flex items-center gap-3">
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-primary-900 dark:text-white">{p.priceText} <span className="text-xs font-normal text-primary-500">تومان</span></p>
                       {p.discount && <p className="text-xs text-red-500">{toFa(p.discount)}٪ تخفیف</p>}
                     </div>
                     {stockOk ? (
-                      <button type="button" onClick={() => addToCart(p, { colorIdx: pdpColorIdx, size: pdpSize || '', qty: pdpQty, attrs: activeAttrs, requireSize: true })} className="flex-1 py-2.5 rounded-full bg-apple-blue text-white text-sm font-bold">
+                      <button type="button" onClick={() => addToCart(p, { colorIdx: pdpColorIdx, size: pdpSize || '', qty: pdpQty, attrs: activeAttrs, requireSize: true })} className="flex-1 py-3 rounded-2xl bg-apple-blue text-white text-sm font-bold shadow-md">
                         افزودن به سبد
                       </button>
                     ) : (
@@ -938,7 +941,7 @@ export default function PdpView() {
 
                 {pdpZoom && (
                   <div
-                    className="fixed inset-0 z-[400] flex flex-col bg-black/92 backdrop-blur-md"
+                    className="fixed inset-0 z-[400] flex flex-col bg-black/94 backdrop-blur-xl"
                     role="dialog"
                     aria-modal="true"
                     onClick={() => setPdpZoom(false)}
