@@ -547,6 +547,44 @@ export default function AdminPanelContent() {
     }
   };
 
+  const filterTaxTags = (list) => {
+    const arr = Array.isArray(list) ? list : [];
+    if (taxFilter === 'archived') return arr.filter(isTaxArchived);
+    if (taxFilter === 'active') return arr.filter((x) => !isTaxArchived(x));
+    return arr;
+  };
+  const runTaxBulkTag = async (mode) => {
+    if (typeof saveAdminTags !== 'function') {
+      try { showToast({ message: 'ذخیره برچسب در دسترس نیست', variant: 'error', duration: 3000, position: 'top-center' }); } catch (_) {}
+      return;
+    }
+    const ids = new Set(taxSelectedIds.map(String));
+    if (!ids.size) {
+      try { showToast({ message: 'موردی انتخاب نشده', variant: 'error', duration: 2500, position: 'top-center' }); } catch (_) {}
+      return;
+    }
+    const isPurge = mode === 'purge';
+    const isRestore = mode === 'restore';
+    let msg = 'آرشیو ' + ids.size + ' برچسب؟';
+    if (isPurge) msg = 'حذف دائم ' + ids.size + ' برچسب؟ برگشت‌پذیر نیست.';
+    if (isRestore) msg = 'بازگردانی ' + ids.size + ' برچسب؟';
+    const ok = typeof siteConfirm === 'function'
+      ? await siteConfirm(msg, isPurge ? 'حذف دائم' : (isRestore ? 'بازگردانی' : 'آرشیو'))
+      : window.confirm(msg);
+    if (!ok) return;
+    setTaxBusy(true);
+    try {
+      const list = adminTags || [];
+      if (isPurge) saveAdminTags(list.filter((x) => !ids.has(String(x.id))));
+      else if (isRestore) saveAdminTags(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else saveAdminTags(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
+      setTaxSelectedIds([]);
+      try { showToast({ message: isPurge ? 'حذف دائم انجام شد' : (isRestore ? 'بازگردانی شد' : 'به آرشیو منتقل شد'), variant: 'success', duration: 3000, position: 'top-center' }); } catch (_) {}
+    } finally {
+      setTaxBusy(false);
+    }
+  };
+
 
  const [adminSelectedProductIds, setAdminSelectedProductIds] = useState([]);
   const [taxSelectedIds, setTaxSelectedIds] = useState([]);
@@ -2472,22 +2510,76 @@ export default function AdminPanelContent() {
              </div>
             </div>
             <div className="space-y-2">
-             {(adminTags || []).map((t) => (
-              <div key={t.id} className="flex flex-wrap items-center gap-3 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-               {t.image ? <img src={t.image} alt="" className="w-14 h-14 rounded-lg object-cover flex-shrink-0" /> : <div className="w-14 h-14 rounded-lg bg-primary-100 dark:bg-primary-800 flex-shrink-0" />}
-               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-primary-900 dark:text-white">{t.name}</p>
-                <p className="text-xs text-primary-500 dark:!text-white mt-0.5 font-latin" dir="ltr">{t.url || `/shop?tag=${t.slug}`}</p>
-                {t.description && <p className="text-xs text-primary-400 dark:!text-white line-clamp-1 mt-0.5">{t.description}</p>}
-               </div>
-               <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">noindex</span>
-               <button type="button" onClick={() => openTagPage(t.name)} className="text-xs px-2 py-1 rounded-full border border-primary-200 dark:border-white/20 text-primary-600 dark:text-white">صفحه</button>
-               <button type="button" onClick={() => openTaxonomyWizard('tag', t)} className="p-1.5 rounded-full hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-500"><Icon name="pencil" size={14} /></button>
-               <button type="button" onClick={() => { siteConfirm('حذف این برچسب؟').then(ok=>{ if(ok) saveAdminTags((adminTags || []).filter(x => x.id !== t.id)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
-              </div>
-             ))}
-             {!(adminTags || []).length && <p className="text-sm text-primary-400 text-center py-8">برچسبی ثبت نشده</p>}
+            <div className="flex flex-wrap gap-1.5 mb-1">
+              {[{ id: 'all', l: 'همه' }, { id: 'active', l: 'فعال' }, { id: 'archived', l: 'آرشیو شده‌ها' }].map((f) => (
+                <button key={f.id} type="button" onClick={() => setTaxFilter(f.id)}
+                  className={`text-xs px-3 py-1.5 rounded-full border font-medium ${taxFilter === f.id ? 'bg-primary-900 text-white border-primary-900 dark:bg-white dark:text-primary-900' : 'border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900'}`}>{f.l}</button>
+              ))}
             </div>
+            {filterTaxTags(adminTags).length > 0 && (
+              <label className="flex items-center gap-2 px-1 py-1 text-xs text-primary-600 dark:text-white/70 cursor-pointer select-none">
+                <input type="checkbox"
+                  checked={filterTaxTags(adminTags).every((x) => taxSelectedIds.includes(String(x.id)))}
+                  onChange={() => {
+                    const ids = filterTaxTags(adminTags).map((x) => String(x.id));
+                    const all = ids.every((id) => taxSelectedIds.includes(id));
+                    setTaxSelectedIds(all ? [] : ids);
+                  }}
+                  className="rounded border-primary-300"
+                />
+                انتخاب همه در این فهرست ({filterTaxTags(adminTags).length})
+              </label>
+            )}
+            {taxSelectedIds.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
+                <span className="text-xs font-medium text-red-800 dark:text-red-200">{taxSelectedIds.length} مورد انتخاب شده</span>
+                {taxFilter === 'archived' ? (
+                  <>
+                    <button type="button" disabled={taxBusy} onClick={() => runTaxBulkTag('restore')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">بازگردانی گروهی</button>
+                    <button type="button" disabled={taxBusy} onClick={() => runTaxBulkTag('purge')} className="text-xs px-3 py-1.5 rounded-full bg-red-600 text-white font-medium disabled:opacity-50">حذف دائم گروهی</button>
+                  </>
+                ) : (
+                  <button type="button" disabled={taxBusy} onClick={() => runTaxBulkTag('archive')} className="text-xs px-3 py-1.5 rounded-full bg-red-600 text-white font-medium disabled:opacity-50">آرشیو گروهی</button>
+                )}
+                <button type="button" onClick={() => setTaxSelectedIds([])} className="text-xs px-3 py-1.5 rounded-full border border-primary-300 dark:border-white/30">لغو انتخاب</button>
+              </div>
+            )}
+            {filterTaxTags(adminTags).map((tg) => (
+              <div key={tg.id} className={`flex flex-wrap items-center gap-3 p-3 rounded-xl border bg-white dark:bg-primary-900 ${taxSelectedIds.includes(String(tg.id)) ? 'border-apple-blue ring-1 ring-apple-blue/30' : 'border-primary-200 dark:border-white/15'}`}>
+                <input type="checkbox" checked={taxSelectedIds.includes(String(tg.id))} onChange={() => toggleTaxSelect(tg.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-primary-900 dark:text-white">{tg.name}</p>
+                  {(tg.slug || tg.url) && <p className="text-xs text-primary-500 dark:!text-white mt-0.5 font-latin" dir="ltr">{tg.url || tg.slug}</p>}
+                </div>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${isTaxArchived(tg) ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'}`}>{isTaxArchived(tg) ? 'آرشیو' : 'فعال'}</span>
+                <button type="button" onClick={() => openTaxonomyWizard('tag', tg)} className="p-1.5 rounded-full hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-500"><Icon name="pencil" size={14} /></button>
+                {isTaxArchived(tg) ? (
+                  <>
+                    <button type="button" onClick={() => {
+                      siteConfirm('این برچسب بازگردانی شود؟').then((ok) => {
+                        if (!ok || typeof saveAdminTags !== 'function') return;
+                        saveAdminTags((adminTags || []).map((x) => x.id === tg.id ? { ...x, status: 'active', active: true } : x));
+                      });
+                    }} className="text-xs px-2 py-1 rounded-full border border-emerald-300 text-emerald-700">بازگردانی</button>
+                    <button type="button" onClick={() => {
+                      siteConfirm('حذف دائم این برچسب؟ برگشت‌پذیر نیست.').then((ok) => {
+                        if (!ok || typeof saveAdminTags !== 'function') return;
+                        saveAdminTags((adminTags || []).filter((x) => x.id !== tg.id));
+                      });
+                    }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
+                  </>
+                ) : (
+                  <button type="button" onClick={() => {
+                    siteConfirm('این برچسب به آرشیو منتقل شود؟').then((ok) => {
+                      if (!ok || typeof saveAdminTags !== 'function') return;
+                      saveAdminTags((adminTags || []).map((x) => x.id === tg.id ? { ...x, status: 'archived', active: false } : x));
+                    });
+                  }} className="text-xs px-2 py-1 rounded-full border border-red-300 text-red-600">آرشیو</button>
+                )}
+              </div>
+            ))}
+            {!filterTaxTags(adminTags).length && <p className="text-sm text-primary-400 text-center py-8">{taxFilter === 'archived' ? 'آرشیو خالی است' : 'برچسبی ثبت نشده'}</p>}
+          </div>
            </div>
            </div>
          )}
