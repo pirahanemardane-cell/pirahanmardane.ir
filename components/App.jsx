@@ -432,6 +432,13 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           const msg = PAGE_LOAD_LABELS[key] || (key ? ('در حال بارگذاری ' + key + '…') : 'در حال بارگذاری…');
           setPageLoadingText(msg);
         } catch (_) {}
+        // همیشه از بالای صفحه شروع شود
+        try {
+          window.scrollTo(0, 0);
+          if (document.documentElement) document.documentElement.scrollTop = 0;
+          if (document.body) document.body.scrollTop = 0;
+        } catch (_) {}
+        try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
       };
       const endPageLoad = () => {
         try {
@@ -6078,19 +6085,62 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       const scrollPageToTop = () => {
         const go = () => {
           try {
-            window.scrollTo(0, 0);
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          } catch (_) {
+            try { window.scrollTo(0, 0); } catch (__) {}
+          }
+          try {
             if (document.documentElement) document.documentElement.scrollTop = 0;
             if (document.body) document.body.scrollTop = 0;
-            const root = document.getElementById('__next') || document.getElementById('root');
+            const root = document.getElementById('__next') || document.getElementById('root') || document.scrollingElement;
             if (root) root.scrollTop = 0;
+            // هر کانتینر اسکرول‌دار اصلی صفحه
+            document.querySelectorAll('[data-scroll-root], main, .panel-content-wrap').forEach((el) => {
+              try { el.scrollTop = 0; } catch (_) {}
+            });
           } catch (_) {}
         };
         go();
-        try { requestAnimationFrame(go); } catch (_) {}
+        try { requestAnimationFrame(() => { go(); requestAnimationFrame(go); }); } catch (_) {}
+        try { setTimeout(go, 0); } catch (_) {}
         try { setTimeout(go, 50); } catch (_) {}
-        try { setTimeout(go, 150); } catch (_) {}
-        try { setTimeout(go, 350); } catch (_) {}
+        try { setTimeout(go, 120); } catch (_) {}
+        try { setTimeout(go, 280); } catch (_) {}
+        try { setTimeout(go, 500); } catch (_) {}
       };
+
+      // جلوگیری از برگرداندن اسکرول وسط صفحه توسط مرورگر
+      useEffect(() => {
+        try {
+          if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+            window.history.scrollRestoration = 'manual';
+          }
+        } catch (_) {}
+      }, []);
+
+      // با هر تغییر صفحه/ویو → اسکرول به بالا
+      useEffect(() => {
+        try { scrollPageToTop(); } catch (_) {}
+      }, [
+        staticPage,
+        showPLP,
+        pdpProduct,
+        showCartPage,
+        showCheckout,
+        showWishlistPage,
+        showRecentPage,
+        showComparePage,
+        showProfilePage,
+        showSellerPanel,
+        showAdminPanel,
+        activeSellerId,
+        showSellersList,
+        showTaxonomyHub,
+        brandDetailId,
+        pageLoadingText,
+      ]);
+
+
 
 
             /**
