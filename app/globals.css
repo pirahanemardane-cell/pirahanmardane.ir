@@ -3778,8 +3778,9 @@ html.dark .panel-ui {
   border-left: none !important;
   border-bottom: none !important;
   transition: background 0.2s ease, color 0.2s ease !important;
-  padding-top: 7px !important;
-  padding-bottom: 7px !important;
+  padding: 0.5rem 0.875rem !important;
+  min-height: 2.25rem !important;
+  box-sizing: border-box !important;
 }
 
 .panel-ui .panel-nav-item:hover {
@@ -5206,5 +5207,31 @@ html.dark p.pm-page-loader-text,
   color: var(--pm-loader-fg) !important;
   -webkit-text-fill-color: var(--pm-loader-fg) !important;
   opacity: 1 !important;
+}
+
+/* پدینگ بج تب‌های پنل — موبایل */
+@media (max-width: 767px) {
+  .panel-ui .panel-nav,
+  .panel-ui .admin-tabs-strip,
+  .panel-ui .seller-tabs-strip,
+  .panel-ui .profile-tabs-strip,
+  .panel-ui .buyer-tabs-strip {
+    padding: 0.5rem !important;
+    gap: 0.375rem !important;
+    align-items: center !important;
+  }
+  .panel-ui .panel-nav-item {
+    width: auto !important;
+    max-width: none !important;
+    flex: 0 0 auto !important;
+    padding: 0.55rem 1rem !important;
+    min-height: 2.375rem !important;
+    border-radius: 9999px !important;
+    gap: 0.4rem !important;
+  }
+  .panel-ui .panel-nav-item--active,
+  .panel-ui .panel-nav-item.panel-nav-item--active {
+    padding: 0.55rem 1.05rem !important;
+  }
 }
 
