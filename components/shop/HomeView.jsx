@@ -106,6 +106,7 @@ export default function HomeView() {
     setPublicTrackOpen,
     setPublicTrackCode,
     publicTrackOpen,
+    setBrandDetailId
   } = useAppApi(); /* setPublicTrackOpen from context */
   const [homeBlogs, setHomeBlogs] = useState([]);
   useEffect(() => {
@@ -281,8 +282,8 @@ export default function HomeView() {
                         key={b.id || b.name}
                         role="button"
                         tabIndex={0}
-                        onClick={() => { try { openPLP({ brand: b.name }); } catch (_) { openPLP(); } }}
-                        onKeyDown={(e) => { if (e.key === 'Enter') { try { openPLP({ brand: b.name }); } catch (_) { openPLP(); } } }}
+                        onClick={() => { try { setBrandDetailId(b.id); openStaticPage('brands'); } catch (_) { try { openStaticPage('brands'); } catch (__) {} } }}
+                        onKeyDown={(e) => { if (e.key === 'Enter') { try { setBrandDetailId(b.id); openStaticPage('brands'); } catch (_) { try { openStaticPage('brands'); } catch (__) {} } } }}
                         className="flex-shrink-0 w-[104px] h-[88px] rounded-xl border border-primary-200 dark:border-white/25 bg-primary-50 dark:bg-primary-800 flex flex-col items-center justify-center text-center p-2 cursor-pointer transition hover:bg-primary-800 hover:border-primary-800 dark:hover:bg-primary-700 dark:hover:border-white/40 group/brand shadow-sm"
                       >
                         <span className="font-bold text-xs leading-tight text-primary-900 dark:text-white group-hover/brand:text-white dark:group-hover/brand:text-[#FF0000] dark:text-[#13ABC4] line-clamp-2">{b.name}</span>
