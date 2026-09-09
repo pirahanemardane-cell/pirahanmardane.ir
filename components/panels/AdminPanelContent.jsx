@@ -3078,7 +3078,7 @@ export default function AdminPanelContent() {
                 return (
                  <div key={item.key} className={`flex items-center gap-2 px-3 py-2.5 ${isOn ? 'bg-primary-50 dark:bg-primary-800' : ''}`}>
                   <button type="button" onClick={() => { setAdminSeoHubKey(isOn ? null : item.key); if (!isOn) setAdminPageSeoStep(1); }} className="flex-1 text-right flex items-center justify-between gap-2 min-w-0">
-                   <span className="text-sm font-medium text-primary-900 dark:text-white truncate">{item.label}</span>
+                   <span className="text-sm font-medium text-primary-900 dark:text-white truncate min-w-0 flex-1">{item.label}</span>
                    <span className="text-[10px] text-primary-400 flex-shrink-0">{saved ? 'دارای محتوا/سئو' : 'پیش‌فرض'}</span>
                   </button>
                   <button type="button" onClick={item.open} className="text-[10px] px-2 py-1 rounded-full border border-primary-200 dark:border-white/20 text-primary-600 dark:text-white/80 whitespace-nowrap">مشاهده</button>
@@ -5009,10 +5009,10 @@ export default function AdminPanelContent() {
            </div>
 
            {/* Page SEO hub — جایگزین ایندکس سراسری و تگ‌های عمومی */}
-           <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-4">
-            <div>
+           <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-4 overflow-hidden min-w-0">
+            <div className="min-w-0">
              <h3 className="text-sm font-bold text-primary-900 dark:text-white">سئوی صفحات سایت</h3>
-             <p className="text-xs text-primary-500 mt-1 whitespace-nowrap shrink-0">برای هر صفحه: تحلیل، کلمات کلیدی، Title، Meta، FAQ، پیش‌نمایش گوگل/شبکه، سپس ایندکس و کنونیکال. سئوی محصول در پنل فروشنده است.</p>
+             <p className="text-xs text-primary-500 mt-1 leading-6 break-words max-w-full">برای هر صفحه: تحلیل، کلمات کلیدی، Title، Meta، FAQ، پیش‌نمایش گوگل/شبکه، سپس ایندکس و کنونیکال. سئوی محصول در پنل فروشنده است.</p>
             </div>
             {(() => {
              const base = (seoCfg().canonicalBase || 'https://pirahanemardane.ir').replace(/\/$/, '');
@@ -5080,9 +5080,9 @@ export default function AdminPanelContent() {
                    key={item.key}
                    type="button"
                    onClick={() => setAdminSeoHubKey(isOn ? null : item.key)}
-                   className={`seo-page-list-row w-full text-right px-4 py-3.5 flex items-center justify-between gap-3 transition ${isOn ? 'is-active' : ''}`}
+                   className={`seo-page-list-row w-full text-right px-3 sm:px-4 py-3.5 flex items-center justify-between gap-2 min-w-0 transition ${isOn ? 'is-active' : ''}`}
                   >
-                   <span className="text-sm font-medium text-primary-900 dark:text-white truncate">{item.label}</span>
+                   <span className="text-sm font-medium text-primary-900 dark:text-white truncate min-w-0 flex-1">{item.label}</span>
                    <span className="flex items-center gap-1.5 flex-shrink-0">
                     {isNoindex ? (
                      <span className="seo-page-badge seo-page-badge--warn">noindex</span>
