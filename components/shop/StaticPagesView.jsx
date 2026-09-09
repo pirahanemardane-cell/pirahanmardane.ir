@@ -719,15 +719,15 @@ export default function StaticPagesView() {
                         <p className="text-xs text-primary-400 dark:!text-white mt-0.5">{toFa(brandProducts.length)} محصول</p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 items-stretch">
                       {!brandProducts.length && (
                         <p className="col-span-full text-center text-sm text-primary-500 py-10">محصولی برای این برند ثبت نشده</p>
                       )}
                       {(brandProducts.length ? brandProducts : []).map((p) => (
                         typeof renderProductCard === 'function'
-                          ? <div key={p.id}>{renderProductCard(p, 'brand-' + String(p.id))}</div>
+                          ? renderProductCard(p, 'brand-', { grid: true })
                           : (
-                            <button key={p.id} type="button" onClick={() => { try { closeStaticPage(); } catch (_) {} try { setBrandDetailId(null); } catch (_) {} openPDP(p); }} className="text-right rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 overflow-hidden hover:border-apple-blue/40 transition">
+                            <button key={p.id} type="button" onClick={() => { try { closeStaticPage(); } catch (_) {} try { setBrandDetailId(null); } catch (_) {} openPDP(p); }} className="text-right rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 overflow-hidden hover:border-apple-blue/40 transition w-full h-full">
                               <img src={p.colors?.[0]?.image || p.image} alt="" className="aspect-[4/5] w-full object-cover" loading="lazy" />
                               <div className="p-2.5">
                                 <p className="text-sm sm:text-base font-medium text-primary-900 dark:!text-white line-clamp-2">{p.name}</p>
