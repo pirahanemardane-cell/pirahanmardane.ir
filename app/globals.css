@@ -5174,3 +5174,11 @@ footer .select-none {
 }
 /* === END MOBILE FOOTER TOUCH SCROLL FIX === */
 
+/* متن لودر بین صفحات — دارک: تیره روی فیروزه‌ای */
+.pm-page-loader-text {
+  color: #ffffff !important;
+}
+html.dark .pm-page-loader-text {
+  color: #0A0A0A !important;
+}
+
