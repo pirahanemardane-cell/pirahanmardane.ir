@@ -3,7 +3,7 @@
 import {useEffect, useState, useRef} from 'react';
 import { useWebOtp } from '../../lib/useWebOtp';
 import { useAppApi } from '../AppApiContext';
-import InputOtp10 from "@/components/ui/input-otp-10";
+import OtpBoxes from "@/components/ui/OtpBoxes";
 
 /**
  * مودال ورود خریدار / فروشنده — فقط OTP
@@ -274,7 +274,8 @@ export default function AuthModalView() {
               کد ارسال‌شده به {authPhone || 'شماره شما'} را وارد کنید
             </p>
             
-            <InputOtp10
+            
+            <OtpBoxes
               value={String(authOtp || "")}
               onChange={(v) => {
                 try {
@@ -282,9 +283,8 @@ export default function AuthModalView() {
                   setAuthError("");
                 } catch (_) {}
               }}
-              isVerifying={!!authLoading}
-              phone={authPhone || ""}
-              compact
+              checking={!!authLoading}
+              disabled={!!authLoading}
             />
             {authError ? (
               <p className="text-xs text-center text-red-500">{authError}</p>
