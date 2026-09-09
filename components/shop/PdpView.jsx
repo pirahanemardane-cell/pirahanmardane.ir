@@ -936,37 +936,6 @@ export default function PdpView() {
                   </div>
                 </div>
               </div>
-
-            {/* ——— گالری تمام‌صفحه (لایت‌باکس) ——— */}
-            {pdpZoom && (
-              <div
-                className="fixed inset-0 z-[400] flex flex-col bg-black/92 dark:bg-black/95 backdrop-blur-sm"
-                role="dialog"
-                aria-modal="true"
-                aria-label="گالری محصول"
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') setPdpZoom(false);
-                  if (e.key === 'ArrowLeft') setPdpGalleryIdx((i) => (i + 1) % Math.max(galleryImages.length, 1));
-                  if (e.key === 'ArrowRight') setPdpGalleryIdx((i) => (i - 1 + Math.max(galleryImages.length, 1)) % Math.max(galleryImages.length, 1));
-                }}
-              >
-                {/* هدر */}
-                <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 border-b border-white/10 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setPdpZoom(false)}
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
-                    aria-label="بستن"
-                  >
-                    <Icon name="x" size={20} />
-                  </button>
-                  <div className="min-w-0 flex-1 text-center">
-                    <p className="text-sm sm:text-base font-bold text-white truncate">{p.name}</p>
-                    {galleryImages.length > 1 && (
-                      <p className="text-[11px] text-white/50 mt-0.5">
-                        {toFa((pdpGalleryIdx % galleryImages.length) + 1)} از {toFa(galleryImages.length)}
-                      </p>
-                    )}
                   </div>
                   <div className="w-10" aria-hidden />
                 </div>
@@ -1062,6 +1031,51 @@ export default function PdpView() {
                   )}
                   <p className="text-center text-[11px] text-white/40 hidden sm:block">برای بستن: Esc · کلیک روی پس‌زمینه · یا دکمه ×</p>
                 </div>
+              </div>
+            )}
+
+
+            {pdpZoom && (
+              <div
+                className="fixed inset-0 z-[400] flex flex-col bg-black/90 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+                onClick={() => setPdpZoom(false)}
+              >
+                <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 shrink-0" onClick={(e) => e.stopPropagation()}>
+                  <button type="button" onClick={() => setPdpZoom(false)} className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center" aria-label="بستن">
+                    <Icon name="x" size={20} />
+                  </button>
+                  <p className="text-sm font-bold text-white truncate px-3">{p.name}</p>
+                  <div className="w-10" />
+                </div>
+                <div className="flex-1 flex items-center justify-center min-h-0 p-4" onClick={(e) => e.stopPropagation()}>
+                  <img
+                    src={galleryImages[Math.min(pdpGalleryIdx, Math.max(0, galleryImages.length - 1))] || mainImg}
+                    alt={p.name}
+                    className="max-h-full max-w-full object-contain rounded-xl select-none"
+                    draggable={false}
+                  />
+                  {galleryImages.length > 1 && (
+                    <>
+                      <button type="button" onClick={() => setPdpGalleryIdx((i) => (i - 1 + galleryImages.length) % galleryImages.length)} className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 text-white flex items-center justify-center">
+                        <Icon name="chevronRight" size={22} />
+                      </button>
+                      <button type="button" onClick={() => setPdpGalleryIdx((i) => (i + 1) % galleryImages.length)} className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 text-white flex items-center justify-center">
+                        <Icon name="chevronLeft" size={22} />
+                      </button>
+                    </>
+                  )}
+                </div>
+                {galleryImages.length > 1 && (
+                  <div className="flex gap-2 justify-center overflow-x-auto px-4 py-3 border-t border-white/10" onClick={(e) => e.stopPropagation()}>
+                    {galleryImages.map((img, i) => (
+                      <button key={i} type="button" onClick={() => setPdpGalleryIdx(i)} className={`w-14 h-14 rounded-lg overflow-hidden border-2 shrink-0 ${pdpGalleryIdx === i ? 'border-white' : 'border-white/25 opacity-70'}`}>
+                        <img src={img} alt="" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
