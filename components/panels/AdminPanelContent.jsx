@@ -585,6 +585,44 @@ export default function AdminPanelContent() {
     }
   };
 
+  const filterTaxBrands = (list) => {
+    const arr = Array.isArray(list) ? list : [];
+    if (taxFilter === 'archived') return arr.filter(isTaxArchived);
+    if (taxFilter === 'active') return arr.filter((x) => !isTaxArchived(x));
+    return arr;
+  };
+  const runTaxBulkBrand = async (mode) => {
+    if (typeof saveAdminCatalogBrands !== 'function') {
+      try { showToast({ message: 'ذخیره برند در دسترس نیست', variant: 'error', duration: 3000, position: 'top-center' }); } catch (_) {}
+      return;
+    }
+    const ids = new Set(taxSelectedIds.map(String));
+    if (!ids.size) {
+      try { showToast({ message: 'موردی انتخاب نشده', variant: 'error', duration: 2500, position: 'top-center' }); } catch (_) {}
+      return;
+    }
+    const isPurge = mode === 'purge';
+    const isRestore = mode === 'restore';
+    let msg = 'آرشیو ' + ids.size + ' برند؟';
+    if (isPurge) msg = 'حذف دائم ' + ids.size + ' برند؟ برگشت‌پذیر نیست.';
+    if (isRestore) msg = 'بازگردانی ' + ids.size + ' برند؟';
+    const ok = typeof siteConfirm === 'function'
+      ? await siteConfirm(msg, isPurge ? 'حذف دائم' : (isRestore ? 'بازگردانی' : 'آرشیو'))
+      : window.confirm(msg);
+    if (!ok) return;
+    setTaxBusy(true);
+    try {
+      const list = adminCatalogBrands || [];
+      if (isPurge) saveAdminCatalogBrands(list.filter((x) => !ids.has(String(x.id))));
+      else if (isRestore) saveAdminCatalogBrands(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'active', active: true } : x));
+      else saveAdminCatalogBrands(list.map((x) => ids.has(String(x.id)) ? { ...x, status: 'archived', active: false } : x));
+      setTaxSelectedIds([]);
+      try { showToast({ message: isPurge ? 'حذف دائم انجام شد' : (isRestore ? 'بازگردانی شد' : 'به آرشیو منتقل شد'), variant: 'success', duration: 3000, position: 'top-center' }); } catch (_) {}
+    } finally {
+      setTaxBusy(false);
+    }
+  };
+
 
  const [adminSelectedProductIds, setAdminSelectedProductIds] = useState([]);
   const [taxSelectedIds, setTaxSelectedIds] = useState([]);
@@ -2599,30 +2637,78 @@ export default function AdminPanelContent() {
              </div>
             </div>
             <div className="space-y-2">
-             {(adminCatalogBrands || []).map(b => (
-              <div key={b.id} className="flex flex-wrap items-center gap-2 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-primary-900 dark:text-white">{b.name}</p>
-                {b.seoTitle && <p className="text-[10px] text-primary-400 truncate">SEO: {b.seoTitle}</p>}
-               </div>
-               <label className="flex items-center gap-1.5 text-[11px] text-primary-700 dark:text-white cursor-pointer select-none px-2 py-1 rounded-full border border-primary-200 dark:border-white/20">
-                <input
-                 type="checkbox"
-                 checked={(b.home_opt_out || b.homeOptOut) ? false : (b.show_on_home == null && b.showOnHome == null ? true : !!(b.show_on_home ?? b.showOnHome))} title="نمایش در برندهای منتخب صفحه اصلی"
-                 onChange={() => saveAdminCatalogBrands((adminCatalogBrands || []).map(x => {
-                  if (x.id !== b.id) return x;
-                  const next = !(x.show_on_home ?? x.showOnHome);
-                  return { ...x, show_on_home: next, home_opt_out: !next };
-                }))}
-                />
-                صفحه اصلی
-               </label>
-               <button type="button" onClick={() => saveAdminCatalogBrands((adminCatalogBrands || []).map(x => x.id === b.id ? { ...x, active: x.active === false } : x))} className={`text-xs px-2.5 py-1 rounded-full border font-medium ${b.active === false ? '!bg-red-100 !border-red-300 !text-red-700 dark:!bg-red-950/50 dark:!border-red-700 dark:!text-red-300' : '!bg-emerald-50 !border-emerald-200 !text-emerald-700 dark:!bg-emerald-950/40 dark:!border-emerald-800/60 dark:!text-emerald-300'}`}>{b.active === false ? 'غیرفعال' : 'فعال'}</button>
-               <button type="button" onClick={() => openTaxonomyWizard('brand', b)} className="p-1.5 rounded-full hover:bg-primary-50 text-primary-500"><Icon name="pencil" size={14} /></button>
-               <button type="button" onClick={() => { siteConfirm('حذف این برند؟').then(ok=>{ if(ok) saveAdminCatalogBrands((adminCatalogBrands || []).filter(x => x.id !== b.id)); }); }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
-              </div>
-             ))}
+            {(<>
+            <div className="flex flex-wrap gap-1.5 mb-1">
+              {[{ id: 'all', l: 'همه' }, { id: 'active', l: 'فعال' }, { id: 'archived', l: 'آرشیو شده‌ها' }].map((f) => (
+                <button key={f.id} type="button" onClick={() => setTaxFilter(f.id)}
+                  className={`text-xs px-3 py-1.5 rounded-full border font-medium ${taxFilter === f.id ? 'bg-primary-900 text-white border-primary-900 dark:bg-white dark:text-primary-900' : 'border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900'}`}>{f.l}</button>
+              ))}
             </div>
+            {filterTaxBrands(adminCatalogBrands).length > 0 && (
+              <label className="flex items-center gap-2 px-1 py-1 text-xs text-primary-600 dark:text-white/70 cursor-pointer select-none">
+                <input type="checkbox"
+                  checked={filterTaxBrands(adminCatalogBrands).every((x) => taxSelectedIds.includes(String(x.id)))}
+                  onChange={() => {
+                    const ids = filterTaxBrands(adminCatalogBrands).map((x) => String(x.id));
+                    const all = ids.every((id) => taxSelectedIds.includes(id));
+                    setTaxSelectedIds(all ? [] : ids);
+                  }}
+                  className="rounded border-primary-300"
+                />
+                انتخاب همه در این فهرست ({filterTaxBrands(adminCatalogBrands).length})
+              </label>
+            )}
+            {taxSelectedIds.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
+                <span className="text-xs font-medium text-red-800 dark:text-red-200">{taxSelectedIds.length} مورد انتخاب شده</span>
+                {taxFilter === 'archived' ? (
+                  <>
+                    <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBrand('restore')} className="text-xs px-3 py-1.5 rounded-full border border-emerald-300 text-emerald-700 bg-emerald-50 disabled:opacity-50">بازگردانی گروهی</button>
+                    <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBrand('purge')} className="text-xs px-3 py-1.5 rounded-full bg-red-600 text-white font-medium disabled:opacity-50">حذف دائم گروهی</button>
+                  </>
+                ) : (
+                  <button type="button" disabled={taxBusy} onClick={() => runTaxBulkBrand('archive')} className="text-xs px-3 py-1.5 rounded-full bg-red-600 text-white font-medium disabled:opacity-50">آرشیو گروهی</button>
+                )}
+                <button type="button" onClick={() => setTaxSelectedIds([])} className="text-xs px-3 py-1.5 rounded-full border border-primary-300 dark:border-white/30">لغو انتخاب</button>
+              </div>
+            )}
+            {filterTaxBrands(adminCatalogBrands).map((b) => (
+              <div key={b.id} className={`flex flex-wrap items-center gap-2 p-3 rounded-xl border bg-white dark:bg-primary-900 ${taxSelectedIds.includes(String(b.id)) ? 'border-apple-blue ring-1 ring-apple-blue/30' : 'border-primary-200 dark:border-white/15'}`}>
+                <input type="checkbox" checked={taxSelectedIds.includes(String(b.id))} onChange={() => toggleTaxSelect(b.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-primary-900 dark:text-white">{b.name}</p>
+                  {b.seoTitle && <p className="text-xs text-primary-500 dark:text-white/70 truncate">{b.seoTitle}</p>}
+                </div>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${isTaxArchived(b) ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'}`}>{isTaxArchived(b) ? 'آرشیو' : 'فعال'}</span>
+                <button type="button" onClick={() => openTaxonomyWizard('brand', b)} className="p-1.5 rounded-full hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-500"><Icon name="pencil" size={14} /></button>
+                {isTaxArchived(b) ? (
+                  <>
+                    <button type="button" onClick={() => {
+                      siteConfirm('این برند بازگردانی شود؟').then((ok) => {
+                        if (!ok || typeof saveAdminCatalogBrands !== 'function') return;
+                        saveAdminCatalogBrands((adminCatalogBrands || []).map((x) => x.id === b.id ? { ...x, status: 'active', active: true } : x));
+                      });
+                    }} className="text-xs px-2 py-1 rounded-full border border-emerald-300 text-emerald-700">بازگردانی</button>
+                    <button type="button" onClick={() => {
+                      siteConfirm('حذف دائم این برند؟ برگشت‌پذیر نیست.').then((ok) => {
+                        if (!ok || typeof saveAdminCatalogBrands !== 'function') return;
+                        saveAdminCatalogBrands((adminCatalogBrands || []).filter((x) => x.id !== b.id));
+                      });
+                    }} className="p-1.5 rounded-full hover:bg-red-50 text-red-500"><Icon name="trash" size={14} /></button>
+                  </>
+                ) : (
+                  <button type="button" onClick={() => {
+                    siteConfirm('این برند به آرشیو منتقل شود؟').then((ok) => {
+                      if (!ok || typeof saveAdminCatalogBrands !== 'function') return;
+                      saveAdminCatalogBrands((adminCatalogBrands || []).map((x) => x.id === b.id ? { ...x, status: 'archived', active: false } : x));
+                    });
+                  }} className="text-xs px-2 py-1 rounded-full border border-red-300 text-red-600">آرشیو</button>
+                )}
+              </div>
+            ))}
+            {!filterTaxBrands(adminCatalogBrands).length && <p className="text-sm text-primary-400 text-center py-8">{taxFilter === 'archived' ? 'آرشیو خالی است' : 'برندی ثبت نشده'}</p>}
+          </>)}
+          </div>
            </div>
 
                      </div>
