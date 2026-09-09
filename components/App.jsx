@@ -6405,10 +6405,22 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           // فروشگاه عمومی / بازگشت از breadcrumb → همه فیلترها پاک
           setPlpCats([]);
           setPlpTagFilter([]);
+          try { setPlpBrand(''); } catch (_) {}
           if (!opts.keepQuery) setPlpQuery('');
           if (opts.colors === undefined) setPlpColors([]);
           if (opts.sizes === undefined) setPlpSizes([]);
         }
+
+        if (opts.brand !== undefined) {
+          const bname = String(opts.brand || '').trim();
+          setPlpBrand(bname);
+          setPlpCats([]);
+          setPlpTagFilter([]);
+          if (!opts.keepQuery) setPlpQuery('');
+        } else if (opts.cat !== undefined || opts.tag !== undefined || opts.resetFilters) {
+          try { setPlpBrand(''); } catch (_) {}
+        }
+
         if (opts.tag !== undefined) {
           const t = (adminTags || []).find((x) => x.name === opts.tag || x.slug === opts.tag);
           setPlpTagFilter([t?.name || String(opts.tag)]);
@@ -6453,7 +6465,6 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       /** میانبر صریح: باز کردن هر دسته روی همان ساختار فروشگاه/PLP */
       const openCategory = (catName) => openPLP({ cat: catName });
       const openBrand = (brandNameOrObj, opts = {}) => {
-        // لندینگ اختصاصی برند — نه فروشگاه/PLP
         const pool = [
           ...(Array.isArray(adminCatalogBrands) ? adminCatalogBrands : []),
           ...(Array.isArray(brandsList) ? brandsList : []),
@@ -6473,35 +6484,13 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         const name = String(b.name || b.slug || '').trim();
         const slug = String(b.slug || b.name || '').trim();
         if (!name && !slug) return;
-        try { beginPageLoad('brand'); } catch (_) {}
-        try { setShowPLP(false); } catch (_) {}
-        try { setPlpBrand(''); } catch (_) {}
-        try { setPlpCats([]); } catch (_) {}
-        try { setPdpProduct(null); } catch (_) {}
-        try { setShowCartPage(false); } catch (_) {}
-        try { setShowCheckout(false); } catch (_) {}
-        try { setShowWishlistPage(false); } catch (_) {}
-        try { setShowRecentPage(false); } catch (_) {}
-        try { setShowComparePage(false); } catch (_) {}
-        try { setShowProfilePage(false); } catch (_) {}
-        try { setShowSellerPanel(false); } catch (_) {}
-        try { setShowAdminPanel(false); } catch (_) {}
-        try { setShowSellersList(false); } catch (_) {}
-        try { setShowTaxonomyHub(null); } catch (_) {}
-        try { setActiveSellerId(null); } catch (_) {}
-        try { setMobileMenuOpen(false); } catch (_) {}
-        try { setMegaOpen(null); } catch (_) {}
-        try { setBrandDetailId(b.id != null ? b.id : (slug || name)); } catch (_) {}
-        try { setStaticPage('brands'); } catch (_) {}
-        try {
-          if (!opts.silent) {
-            const path = (typeof pathForCategory === 'function')
-              ? pathForCategory(slug || name)
-              : ('/' + String(slug || name).replace(/\s+/g, '_'));
-            pushFaUrl(path, { brandLanding: true, brandId: b.id || null, brand: name });
-          }
-        } catch (_) {}
-        try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); else window.scrollTo(0, 0); } catch (_) {}
+        try { setBrandDetailId(null); } catch (_) {}
+        try { setStaticPage(null); } catch (_) {}
+        openPLP({
+          brand: name || slug,
+          brandSlug: slug || name,
+          silent: !!opts.silent,
+        });
       };
       /** صفحهٔ هر برچسب — ساختار PLP، همیشه noindex */
       const openTagPage = (tagNameOrSlug) => {
@@ -13543,6 +13532,9 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
       const plpVisibleProducts = plpFiltered.slice(0, plpVisible);
       const plpHasMore = plpVisible < plpFiltered.length;
       const plpActiveChips = [];
+      if (plpBrand && String(plpBrand).trim()) {
+        plpActiveChips.push({ key: `brand-${plpBrand}`, label: String(plpBrand).trim(), clear: () => { try { setPlpBrand(''); openPLP({ resetFilters: true }); } catch (_) { setPlpBrand(''); } } });
+      }
       (Array.isArray(plpCats) ? plpCats : []).forEach(c => plpActiveChips.push({ key: `cat-${c}`, label: c, clear: () => setPlpCats(prev => (Array.isArray(prev) ? prev : []).filter(x => x !== c)) }));
       (Array.isArray(plpTagFilter) ? plpTagFilter : []).forEach(t => plpActiveChips.push({ key: `tag-${t}`, label: `#${t}`, clear: () => setPlpTagFilter(prev => (Array.isArray(prev) ? prev : []).filter(x => x !== t)) }));
       (Array.isArray(plpColors) ? plpColors : []).forEach(c => plpActiveChips.push({ key: `col-${c}`, label: c, clear: () => setPlpColors(prev => (Array.isArray(prev) ? prev : []).filter(x => x !== c)) }));
@@ -13572,7 +13564,9 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
               image: '',
             }
           : null;
-      const plpH1 = activePlpTag
+      const plpH1 = (plpBrand && String(plpBrand).trim())
+        ? String(plpBrand).trim()
+        : activePlpTag
         ? `برچسب: ${activePlpTag.name}`
         : activePlpCategory
         ? catLabelMap[activePlpCategory.name] || `پیراهن ${activePlpCategory.name}`
@@ -16596,7 +16590,11 @@ const params = new URLSearchParams(window.location.search);
               && !showSellerPanel && !showAdminPanel && !showTaxonomyHub && !staticPage;
             if (isHome) return null;
             const crumbItems = [
-              ...(showPLP && !activeSeller && !activePlpTag ? [
+              ...(showPLP && !activeSeller && !activePlpTag && plpBrand ? [
+                { label: 'برندها', href: '/برندها', onClick: () => { try { openStaticPage('brands'); } catch (_) {} } },
+                { label: String(plpBrand).trim(), current: true },
+              ] : []),
+              ...(showPLP && !activeSeller && !activePlpTag && !plpBrand ? [
                 { label: 'فروشگاه', href: '/فروشگاه', onClick: () => goShop() },
                 { label: (plpCats && plpCats.length === 1) ? plpH1 : 'همه محصولات', current: true },
               ] : []),
