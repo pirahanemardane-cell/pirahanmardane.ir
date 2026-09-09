@@ -568,7 +568,13 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         } else {
           colors = colors.map((c, i) => {
             const cImg = isUsableProductImage(c && c.image) ? String(c.image).trim() : (imgs[i] || img || '/logo.webp');
-            return { ...(c || {}), image: cImg };
+            let name = (c && (c.name || c.label || c.title)) ? String(c.name || c.label || c.title).trim() : '';
+            if (!name && c && typeof c === 'object') {
+              const keys = Object.keys(c).filter((k) => /^\d+$/.test(k)).sort((a, b) => Number(a) - Number(b));
+              if (keys.length) name = keys.map((k) => c[k]).join('');
+            }
+            if (!name) name = 'پیش‌فرض';
+            return { ...(c || {}), name, image: cImg };
           });
         }
         return {
@@ -595,7 +601,6 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           colors,
           sizes: Array.isArray(p.sizes) && p.sizes.length ? p.sizes : ['S', 'M', 'L', 'XL', 'XXL'],
           status: p.status || 'active',
-          category: p.category_name || p.category || 'عمومی',
           seller: {
             id: sid || 'own',
             name: sname && sname !== 'undefined' ? sname : 'فروشگاه',
@@ -613,6 +618,14 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           popular: !!(p.popular || p.is_popular || p.isPopular || p.bestseller || p.best_seller),
           fastShip: !!(p.fastShip || p.fast_ship || p.fastShipping || p.fast_shipping),
           salesCount: Number(p.salesCount ?? p.sales_count ?? p.sold_count ?? p.soldCount ?? 0) || 0,
+          // taxonomy — بدون این‌ها PLP برند/دسته/برچسب خالی می‌ماند
+          brand: p.brand || p.brandName || p.brand_name || '',
+          brandName: p.brandName || p.brand || p.brand_name || '',
+          brandId: p.brandId || p.brand_id || '',
+          brand_id: p.brand_id || p.brandId || null,
+          category: p.category_name || p.category || p.categories?.[0] || 'عمومی',
+          categories: Array.isArray(p.categories) ? p.categories : (p.category || p.category_name ? [p.category || p.category_name] : []),
+          tags: Array.isArray(p.tags) ? p.tags : [],
         };
       };
 
