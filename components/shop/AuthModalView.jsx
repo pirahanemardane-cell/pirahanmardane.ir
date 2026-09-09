@@ -376,11 +376,7 @@ export default function AuthModalView() {
               length={6}
               checking={!!authLoading}
               disabled={!!authLoading}
-            /> {
-                const code = onlyDigits(e.target.value).slice(0, 6);
-                setAuthOtp(code);
-                setAuthError('');
-              }}
+            />
               dir="ltr"
               placeholder="------"
               maxLength={6}
