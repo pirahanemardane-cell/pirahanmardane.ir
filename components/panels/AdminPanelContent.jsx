@@ -5170,7 +5170,7 @@ export default function AdminPanelContent() {
                  </div>
                 );
                })()}
-               <p className="text-[10px] sm:text-xs text-primary-400 leading-6 break-words max-w-full">سئوی محصول از پنل فروشنده · سئوی دسته/برند هنگام ساخت همان آیتم نیز در دسترس است · ایندکس سراسری حذف شد؛ ایندکس هر صفحه اینجاست.</p>
+               <p className="text-xs text-primary-400 leading-6 break-words max-w-full">سئوی محصول از پنل فروشنده · سئوی دسته/برند هنگام ساخت همان آیتم نیز در دسترس است · ایندکس سراسری حذف شد؛ ایندکس هر صفحه اینجاست.</p>
               </div>
              );
             })()}
