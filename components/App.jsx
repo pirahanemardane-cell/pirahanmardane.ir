@@ -17053,6 +17053,146 @@ const params = new URLSearchParams(window.location.search);
             </div>
           )}
 
+
+          {/* ========== Quick Add Modal (بازتراحی) ========== */}
+          {quickAdd && (() => {
+            const qp = quickAdd;
+            const qColors = Array.isArray(qp.colors) ? qp.colors : [];
+            const qColor = qColors[quickColorIdx] || qColors[0] || { name: '', hex: '#ccc', image: qp.image || '' };
+            const qSizes = Array.isArray(qp.sizes) && qp.sizes.length ? qp.sizes : ['S', 'M', 'L', 'XL'];
+            const qImgs = [
+              ...(qColor.image ? [qColor.image] : []),
+              ...((qp.images || []).filter(Boolean)),
+              ...(qColors.map(c => c.image).filter(Boolean)),
+            ].filter((u, i, a) => u && a.indexOf(u) === i);
+            const qMain = qImgs[Math.min(quickGalleryIdx, Math.max(0, qImgs.length - 1))] || qColor.image || qp.image || '';
+            const qPrice = qp.priceText || (qp.price != null ? toFa(Number(qp.price).toLocaleString()) : '—');
+
+            return (
+              <div className="site-modal-root" role="dialog" aria-modal="true" aria-label="افزودن سریع به سبد">
+                <div className="site-modal-backdrop" onClick={() => setQuickAdd(null)} />
+                <div className="quick-add-popup site-modal-panel relative flex flex-col max-h-[92dvh] overflow-hidden bg-white dark:bg-primary-950 rounded-3xl shadow-2xl border border-primary-100/80 dark:border-white/10">
+                  {/* هدر */}
+                  <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3.5 border-b border-primary-100 dark:border-white/10 shrink-0">
+                    <button type="button" onClick={() => setQuickAdd(null)} className="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-800 flex items-center justify-center hover:bg-primary-200 dark:hover:bg-primary-700 transition" aria-label="بستن">
+                      <Icon name="x" size={18} />
+                    </button>
+                    <h2 className="text-sm sm:text-base font-bold text-primary-900 dark:text-white truncate flex-1 text-center px-2">{qp.name}</h2>
+                    <button
+                      type="button"
+                      onClick={() => { const prod = qp; setQuickAdd(null); try { openPDP(prod); } catch (_) {} }}
+                      className="text-[11px] font-medium text-apple-blue dark:text-[#13ABC4] whitespace-nowrap hover:underline"
+                    >
+                      جزئیات کامل
+                    </button>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto min-h-0">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 sm:gap-6 p-4 sm:p-6">
+                      {/* تصویر */}
+                      <div className="relative">
+                        <div className="aspect-[4/5] sm:aspect-square rounded-2xl overflow-hidden bg-[#f0f0f2] dark:bg-primary-900">
+                          <img src={qMain} alt={qp.name} className="w-full h-full object-cover" draggable={false} />
+                        </div>
+                        {qImgs.length > 1 && (
+                          <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar">
+                            {qImgs.map((img, i) => (
+                              <button key={i} type="button" onClick={() => setQuickGalleryIdx(i)} className={`flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition ${quickGalleryIdx === i ? 'border-apple-blue' : 'border-transparent opacity-70'}`}>
+                                <img src={img} alt="" className="w-full h-full object-cover" />
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* کنترل‌ها */}
+                      <div className="flex flex-col gap-4 pt-4 sm:pt-0">
+                        <div>
+                          <p className="text-2xl font-black text-primary-900 dark:text-white tracking-tight">
+                            {qPrice} <span className="text-sm font-medium text-primary-400">تومان</span>
+                          </p>
+                          {qp.oldPrice && (
+                            <p className="text-xs text-primary-400 line-through mt-0.5">{qp.oldPrice} تومان</p>
+                          )}
+                        </div>
+
+                        {qColors.length > 0 && (
+                          <div>
+                            <p className="text-xs font-bold text-primary-500 mb-2">رنگ · <span className="text-primary-900 dark:text-white">{qColor.name}</span></p>
+                            <div className="flex flex-wrap gap-2">
+                              {qColors.map((c, i) => (
+                                <button
+                                  key={c.name || i}
+                                  type="button"
+                                  title={c.name}
+                                  onClick={() => { setQuickColorIdx(i); setQuickGalleryIdx(0); setSelectedColors(prev => ({ ...prev, [qp.id]: i })); }}
+                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs border transition ${quickColorIdx === i ? 'border-apple-blue bg-apple-blue/10 text-primary-900 dark:text-white' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white/80'}`}
+                                >
+                                  <span className="w-3.5 h-3.5 rounded-full border border-black/10" style={{ background: c.hex || '#888' }} />
+                                  {c.name}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        <div>
+                          <p className="text-xs font-bold text-primary-500 mb-2">سایز</p>
+                          <div className="flex flex-wrap gap-2">
+                            {qSizes.map(sz => {
+                              const on = quickSize === sz;
+                              return (
+                                <button
+                                  key={sz}
+                                  type="button"
+                                  dir="ltr"
+                                  onClick={() => { setQuickSize(sz); setSelectedSizes(prev => ({ ...prev, [qp.id]: sz })); }}
+                                  className={`min-w-[2.75rem] px-3 py-2 rounded-xl text-sm font-semibold border transition ${on ? 'bg-[#FF0000] dark:bg-[#13ABC4] text-white border-transparent' : 'border-primary-200 dark:border-white/20 text-primary-800 dark:text-white hover:border-primary-400'}`}
+                                >{sz}</button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        <div>
+                          <p className="text-xs font-bold text-primary-500 mb-2">تعداد</p>
+                          <div className="inline-flex items-center gap-1 rounded-2xl border border-primary-200 dark:border-white/20 px-1">
+                            <button type="button" onClick={() => setQuickQty(q => Math.max(1, q - 1))} className="w-9 h-9 flex items-center justify-center rounded-xl" aria-label="کاهش"><Icon name="minus" size={16} /></button>
+                            <span className="w-8 text-center text-sm font-bold tabular-nums">{toFa(quickQty)}</span>
+                            <button type="button" onClick={() => setQuickQty(q => Math.min(10, q + 1))} className="w-9 h-9 flex items-center justify-center rounded-xl" aria-label="افزایش"><Icon name="plus" size={16} /></button>
+                          </div>
+                        </div>
+
+                        {qp.description && (
+                          <div className="rounded-2xl border border-primary-100 dark:border-white/10 overflow-hidden">
+                            <button type="button" onClick={() => setQuickDescOpen(v => !v)} className="w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-medium text-primary-700 dark:text-white/80">
+                              <span>توضیح کوتاه</span>
+                              <Icon name={quickDescOpen ? 'chevronUp' : 'chevronDown'} size={16} />
+                            </button>
+                            {quickDescOpen && (
+                              <p className="px-3.5 pb-3 text-xs text-primary-600 dark:text-white/70 leading-relaxed border-t border-primary-50 dark:border-white/5 pt-2">{qp.description}</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CTA ثابت پایین */}
+                  <div className="shrink-0 border-t border-primary-100 dark:border-white/10 p-4 sm:p-5 bg-white dark:bg-primary-950">
+                    <button
+                      type="button"
+                      onClick={() => addToCart(qp, { colorIdx: quickColorIdx, size: quickSize || '', qty: quickQty, requireSize: true })}
+                      className="w-full py-3.5 rounded-2xl bg-[#FF0000] dark:bg-[#13ABC4] text-white text-[15px] font-bold shadow-lg hover:opacity-95 active:scale-[0.99] transition"
+                    >
+                      افزودن به سبد خرید
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           <Toaster defaultPosition="top-center" />
 
           {/* برو بالا */}
