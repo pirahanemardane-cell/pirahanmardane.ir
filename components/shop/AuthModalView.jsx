@@ -3,6 +3,7 @@
 import {useEffect, useState, useRef} from 'react';
 import { useWebOtp } from '../../lib/useWebOtp';
 import { useAppApi } from '../AppApiContext';
+import InputOtp10 from "@/components/ui/input-otp-10";
 
 /**
  * مودال ورود خریدار / فروشنده — فقط OTP
@@ -261,7 +262,19 @@ export default function AuthModalView() {
         {authStep === 'otp' && (
           <form
             className="space-y-4"
-            onSubmit={(e) => {
+            onSubmit={(e) =>
+            <InputOtp10
+              value={String(authOtp || "")}
+              onChange={(v) => {
+                try {
+                  setAuthOtp(String(v || "").replace(/\D/g, "").slice(0, 6));
+                  setAuthError("");
+                } catch (_) {}
+              }}
+              isVerifying={!!authLoading}
+              phone={authPhone || ""}
+              compact
+            /> {
               e.preventDefault();
               try {
                 verifyOtp && verifyOtp();
