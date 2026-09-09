@@ -3774,6 +3774,45 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }, [setDark]);
 
       // دکمه تم: فقط اینجا localStorage نوشته می‌شود
+      
+      // موبایل: ارتفاع هدر + نوار تب پنل → CSS variables
+      useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+        const apply = () => {
+          try {
+            const hdr =
+              document.querySelector('[data-site-header]') ||
+              document.querySelector('header.site-header') ||
+              document.querySelector('header');
+            let headerH = 56;
+            if (hdr) headerH = Math.ceil(hdr.getBoundingClientRect().height);
+            // اگر هدر sticky است و چند ردیف دارد
+            document.documentElement.style.setProperty('--site-header-h', headerH + 'px');
+
+            const tabs =
+              document.querySelector('.admin-panel-shell .panel-nav') ||
+              document.querySelector('.admin-panel-shell .admin-tabs-strip') ||
+              document.querySelector('.seller-panel-shell .panel-nav') ||
+              document.querySelector('.profile-page-shell .panel-nav');
+            if (tabs) {
+              const th = Math.ceil(tabs.getBoundingClientRect().height) || 52;
+              document.documentElement.style.setProperty('--panel-tabs-h', th + 'px');
+            }
+          } catch (_) {}
+        };
+        apply();
+        const t1 = setTimeout(apply, 50);
+        const t2 = setTimeout(apply, 300);
+        window.addEventListener('resize', apply);
+        window.addEventListener('orientationchange', apply);
+        return () => {
+          clearTimeout(t1);
+          clearTimeout(t2);
+          window.removeEventListener('resize', apply);
+          window.removeEventListener('orientationchange', apply);
+        };
+      }, [showAdminPanel, showSellerPanel, showProfilePage]);
+
       const toggleDarkMode = () => {
         const next = !dark;
         setDark(next);

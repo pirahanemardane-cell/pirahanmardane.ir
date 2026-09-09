@@ -1752,7 +1752,7 @@ img.img-broken {
   backdrop-filter: blur(var(--site-glass-blur));
   -webkit-backdrop-filter: blur(var(--site-glass-blur));
 }
-/* === END MOBILE PANEL TABS STICKY === */
+
 
 
 /* Site modal panel keyboard scroll */
@@ -5154,18 +5154,37 @@ html.dark p.pm-page-loader-text,
   opacity: 1 !important;
 }
 
-/* === MOBILE PANEL TABS STICKY UNDER HEADER === */
+/* === MOBILE PANEL TABS FIXED UNDER HEADER === */
+/* sticky روی موبایل اغلب با overflow والد می‌شکند → fixed دقیق زیر هدر */
 @media (max-width: 767px) {
-  /* هدر سایت sticky است — نوار تب دقیقاً زیر آن می‌چسبد */
+  :root {
+    --site-header-h: 3.5rem;
+    --panel-tabs-h: 3.25rem;
+  }
+
+  .admin-panel-shell,
+  .seller-panel-shell,
+  .profile-page-shell,
+  .profile-panel-shell {
+    overflow: visible !important;
+  }
+
+  /* نوار تب: ثابت دقیقاً زیر هدر سایت */
   .admin-panel-shell .panel-sidebar,
   .seller-panel-shell .panel-sidebar,
   .profile-page-shell .panel-sidebar,
   .profile-panel-shell .panel-sidebar {
-    position: sticky !important;
+    position: fixed !important;
     top: var(--site-header-h, 3.5rem) !important;
-    z-index: 45 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    z-index: 55 !important;
     margin: 0 !important;
     padding: 0 !important;
+    height: auto !important;
+    background: transparent !important;
   }
 
   .admin-panel-shell .admin-tabs-strip,
@@ -5176,20 +5195,23 @@ html.dark p.pm-page-loader-text,
   .buyer-tabs-strip,
   .profile-page-shell .panel-nav,
   .profile-panel-shell .panel-nav {
-    position: sticky !important;
-    top: var(--site-header-h, 3.5rem) !important;
-    z-index: 45 !important;
-    margin-top: 0 !important;
-    margin-bottom: 0.5rem !important;
-    padding: 0.4rem 0.5rem !important;
-    gap: 0.35rem !important;
+    position: relative !important;
+    top: auto !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0.35rem 0.5rem !important;
+    gap: 0.3rem !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
     -webkit-overflow-scrolling: touch;
     background: #ffffff !important;
-    border: 1px solid rgba(0, 0, 0, 0.06) !important;
-    border-radius: 0 0 1rem 1rem !important;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
   }
 
   html.dark .admin-panel-shell .admin-tabs-strip,
@@ -5201,31 +5223,32 @@ html.dark p.pm-page-loader-text,
   html.dark .profile-page-shell .panel-nav,
   html.dark .profile-panel-shell .panel-nav {
     background: #0A0A0A !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
   }
 
-  /* والدین نباید overflow مخفی داشته باشند وگرنه sticky کار نمی‌کند */
-  .admin-panel-shell,
-  .seller-panel-shell,
-  .profile-page-shell,
-  .profile-panel-shell,
+  .admin-panel-shell .panel-nav-item,
+  .seller-panel-shell .panel-nav-item,
+  .profile-page-shell .panel-nav-item,
+  .profile-panel-shell .panel-nav-item {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  /* محتوا از زیر نوار تب شروع شود تا زیرش نرود */
   .admin-panel-shell .panel-content-wrap,
   .seller-panel-shell .panel-content-wrap,
   .profile-page-shell .panel-content-wrap,
   .profile-panel-shell .panel-content-wrap,
-  .admin-panel-shell > div,
-  .seller-panel-shell > div {
-    overflow: visible !important;
+  .admin-panel-shell > .flex > .flex-1,
+  .admin-panel-shell .admin-panel-content {
+    padding-top: calc(var(--panel-tabs-h, 3.25rem) + 0.25rem) !important;
   }
 
-  /* فاصله اضافه بالای پنل روی موبایل کم شود تا نوار به هدر بچسبد */
-  .admin-panel-shell,
-  .seller-panel-shell,
-  .profile-page-shell,
-  .profile-panel-shell {
-    padding-top: 0 !important;
+  /* اگر نوار سوپرادمین بالای تب‌هاست، در اسکرول جمع نشود از دید — اختیاری: فقط تب fixed */
+  .admin-panel-shell .panel-content-wrap {
+    overflow: visible !important;
   }
 }
-/* === END MOBILE PANEL TABS STICKY === */
+/* === END MOBILE PANEL TABS FIXED === */
 
