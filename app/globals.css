@@ -5133,13 +5133,7 @@ html.dark .review-shop-badge {
 
 
 
-/* متن لودر بین صفحات — دارک: تیره روی فیروزه‌ای */
-.pm-page-loader-text {
-  color: #ffffff !important;
-}
-html.dark .pm-page-loader-text {
-  color: #0A0A0A !important;
-}
+
 
 /* === MOBILE FOOTER TOUCH SCROLL FIX === */
 /* جلوگیری از گیر کردن لمس در انتهای فوتر روی موبایل */
@@ -5191,5 +5185,25 @@ footer .select-none {
     font-size: 18px !important;
     line-height: 1.35 !important;
   }
+}
+
+/* لودر بین صفحات: لایت سفید / دارک تیره — با اولویت بالا */
+:root {
+  --pm-loader-fg: #ffffff;
+}
+html.dark,
+html.dark body,
+.dark {
+  --pm-loader-fg: #0A0A0A;
+}
+.pm-page-loader-text,
+p.pm-page-loader-text,
+html.dark .pm-page-loader-text,
+html.dark p.pm-page-loader-text,
+.dark .pm-page-loader-text,
+.dark p.pm-page-loader-text {
+  color: var(--pm-loader-fg) !important;
+  -webkit-text-fill-color: var(--pm-loader-fg) !important;
+  opacity: 1 !important;
 }
 
