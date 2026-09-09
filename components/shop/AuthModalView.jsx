@@ -324,12 +324,9 @@ export default function AuthModalView() {
                   onChange={(e) => setUiPassword(e.target.value)}
                   autoComplete={uiLoginMethod === 'otp' ? 'one-time-code' : 'current-password'}
                   inputMode={uiLoginMethod === 'otp' ? 'numeric' : undefined}
-                  className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white"
+                  className="w-full px-4 py-3 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-center text-base text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue"
                   placeholder={uiLoginMethod === 'otp' ? 'کد تأیید را وارد کنید' : 'رمز عبور'}
-                /> setUiPassword(e.target.value)}
-                placeholder="رمز عبور"
-                className="w-full px-4 py-3 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-center text-base text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue"
-                autoComplete="current-password"
+                />
               />
             )}
             <label className="flex items-center gap-2 justify-center text-xs text-primary-600 dark:text-white/70 cursor-pointer select-none">
