@@ -2673,12 +2673,12 @@ export default function AdminPanelContent() {
              if(!q) return true;
              return (b.name||'').toLowerCase().includes(q)||(b.phone||'').includes(q);
             }).map(b=>(
-             <div key={b.id} className="p-3 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 flex items-center justify-between gap-3">
-              <button type="button" onClick={()=>setAdminBuyerDetailId(b.id)} className="text-right flex-1 min-w-0">
-               <p className="text-sm font-medium text-primary-900 dark:text-white">{b.name}</p>
-               <p className="text-xs text-primary-500" dir="ltr">{b.phone} · {toFa(b.ordersCount||0)} سفارش · {b.joinDate}</p>
+             <div key={b.id} className="p-3 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 min-w-0 overflow-hidden">
+              <button type="button" onClick={()=>setAdminBuyerDetailId(b.id)} className="text-right flex-1 min-w-0 overflow-hidden">
+               <p className="text-sm font-medium text-primary-900 dark:text-white truncate">{b.name}</p>
+               <p className="text-xs text-primary-500 truncate" dir="ltr">{b.phone} · {toFa(b.ordersCount||0)} سفارش · {b.joinDate}</p>
               </button>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
                <span className={`text-xs px-2 py-0.5 rounded-full ${adminStatusBadge(b.status)}`}>{adminStatusLabel(b.status)}</span>
                {b.status==='active'?<button type="button" onClick={()=>saveAdminBuyers((adminBuyers||[]).map(x=>x.id===b.id?{...x,status:'blocked'}:x))} className="text-xs px-2 py-1 rounded-full border border-red-200 text-red-600">محدود کردن</button>:
                <button type="button" onClick={()=>saveAdminBuyers((adminBuyers||[]).map(x=>x.id===b.id?{...x,status:'active'}:x))} className="text-xs px-2 py-1 rounded-full border border-emerald-200 text-emerald-600">تأیید / رفع محدودیت</button>}
@@ -5170,7 +5170,7 @@ export default function AdminPanelContent() {
                  </div>
                 );
                })()}
-               <p className="text-[10px] text-primary-400 leading-relaxed whitespace-nowrap shrink-0 text-xs sm:text-sm">سئوی محصول از پنل فروشنده · سئوی دسته/برند هنگام ساخت همان آیتم نیز در دسترس است · ایندکس سراسری حذف شد؛ ایندکس هر صفحه اینجاست.</p>
+               <p className="text-[10px] sm:text-xs text-primary-400 leading-6 break-words max-w-full">سئوی محصول از پنل فروشنده · سئوی دسته/برند هنگام ساخت همان آیتم نیز در دسترس است · ایندکس سراسری حذف شد؛ ایندکس هر صفحه اینجاست.</p>
               </div>
              );
             })()}
