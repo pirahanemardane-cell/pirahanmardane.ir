@@ -327,7 +327,6 @@ export default function AuthModalView() {
                   className="w-full px-4 py-3 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-center text-base text-primary-900 dark:text-white focus:outline-none focus:border-apple-blue"
                   placeholder={uiLoginMethod === 'otp' ? 'کد تأیید را وارد کنید' : 'رمز عبور'}
                 />
-              />
             )}
             <label className="flex items-center gap-2 justify-center text-xs text-primary-600 dark:text-white/70 cursor-pointer select-none">
               <input
