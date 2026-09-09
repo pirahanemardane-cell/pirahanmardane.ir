@@ -2745,7 +2745,12 @@ export default function AdminPanelContent() {
                   <p className="text-xs text-primary-500 dark:!text-white mt-0.5 font-latin" dir="ltr">{c.url || `/${c.slug || c.name}`}</p>
                   {c.description && <p className="text-xs text-primary-400 dark:!text-white line-clamp-1 mt-0.5">{c.description}</p>}
                 </div>
-                <span className={`text-xs px-2 py-0.5 rounded-full ${isTaxArchived(c) ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'}`}>{isTaxArchived(c) ? 'آرشیو' : 'فعال'}</span>
+                <button type="button" title={isTaxArchived(c) ? 'فعال‌سازی' : 'غیرفعال‌سازی'} onClick={() => {
+                  if (typeof saveAdminCategories !== 'function') return;
+                  const nextOn = isTaxArchived(c);
+                  saveAdminCategories((adminCategories || []).map((x) => x.id === c.id ? { ...x, active: nextOn, status: nextOn ? 'active' : 'archived' } : x));
+                  try { showToast({ message: nextOn ? 'دسته فعال شد' : 'دسته غیرفعال شد', variant: 'success', duration: 2500, position: 'top-center' }); } catch (_) {}
+                }} className={`text-xs px-2 py-0.5 rounded-full border font-medium cursor-pointer ${isTaxArchived(c) ? 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300'}`}>{isTaxArchived(c) ? 'غیرفعال' : 'فعال'}</button>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">index</span>
                 <button type="button" onClick={() => openCategory(c.name)} className="text-xs px-2 py-1 rounded-full border border-primary-200 dark:border-white/20 text-primary-600 dark:text-white">صفحه</button>
                 <button type="button" onClick={() => openTaxonomyWizard('category', c)} className="p-1.5 rounded-full hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-500"><Icon name="pencil" size={14} /></button>
@@ -2844,7 +2849,12 @@ export default function AdminPanelContent() {
                   <p className="text-sm font-bold text-primary-900 dark:text-white">{tg.name}</p>
                   {(tg.slug || tg.url) && <p className="text-xs text-primary-500 dark:!text-white mt-0.5 font-latin" dir="ltr">{tg.url || tg.slug}</p>}
                 </div>
-                <span className={`text-xs px-2 py-0.5 rounded-full ${isTaxArchived(tg) ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'}`}>{isTaxArchived(tg) ? 'آرشیو' : 'فعال'}</span>
+                <button type="button" title={isTaxArchived(tg) ? 'فعال‌سازی' : 'غیرفعال‌سازی'} onClick={() => {
+                  if (typeof saveAdminTags !== 'function') return;
+                  const nextOn = isTaxArchived(tg);
+                  saveAdminTags((adminTags || []).map((x) => x.id === tg.id ? { ...x, active: nextOn, status: nextOn ? 'active' : 'archived' } : x));
+                  try { showToast({ message: nextOn ? 'برچسب فعال شد' : 'برچسب غیرفعال شد', variant: 'success', duration: 2500, position: 'top-center' }); } catch (_) {}
+                }} className={`text-xs px-2 py-0.5 rounded-full border font-medium cursor-pointer ${isTaxArchived(tg) ? 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300'}`}>{isTaxArchived(tg) ? 'غیرفعال' : 'فعال'}</button>
                 <button type="button" onClick={() => openTaxonomyWizard('tag', tg)} className="p-1.5 rounded-full hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-500"><Icon name="pencil" size={14} /></button>
                 {isTaxArchived(tg) ? (
                   <>
@@ -2934,7 +2944,12 @@ export default function AdminPanelContent() {
                   <p className="text-sm font-medium text-primary-900 dark:text-white">{b.name}</p>
                   {b.seoTitle && <p className="text-xs text-primary-500 dark:text-white/70 truncate">{b.seoTitle}</p>}
                 </div>
-                <span className={`text-xs px-2 py-0.5 rounded-full ${isTaxArchived(b) ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'}`}>{isTaxArchived(b) ? 'آرشیو' : 'فعال'}</span>
+                <button type="button" title={isTaxArchived(b) ? 'فعال‌سازی' : 'غیرفعال‌سازی'} onClick={() => {
+                  if (typeof saveAdminCatalogBrands !== 'function') return;
+                  const nextOn = isTaxArchived(b);
+                  saveAdminCatalogBrands((adminCatalogBrands || []).map((x) => x.id === b.id ? { ...x, active: nextOn, status: nextOn ? 'active' : 'archived' } : x));
+                  try { showToast({ message: nextOn ? 'برند فعال شد' : 'برند غیرفعال شد', variant: 'success', duration: 2500, position: 'top-center' }); } catch (_) {}
+                }} className={`text-xs px-2 py-0.5 rounded-full border font-medium cursor-pointer ${isTaxArchived(b) ? 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300'}`}>{isTaxArchived(b) ? 'غیرفعال' : 'فعال'}</button>
                 <button type="button" onClick={() => openTaxonomyWizard('brand', b)} className="p-1.5 rounded-full hover:bg-primary-50 dark:hover:bg-primary-800 text-primary-500"><Icon name="pencil" size={14} /></button>
                 {isTaxArchived(b) ? (
                   <>
@@ -3496,7 +3511,12 @@ export default function AdminPanelContent() {
                   <p className="text-sm font-medium text-primary-900 dark:text-white">{c.name}</p>
                   {c.slug ? <p className="text-[10px] text-primary-400 font-latin mt-0.5" dir="ltr">/مجله?cat={c.slug}</p> : null}
                 </div>
-                <span className={`text-xs px-2 py-1 rounded-full border ${isTaxArchived(c) ? 'border-amber-300 text-amber-700' : 'border-emerald-300 text-emerald-700'}`}>{isTaxArchived(c) ? 'آرشیو' : 'فعال'}</span>
+                <button type="button" title={isTaxArchived(c) ? 'فعال‌سازی' : 'غیرفعال‌سازی'} onClick={() => {
+                  if (typeof saveAdminBlogCategories !== 'function') return;
+                  const nextOn = isTaxArchived(c);
+                  saveAdminBlogCategories((adminBlogCategories || []).map((x) => x.id === c.id ? { ...x, active: nextOn, status: nextOn ? 'active' : 'archived' } : x));
+                  try { showToast({ message: nextOn ? 'دسته مقاله فعال شد' : 'دسته مقاله غیرفعال شد', variant: 'success', duration: 2500, position: 'top-center' }); } catch (_) {}
+                }} className={`text-xs px-2 py-1 rounded-full border font-medium cursor-pointer ${isTaxArchived(c) ? 'border-amber-300 text-amber-700 bg-amber-50' : 'border-emerald-300 text-emerald-700 bg-emerald-50'}`}>{isTaxArchived(c) ? 'غیرفعال' : 'فعال'}</button>
                 <button type="button" onClick={() => openTaxonomyWizard('blog-category', c)} className="p-1.5 rounded-full hover:bg-primary-50 text-primary-500"><Icon name="pencil" size={14} /></button>
                 {isTaxArchived(c) ? (
                   <>
@@ -3566,7 +3586,14 @@ export default function AdminPanelContent() {
               <div key={tg.id} className={`flex flex-wrap items-center gap-2 p-3 rounded-xl border bg-white dark:bg-primary-900 ${taxSelectedIds.includes(String(tg.id)) ? 'border-apple-blue ring-1 ring-apple-blue/30' : 'border-primary-200 dark:border-white/15'}`}>
                 <input type="checkbox" checked={taxSelectedIds.includes(String(tg.id))} onChange={() => toggleTaxSelect(tg.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب" />
                 <p className="flex-1 text-sm font-medium text-primary-900 dark:text-white">{tg.name}</p>
-                <span className={`text-xs px-2 py-0.5 rounded-full ${isTaxArchived(tg) ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}`}>{isTaxArchived(tg) ? 'آرشیو' : 'فعال'}</span>
+                <button type="button" title={isTaxArchived(tg) ? 'فعال‌سازی' : 'غیرفعال‌سازی'} onClick={() => {
+                  const saver = typeof saveAdminBlogTags === 'function' ? saveAdminBlogTags : (typeof saveAdminTags === 'function' ? saveAdminTags : null);
+                  const list = typeof saveAdminBlogTags === 'function' ? (adminBlogTags || []) : (adminTags || []);
+                  if (!saver) return;
+                  const nextOn = isTaxArchived(tg);
+                  saver(list.map((x) => x.id === tg.id ? { ...x, active: nextOn, status: nextOn ? 'active' : 'archived' } : x));
+                  try { showToast({ message: nextOn ? 'برچسب فعال شد' : 'برچسب غیرفعال شد', variant: 'success', duration: 2500, position: 'top-center' }); } catch (_) {}
+                }} className={`text-xs px-2 py-0.5 rounded-full border font-medium cursor-pointer ${isTaxArchived(tg) ? 'bg-red-100 text-red-700 border-red-200' : 'bg-emerald-100 text-emerald-700 border-emerald-200'}`}>{isTaxArchived(tg) ? 'غیرفعال' : 'فعال'}</button>
                 <button type="button" onClick={() => openTaxonomyWizard('blog-tag', tg)} className="p-1.5 rounded-full hover:bg-primary-50 text-primary-500"><Icon name="pencil" size={14} /></button>
                 {isTaxArchived(tg) ? (
                   <>
