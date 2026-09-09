@@ -1,6 +1,7 @@
 'use client';
 
 import {useEffect, useState, useRef} from 'react';
+import { useWebOtp } from '../../lib/useWebOtp';
 import { useAppApi } from '../AppApiContext';
 
 /**
@@ -158,6 +159,15 @@ export default function AuthModalView() {
   const [uiLoginMethod, setUiLoginMethod] = useState('otp');
   const [uiRemember, setUiRemember] = useState(true);
   const [uiPassword, setUiPassword] = useState('');
+
+  useWebOtp((code) => {
+    try {
+      if (authStep === 'otp' || authStep === 'mfa') {
+        setAuthOtp(String(code || '').replace(/\D/g, '').slice(0, 6));
+      }
+    } catch (_) {}
+  });
+
 
   // Web OTP (Chrome/Android) — Safari از autocomplete=one-time-code استفاده می‌کند
   useEffect(() => {
@@ -364,19 +374,13 @@ export default function AuthModalView() {
               } catch (_) {}
             }}
           >
-            <input
-              id="otp-code-input"
-              type="text"
-              name="one-time-code"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              autoComplete="one-time-code"
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck={false}
-              enterKeyHint="done"
-              value={authOtp || ''}
-              onChange={(e) => {
+            <OtpDigitBoxes
+              value={String(authOtp || '').replace(/\D/g, '').slice(0, 6)}
+              onChange={(v) => { try { setAuthOtp(String(v || '').replace(/\D/g, '').slice(0, 6)); } catch (_) {} }}
+              length={6}
+              checking={!!authLoading}
+              disabled={!!authLoading}
+            /> {
                 const code = onlyDigits(e.target.value).slice(0, 6);
                 setAuthOtp(code);
                 setAuthError('');
