@@ -1612,7 +1612,12 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }
 
       if (typeof isAdminLogin !== "undefined" && isAdminLogin) {
-        try { window.location.replace("/"); return; } catch (_) {}
+        // /ashn = صفحه ورود ادمین — ریدایرکت به خانه نکن
+        try { setShowAdminPanel(false); } catch (_) {}
+        try { setAdminAuthOpen(true); setAdminAuthStep("phone"); } catch (_) {}
+        try { setAuthMode("admin"); setAuthOpen(true); } catch (_) {}
+        return;
+        /* was: window.location.replace("/") */
         try {
           const raw = localStorage.getItem("adminUser");
           if (raw) {
@@ -1628,7 +1633,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                 });
               } catch (_) {}
               try { sessionStorage.setItem("pm_panel", "admin"); sessionStorage.setItem("pm_admin_ok", "1"); } catch (_) {}
-              try { window.location.replace("/amirshn?panel=1&t=" + Date.now()); return; } catch (_) {}
+              try { window.location.replace("/ashn-pnl"); return; } catch (_) {}
             }
           }
         } catch (_) {}
@@ -12720,7 +12725,7 @@ const downloadSeoFile = (filename, content, mime) => {
         try { setShowAdminPanel(true); setAdminAuthOpen(false); setAuthOpen(false); } catch (_) {}
         try { setAdminTab('dashboard'); } catch (_) {}
         try { pushLiveToast('ورود ادمین موفق', { type: 'success', duration: 1500 }); } catch (_) {}
-        try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); return; } catch (_) {}
+        try { window.location.replace('/ashn-pnl'); return; } catch (_) {}
         try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
         try { setShowAdminPanel(true); setAdminAuthOpen(false); setAuthOpen(false); } catch (_) {}
         try { window.location.href = '/' + Date.now(); return; } catch (_) {}
