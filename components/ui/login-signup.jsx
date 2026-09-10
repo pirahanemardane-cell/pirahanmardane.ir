@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { Eye, EyeOff, Lock, Mail, ArrowRight, X, Code2, Globe, User } from 'lucide-react';
+import { patchModalUi } from '@/lib/stores/modalUiStore';
 
 function cn(...parts) {
   return parts.flat(Infinity).filter(Boolean).join(' ');
@@ -182,8 +183,13 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
             onClick={() => {
               try {
                 if (typeof onContact === 'function') onContact();
-                else if (typeof onClose === 'function') onClose();
-              } catch (_) {}
+                else {
+                  try { patchModalUi({ authOpen: false }); } catch (_) {}
+                  try { window.location.assign('/تماس-با-ما'); } catch (_) {}
+                }
+              } catch (_) {
+                try { window.location.assign('/تماس-با-ما'); } catch (__) {}
+              }
             }}
             className="h-9 px-3 inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-50 text-sm hover:bg-zinc-900/80"
           >
@@ -195,9 +201,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              try {
-                if (typeof onClose === 'function') onClose();
-              } catch (_) {}
+              try { if (typeof onClose === 'function') onClose(); } catch (_) {}
+              try { patchModalUi({ authOpen: false }); } catch (_) {}
             }}
             aria-label="بستن"
             className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white relative z-30 pointer-events-auto"

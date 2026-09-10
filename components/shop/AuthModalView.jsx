@@ -2,36 +2,38 @@
 
 import { useAppApi } from '../AppApiContext';
 import LoginCardSection from '@/components/ui/login-signup';
+import { patchModalUi } from '@/lib/stores/modalUiStore';
 
 export default function AuthModalView() {
   const api = useAppApi() || {};
-  const { authOpen, closeAuth, authMode, openStaticPage, setAuthOpen } = api;
+  const authOpen = api.authOpen;
+  const authMode = api.authMode;
 
   if (!authOpen) return null;
 
   const handleClose = () => {
     try {
-      if (typeof closeAuth === 'function') closeAuth();
-      else if (typeof setAuthOpen === 'function') setAuthOpen(false);
-    } catch (_) {
-      try {
-        if (typeof setAuthOpen === 'function') setAuthOpen(false);
-      } catch (__) {}
-    }
+      if (typeof api.closeAuth === 'function') api.closeAuth();
+    } catch (_) {}
+    try {
+      patchModalUi({ authOpen: false });
+    } catch (_) {}
+    try {
+      if (typeof api.setAuthOpen === 'function') api.setAuthOpen(false);
+    } catch (_) {}
   };
 
   const handleContact = () => {
+    handleClose();
     try {
-      handleClose();
+      if (typeof api.openStaticPage === 'function') {
+        api.openStaticPage('contact');
+        return;
+      }
     } catch (_) {}
     try {
-      if (typeof openStaticPage === 'function') openStaticPage('contact');
-      else window.location.assign('/تماس-با-ما');
-    } catch (_) {
-      try {
-        window.location.assign('/تماس-با-ما');
-      } catch (__) {}
-    }
+      window.location.assign('/تماس-با-ما');
+    } catch (_) {}
   };
 
   return (
