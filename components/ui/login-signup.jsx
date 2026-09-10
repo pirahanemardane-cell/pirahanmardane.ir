@@ -173,39 +173,36 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       </div>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-50 mix-blend-screen pointer-events-none" />
 
-      <header className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80 z-20" dir="rtl">
+      <header className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80 z-[9999]" dir="rtl">
         <span className="text-xs tracking-wide text-zinc-400">
           {isSeller ? 'کنسول فروشنده' : 'کنسول خریدار'}
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative z-[10000]">
           <button
             type="button"
             onClick={() => {
+              try { patchModalUi({ authOpen: false }); } catch (_) {}
+              try { if (typeof onClose === 'function') onClose(); } catch (_) {}
               try {
                 if (typeof onContact === 'function') onContact();
-                else {
-                  try { patchModalUi({ authOpen: false }); } catch (_) {}
-                  try { window.location.assign('/تماس-با-ما'); } catch (_) {}
-                }
+                else window.location.assign('/تماس-با-ما');
               } catch (_) {
-                try { window.location.assign('/تماس-با-ما'); } catch (__) {}
+                try { window.location.href = '/تماس-با-ما'; } catch (__) {}
               }
             }}
-            className="h-9 px-3 inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-50 text-sm hover:bg-zinc-900/80"
+            className="h-9 px-3 inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-50 text-sm hover:bg-zinc-800 cursor-pointer"
           >
             <span>تماس با ما</span>
             <ArrowRight className="h-4 w-4 rotate-180" />
           </button>
           <button
             type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              try { if (typeof onClose === 'function') onClose(); } catch (_) {}
+            onClick={() => {
               try { patchModalUi({ authOpen: false }); } catch (_) {}
+              try { if (typeof onClose === 'function') onClose(); } catch (_) {}
             }}
             aria-label="بستن"
-            className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white relative z-30 pointer-events-auto"
+            className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
