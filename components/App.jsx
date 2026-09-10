@@ -12248,6 +12248,44 @@ const downloadSeoFile = (filename, content, mime) => {
         } catch (_) {}
       }, []);
 
+      
+      // ROOT admin session restore — after modern login redirect
+      useEffect(() => {
+        if (typeof window === 'undefined') return;
+        try {
+          const path = (window.location.pathname || '').replace(/\/+$/, '') || '/';
+          const q = new URLSearchParams(window.location.search || '');
+          const isAdminPath = path === '/amirshn' || path.endsWith('/amirshn') || path.includes('پنل-ادمین');
+          const wantPanel = q.get('panel') === '1' || sessionStorage.getItem('pm_admin_ok') === '1';
+          if (!isAdminPath && !wantPanel) return;
+
+          const raw = localStorage.getItem('adminUser');
+          if (!raw) return;
+          const saved = JSON.parse(raw);
+          const ph = String(saved?.phone || '').replace(/\D/g, '');
+          if (ph.length < 10) return;
+
+          sessionStorage.removeItem('pm_admin_ok');
+          setAdminUser({
+            name: saved.name || 'سوپر ادمین',
+            role: saved.role || 'Super Admin',
+            phone: ph,
+            loggedAt: saved.loggedAt || Date.now(),
+          });
+          try { setAdminAuthOpen(false); } catch (_) {}
+          try { setAuthOpen(false); } catch (_) {}
+          try { openAdminPanelPage(); } catch (_) {}
+          try {
+            if (q.get('panel') === '1') {
+              const u = new URL(window.location.href);
+              u.searchParams.delete('panel');
+              u.searchParams.delete('t');
+              window.history.replaceState({}, '', u.pathname + (u.searchParams.toString() ? '?' + u.searchParams.toString() : ''));
+            }
+          } catch (_) {}
+        } catch (_) {}
+      }, []);
+
       const openAdminAuth = () => {
         setAdminAuthOpen(true);
         setAdminAuthStep('phone');
