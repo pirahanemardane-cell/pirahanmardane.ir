@@ -112,9 +112,10 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const [fullName, setFullName] = useState('');
   const canvasRef = useRef(null);
   const isSeller = mode === 'seller';
+  const isAdmin = mode === 'admin';
+  const role = isAdmin ? 'admin' : isSeller ? 'seller' : 'buyer';
 
-  const role = isSeller ? 'seller' : 'buyer';
-
+  
   function goAfterAuth(data) {
     const profile = data?.profile || {};
     const user = data?.user || {};
