@@ -27,7 +27,7 @@ export default function AuthModalView() {
 
   return (
     <LoginCardSection
-      mode={api.authMode === 'seller' ? 'seller' : 'buyer'}
+      mode={api.authMode === 'admin' ? 'admin' : api.authMode === 'seller' ? 'seller' : 'buyer'}
       onClose={handleClose}
       onContact={handleContact}
     />

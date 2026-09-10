@@ -12265,7 +12265,17 @@ const downloadSeoFile = (filename, content, mime) => {
         };
       }, [adminUser]);
 
-      // مسیر /amirshn — جدا از مسیریابی کلی تا همیشه مودال/پنل ادمین باز شود
+      
+      // Bridge: admin auth uses the modern LoginCardSection (same as buyer/seller)
+      useEffect(() => {
+        if (!adminAuthOpen) return;
+        try {
+          setAuthMode('admin');
+          setAuthOpen(true);
+        } catch (_) {}
+      }, [adminAuthOpen]);
+
+// مسیر /amirshn — جدا از مسیریابی کلی تا همیشه مودال/پنل ادمین باز شود
       useEffect(() => {
         if (typeof window === 'undefined') return;
         const run = () => {
@@ -12405,6 +12415,7 @@ const downloadSeoFile = (filename, content, mime) => {
 
       const closeAdminAuth = () => {
         setAdminAuthOpen(false);
+        try { setAuthOpen(false); } catch (_) {}
         setAdminAuthError('');
         setAdminAuthStep('phone');
         setAdminAuthOtp('');
@@ -16934,7 +16945,7 @@ const params = new URLSearchParams(window.location.search);
 
           {/* ===================== ADMIN PANEL ===================== */}
 
-      {adminAuthOpen && (
+      {false && adminAuthOpen && (
         <AdminAuthView
           open={!!adminAuthOpen}
           onClose={() => { try { closeAdminAuth(); } catch (_) {} }}
