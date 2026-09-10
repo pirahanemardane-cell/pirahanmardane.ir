@@ -350,6 +350,16 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         return;
       }
       if (data.mfa_required) {
+        // MFA موقتاً غیرفعال — روی مسیر ادمین مستقیم برو پنل
+        var onAdminPath = false;
+        try {
+          var pp = String(window.location.pathname || '');
+          onAdminPath = pp === '/amirpnl' || pp.indexOf('/amirpnl') >= 0;
+        } catch (_) {}
+        if (onAdminPath || isAdmin) {
+          forceAdminRedirectNow(data.phone || phone || emailOrPhone, (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین');
+          return;
+        }
         setSmsPhone(data.phone || phone);
         setView('sms-otp');
         setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
@@ -399,7 +409,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         return;
       }
       if (isAdmin) {
-        goAdminPanelNow(String(emailOrPhone || smsPhone || '').replace(/\D/g, ''), (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین');
+        forceAdminRedirectNow(String(emailOrPhone || smsPhone || '').replace(/\D/g, ''), (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین');
         return;
       }
       redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone: String(emailOrPhone || smsPhone || '').replace(/\D/g, '') });

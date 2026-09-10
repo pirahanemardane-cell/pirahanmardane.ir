@@ -162,9 +162,10 @@ export async function POST(req) {
       }
     }
 
-        // ===== MFA فقط برای ادمین =====
+        // ===== MFA ادمین — موقتاً غیرفعال =====
     const role = profile?.role || 'buyer'
-    const needsMfa = role === 'admin'
+    // قبلاً: const needsMfa = role === 'admin'
+    const needsMfa = false // TODO: بعداً دوباره true کنید
 
     if (needsMfa) {
       try {
