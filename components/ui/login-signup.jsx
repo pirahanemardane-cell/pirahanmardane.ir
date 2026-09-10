@@ -190,7 +190,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       try {
         window.location.replace('/amirshn?panel=1&t=' + Date.now());
       } catch (_) {
-        window.location.href = '/amirshn?panel=1&t=' + Date.now();
+        try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); } catch (_) { window.location.href = '/amirshn?panel=1&t=' + Date.now(); }
       }
       return;
     }
