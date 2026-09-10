@@ -5484,13 +5484,6 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           if (parsed.type === 'admin-login' || parsed.page === 'admin-login') {
             try { window.location.replace('/'); return; } catch (_) {}
             return;
-          } catch (_) {}
-            try { setShowAdminPanel(false); } catch (_) {}
-            setAdminAuthOpen(true);
-            setAdminAuthStep('phone');
-            try { setAuthMode('admin'); setAuthOpen(true); } catch (_) {}
-            try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
-            return;
           }
           if (parsed.type === 'admin-panel' || parsed.page === 'admin-panel' || false /* was amirshn */) {
             let adminOk = false;
