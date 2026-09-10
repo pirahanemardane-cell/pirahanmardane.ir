@@ -793,7 +793,22 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
           <form onSubmit={handleFormSubmit}>
           <CardContent className="grid gap-5">
-            {msg ? <p className="text-xs text-emerald-400 text-center">{msg}</p> : null}
+            {msg ? (
+              <p
+                className={`text-xs text-center font-medium ${
+                  /نامعتبر|نادرست|صحیح نمی|خطا|ناموفق|الزامی|وارد کنید|حداقل|اشتباه/.test(String(msg))
+                    ? 'text-red-500'
+                    : 'text-emerald-400'
+                }`}
+                style={
+                  /نامعتبر|نادرست|صحیح نمی|خطا|ناموفق|الزامی|وارد کنید|حداقل|اشتباه/.test(String(msg))
+                    ? { color: '#ef4444' }
+                    : { color: '#34d399' }
+                }
+              >
+                {msg}
+              </p>
+            ) : null}
 
             {view === 'sms-phone' ? (
               <>
