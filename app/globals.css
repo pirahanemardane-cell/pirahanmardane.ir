@@ -5253,3 +5253,41 @@ html.dark p.pm-page-loader-text,
 /* === END MOBILE PANEL TABS FIXED === */
 
 
+
+
+/* === Pastel semantic text colors (site-wide) === */
+/* سبز پاستیلی برای متن‌های سبز / emerald */
+html .text-green-400,
+html .text-green-500,
+html .text-green-600,
+html .text-green-700,
+html .text-emerald-400,
+html .text-emerald-500,
+html .text-emerald-600,
+html .text-emerald-700 {
+  color: #34D399 !important;
+}
+html.dark .text-green-400,
+html.dark .text-green-500,
+html.dark .text-green-600,
+html.dark .text-green-700,
+html.dark .text-emerald-400,
+html.dark .text-emerald-500,
+html.dark .text-emerald-600,
+html.dark .text-emerald-700 {
+  color: #86EFAC !important;
+}
+
+/* قرمز پاستیلی برای متن‌های قرمز */
+html .text-red-400,
+html .text-red-500,
+html .text-red-600,
+html .text-red-700 {
+  color: #F87171 !important;
+}
+html.dark .text-red-400,
+html.dark .text-red-500,
+html.dark .text-red-600,
+html.dark .text-red-700 {
+  color: #FCA5A5 !important;
+}

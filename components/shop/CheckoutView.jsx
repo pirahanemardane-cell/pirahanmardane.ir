@@ -268,7 +268,7 @@ export default function CheckoutView() {
                             </div>
                             <div>
                               <label className="block text-xs text-primary-600 dark:text-white/70 mb-1">ایمیل (اختیاری)</label>
-                              <input type="email" dir="ltr" value={checkoutContact.email} onChange={e => setCheckoutContact(c => ({ ...c, email: e.target.value }))} className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm" />
+                              <input type="email" dir="ltr" value={checkoutContact.email} onChange={e => setCheckoutContact(c => ({ ...c, email: e.target.value }))} placeholder="email@example.com" inputMode="email" autoComplete="email" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-transparent text-sm text-primary-900 dark:text-white" />
                             </div>
                           </div>
                           {!user && (
