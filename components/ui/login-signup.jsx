@@ -364,9 +364,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       }
       if (data.needs_profile) {
         setFullName('');
-{!isAdmin && (
-        setView('signup');
-)}
+setView('signup');
+
         setSignupPhone(smsPhone);
         setMsg('تکمیل نام برای ثبت‌نام');
         return;
@@ -381,105 +380,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
 
 
-  async function handlePasswordLogin() {
-    if (busy) return;
-    setBusy(true);
-    setMsg('');
-    try {
-      const phone = String(emailOrPhone || '').replace(/\D/g, '');
-      const res = await fetch('/api/auth/login-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ phone: phone || emailOrPhone, password, remember }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.ok) {
-        setMsg(data?.error || 'ورود ناموفق');
-        return;
-      }
-      if (data.mfa_required) {
-        setSmsPhone(data.phone || phone);
-        setView('sms-otp');
-        setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
-        return;
-      }
-      setMsg('ورود موفق');
-      goAfterAuth(data);
-    } catch (e) {
-      setMsg(e?.message || 'خطا در ورود');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function handleRequestOtp() {
-    if (busy) return;
-    const phone = String(smsPhone || '').replace(/\D/g, '');
-    if (phone.length < 11) {
-      setMsg('شماره موبایل ۱۱ رقمی وارد کنید');
-      return;
-    }
-    setBusy(true);
-    setMsg('');
-    try {
-      const res = await fetch('/api/auth/otp/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ phone, purpose: 'login', role }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.ok) {
-        setMsg(data?.error || 'ارسال کد ناموفق');
-        return;
-      }
-      setSmsPhone(phone);
-      setView('sms-otp');
-      setMsg(data.mock ? 'کد در حالت آزمایشی ثبت شد' : (data.message || 'کد ارسال شد'));
-    } catch (e) {
-      setMsg(e?.message || 'خطا در ارسال کد');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function handleVerifyOtp(code) {
-    if (busy) return;
-    setBusy(true);
-    setMsg('');
-    try {
-      const res = await fetch('/api/auth/otp/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ phone: smsPhone, code, role }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.ok) {
-        setMsg(data?.error || 'کد نامعتبر است');
-        return;
-      }
-      if (data.needs_profile) {
-        setMsg('شماره تأیید شد — برای تکمیل ثبت‌نام نام خود را وارد کنید');
-{!isAdmin && (
-        setView('signup');
-)}
-        setSignupPhone?.(smsPhone);
-        return;
-      }
-      setMsg('ورود موفق');
-      goAfterAuth(data);
-    } catch (e) {
-      setMsg(e?.message || 'خطا در تأیید کد');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-
-
-  useEffect(() => {
+        useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') {
         setClosed(true);
@@ -866,16 +767,15 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
           <CardFooter className="flex flex-col items-center gap-3 text-sm text-zinc-400">
             {view === 'signin' ? (
-{!isAdmin && (
-              <button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signup'); }}>
+<button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signup'); }}>
                 ثبت‌نام
               </button>
-)}
+
             ) : view === 'sms-phone' || view === 'sms-otp' ? null : (
               <button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signin'); }}>
                 بازگشت به ورود
               </button>
-            )}
+
             <span className="text-[10px] tracking-wide text-zinc-600">pirahanmardane.ir</span>
           </CardFooter>
         </Card>
