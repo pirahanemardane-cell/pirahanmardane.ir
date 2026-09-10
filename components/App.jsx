@@ -12460,9 +12460,29 @@ const downloadSeoFile = (filename, content, mime) => {
             // از store مستقیم بخوان تا closure کهنه مانع نشود
             let u = null;
             try { u = adminUiStore.getState()?.adminUser; } catch (_) { u = adminUser; }
-            if (u && isAdminPhone(u.phone)) {
+            if (!(u && u.phone)) {
+              try {
+                const raw = localStorage.getItem('adminUser');
+                if (raw) {
+                  const saved = JSON.parse(raw);
+                  const ph0 = String(saved?.phone || '').replace(/\D/g, '');
+                  if (ph0.length >= 10) {
+                    u = { name: saved.name || 'سوپر ادمین', role: saved.role || 'Super Admin', phone: ph0, loggedAt: saved.loggedAt || Date.now() };
+                    try { setAdminUser(u); } catch (_) {}
+                  }
+                }
+              } catch (_) {}
+            }
+            const ph = String(u?.phone || '').replace(/\D/g, '');
+            let okFlag = false;
+            try { okFlag = sessionStorage.getItem('pm_admin_ok') === '1' || sessionStorage.getItem('pm_panel') === 'admin'; } catch (_) {}
+            let panelQuery = false;
+            try { panelQuery = new URLSearchParams(window.location.search).get('panel') === '1'; } catch (_) {}
+            if ((u && ph.length >= 10 && isAdminPhone(ph)) || (okFlag && ph.length >= 10) || (panelQuery && ph.length >= 10)) {
+              try { sessionStorage.setItem('pm_panel', 'admin'); } catch (_) {}
               openAdminPanelPage();
               setAdminAuthOpen(false);
+              try { setAuthOpen(false); } catch (_) {}
               try {
                 const saved = sessionStorage.getItem('adminTab');
                 const cur = adminUiStore.getState()?.adminTab;
@@ -12470,9 +12490,11 @@ const downloadSeoFile = (filename, content, mime) => {
               } catch (_) { try { setAdminTab('dashboard'); } catch (__) {} }
               return;
             }
-            setAdminAuthOpen(true);
-            setAdminAuthStep('phone');
-            setShowAdminPanel(false);
+            try { window.location.replace('/amirpnl'); } catch (_) {
+              setAdminAuthOpen(true);
+              setAdminAuthStep('phone');
+              setShowAdminPanel(false);
+            }
           } catch (_) {}
         };
         run();
@@ -12620,10 +12642,13 @@ const downloadSeoFile = (filename, content, mime) => {
         setMobileMenuOpen(false);
         try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
         try { setShowAdminPanel(true); setAdminAuthOpen(false); } catch (_) {}
+        try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
+        try { setShowAdminPanel(true); setAdminAuthOpen(false); setAuthOpen(false); } catch (_) {}
+        try { setAdminTab('dashboard'); } catch (_) {}
+        try { pushLiveToast('ورود ادمین موفق', { type: 'success', duration: 1500 }); } catch (_) {}
+        try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); return; } catch (_) {}
         openAdminPanelPage();
-        setAdminTab('dashboard');
         try { pushFaUrl('/amirshn', { adminPanel: true }); } catch (_) {}
-        pushLiveToast('ورود ادمین موفق', { type: 'success', duration: 2000 });
         try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { try { window.scrollTo(0, 0); } catch (__) {} }
         // همیشه دیتا از سرور — یکسان برای OTP و رمز
         setTimeout(() => {

@@ -395,41 +395,46 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
     setMsg('');
     try {
       const phone = String(smsPhone || emailOrPhone || '').replace(/\D/g, '');
-      const endpoint = isAdmin ? '/api/auth/mfa/verify' : '/api/auth/otp/verify';
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ phone, code, role: isAdmin ? 'admin' : role }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.ok) {
+      const endpoints = isAdmin
+        ? ['/api/auth/mfa/verify', '/api/auth/otp/verify']
+        : ['/api/auth/otp/verify'];
+      let data = null;
+      let ok = false;
+      for (const endpoint of endpoints) {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ phone, code, role: isAdmin ? 'admin' : role }),
+        });
+        data = await res.json().catch(() => ({}));
+        if (res.ok && data?.ok) { ok = true; break; }
+      }
+      if (!ok) {
         const err = data?.error || 'کد نامعتبر است';
         setMsg(err);
         return { ok: false, error: err };
       }
-      // قبل از ریدایرکت session را قطعی ذخیره کن
       try {
         if (isAdmin || String(data?.profile?.role || '').toLowerCase() === 'admin') {
-          localStorage.setItem(
-            'adminUser',
-            JSON.stringify({
-              name: data?.profile?.full_name || data?.profile?.name || 'سوپر ادمین',
-              role: 'Super Admin',
-              phone,
-              loggedAt: Date.now(),
-            })
-          );
+          localStorage.setItem('adminUser', JSON.stringify({
+            name: data?.profile?.full_name || data?.profile?.name || 'سوپر ادمین',
+            role: 'Super Admin',
+            phone,
+            loggedAt: Date.now(),
+            sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000,
+          }));
           sessionStorage.setItem('pm_panel', 'admin');
           sessionStorage.setItem('pm_admin_ok', '1');
         }
       } catch (_) {}
-      redirectAfterAuth(
-        data.profile || {
-          role: isAdmin ? 'admin' : role,
-          phone,
-        }
-      );
+      if (isAdmin || String(data?.profile?.role || '').toLowerCase() === 'admin') {
+        try {
+          window.location.replace('/amirshn?panel=1&t=' + Date.now());
+          return { ok: true };
+        } catch (_) {}
+      }
+      redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone });
       return { ok: true };
     } catch (e) {
       const err = e?.message || 'خطا در تأیید کد';
@@ -439,7 +444,6 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       setBusy(false);
     }
   }
-
 
 
         useEffect(() => {
