@@ -1600,9 +1600,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           }
         } catch (_) {}
         try {
-          if (typeof window !== "undefined" && (window.location.pathname || "").indexOf("amirpnl") < 0) {
-            // فقط اگر واقعاً سشن نداریم
-            window.location.replace("/");
+          if (typeof window !== "undefined") {
+            window.location.replace("/ashn");
             return;
           }
         } catch (_) {}
@@ -6394,6 +6393,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             }
           }
         } catch (_) {}
+        try { setPageLoadingText(null); } catch (_) {}
         try {
           setShowAdminPanel(true);
           setAdminAuthOpen(false);
@@ -6401,14 +6401,17 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           setShowProfilePage(false);
           setShowCartPage(false);
           setShowCheckout(false);
+          setShowPLP(false);
+          setPdpProduct(null);
+          setStaticPage(null);
           setMobileMenuOpen(false);
         } catch (_) {}
         try { setAuthOpen(false); } catch (_) {}
-        try { sessionStorage.setItem('pm_panel', 'admin'); } catch (_) {}
+        try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
         try {
           const path = (typeof window !== 'undefined' && window.location && window.location.pathname) || '';
           if (path !== '/ashn-pnl' && !String(path).endsWith('/ashn-pnl')) {
-            window.location.href = '/' + Date.now();
+            window.location.href = '/ashn-pnl';
             return;
           }
         } catch (_) {}
@@ -12703,6 +12706,7 @@ const downloadSeoFile = (filename, content, mime) => {
         const u = { ...ADMIN_PRESET, phone, loggedAt: Date.now() };
         setAdminUser(u);
         try { localStorage.setItem('adminUser', JSON.stringify(u)); } catch (_) {}
+        try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
         setAdminAuthOpen(false);
         setAdminAuthStep('phone');
         setAdminAuthOtp('');
@@ -12710,6 +12714,9 @@ const downloadSeoFile = (filename, content, mime) => {
         ensureAdminSeed();
         setShowSellerPanel(false);
         setShowProfilePage(false);
+        try { setShowAdminPanel(true); setPageLoadingText(null); } catch (_) {}
+        try { window.location.href = '/ashn-pnl'; return; } catch (_) {}
+        try { openAdminPanelPage(); } catch (_) {}
         setShowCartPage(false);
         setShowCheckout(false);
         setShowWishlistPage(false);
@@ -12728,7 +12735,7 @@ const downloadSeoFile = (filename, content, mime) => {
         try { window.location.replace('/ashn-pnl'); return; } catch (_) {}
         try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
         try { setShowAdminPanel(true); setAdminAuthOpen(false); setAuthOpen(false); } catch (_) {}
-        try { window.location.href = '/' + Date.now(); return; } catch (_) {}
+        try { window.location.href = '/ashn-pnl'; return; } catch (_) {}
         openAdminPanelPage();
         try { pushFaUrl('/ashn', { adminPanel: true }); } catch (_) {}
         try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { try { window.scrollTo(0, 0); } catch (__) {} }
