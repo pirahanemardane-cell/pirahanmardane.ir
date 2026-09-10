@@ -66,7 +66,7 @@ function Separator({ className }) {
   return <div className={cn('h-px w-full bg-zinc-800', className)} />;
 }
 
-export default function LoginCardSection({ mode = 'buyer', onClose }) {
+export default function LoginCardSection({ mode = 'buyer', onClose, onContact }) {
   const [view, setView] = useState('signin');
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
@@ -172,20 +172,38 @@ export default function LoginCardSection({ mode = 'buyer', onClose }) {
       </div>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-50 mix-blend-screen pointer-events-none" />
 
-      <header className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80 z-10">
-        <span className="text-xs tracking-[0.14em] uppercase text-zinc-400">
-          {isSeller ? 'Seller Console' : 'Pirahanmardane'}
+      <header className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80 z-20" dir="rtl">
+        <span className="text-xs tracking-wide text-zinc-400">
+          {isSeller ? 'کنسول فروشنده' : 'کنسول خریدار'}
         </span>
         <div className="flex items-center gap-2">
-          <Button variant="outline" className="h-9 rounded-lg border-zinc-800 bg-zinc-900">
-            <span className="mr-2">Contact</span>
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-          {typeof onClose === 'function' ? (
-            <button type="button" onClick={onClose} aria-label="close" className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white">
-              <X className="h-4 w-4" />
-            </button>
-          ) : null}
+          <button
+            type="button"
+            onClick={() => {
+              try {
+                if (typeof onContact === 'function') onContact();
+                else if (typeof onClose === 'function') onClose();
+              } catch (_) {}
+            }}
+            className="h-9 px-3 inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-50 text-sm hover:bg-zinc-900/80"
+          >
+            <span>تماس با ما</span>
+            <ArrowRight className="h-4 w-4 rotate-180" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              try {
+                if (typeof onClose === 'function') onClose();
+              } catch (_) {}
+            }}
+            aria-label="بستن"
+            className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white relative z-30 pointer-events-auto"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
       </header>
 
