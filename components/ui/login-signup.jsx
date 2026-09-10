@@ -159,23 +159,36 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
 
   const redirectAfterAuth = (profile) => {
-    const r = String(profile?.role || (isAdmin ? 'admin' : role) || 'buyer').toLowerCase();
-    try {
-      if (typeof onClose === 'function') onClose();
-    } catch (_) {}
-    try {
-      patchModalUi({ authOpen: false });
-    } catch (_) {}
+    const phone = String((profile && (profile.phone || profile.mobile)) || smsPhone || emailOrPhone || '').replace(/\D/g, '');
+    const r = isAdmin ? 'admin' : String((profile && profile.role) || role || 'buyer').toLowerCase();
+    try { if (typeof onClose === 'function') onClose(); } catch (_) {}
+    try { patchModalUi({ authOpen: false }); } catch (_) {}
     if (r === 'admin') {
-      window.location.assign('/amirshn');
+      try {
+        localStorage.setItem('adminUser', JSON.stringify({
+          name: (profile && (profile.full_name || profile.name)) || 'سوپر ادمین',
+          role: 'Super Admin',
+          phone: phone || '09',
+          loggedAt: Date.now(),
+        }));
+        sessionStorage.setItem('pm_panel', 'admin');
+        sessionStorage.setItem('pm_admin_ok', '1');
+      } catch (_) {}
+      window.location.replace('/amirshn');
       return;
     }
-    if (r === 'seller') {
-      try { sessionStorage.setItem('pm_panel', 'seller'); } catch (_) {}
-      window.location.assign('/?sellerPanel=1');
+    if (r === 'seller' || isSeller) {
+      try {
+        sessionStorage.setItem('pm_panel', 'seller');
+        if (profile) localStorage.setItem('sellerUser', JSON.stringify(Object.assign({}, profile, { phone: phone, loggedAt: Date.now() })));
+      } catch (_) {}
+      window.location.replace('/seller');
       return;
     }
-    window.location.assign('/?profile=1');
+    try {
+      if (profile) localStorage.setItem('buyerUser', JSON.stringify(Object.assign({}, profile, { phone: phone, loggedAt: Date.now() })));
+    } catch (_) {}
+    window.location.replace('/account');
   };
 
   async function handlePasswordLogin() {

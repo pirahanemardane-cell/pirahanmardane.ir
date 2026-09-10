@@ -12203,6 +12203,32 @@ const downloadSeoFile = (filename, content, mime) => {
         }
       }, [adminSettings]);
 
+      
+      useEffect(() => {
+        if (typeof window === 'undefined') return;
+        try {
+          if (sessionStorage.getItem('pm_admin_ok') === '1') {
+            sessionStorage.removeItem('pm_admin_ok');
+            const raw = localStorage.getItem('adminUser');
+            if (raw) {
+              const saved = JSON.parse(raw);
+              const ph = String(saved?.phone || '').replace(/\D/g, '');
+              if (ph.length >= 10) {
+                setAdminUser({
+                  name: saved.name || 'سوپر ادمین',
+                  role: saved.role || 'Super Admin',
+                  phone: ph,
+                  loggedAt: saved.loggedAt || Date.now(),
+                });
+                try { openAdminPanelPage(); } catch (_) {}
+                try { setAdminAuthOpen(false); } catch (_) {}
+                try { setAuthOpen(false); } catch (_) {}
+              }
+            }
+          }
+        } catch (_) {}
+      }, []);
+
       const openAdminAuth = () => {
         setAdminAuthOpen(true);
         setAdminAuthStep('phone');
