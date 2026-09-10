@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
-import { Eye, EyeOff, Github, Lock, Mail, ArrowRight, Chrome, X } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, ArrowRight, X, Code2, Globe } from 'lucide-react';
 
 function cn(...parts) {
   return parts.flat(Infinity).filter(Boolean).join(' ');
@@ -250,11 +250,11 @@ export default function LoginCardSection({ mode = 'buyer', onClose }) {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Button variant="outline" className="h-10 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50 hover:bg-zinc-900/80">
-                <Github className="h-4 w-4 mr-2" />
+                <Code2 className="h-4 w-4 mr-2" />
                 GitHub
               </Button>
               <Button variant="outline" className="h-10 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50 hover:bg-zinc-900/80">
-                <Chrome className="h-4 w-4 mr-2" />
+                <Globe className="h-4 w-4 mr-2" />
                 Google
               </Button>
             </div>
