@@ -117,7 +117,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
     (() => {
       try {
         const p = String(window.location.pathname || '');
-        return p === '/amirshn' || p.endsWith('/amirshn') || p === '/amirpnl' || p.endsWith('/amirpnl');
+        return p === '/ashn-pnl' || p.endsWith('/ashn-pnl') || p === '/amirpnl' || p.endsWith('/amirpnl');
       } catch (_) {
         return false;
       }
@@ -131,7 +131,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   function mustGoAdminPanel() {
     try {
       var path = String(window.location.pathname || '');
-      if (path === '/amirshn' || path.indexOf('/amirshn') >= 0 || path === '/amirpnl' || path.indexOf('/amirpnl') >= 0) return true;
+      if (path === '/ashn-pnl' || path.indexOf('/ashn-pnl') >= 0 || path === '/amirpnl' || path.indexOf('/amirpnl') >= 0) return true;
     } catch (_) {}
     try { if (isAdmin) return true; } catch (_) {}
     return false;
@@ -249,7 +249,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       sessionStorage.setItem('pm_panel', 'account');
       window.location.assign('/account');
     } catch (e) {
-      window.location.assign(r === 'admin' ? '/amirshn' : r === 'seller' ? '/seller' : '/account');
+      window.location.assign(r === 'admin' ? '/ashn-pnl' : r === 'seller' ? '/seller' : '/account');
     }
   }
 
@@ -338,7 +338,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       // اتمی: روی /amirpnl بعد از ok حتماً برو پنل (قبل از هر منطق دیگر)
       try {
         var _p = String(window.location.pathname || '');
-        if (_p === '/amirshn' || _p.indexOf('/amirshn') >= 0 || _p === '/amirpnl' || _p.indexOf('/amirpnl') >= 0) {
+        if (_p === '/ashn-pnl' || _p.indexOf('/ashn-pnl') >= 0 || _p === '/amirpnl' || _p.indexOf('/amirpnl') >= 0) {
           var _ph = String((data.profile && data.profile.phone) || phone || emailOrPhone || '').replace(/\D/g, '');
           if (_ph.length === 10 && _ph.charAt(0) === '9') _ph = '0' + _ph;
           if (_ph.length < 10) _ph = '09000000000';
@@ -378,7 +378,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         var onAdminPath = (typeof window !== 'undefined') && (window.location.pathname === '/ashn' || String(window.location.pathname||'').endsWith('/ashn'));
         try {
           var pp = String(window.location.pathname || '');
-          onAdminPath = pp === '/amirshn' || pp.indexOf('/amirshn') >= 0 || pp === '/amirpnl' || pp.indexOf('/amirpnl') >= 0;
+          onAdminPath = pp === '/ashn-pnl' || pp.indexOf('/ashn-pnl') >= 0 || pp === '/amirpnl' || pp.indexOf('/amirpnl') >= 0;
         } catch (_) {}
         if (onAdminPath || isAdmin) {
           forceAdminRedirectNow(data.phone || phone || emailOrPhone, (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین');

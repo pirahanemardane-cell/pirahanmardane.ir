@@ -6402,7 +6402,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         try { sessionStorage.setItem('pm_panel', 'admin'); } catch (_) {}
         try {
           const path = (typeof window !== 'undefined' && window.location && window.location.pathname) || '';
-          if (path !== '/amirshn' && !String(path).endsWith('/amirshn')) {
+          if (path !== '/ashn-pnl' && !String(path).endsWith('/ashn-pnl')) {
             window.location.href = '/' + Date.now();
             return;
           }
@@ -12384,8 +12384,8 @@ const downloadSeoFile = (filename, content, mime) => {
           const path = (window.location.pathname || '').replace(/\/+$/, '') || '/';
           const q = new URLSearchParams(window.location.search || '');
           const isAdminPath =
-            path === '/amirshn' ||
-            path.endsWith('/amirshn') ||
+            path === '/ashn-pnl' ||
+            path.endsWith('/ashn-pnl') ||
             path.includes('پنل-ادمین');
           const wantPanel =
             q.get('panel') === '1' || sessionStorage.getItem('pm_admin_ok') === '1';
@@ -12428,9 +12428,9 @@ const downloadSeoFile = (filename, content, mime) => {
         setAdminAuthLoading(false);
         try {
           const p = (typeof window !== 'undefined' && window.location.pathname) || '';
-          if (p !== '/amirshn' && !String(p).endsWith('/amirshn')) {
+          if (p !== '/ashn-pnl' && !String(p).endsWith('/ashn-pnl')) {
             try { pushFaUrl('/ashn', { adminPanel: true }); } catch (_) {
-              try { window.history.replaceState({ adminPanel: true }, '', '/amirshn'); } catch (__) {}
+              try { window.history.replaceState({ adminPanel: true }, '', '/ashn-pnl'); } catch (__) {}
             }
           }
         } catch (_) {}
@@ -12500,13 +12500,13 @@ const downloadSeoFile = (filename, content, mime) => {
         } catch (_) {}
       }, [adminAuthOpen]);
 
-// مسیر /amirshn — جدا از مسیریابی کلی تا همیشه مودال/پنل ادمین باز شود
+// مسیر /ashn ورود | /ashn-pnl پنل
       useEffect(() => {
         if (typeof window === 'undefined') return;
         const run = () => {
           try {
             const path = decodeURIComponent(String(window.location.pathname || '')).replace(/\/$/, '') || '/';
-            if (path !== '/amirshn' && !path.endsWith('/amirshn')) return;
+            if (path !== '/ashn' && !path.endsWith('/ashn') && path !== '/ashn-pnl' && !path.endsWith('/ashn-pnl')) return;
             // از store مستقیم بخوان تا closure کهنه مانع نشود
             let u = null;
             try { u = adminUiStore.getState()?.adminUser; } catch (_) { u = adminUser; }
@@ -13208,7 +13208,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         try {
           if (typeof window === 'undefined') return;
           const path = window.location.pathname || '';
-          const isAdminPath = path === '/amirshn' || path.startsWith('/amirshn/') || path.includes('پنل-ادمین');
+          const isAdminPath = path === '/ashn-pnl' || path.startsWith('/ashn-pnl/') || path === '/ashn' || path.startsWith('/ashn/');
           if (!isAdminPath) return;
 
           // بازیابی فوری session ادمین از localStorage
