@@ -1503,6 +1503,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
     try {
       const url = new URL(window.location.href);
       const path = url.pathname || "";
+      const isAdminLogin = path === "/amirpnl" || path.endsWith("/amirpnl");
       const isAdmin = path === "/amirshn" || path.endsWith("/amirshn") || path.includes("پنل-ادمین");
       const isProfile = url.searchParams.get("profile") === "1" || path === "/account" || path.startsWith("/account/") || path.includes("profile");
       const isSeller = url.searchParams.get("sellerPanel") === "1" || path === "/seller" || path.startsWith("/seller/") || sessionStorage.getItem("pm_panel") === "seller";
@@ -1575,6 +1576,19 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             }
           }
         } catch (_) {}
+        try {
+          if (typeof window !== "undefined" && (window.location.pathname || "").indexOf("amirpnl") < 0) {
+            window.location.replace("/amirpnl");
+            return;
+          }
+        } catch (_) {}
+        setAdminAuthOpen(true);
+        setAdminAuthStep("phone");
+        return;
+      }
+
+      if (typeof isAdminLogin !== "undefined" && isAdminLogin) {
+        try { setShowAdminPanel(false); } catch (_) {}
         setAdminAuthOpen(true);
         setAdminAuthStep("phone");
         return;
@@ -5419,6 +5433,13 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           }
           if (parsed.type === 'seller-panel' || parsed.page === 'seller-panel') {
             setShowSellerPanel(true);
+            try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
+            return;
+          }
+          if (parsed.type === 'admin-login' || parsed.page === 'admin-login' || path === '/amirpnl' || path.endsWith('/amirpnl')) {
+            try { setShowAdminPanel(false); } catch (_) {}
+            setAdminAuthOpen(true);
+            setAdminAuthStep('phone');
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
@@ -12356,6 +12377,14 @@ const downloadSeoFile = (filename, content, mime) => {
         setAdminAuthOtp('');
         setAdminAuthError('');
         setAdminAuthLoading(false);
+        try {
+          const p = (typeof window !== 'undefined' && window.location.pathname) || '';
+          if (p !== '/amirpnl' && !String(p).endsWith('/amirpnl')) {
+            try { pushFaUrl('/amirpnl', { adminLogin: true }); } catch (_) {
+              try { window.history.replaceState({ adminLogin: true }, '', '/amirpnl'); } catch (__) {}
+            }
+          }
+        } catch (_) {}
         setMobileMenuOpen(false);
       };
 
