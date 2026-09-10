@@ -796,7 +796,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                 </div>
               </>
             ) : null}
-{view === 'signup' ? 'ثبت‌نام' : view === 'forgot' ? 'ارسال لینک بازیابی' : 'ورود'}
+{view === 'signup' ? 'ثبت‌نام' : view === 'forgot' ? (forgotStep === 'code' ? 'ذخیره رمز جدید' : 'ارسال کد بازیابی') : 'ورود'}
                 </Button>
 
                 {view === 'signin' ? (
