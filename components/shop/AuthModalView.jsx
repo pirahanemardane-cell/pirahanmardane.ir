@@ -4,6 +4,15 @@ import { useAppApi } from '../AppApiContext';
 import LoginCardSection from '@/components/ui/login-signup';
 import { patchModalUi } from '@/lib/stores/modalUiStore';
 
+function isAdminLoginPath() {
+  try {
+    const p = String(typeof window !== 'undefined' ? window.location.pathname || '' : '');
+    return p === '/amirpnl' || p.endsWith('/amirpnl');
+  } catch (_) {
+    return false;
+  }
+}
+
 export default function AuthModalView() {
   const api = useAppApi() || {};
   if (!api.authOpen) return null;
@@ -25,9 +34,12 @@ export default function AuthModalView() {
     try { window.location.assign('/تماس-با-ما'); } catch (_) {}
   };
 
+  const forceAdmin = isAdminLoginPath() || api.authMode === 'admin';
+  const mode = forceAdmin ? 'admin' : api.authMode === 'seller' ? 'seller' : 'buyer';
+
   return (
     <LoginCardSection
-      mode={api.authMode === 'admin' ? 'admin' : api.authMode === 'seller' ? 'seller' : 'buyer'}
+      mode={mode}
       onClose={handleClose}
       onContact={handleContact}
     />

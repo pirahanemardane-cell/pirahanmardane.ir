@@ -112,11 +112,62 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const [fullName, setFullName] = useState('');
   const canvasRef = useRef(null);
   const isSeller = mode === 'seller';
-  const isAdmin = mode === 'admin';
+  const pathIsAdmin =
+    typeof window !== 'undefined' &&
+    (() => {
+      try {
+        const p = String(window.location.pathname || '');
+        return p === '/amirpnl' || p.endsWith('/amirpnl');
+      } catch (_) {
+        return false;
+      }
+    })();
+  const isAdmin = mode === 'admin' || pathIsAdmin;
   React.useEffect(() => {
     if (isAdmin && view === 'signup') setView('signin');
   }, [isAdmin, view]);
   const role = isAdmin ? 'admin' : isSeller ? 'seller' : 'buyer';
+
+  function hardRedirect(url) {
+    try {
+      window.location.replace(url);
+    } catch (_) {
+      try { window.location.href = url; }
+      catch (__) {
+        try { window.location.assign(url); } catch (___) {}
+      }
+    }
+    try {
+      setTimeout(() => {
+        try {
+          if (String(window.location.pathname || '').indexOf('amirshn') < 0) {
+            window.location.href = url;
+          }
+        } catch (_) {}
+      }, 120);
+    } catch (_) {}
+  }
+
+  function goAdminPanelNow(phone, name) {
+    let ph = String(phone || '').replace(/\D/g, '');
+    if (ph.length === 10 && ph.startsWith('9')) ph = '0' + ph;
+    try {
+      localStorage.setItem(
+        'adminUser',
+        JSON.stringify({
+          name: name || 'سوپر ادمین',
+          role: 'Super Admin',
+          phone: ph.length >= 10 ? ph : ph || '09000000000',
+          loggedAt: Date.now(),
+          sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000,
+        })
+      );
+      sessionStorage.setItem('pm_panel', 'admin');
+      sessionStorage.setItem('pm_admin_ok', '1');
+    } catch (_) {}
+    hardRedirect('/amirshn?panel=1&t=' + Date.now());
+  }
+
 
   function goAdminPanelNow(phone, name) {
     const ph = String(phone || "").replace(/\D/g, "");
@@ -159,7 +210,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           id, phone, name, role: 'admin', loggedAt: Date.now(), sessionExpires,
         }));
         sessionStorage.setItem('pm_panel', 'admin');
-        sessionStorage.setItem('pm_admin_ok', '1'); try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); } catch (_) { window.location.href='/amirshn?panel=1&t=' + Date.now(); };
+        sessionStorage.setItem('pm_admin_ok', '1'); try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); } catch (_) { hardRedirect('/amirshn?panel=1&t=' + Date.now()) + Date.now(); };
         return;
       }
       if (r === 'seller') {
@@ -213,7 +264,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       try {
         window.location.replace('/amirshn?panel=1&t=' + Date.now());
       } catch (_) {
-        try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); } catch (_) { window.location.href = '/amirshn?panel=1&t=' + Date.now(); }
+        try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); } catch (_) { hardRedirect('/amirshn?panel=1&t=' + Date.now()) + Date.now(); }
       }
       return;
     }

@@ -1588,9 +1588,29 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }
 
       if (typeof isAdminLogin !== "undefined" && isAdminLogin) {
+        try {
+          const raw = localStorage.getItem("adminUser");
+          if (raw) {
+            const saved = JSON.parse(raw);
+            const ph = String(saved?.phone || "").replace(/\D/g, "");
+            if (ph.length >= 10) {
+              try {
+                setAdminUser({
+                  name: saved.name || "سوپر ادمین",
+                  role: saved.role || "Super Admin",
+                  phone: ph,
+                  loggedAt: saved.loggedAt || Date.now(),
+                });
+              } catch (_) {}
+              try { sessionStorage.setItem("pm_panel", "admin"); sessionStorage.setItem("pm_admin_ok", "1"); } catch (_) {}
+              try { window.location.replace("/amirshn?panel=1&t=" + Date.now()); return; } catch (_) {}
+            }
+          }
+        } catch (_) {}
         try { setShowAdminPanel(false); } catch (_) {}
         setAdminAuthOpen(true);
         setAdminAuthStep("phone");
+        try { setAuthMode("admin"); setAuthOpen(true); } catch (_) {}
         return;
       }
 
@@ -12331,8 +12351,7 @@ const downloadSeoFile = (filename, content, mime) => {
           if (!raw) return;
           const saved = JSON.parse(raw);
           const ph = String(saved?.phone || '').replace(/\D/g, '');
-          if (ph.length < 10) return;
-          setAdminUser({ name: saved.name || 'سوپر ادمین', role: saved.role || 'Super Admin', phone: ph, loggedAt: saved.loggedAt || Date.now() });
+          setAdminUser({ name: saved.name || 'سوپر ادمین', role: saved.role || 'Super Admin', phone: ph.length >= 10 ? ph : (ph || '09000000000'), loggedAt: saved.loggedAt || Date.now() });
           try { setAdminAuthOpen(false); } catch (_) {}
           try { setAuthOpen(false); } catch (_) {}
           try { openAdminPanelPage(); } catch (_) {}
@@ -12490,7 +12509,12 @@ const downloadSeoFile = (filename, content, mime) => {
             try { okFlag = sessionStorage.getItem('pm_admin_ok') === '1' || sessionStorage.getItem('pm_panel') === 'admin'; } catch (_) {}
             let panelQuery = false;
             try { panelQuery = new URLSearchParams(window.location.search).get('panel') === '1'; } catch (_) {}
-            if ((u && ph.length >= 10 && isAdminPhone(ph)) || (okFlag && ph.length >= 10) || (panelQuery && ph.length >= 10)) {
+            if (
+              (u && ph.length >= 10 && isAdminPhone(ph)) ||
+              (okFlag && ph.length >= 10) ||
+              (panelQuery && (ph.length >= 10 || okFlag)) ||
+              (okFlag && panelQuery)
+            ) {
               try { sessionStorage.setItem('pm_panel', 'admin'); } catch (_) {}
               openAdminPanelPage();
               setAdminAuthOpen(false);
