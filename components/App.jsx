@@ -4795,14 +4795,59 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                   if (Array.isArray(list)) {
                     try { setTickets && setTickets(list); } catch (_) {}
                     try { setAdminTickets && setAdminTickets(list); } catch (_) {}
+                    try { setSellerTickets && setSellerTickets(list); } catch (_) {}
                   }
                 })
                 .catch(() => {});
+              try {
+                window.dispatchEvent(new CustomEvent('pm:ticket-messages-refetch', { detail: { ts: Date.now() } }));
+              } catch (_) {}
             }
             if (scope === 'cart' || scope === 'all') {
               try {
                 if (typeof loadAddressesFromServer === 'function') loadAddressesFromServer();
               } catch (_) {}
+              try {
+                import('@/lib/stores/cartStore').then((m) => {
+                  if (typeof m.syncCartFromServer === 'function') m.syncCartFromServer();
+                }).catch(() => {});
+              } catch (_) {}
+            }
+            if (scope === 'wishlist' || scope === 'all') {
+              try {
+                import('@/lib/stores/wishlistStore').then((m) => {
+                  if (typeof m.syncWishlistFromServer === 'function') m.syncWishlistFromServer();
+                }).catch(() => {});
+              } catch (_) {}
+            }
+            if (scope === 'settings' || scope === 'all') {
+              fetch('/api/site-settings', { cache: 'no-store' })
+                .then((r) => r.json())
+                .then((j) => {
+                  try {
+                    window.dispatchEvent(new CustomEvent('pm:site-settings', { detail: j, ts: Date.now() }));
+                  } catch (_) {}
+                })
+                .catch(() => {});
+            }
+            if (scope === 'reviews' || scope === 'all') {
+              try {
+                window.dispatchEvent(new CustomEvent('pm:reviews-refetch', { detail: { ts: Date.now() } }));
+              } catch (_) {}
+              // موجودی/کاتالوگ هم ممکن است با نظر عوض نشود؛ PDP را هل بده
+              try {
+                window.dispatchEvent(new CustomEvent('pm:pdp-refetch', { detail: { ts: Date.now() } }));
+              } catch (_) {}
+            }
+            if (scope === 'payouts' || scope === 'all') {
+              fetch('/api/seller/payouts', { credentials: 'include', cache: 'no-store' })
+                .then((r) => r.json())
+                .then((j) => {
+                  try {
+                    window.dispatchEvent(new CustomEvent('pm:payouts', { detail: j, ts: Date.now() }));
+                  } catch (_) {}
+                })
+                .catch(() => {});
             }
           } catch (_) {}
         };
@@ -4810,20 +4855,40 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         const onDb = (ev) => {
           try {
             const table = ev?.detail?.table;
+            const row = ev?.detail?.row;
             if (table === 'products' || table === 'product_variants') {
               window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'catalog', ts: Date.now() } }));
+              window.dispatchEvent(new CustomEvent('pm:pdp-refetch', { detail: { productId: row?.id || row?.product_id, ts: Date.now() } }));
             }
-            if (table === 'orders' || table === 'order_items') {
+            if (table === 'orders' || table === 'order_items' || table === 'order_returns') {
               window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'orders', ts: Date.now() } }));
             }
-            if (table === 'sellers') {
+            if (table === 'sellers' || table === 'profiles') {
               window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'sellers', ts: Date.now() } }));
             }
-            if (table === 'user_notifications') {
+            if (table === 'user_notifications' || table === 'notifications') {
               window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'notifications', ts: Date.now() } }));
             }
-            if (table === 'tickets' || table === 'support_tickets') {
+            if (table === 'tickets' || table === 'support_tickets' || table === 'ticket_messages') {
               window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'tickets', ts: Date.now() } }));
+            }
+            if (table === 'carts' || table === 'cart_items') {
+              window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'cart', ts: Date.now() } }));
+            }
+            if (table === 'wishlists' || table === 'wishlist') {
+              window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'wishlist', ts: Date.now() } }));
+            }
+            if (table === 'site_settings' || table === 'campaigns' || table === 'coupons') {
+              window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'settings', ts: Date.now() } }));
+              if (table === 'campaigns' || table === 'coupons') {
+                window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'catalog', ts: Date.now() } }));
+              }
+            }
+            if (table === 'reviews') {
+              window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'reviews', ts: Date.now() } }));
+            }
+            if (table === 'seller_payout_requests') {
+              window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'payouts', ts: Date.now() } }));
             }
           } catch (_) {}
         };
@@ -4852,6 +4917,45 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           try { stop(); } catch (_) {}
         };
       }, [publishRealtime]);
+
+      useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+        let bc;
+        try {
+          bc = new BroadcastChannel('pirahan-live');
+          bc.onmessage = (ev) => {
+            const t = ev?.data?.type;
+            if (!t) return;
+            if (t === 'seller-status-changed' || t === 'admin-sellers-changed') {
+              window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'sellers', ts: Date.now() } }));
+            }
+            if (t === 'catalog-changed') {
+              window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'catalog', ts: Date.now() } }));
+            }
+            if (t === 'orders-changed') {
+              window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'orders', ts: Date.now() } }));
+            }
+            if (t === 'cart-changed') {
+              window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'cart', ts: Date.now() } }));
+            }
+          };
+        } catch (_) {}
+        return () => { try { bc && bc.close(); } catch (_) {} };
+      }, []); /* pirahan-live-global-bridge */
+
+
+      // ——— Soft poll سراسری (fallback اگر Realtime قطع باشد) ———
+      useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+        const tick = () => {
+          if (document.visibilityState !== 'visible') return;
+          try {
+            window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'all', reason: 'pm-global-soft-poll', ts: Date.now() } }));
+          } catch (_) {}
+        };
+        const iv = setInterval(tick, 45000);
+        return () => clearInterval(iv);
+      }, []);
 
       const showBrowserPush = (title, body, opts = {}) => {
         try {
