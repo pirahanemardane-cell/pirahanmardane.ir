@@ -767,6 +767,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     else if (view === 'signup') setMsg('ثبت‌نام به‌زودی به سرور وصل می‌شود .');
                     else { handlePasswordLogin(); return; }
                   }}
+                  disabled={busy}
                 >
                   
             {view === 'forgot' && forgotStep === 'code' ? (
