@@ -1,7 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+
+function toEnDigit(ch) {
+  const map = {
+    '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9',
+    '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4', '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9',
+  };
+  return map[ch] || ch;
+}
+
+function onlyDigits(str) {
+  return String(str || '')
+    .split('')
+    .map(toEnDigit)
+    .filter((c) => c >= '0' && c <= '9')
+    .join('');
+}
 
 const CheckIcon = ({ size = 16, strokeWidth = 3, ...props }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -14,7 +30,7 @@ const OTPSuccess = () => (
     <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.3, type: 'spring', stiffness: 500, damping: 30 }}
+      transition={{ delay: 0.2, type: 'spring', stiffness: 500, damping: 30 }}
       className="w-16 h-16 bg-emerald-500 ring-4 ring-emerald-500/20 text-white flex items-center justify-center rounded-full"
     >
       <CheckIcon size={32} strokeWidth={3} />
@@ -22,7 +38,6 @@ const OTPSuccess = () => (
     <motion.p
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.4, duration: 0.4 }}
       className="text-emerald-400 font-semibold text-lg"
     >
       کد تأیید شد
@@ -30,102 +45,25 @@ const OTPSuccess = () => (
   </div>
 );
 
-const OTPError = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -10 }}
-    transition={{ duration: 0.2 }}
-    className="text-center text-red-400 font-medium mt-2 absolute -bottom-8 w-full"
-  >
-    کد نامعتبر است. دوباره تلاش کنید.
-  </motion.div>
-);
-
-const OTPInputBox = ({ index, verifyOTP, state, length = 6 }) => {
-  const animationControls = useAnimationControls();
-  const springTransition = { type: 'spring', stiffness: 700, damping: 20, delay: index * 0.05 };
-  const noDelay = { type: 'spring', stiffness: 700, damping: 20 };
-  const slowSuccess = { type: 'spring', stiffness: 300, damping: 30, delay: index * 0.06 };
-
-  useEffect(() => {
-    animationControls.start({ opacity: 1, y: 0, transition: springTransition });
-    return () => animationControls.stop();
-  }, []);
-
-  useEffect(() => {
-    if (state === 'success') {
-      animationControls.start({ x: -(index * 40), transition: slowSuccess });
-    }
-  }, [state, index, animationControls]);
-
-  return (
-    <motion.div
-      className={`w-9 h-11 sm:w-10 sm:h-12 rounded-md ring-2 overflow-hidden transition-all duration-300 shrink-0 ${
-        state === 'error'
-          ? 'ring-red-500'
-          : state === 'success'
-            ? 'ring-emerald-500'
-            : 'ring-zinc-700 focus-within:ring-zinc-400'
-      }`}
-      initial={{ opacity: 0, y: 10 }}
-      animate={animationControls}
-    >
-      <input
-        id={`otp-input-${index}`}
-        type="text"
-        inputMode="numeric"
-        maxLength={1}
-        disabled={state === 'success'}
-        onFocus={() => animationControls.start({ y: -5, transition: noDelay })}
-        onBlur={() => animationControls.start({ y: 0, transition: noDelay })}
-        onKeyDown={(e) => {
-          const { value } = e.target;
-          if (e.key === 'Backspace' && !value && index > 0) {
-            document.getElementById(`otp-input-${index - 1}`)?.focus();
-          } else if (e.key === 'ArrowLeft' && index > 0) {
-            document.getElementById(`otp-input-${index - 1}`)?.focus();
-          } else if (e.key === 'ArrowRight' && index < length - 1) {
-            document.getElementById(`otp-input-${index + 1}`)?.focus();
-          }
-        }}
-        onInput={(e) => {
-          const value = e.target.value;
-          if (value.match(/^[0-9]$/)) {
-            e.target.value = value;
-            if (index < length - 1) document.getElementById(`otp-input-${index + 1}`)?.focus();
-          } else {
-            e.target.value = '';
-          }
-          verifyOTP();
-        }}
-        onPaste={(e) => {
-          e.preventDefault();
-          const digits = e.clipboardData
-            .getData('text')
-            .trim()
-            .slice(0, length)
-            .split('')
-            .filter((c) => /^[0-9]$/.test(c));
-          digits.forEach((digit, i) => {
-            const el = document.getElementById(`otp-input-${index + i}`);
-            if (el) el.value = digit;
-          });
-          const next = Math.min(index + digits.length, length - 1);
-          document.getElementById(`otp-input-${next}`)?.focus();
-          setTimeout(verifyOTP, 0);
-        }}
-        className="w-full h-full text-center text-lg sm:text-xl font-semibold outline-none bg-zinc-950 !text-white caret-white"
-      />
-    </motion.div>
-  );
-};
-
 export function OTPVerification({ phone = '', length = 6, onVerified, onResend, onBack }) {
+  const [digits, setDigits] = useState(() => Array.from({ length }, () => ''));
   const [state, setState] = useState('idle');
   const [countdown, setCountdown] = useState(60);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
-  const animationControls = useAnimationControls();
+  const refs = useRef([]);
+
+  useEffect(() => {
+    setDigits(Array.from({ length }, () => ''));
+  }, [length]);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        refs.current[0]?.focus();
+      } catch (_) {}
+    }, 80);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -144,47 +82,98 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
     return () => clearInterval(timer);
   }, [isResendDisabled]);
 
-  const getCode = () => {
-    let code = '';
-    for (let i = 0; i < length; i++) {
-      const input = document.getElementById(`otp-input-${i}`);
-      if (input) code += input.value;
-    }
-    return code;
+  const focusAt = (i) => {
+    const idx = Math.max(0, Math.min(length - 1, i));
+    requestAnimationFrame(() => {
+      try {
+        refs.current[idx]?.focus();
+        refs.current[idx]?.select?.();
+      } catch (_) {}
+    });
   };
 
-  const verifyOTP = () => {
-    const code = getCode();
-    if (code.length < length) {
-      setState('idle');
-      return;
-    }
-    // ظاهر: هر کد ۶ رقمی را موفق نشان بده — منطق واقعی بعداً
-    if (code.length === length) {
+  const applyDigits = (next) => {
+    const clean = next.slice(0, length);
+    while (clean.length < length) clean.push('');
+    setDigits(clean);
+    setState('idle');
+    const code = clean.join('');
+    if (code.length === length && clean.every(Boolean)) {
       setState('success');
       try {
         if (typeof onVerified === 'function') onVerified(code);
       } catch (_) {}
+    }
+  };
+
+  const onChangeAt = (index, raw) => {
+    if (state === 'success') return;
+    const chars = onlyDigits(raw);
+
+    // paste or multi-digit from mobile keyboard
+    if (chars.length > 1) {
+      const next = digits.slice();
+      for (let i = 0; i < chars.length && index + i < length; i++) {
+        next[index + i] = chars[i];
+      }
+      applyDigits(next);
+      focusAt(Math.min(index + chars.length, length - 1));
       return;
     }
-    setState('error');
-    animationControls.start({
-      x: [0, 5, -5, 5, -5, 0],
-      transition: { duration: 0.3 },
-    });
-    setTimeout(() => {
-      if (getCode().length < length) setState('idle');
-    }, 500);
+
+    const next = digits.slice();
+    next[index] = chars.slice(-1) || '';
+    applyDigits(next);
+
+    if (next[index] && index < length - 1) {
+      focusAt(index + 1);
+    }
+  };
+
+  const onKeyDown = (e, index) => {
+    if (state === 'success') return;
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      const next = digits.slice();
+      if (next[index]) {
+        next[index] = '';
+        applyDigits(next);
+        focusAt(index);
+      } else if (index > 0) {
+        next[index - 1] = '';
+        applyDigits(next);
+        focusAt(index - 1);
+      }
+      return;
+    }
+    if (e.key === 'ArrowLeft' && index > 0) {
+      e.preventDefault();
+      focusAt(index - 1);
+    }
+    if (e.key === 'ArrowRight' && index < length - 1) {
+      e.preventDefault();
+      focusAt(index + 1);
+    }
+  };
+
+  const onPaste = (e, index) => {
+    e.preventDefault();
+    const chars = onlyDigits(e.clipboardData?.getData('text') || '');
+    if (!chars) return;
+    const next = digits.slice();
+    for (let i = 0; i < chars.length && index + i < length; i++) {
+      next[index + i] = chars[i];
+    }
+    applyDigits(next);
+    focusAt(Math.min(index + chars.length, length - 1));
   };
 
   const handleResend = () => {
     setCountdown(60);
     setIsResendDisabled(true);
     setState('idle');
-    for (let i = 0; i < length; i++) {
-      const el = document.getElementById(`otp-input-${i}`);
-      if (el) el.value = '';
-    }
+    setDigits(Array.from({ length }, () => ''));
+    focusAt(0);
     try {
       if (typeof onResend === 'function') onResend();
     } catch (_) {}
@@ -192,6 +181,21 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
 
   return (
     <div className="w-full relative">
+      <style>{`
+        input.pm-otp-cell {
+          color: #ffffff !important;
+          -webkit-text-fill-color: #ffffff !important;
+          caret-color: #ffffff !important;
+          background-color: #09090b !important;
+        }
+        input.pm-otp-cell:-webkit-autofill,
+        input.pm-otp-cell:-webkit-autofill:focus {
+          -webkit-text-fill-color: #ffffff !important;
+          box-shadow: 0 0 0px 1000px #09090b inset !important;
+          transition: background-color 9999s ease-out;
+        }
+      `}</style>
+
       <div className="relative z-10">
         <h1 className="text-xl font-semibold text-center text-zinc-50 mb-2">
           {state === 'success' ? 'تأیید موفق' : 'کد تأیید را وارد کنید'}
@@ -218,13 +222,35 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
                 </span>
               </p>
 
-              <div className="flex flex-col items-center justify-center gap-2 mb-8 relative h-20">
-                <motion.div animate={animationControls} className="flex items-center justify-center gap-1.5 sm:gap-2 w-full max-w-full px-1">
-                  {Array.from({ length }).map((_, index) => (
-                    <OTPInputBox key={index} index={index} verifyOTP={verifyOTP} state={state} length={length} />
+              <div className="flex flex-col items-center justify-center gap-2 mb-8 relative min-h-[3rem]" dir="ltr">
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2 w-full">
+                  {digits.map((d, index) => (
+                    <input
+                      key={index}
+                      ref={(el) => {
+                        refs.current[index] = el;
+                      }}
+                      id={`otp-input-${index}`}
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete={index === 0 ? 'one-time-code' : 'off'}
+                      maxLength={length}
+                      value={d}
+                      disabled={state === 'success'}
+                      onChange={(e) => onChangeAt(index, e.target.value)}
+                      onKeyDown={(e) => onKeyDown(e, index)}
+                      onPaste={(e) => onPaste(e, index)}
+                      onFocus={(e) => {
+                        try {
+                          e.target.select();
+                        } catch (_) {}
+                      }}
+                      aria-label={`رقم ${index + 1}`}
+                      className="pm-otp-cell w-9 h-11 sm:w-10 sm:h-12 rounded-md border border-zinc-700 text-center text-lg sm:text-xl font-semibold outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 shrink-0"
+                      style={{ color: '#fff', WebkitTextFillColor: '#fff', caretColor: '#fff', backgroundColor: '#09090b' }}
+                    />
                   ))}
-                </motion.div>
-                <AnimatePresence>{state === 'error' && <OTPError />}</AnimatePresence>
+                </div>
               </div>
 
               <div className="text-center text-sm text-zinc-400">

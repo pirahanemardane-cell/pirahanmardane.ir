@@ -214,6 +214,22 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         @keyframes drawY{0%{transform:scaleY(0);opacity:0}100%{transform:scaleY(1);opacity:.7}}
         .card-animate{opacity:0;transform:translateY(20px);animation:fadeUp .8s cubic-bezier(.22,.61,.36,1) .35s forwards}
         @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+        input.pm-auth-field, input#sms-phone, input#auth-email, input#auth-password, input#auth-name {
+          color: #ffffff !important;
+          -webkit-text-fill-color: #ffffff !important;
+          caret-color: #ffffff !important;
+        }
+        input.pm-auth-field::placeholder, input#sms-phone::placeholder, input#auth-email::placeholder {
+          color: #71717a !important;
+          -webkit-text-fill-color: #71717a !important;
+          opacity: 1 !important;
+        }
+        input.pm-auth-field:-webkit-autofill,
+        input#sms-phone:-webkit-autofill {
+          -webkit-text-fill-color: #ffffff !important;
+          box-shadow: 0 0 0px 1000px #09090b inset !important;
+          transition: background-color 9999s ease-out;
+        }
         input#sms-phone, input#auth-email, input#auth-password, input#auth-name {
           color: #fff !important;
           -webkit-text-fill-color: #fff !important;
@@ -279,7 +295,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                 <div className="grid gap-2">
                   <Label htmlFor="sms-phone" className="text-zinc-300">شماره تماس</Label>
                   <Input
-                    id="sms-phone"
+                    id="sms-phone" className="pm-auth-field bg-zinc-950 border-zinc-800 text-center tracking-widest"
                     type="tel"
                     style={{ color: "#fff", WebkitTextFillColor: "#fff" }}
                     inputMode="numeric"
@@ -327,7 +343,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     <Label htmlFor="auth-name" className="text-zinc-300">نام کامل</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                      <Input id="auth-name" type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
+                      <Input id="auth-name" style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
                     </div>
                   </div>
                 ) : null}
@@ -337,7 +353,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                     <Input
-                      id="auth-email"
+                      id="auth-email" style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                       type="text"
                       placeholder="09xxxxxxxxx یا email@example.com"
                       className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
@@ -351,7 +367,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                       <Input
-                        id="auth-password"
+                        id="auth-password" style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                         type={showPassword ? 'text' : 'password'}
                         placeholder="••••••••"
                         className="pl-10 pr-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
