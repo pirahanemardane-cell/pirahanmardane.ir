@@ -15,7 +15,8 @@ function isAdminLoginPath() {
 
 export default function AuthModalView() {
   const api = useAppApi() || {};
-  if (!api.authOpen) return null;
+  const forcePath = isAdminLoginPath();
+  if (!api.authOpen && !forcePath) return null;
 
   const handleClose = () => {
     try { patchModalUi({ authOpen: false }); } catch (_) {}
@@ -34,7 +35,7 @@ export default function AuthModalView() {
     try { window.location.assign('/تماس-با-ما'); } catch (_) {}
   };
 
-  const forceAdmin = isAdminLoginPath() || api.authMode === 'admin';
+  const forceAdmin = forcePath || api.authMode === 'admin';
   const mode = forceAdmin ? 'admin' : api.authMode === 'seller' ? 'seller' : 'buyer';
 
   return (

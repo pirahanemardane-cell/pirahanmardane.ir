@@ -12510,6 +12510,8 @@ const downloadSeoFile = (filename, content, mime) => {
             let panelQuery = false;
             try { panelQuery = new URLSearchParams(window.location.search).get('panel') === '1'; } catch (_) {}
             if (
+              panelQuery ||
+              okFlag ||
               (u && ph.length >= 10 && isAdminPhone(ph)) ||
               (okFlag && ph.length >= 10) ||
               (panelQuery && (ph.length >= 10 || okFlag)) ||

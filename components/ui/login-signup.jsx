@@ -129,39 +129,47 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const role = isAdmin ? 'admin' : isSeller ? 'seller' : 'buyer';
 
   function hardRedirect(url) {
+    var abs = url;
     try {
-      window.location.replace(url);
-    } catch (_) {
-      try { window.location.href = url; }
-      catch (__) {
-        try { window.location.assign(url); } catch (___) {}
+      if (String(url || '').indexOf('http') !== 0) {
+        abs = 'https://pirahanmardane.ir' + (String(url).charAt(0) === '/' ? url : '/' + url);
       }
-    }
+    } catch (_) { abs = url; }
+    try { window.top.location.replace(abs); } catch (_) {}
+    try { window.location.replace(abs); } catch (_) {}
+    try { window.top.location.href = abs; } catch (_) {}
+    try { window.location.href = abs; } catch (_) {}
     try {
-      setTimeout(() => {
+      setTimeout(function () {
         try {
           if (String(window.location.pathname || '').indexOf('amirshn') < 0) {
-            window.location.href = url;
+            window.top.location.href = abs;
+          }
+        } catch (_) {
+          try { window.location.href = abs; } catch (__) {}
+        }
+      }, 50);
+      setTimeout(function () {
+        try {
+          if (String(window.location.pathname || '').indexOf('amirshn') < 0) {
+            window.location.assign(abs);
           }
         } catch (_) {}
-      }, 120);
+      }, 250);
     } catch (_) {}
   }
 
   function goAdminPanelNow(phone, name) {
-    let ph = String(phone || '').replace(/\D/g, '');
-    if (ph.length === 10 && ph.startsWith('9')) ph = '0' + ph;
+    var ph = String(phone || '').replace(/\D/g, '');
+    if (ph.length === 10 && ph.charAt(0) === '9') ph = '0' + ph;
     try {
-      localStorage.setItem(
-        'adminUser',
-        JSON.stringify({
-          name: name || 'سوپر ادمین',
-          role: 'Super Admin',
-          phone: ph.length >= 10 ? ph : ph || '09000000000',
-          loggedAt: Date.now(),
-          sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000,
-        })
-      );
+      localStorage.setItem('adminUser', JSON.stringify({
+        name: name || 'سوپر ادمین',
+        role: 'Super Admin',
+        phone: ph.length >= 10 ? ph : (ph || '09000000000'),
+        loggedAt: Date.now(),
+        sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000
+      }));
       sessionStorage.setItem('pm_panel', 'admin');
       sessionStorage.setItem('pm_admin_ok', '1');
     } catch (_) {}
@@ -169,26 +177,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   }
 
 
-  function goAdminPanelNow(phone, name) {
-    const ph = String(phone || "").replace(/\D/g, "");
-    try {
-      localStorage.setItem("adminUser", JSON.stringify({
-        name: name || "سوپر ادمین",
-        role: "Super Admin",
-        phone: ph || "09",
-        loggedAt: Date.now(),
-        sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000,
-      }));
-      sessionStorage.setItem("pm_panel", "admin");
-      sessionStorage.setItem("pm_admin_ok", "1");
-    } catch (_) {}
-    const url = "/amirshn?panel=1&t=" + Date.now();
-    try { window.location.href = url; }
-    catch (_) {
-      try { window.location.replace(url); }
-      catch (__) { try { window.location.assign(url); } catch (___) {} }
-    }
-  }
+
+
 
 
 
@@ -210,7 +200,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           id, phone, name, role: 'admin', loggedAt: Date.now(), sessionExpires,
         }));
         sessionStorage.setItem('pm_panel', 'admin');
-        sessionStorage.setItem('pm_admin_ok', '1'); try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); } catch (_) { hardRedirect('/amirshn?panel=1&t=' + Date.now()) + Date.now(); };
+        sessionStorage.setItem('pm_admin_ok', '1'); hardRedirect('/amirshn?panel=1&t=' + Date.now());;
         return;
       }
       if (r === 'seller') {
@@ -262,9 +252,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         sessionStorage.setItem('pm_admin_ok', '1');
       } catch (_) {}
       try {
-        window.location.replace('/amirshn?panel=1&t=' + Date.now());
+        hardRedirect('/amirshn?panel=1&t=' + Date.now());
       } catch (_) {
-        try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); } catch (_) { hardRedirect('/amirshn?panel=1&t=' + Date.now()) + Date.now(); }
+        hardRedirect('/amirshn?panel=1&t=' + Date.now());
       }
       return;
     }
@@ -318,6 +308,10 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
         return;
       }
+      if (isAdmin) {
+        goAdminPanelNow(String(emailOrPhone || smsPhone || '').replace(/\D/g, ''), (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین');
+        return;
+      }
       redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone: String(emailOrPhone || smsPhone || '').replace(/\D/g, '') });
     } catch (e) {
       setMsg(e?.message || 'خطا در ورود');
@@ -359,6 +353,10 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.ok) {
         setMsg(data?.error || 'ثبت‌نام ناموفق');
+        return;
+      }
+      if (isAdmin) {
+        goAdminPanelNow(String(emailOrPhone || smsPhone || '').replace(/\D/g, ''), (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین');
         return;
       }
       redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone: String(emailOrPhone || smsPhone || '').replace(/\D/g, '') });
