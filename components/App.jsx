@@ -1,3 +1,4 @@
+import AdminAuthView from './shop/AdminAuthView';
 'use client';
 import { checkSellerSeoSpam } from '@/lib/seo-spam';
 import {
@@ -16935,31 +16936,18 @@ const params = new URLSearchParams(window.location.search);
 
       {adminAuthOpen && (
         <AdminAuthView
-          open={adminAuthOpen}
+          open={!!adminAuthOpen}
           onClose={() => { try { closeAdminAuth(); } catch (_) {} }}
           onContact={() => {
             try { closeAdminAuth(); } catch (_) {}
-            try { if (typeof openStaticPage === 'function') openStaticPage('contact'); }
-            catch (_) { try { window.location.assign('/تماس-با-ما'); } catch (__) {} }
+            try {
+              if (typeof openStaticPage === 'function') openStaticPage('contact');
+              else window.location.assign('/تماس-با-ما');
+            } catch (_) {
+              try { window.location.assign('/تماس-با-ما'); } catch (__) {}
+            }
           }}
         />
-      )}
-                  {adminAuthError ? <p className="text-sm text-red-600 mb-2">{adminAuthError}</p> : null}
-                  <button
-                    type="submit"
-                    disabled={adminAuthLoading}
-                    className="w-full py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium disabled:opacity-60"
-                  >
-                    {adminAuthLoading ? '...' : (adminAuthMethod === 'password' ? 'ورود با رمز' : 'ارسال کد')}
-                  </button>
-                  <p className="mt-3 text-[11px] text-primary-400 text-center leading-relaxed">
-                    رمز را بعد از ورود با پیامک، از تب تنظیمات پنل ادمین بسازید یا تغییر دهید.
-                  </p>
-                </>
-              )}
-            </form>
-          </div>
-        </div>
       )}
 
       {showAdminPanel && adminUser && !pdpProduct && (
