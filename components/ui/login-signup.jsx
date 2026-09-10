@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { Eye, EyeOff, Lock, Mail, ArrowRight, X, Code2, Globe, User } from 'lucide-react';
 import { patchModalUi } from '@/lib/stores/modalUiStore';
+import OTPVerification from '@/components/ui/otp-input';
 
 function cn(...parts) {
   return parts.flat(Infinity).filter(Boolean).join(' ');
@@ -99,6 +100,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const [remember, setRemember] = useState(true);
   const [msg, setMsg] = useState('');
   const [closed, setClosed] = useState(false);
+  const [smsPhone, setSmsPhone] = useState('');
   const canvasRef = useRef(null);
   const isSeller = mode === 'seller';
 
@@ -172,9 +174,13 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         : 'ثبت‌نام'
       : view === 'forgot'
         ? 'بازیابی رمز عبور'
-        : isSeller
-          ? 'ورود فروشنده'
-          : 'خوش آمدید';
+        : view === 'sms-phone'
+          ? 'ورود با پیامک'
+          : view === 'sms-otp'
+            ? 'کد تأیید'
+            : isSeller
+              ? 'ورود فروشنده'
+              : 'خوش آمدید';
 
   const subtitle =
     view === 'signup'
@@ -183,9 +189,13 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         : 'برای شروع خرید حساب بسازید.'
       : view === 'forgot'
         ? 'ایمیل یا شماره خود را وارد کنید (فعلاً فقط ظاهر).'
-        : isSeller
-          ? 'وارد پنل فروشنده شوید و فروشگاه را مدیریت کنید.'
-          : 'وارد حساب کاربری شوید و خرید را ادامه دهید.';
+        : view === 'sms-phone'
+          ? 'شماره موبایل خود را وارد کنید تا کد تأیید ارسال شود.'
+          : view === 'sms-otp'
+            ? 'کد ارسال‌شده را وارد کنید.'
+            : isSeller
+              ? 'وارد پنل فروشنده شوید و فروشگاه را مدیریت کنید.'
+              : 'وارد حساب کاربری شوید و خرید را ادامه دهید.';
 
   return (
     <section className="fixed inset-0 z-[200] bg-zinc-950 text-zinc-50">
@@ -247,7 +257,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           </CardHeader>
 
           <CardContent className="grid gap-5">
-            {msg ? <p className="text-xs text-emerald-400 text-center">{msg}</p> : null}
+            {msg && view !== 'sms-otp' ? <p className="text-xs text-emerald-400 text-center">{msg}</p> : null}
 
             {view === 'signup' ? (
               <div className="grid gap-2">
@@ -259,6 +269,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
               </div>
             ) : null}
 
+            {view !== 'sms-phone' && view !== 'sms-otp' ? (
             <div className="grid gap-2">
               <Label htmlFor="auth-email" className="text-zinc-300">ایمیل یا شماره تماس</Label>
               <div className="relative">
@@ -330,13 +341,61 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   type="button"
                   variant="outline"
                   className="w-full h-10 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50"
-                  onClick={() => setMsg('ورود با پیامک به‌زودی فعال می‌شود (فعلاً فقط ظاهر).')}
+                  onClick={() => { setMsg(''); setSmsPhone(''); setView('sms-phone'); }}
                 >
                   ورود با پیامک
                 </Button>
               </>
             ) : null}
           </CardContent>
+
+
+            ) : null}
+
+            {view === 'sms-phone' ? (
+              <div className="grid gap-5">
+                <div className="grid gap-2">
+                  <Label htmlFor="sms-phone" className="text-zinc-300">شماره تماس</Label>
+                  <Input
+                    id="sms-phone"
+                    type="tel"
+                    inputMode="numeric"
+                    dir="ltr"
+                    placeholder="09xxxxxxxxx"
+                    value={smsPhone}
+                    onChange={(e) => setSmsPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
+                    className="bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600 text-center tracking-widest"
+                  />
+                </div>
+                <Button
+                  type="button"
+                  className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
+                  onClick={() => {
+                    if ((smsPhone || '').length < 11) {
+                      setMsg('شماره موبایل ۱۱ رقمی وارد کنید');
+                      return;
+                    }
+                    setMsg('');
+                    setView('sms-otp');
+                  }}
+                >
+                  دریافت کد تأیید
+                </Button>
+                <button type="button" className="text-sm text-zinc-400 hover:text-zinc-200" onClick={() => setView('signin')}>
+                  بازگشت به ورود با رمز
+                </button>
+              </div>
+            ) : null}
+
+            {view === 'sms-otp' ? (
+              <OTPVerification
+                phone={smsPhone}
+                length={4}
+                onVerified={() => setMsg('ورود با پیامک به‌زودی به سرور وصل می‌شود')}
+                onResend={() => setMsg('کد مجدداً ارسال می‌شود (ظاهر)')}
+                onBack={() => setView('sms-phone')}
+              />
+            ) : null}
 
           <CardFooter className="flex flex-col items-center gap-3 text-sm text-zinc-400">
             {view === 'signin' ? (
