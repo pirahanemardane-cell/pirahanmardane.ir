@@ -6337,6 +6337,21 @@ const generateProductCode = (sellerKey, productId, shopName) => {
 
       const openAdminPanelPage = () => {
         try {
+          const raw = localStorage.getItem('adminUser');
+          if (raw) {
+            const saved = JSON.parse(raw);
+            const ph = String(saved?.phone || '').replace(/\D/g, '');
+            if (ph.length >= 10) {
+              setAdminUser({
+                name: saved.name || 'سوپر ادمین',
+                role: saved.role || 'Super Admin',
+                phone: ph,
+                loggedAt: saved.loggedAt || Date.now(),
+              });
+            }
+          }
+        } catch (_) {}
+        try {
           setShowAdminPanel(true);
           setAdminAuthOpen(false);
           setShowSellerPanel(false);
@@ -6345,16 +6360,13 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           setShowCheckout(false);
           setMobileMenuOpen(false);
         } catch (_) {}
-        try {
-          sessionStorage.setItem('pm_panel', 'admin');
-          sessionStorage.setItem('pm_admin_ok', '1');
-        } catch (_) {}
+        try { setAuthOpen(false); } catch (_) {}
+        try { sessionStorage.setItem('pm_panel', 'admin'); } catch (_) {}
         try {
           const path = (typeof window !== 'undefined' && window.location && window.location.pathname) || '';
           if (path !== '/amirshn' && !String(path).endsWith('/amirshn')) {
-            try { pushFaUrl('/amirshn', { adminPanel: true }); } catch (_) {
-              try { window.history.replaceState({ panel: 'admin' }, '', '/amirshn?panel=1'); } catch (__) {}
-            }
+            window.location.href = '/amirshn?panel=1&t=' + Date.now();
+            return;
           }
         } catch (_) {}
         try { scrollPageToTop(); } catch (_) {}
@@ -12647,6 +12659,9 @@ const downloadSeoFile = (filename, content, mime) => {
         try { setAdminTab('dashboard'); } catch (_) {}
         try { pushLiveToast('ورود ادمین موفق', { type: 'success', duration: 1500 }); } catch (_) {}
         try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); return; } catch (_) {}
+        try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
+        try { setShowAdminPanel(true); setAdminAuthOpen(false); setAuthOpen(false); } catch (_) {}
+        try { window.location.href = '/amirshn?panel=1&t=' + Date.now(); return; } catch (_) {}
         openAdminPanelPage();
         try { pushFaUrl('/amirshn', { adminPanel: true }); } catch (_) {}
         try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { try { window.scrollTo(0, 0); } catch (__) {} }
@@ -17168,7 +17183,7 @@ const params = new URLSearchParams(window.location.search);
         />
       )}
 
-      {showAdminPanel && adminUser && !pdpProduct && (
+      {showAdminPanel && !pdpProduct && (
             <AdminPanelShell className="admin-panel-shell panel-ui panel-ui--admin w-full min-h-screen flex flex-col bg-[var(--p-bg,#fafafa)]">
               <AdminPanelContent
             hydrateAdminProducts={hydrateAdminProducts}

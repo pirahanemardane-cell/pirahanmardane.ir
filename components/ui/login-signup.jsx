@@ -118,6 +118,29 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   }, [isAdmin, view]);
   const role = isAdmin ? 'admin' : isSeller ? 'seller' : 'buyer';
 
+  function goAdminPanelNow(phone, name) {
+    const ph = String(phone || "").replace(/\D/g, "");
+    try {
+      localStorage.setItem("adminUser", JSON.stringify({
+        name: name || "سوپر ادمین",
+        role: "Super Admin",
+        phone: ph || "09",
+        loggedAt: Date.now(),
+        sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      }));
+      sessionStorage.setItem("pm_panel", "admin");
+      sessionStorage.setItem("pm_admin_ok", "1");
+    } catch (_) {}
+    const url = "/amirshn?panel=1&t=" + Date.now();
+    try { window.location.href = url; }
+    catch (_) {
+      try { window.location.replace(url); }
+      catch (__) { try { window.location.assign(url); } catch (___) {} }
+    }
+  }
+
+
+
   
   function goAfterAuth(data) {
     const profile = data?.profile || {};
@@ -392,59 +415,42 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   async function handleVerifyOtp(code) {
     if (busy) return { ok: false };
     setBusy(true);
-    setMsg('');
+    setMsg("");
     try {
-      const phone = String(smsPhone || emailOrPhone || '').replace(/\D/g, '');
+      const phone = String(smsPhone || emailOrPhone || "").replace(/\D/g, "");
       const endpoints = isAdmin
-        ? ['/api/auth/mfa/verify', '/api/auth/otp/verify']
-        : ['/api/auth/otp/verify'];
+        ? ["/api/auth/mfa/verify", "/api/auth/otp/verify"]
+        : ["/api/auth/otp/verify"];
       let data = null;
       let ok = false;
       for (const endpoint of endpoints) {
         const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ phone, code, role: isAdmin ? 'admin' : role }),
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ phone, code, role: isAdmin ? "admin" : role }),
         });
         data = await res.json().catch(() => ({}));
         if (res.ok && data?.ok) { ok = true; break; }
       }
       if (!ok) {
-        const err = data?.error || 'کد نامعتبر است';
-        setMsg(err);
-        return { ok: false, error: err };
+        setMsg(data?.error || "کد نامعتبر است");
+        return { ok: false, error: data?.error || "کد نامعتبر است" };
       }
-      try {
-        if (isAdmin || String(data?.profile?.role || '').toLowerCase() === 'admin') {
-          localStorage.setItem('adminUser', JSON.stringify({
-            name: data?.profile?.full_name || data?.profile?.name || 'سوپر ادمین',
-            role: 'Super Admin',
-            phone,
-            loggedAt: Date.now(),
-            sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000,
-          }));
-          sessionStorage.setItem('pm_panel', 'admin');
-          sessionStorage.setItem('pm_admin_ok', '1');
-        }
-      } catch (_) {}
-      if (isAdmin || String(data?.profile?.role || '').toLowerCase() === 'admin') {
-        try {
-          window.location.replace('/amirshn?panel=1&t=' + Date.now());
-          return { ok: true };
-        } catch (_) {}
+      const isAdm = isAdmin || String(data?.profile?.role || "").toLowerCase() === "admin";
+      if (isAdm) {
+        goAdminPanelNow(phone, data?.profile?.full_name || data?.profile?.name || "سوپر ادمین");
+        return { ok: true };
       }
-      redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone });
+      redirectAfterAuth(data.profile || { role: role, phone });
       return { ok: true };
     } catch (e) {
-      const err = e?.message || 'خطا در تأیید کد';
-      setMsg(err);
-      return { ok: false, error: err };
+      setMsg(e?.message || "خطا در تأیید کد");
+      return { ok: false, error: e?.message || "خطا" };
     } finally {
       setBusy(false);
     }
   }
-
 
         useEffect(() => {
     const onKey = (e) => {
