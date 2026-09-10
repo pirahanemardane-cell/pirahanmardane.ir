@@ -1157,7 +1157,6 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const [showCheckout, setShowCheckout] = useStoreField(shopUiStore, 'showCheckout');
       const [publicTrackOpen, setPublicTrackOpen] = useState(false);
       const [publicTrackCode, setPublicTrackCode] = useState('');
-  useWebOtp((code) => { try { setPublicTrackCode(code); } catch (_) {} });
 
       const [publicTrackResult, setPublicTrackResult] = useState(null);
       const [publicTrackLoading, setPublicTrackLoading] = useState(false);
