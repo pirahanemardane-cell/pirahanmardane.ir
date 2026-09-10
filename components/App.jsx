@@ -6378,22 +6378,42 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       };
 
       const openAdminPanelPage = () => {
+        // ضد حلقه: اگر روی /ashn-pnl هستیم و پنل باز است، هیچ setState نزن
         try {
-          const raw = localStorage.getItem('adminUser');
+          const pathNow = (typeof window !== "undefined" && window.location && window.location.pathname) || "";
+          const onPnl = pathNow === "/ashn-pnl" || String(pathNow).endsWith("/ashn-pnl");
+          let already = false;
+          try { already = !!(shopUiStore.getState && shopUiStore.getState().showAdminPanel); } catch (_e) {}
+          if (onPnl && already) {
+            try { setPageLoadingText(null); } catch (_e2) {}
+            return;
+          }
+        } catch (_e3) {}
+
+        try {
+          const raw = localStorage.getItem("adminUser");
           if (raw) {
             const saved = JSON.parse(raw);
-            const ph = String(saved?.phone || '').replace(/\D/g, '');
+            const ph = String(saved && saved.phone ? saved.phone : "").replace(/\D/g, "");
             if (ph.length >= 10) {
-              setAdminUser({
-                name: saved.name || 'سوپر ادمین',
-                role: saved.role || 'Super Admin',
-                phone: ph,
-                loggedAt: saved.loggedAt || Date.now(),
-              });
+              let curPhone = "";
+              try {
+                const cur = (adminUiStore.getState && adminUiStore.getState().adminUser) || null;
+                curPhone = String(cur && cur.phone ? cur.phone : "").replace(/\D/g, "");
+              } catch (_e4) {}
+              if (curPhone !== ph) {
+                setAdminUser({
+                  name: (saved && saved.name) || "سوپر ادمین",
+                  role: (saved && saved.role) || "Super Admin",
+                  phone: ph,
+                  loggedAt: (saved && saved.loggedAt) || Date.now(),
+                });
+              }
             }
           }
-        } catch (_) {}
-        try { setPageLoadingText(null); } catch (_) {}
+        } catch (_e5) {}
+
+        try { setPageLoadingText(null); } catch (_e6) {}
         try {
           setShowAdminPanel(true);
           setAdminAuthOpen(false);
@@ -6405,17 +6425,21 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           setPdpProduct(null);
           setStaticPage(null);
           setMobileMenuOpen(false);
-        } catch (_) {}
-        try { setAuthOpen(false); } catch (_) {}
-        try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
+        } catch (_e7) {}
+        try { setAuthOpen(false); } catch (_e8) {}
         try {
-          const path = (typeof window !== 'undefined' && window.location && window.location.pathname) || '';
-          if (path !== '/ashn-pnl' && !String(path).endsWith('/ashn-pnl')) {
-            window.location.href = '/ashn-pnl';
+          sessionStorage.setItem("pm_panel", "admin");
+          sessionStorage.setItem("pm_admin_ok", "1");
+        } catch (_e9) {}
+
+        try {
+          const path2 = (typeof window !== "undefined" && window.location && window.location.pathname) || "";
+          if (path2 !== "/ashn-pnl" && !String(path2).endsWith("/ashn-pnl")) {
+            window.location.href = "/ashn-pnl";
             return;
           }
-        } catch (_) {}
-        try { scrollPageToTop(); } catch (_) {}
+        } catch (_e10) {}
+        try { scrollPageToTop(); } catch (_e11) {}
       };
       const openSellerPanelPage = () => { try { navigateTo(FA_PATHS['seller-panel'] || '/پنل-فروشنده'); } catch (_) { try { setShowSellerPanel(true); } catch (__) {} } };
       const openProfilePageNav = () => { try { navigateTo(FA_PATHS.profile || '/حساب-من'); } catch (_) { try { setShowProfilePage(true); } catch (__) {} } };
@@ -13222,6 +13246,12 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
           const path = window.location.pathname || '';
           const isAdminPath = path === '/ashn-pnl' || path.startsWith('/ashn-pnl/') || path === '/ashn' || path.startsWith('/ashn/');
           if (!isAdminPath) return;
+          try {
+            if ((path === '/ashn-pnl' || path.startsWith('/ashn-pnl/')) && shopUiStore.getState().showAdminPanel) {
+              try { setPageLoadingText(null); } catch (_) {}
+              return;
+            }
+          } catch (_) {}
 
           // بازیابی فوری session ادمین از localStorage
           try {
