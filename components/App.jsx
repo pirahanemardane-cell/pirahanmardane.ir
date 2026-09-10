@@ -1,5 +1,4 @@
 'use client';
-import AdminAuthView from './shop/AdminAuthView';
 import { checkSellerSeoSpam } from '@/lib/seo-spam';
 import {
   ensureStorageVersion,
@@ -112,6 +111,7 @@ const HomeView = dynamic(() => import('./shop/HomeView'), { ssr: false, loading:
 ) });
 const StaticPagesView = dynamic(() => import('./shop/StaticPagesView'), { ssr: false, loading: () => null });
 const AuthModalView = dynamic(() => import('./shop/AuthModalView'), { ssr: false, loading: () => null });
+const AdminAuthView = dynamic(() => import('./shop/AdminAuthView'), { ssr: false, loading: () => null });
 
 
 const FAQMonochrome = dynamic(() => import('./ui/faq-monochrome').then((m) => m.FAQMonochrome || m.default), {
