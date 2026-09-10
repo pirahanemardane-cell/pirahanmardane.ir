@@ -1,4 +1,6 @@
--- Realtime publication — یک‌بار در Supabase SQL Editor
+-- یک‌بار در Supabase → SQL Editor اجرا کنید
+-- تا تغییرات sellers/orders/products به کلاینت‌ها push شود
+
 DO $$
 DECLARE
   t text;
@@ -8,7 +10,7 @@ DECLARE
     'coupons', 'campaigns', 'catalog_categories', 'catalog_brands', 'catalog_colors',
     'catalog_sizes', 'catalog_tags', 'catalog_attributes', 'reviews',
     'seller_payout_requests', 'site_settings', 'tickets', 'support_tickets',
-    'addresses', 'user_addresses'
+    'addresses', 'user_addresses', 'login_otps'
   ];
 BEGIN
   FOREACH t IN ARRAY tables LOOP

@@ -4697,6 +4697,57 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             }
             if (scope === 'sellers' || scope === 'all') {
               try { window.dispatchEvent(new CustomEvent('seller-status-changed')); } catch (_) {}
+              // فروشنده لاگین‌شده: فوری status را از سرور بگیر (تأیید ادمین زنده)
+              fetch('/api/seller/me', { credentials: 'include', cache: 'no-store' })
+                .then((r) => r.json())
+                .then((j) => {
+                  if (!j?.ok || !j?.seller) return;
+                  const s = j.seller;
+                  const st = String(s.status || '').toLowerCase();
+                  try {
+                    setSellerUser((prev) => {
+                      if (!prev) return prev;
+                      const same =
+                        String(prev.id || '') === String(s.id || '') ||
+                        String(prev.ownerId || '') === String(s.ownerId || s.owner_id || '') ||
+                        (prev.phone && s.phone && String(prev.phone).replace(/\D/g, '') === String(s.phone).replace(/\D/g, ''));
+                      if (!same && prev.id && s.id && String(prev.id) !== String(s.id)) {
+                        // اگر prev.id همان shop id است
+                        if (String(prev.id) !== String(s.id)) return {
+                          ...prev,
+                          ...s,
+                          id: s.id || prev.id,
+                          shopName: s.shopName || s.shop_name || prev.shopName,
+                          status: s.status || prev.status,
+                          licenseApproved: s.licenseApproved === true || st === 'approved' || st === 'active',
+                          canSell: s.canSell === true || st === 'approved' || st === 'active',
+                        };
+                      }
+                      return {
+                        ...prev,
+                        ...s,
+                        id: s.id || prev.id,
+                        shopName: s.shopName || s.shop_name || prev.shopName,
+                        status: s.status || prev.status,
+                        licenseApproved: s.licenseApproved === true || st === 'approved' || st === 'active',
+                        canSell: s.canSell === true || st === 'approved' || st === 'active',
+                        phone: s.phone || prev.phone,
+                      };
+                    });
+                  } catch (_) {}
+                  try {
+                    if (typeof persistSession === 'function') {
+                      persistSession('sellerUser', {
+                        ...(typeof sellerUser !== 'undefined' && sellerUser ? sellerUser : {}),
+                        ...s,
+                        status: s.status,
+                        licenseApproved: s.licenseApproved === true || st === 'approved' || st === 'active',
+                        canSell: s.canSell === true || st === 'approved' || st === 'active',
+                      });
+                    }
+                  } catch (_) {}
+                })
+                .catch(() => {});
               fetch('/api/catalog/sellers', { cache: 'no-store' })
                 .then((r) => r.json())
                 .then((j) => {
@@ -9282,7 +9333,10 @@ const verifyOtp = async () => {
         let iv = null;
         if (showSellerPanel) {
           loadSellerMe();
-          iv = setInterval(loadSellerMe, 20000);
+          // pending → poll سریع‌تر تا تأیید ادمین زنده دیده شود
+          const st0 = String((typeof sellerUser !== 'undefined' && sellerUser && (sellerUser.status || sellerUser.shopStatus)) || '').toLowerCase();
+          const ms = (!st0 || st0 === 'pending') ? 5000 : 20000;
+          iv = setInterval(loadSellerMe, ms);
         }
 
         const onVis = () => {
@@ -13879,8 +13933,15 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         await hydrateAdminSellers();
         try { if (typeof reloadServerCatalog === 'function') await reloadServerCatalog(); } catch (_) {}
         try {
-          window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'sellers', ts: Date.now() } }));
+          window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'sellers', reason: 'admin-patch-status', status, id, ts: Date.now() } }));
           window.dispatchEvent(new CustomEvent('pm:invalidate', { detail: { scope: 'catalog', ts: Date.now() } }));
+          window.dispatchEvent(new CustomEvent('seller-status-changed', { detail: { id, status, ts: Date.now() } }));
+          try {
+            const bc = new BroadcastChannel('pirahan-live');
+            bc.postMessage({ type: 'seller-status-changed', id, status, ts: Date.now() });
+            bc.postMessage({ type: 'admin-sellers-changed', id, status, ts: Date.now() });
+            bc.close();
+          } catch (_) {}
         } catch (_) {}
         return true;
       };
