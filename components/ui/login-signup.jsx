@@ -174,7 +174,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
     try {
       setTimeout(function () {
         try {
-          if (String(window.location.pathname || '').indexOf('amirshn') < 0) {
+          if (String(window.location.pathname || '').indexOf('ashn-pnl') < 0) {
             window.top.location.href = abs;
           }
         } catch (_) {
@@ -183,7 +183,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       }, 50);
       setTimeout(function () {
         try {
-          if (String(window.location.pathname || '').indexOf('amirshn') < 0) {
+          if (String(window.location.pathname || '').indexOf('ashn-pnl') < 0) {
             window.location.assign(abs);
           }
         } catch (_) {}
