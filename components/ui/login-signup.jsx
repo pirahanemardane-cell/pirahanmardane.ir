@@ -136,7 +136,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           id, phone, name, role: 'admin', loggedAt: Date.now(), sessionExpires,
         }));
         sessionStorage.setItem('pm_panel', 'admin');
-        window.location.assign('/amirshn');
+        window.location.href='/amirshn?panel=1';
         return;
       }
       if (r === 'seller') {
@@ -174,7 +174,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         sessionStorage.setItem('pm_panel', 'admin');
         sessionStorage.setItem('pm_admin_ok', '1');
       } catch (_) {}
-      window.location.replace('/amirshn');
+      window.location.href='/amirshn?panel=1';
       return;
     }
     if (r === 'seller' || isSeller) {

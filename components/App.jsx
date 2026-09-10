@@ -12229,6 +12229,25 @@ const downloadSeoFile = (filename, content, mime) => {
         } catch (_) {}
       }, []);
 
+      
+      useEffect(() => {
+        if (typeof window === 'undefined') return;
+        try {
+          const q = new URLSearchParams(window.location.search || '');
+          if (q.get('panel') !== '1' && sessionStorage.getItem('pm_admin_ok') !== '1') return;
+          sessionStorage.removeItem('pm_admin_ok');
+          const raw = localStorage.getItem('adminUser');
+          if (!raw) return;
+          const saved = JSON.parse(raw);
+          const ph = String(saved?.phone || '').replace(/\D/g, '');
+          if (ph.length < 10) return;
+          setAdminUser({ name: saved.name || 'سوپر ادمین', role: saved.role || 'Super Admin', phone: ph, loggedAt: saved.loggedAt || Date.now() });
+          try { setAdminAuthOpen(false); } catch (_) {}
+          try { setAuthOpen(false); } catch (_) {}
+          try { openAdminPanelPage(); } catch (_) {}
+        } catch (_) {}
+      }, []);
+
       const openAdminAuth = () => {
         setAdminAuthOpen(true);
         setAdminAuthStep('phone');
