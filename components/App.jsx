@@ -12834,7 +12834,12 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         if (!adminUser || !isAdminPhone(adminUser.phone)) {
           // فقط با شمارهٔ مجاز پس از ورود از /amirshn
           setAdminUser(null);
-          try { localStorage.removeItem('adminUser'); } catch (_) {}
+          try { (function(){ try {
+      const ok = sessionStorage.getItem('pm_admin_ok') === '1';
+      const just = (() => { try { const u = JSON.parse(localStorage.getItem('adminUser')||'null'); return u && (Date.now()-(u.loggedAt||0) < 60000); } catch(_){return false;} })();
+      if (ok || just) return; // recently logged in — do not wipe
+      localStorage.removeItem('adminUser');
+    } catch(_){ localStorage.removeItem('adminUser'); } })(); } catch (_) {}
           openAdminAuth();
           return;
         }
