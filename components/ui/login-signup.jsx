@@ -110,6 +110,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [shopName, setShopName] = useState('');
   const canvasRef = useRef(null);
   const isSeller = mode === 'seller';
   const pathIsAdmin =
@@ -404,28 +405,42 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       setMsg('شماره موبایل ۱۱ رقمی با ۰۹ الزامی است');
       return;
     }
-    if (!fullName || fullName.trim().length < 2) {
-      setMsg('نام را وارد کنید');
-      return;
-    }
-    if (!password || password.length < 6) {
-      setMsg('رمز حداقل ۶ کاراکتر باشد');
-      return;
+    if (isSeller) {
+      if (!shopName || shopName.trim().length < 2) {
+        setMsg('نام فروشگاه را وارد کنید');
+        return;
+      }
+      if (!fullName || fullName.trim().length < 2) {
+        setMsg('نام مسئول را وارد کنید');
+        return;
+      }
+      if (password && password.length < 6) {
+        setMsg('رمز در صورت وارد کردن حداقل ۶ کاراکتر باشد');
+        return;
+      }
+    } else {
+      if (!fullName || fullName.trim().length < 2) {
+        setMsg('نام را وارد کنید');
+        return;
+      }
+      if (!password || password.length < 6) {
+        setMsg('رمز حداقل ۶ کاراکتر باشد');
+        return;
+      }
     }
     setBusy(true);
     setMsg('');
     try {
-      // استاندارد: اول OTP با همان UI موجود — بدون فرم/ظاهر جدید
       try {
         sessionStorage.setItem(
           'pm_pending_signup',
           JSON.stringify({
             phone,
             fullName: fullName.trim(),
-            password,
+            shopName: isSeller ? shopName.trim() : '',
+            password: password || '',
             email: signupEmail || '',
             role,
-            shopName: isSeller ? fullName.trim() : '',
           })
         );
       } catch (_) {}
@@ -557,12 +572,6 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         const raw = sessionStorage.getItem("pm_pending_signup");
         if (raw) pending = JSON.parse(raw);
       } catch (_) {}
-      const nameFromPending = pending && pending.fullName ? String(pending.fullName).trim() : "";
-      const shopFromPending = pending && pending.shopName ? String(pending.shopName).trim() : "";
-      const nameFromState = fullName && String(fullName).trim().length >= 2 ? String(fullName).trim() : "";
-      const fullNameSend = nameFromPending || nameFromState || "";
-      const shopSend = shopFromPending || (isSeller ? fullNameSend : "");
-      const roleSend = pending && pending.role ? pending.role : isAdmin ? "admin" : role;
 
       const endpoints = isAdmin
         ? ["/api/auth/mfa/verify", "/api/auth/otp/verify"]
@@ -577,9 +586,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           body: JSON.stringify({
             phone,
             code,
-            role: roleSend,
-            fullName: fullNameSend || undefined,
-            shopName: shopSend || undefined,
+            role: isAdmin ? "admin" : (pending && pending.role) || role,
+            fullName: (pending && pending.fullName) || fullName || undefined,
+            shopName: (pending && pending.shopName) || shopName || undefined,
           }),
         });
         data = await res.json().catch(() => ({}));
@@ -593,15 +602,33 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         return { ok: false, error: data?.error || "کد وارد شده صحیح نمی‌باشد." };
       }
 
-      // بعد از OTP: اگر ثبت‌نام در جریان بود، رمز انتخابی کاربر را روی سشن ست کن
-      if (pending && pending.password && String(pending.password).length >= 6) {
+      // بعد از OTP: اگر ثبت‌نام در جریان بود → ساخت/بازسازی فروشگاه مثل بار اول
+      if (pending && pending.phone) {
         try {
-          await fetch("/api/auth/password", {
+          const sr = await fetch("/api/auth/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({ password: pending.password }),
+            body: JSON.stringify({
+              phone: pending.phone,
+              fullName: pending.fullName,
+              shopName: pending.shopName || undefined,
+              password: pending.password || undefined,
+              email: pending.email || undefined,
+              role: pending.role || role,
+            }),
           });
+          const sj = await sr.json().catch(() => ({}));
+          if (sr.ok && sj?.ok) {
+            data = sj;
+          } else if (sj?.error && !String(sj.error).includes("فعال دارد")) {
+            // اگر signup به خاطر نیاز otp خطا داد، verified_session باید کافی باشد — پیام را نگه دار
+            if (sj.needs_otp) {
+              /* ignore — already verified */
+            } else {
+              console.warn("[signup after otp]", sj.error);
+            }
+          }
         } catch (_) {}
         try {
           sessionStorage.removeItem("pm_pending_signup");
@@ -615,16 +642,16 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       if (isAdm) {
         forceAdminRedirectNow(
           phone,
-          data?.profile?.full_name || data?.profile?.name || fullNameSend || "سوپر ادمین"
+          data?.profile?.full_name || data?.profile?.name || "سوپر ادمین"
         );
         return { ok: true };
       }
-      // ریدایرکت‌ها عمداً دست نخورده
       redirectAfterAuth(
         data.profile || {
-          role: roleSend,
+          role: (pending && pending.role) || role,
           phone,
-          full_name: fullNameSend || undefined,
+          full_name: (pending && pending.fullName) || fullName || undefined,
+          shopName: (pending && pending.shopName) || shopName || undefined,
         }
       );
       return { ok: true };
@@ -909,12 +936,18 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
             {view !== 'sms-phone' && view !== 'sms-otp' ? (
               <>
+                {view === 'signup' && isSeller ? (
+                  <div className="grid gap-2">
+                    <Label htmlFor="auth-shop" className="text-zinc-300">نام فروشگاه *</Label>
+                    <Input id="auth-shop" value={shopName} onChange={(e) => setShopName(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام فروشگاه" className="bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
+                  </div>
+                ) : null}
                 {view === 'signup' ? (
                   <div className="grid gap-2">
-                    <Label htmlFor="auth-name" className="text-zinc-300">نام کامل</Label>
+                    <Label htmlFor="auth-name" className="text-zinc-300">{isSeller ? 'نام مسئول *' : 'نام کامل'}</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                      <Input id="auth-name" value={fullName} onChange={(e) => setFullName(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
+                      <Input id="auth-name" value={fullName} onChange={(e) => setFullName(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder={isSeller ? 'نام مسئول فروشگاه' : 'نام شما'} className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
                     </div>
                   </div>
                 ) : null}
@@ -951,7 +984,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
                 {view !== 'forgot' ? (
                   <div className="grid gap-2">
-                    <Label htmlFor="auth-password" className="text-zinc-300">رمز عبور</Label>
+                    <Label htmlFor="auth-password" className="text-zinc-300">{view === 'signup' && isSeller ? 'رمز عبور (اختیاری)' : 'رمز عبور'}</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                       <Input

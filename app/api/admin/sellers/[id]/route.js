@@ -176,13 +176,17 @@ export async function DELETE(request, { params }) {
       const { error } = await admin.from('sellers').delete().eq('id', id)
       if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
 
-      // پروفایل مالک را به خریدار برگردان تا ثبت‌نام بعدی مثل بار اول باشد
+      // پروفایل مالک → خریدار تا ثبت‌نام فروشنده بعدی مثل بار اول باشد
       if (existing.owner_id) {
         try {
           await admin.from('profiles').update({
             role: 'buyer',
             updated_at: new Date().toISOString(),
-          }).eq('id', existing.owner_id).eq('role', 'seller')
+          }).eq('id', existing.owner_id)
+        } catch (_) {}
+        // اگر فروشگاه دیگری با همین owner مانده (orphan) پاک شود
+        try {
+          await admin.from('sellers').delete().eq('owner_id', existing.owner_id)
         } catch (_) {}
       }
 
