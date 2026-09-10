@@ -169,23 +169,23 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
     view === 'signup'
       ? isSeller
         ? 'ثبت‌نام فروشنده'
-        : 'Create account'
+        : 'ثبت‌نام'
       : view === 'forgot'
-        ? 'Reset password'
+        ? 'بازیابی رمز عبور'
         : isSeller
           ? 'ورود فروشنده'
-          : 'Welcome back';
+          : 'خوش آمدید';
 
   const subtitle =
     view === 'signup'
       ? isSeller
         ? 'اطلاعات فروشگاه را وارد کنید (ظاهر — منطق بعداً).'
-        : 'Create your account to start shopping.'
+        : 'برای شروع خرید حساب بسازید.'
       : view === 'forgot'
-        ? 'Enter your email and we will send a reset link (UI only for now).'
+        ? 'ایمیل یا شماره خود را وارد کنید (فعلاً فقط ظاهر).'
         : isSeller
           ? 'وارد پنل فروشنده شوید و فروشگاه را مدیریت کنید.'
-          : 'Sign in to your account and continue shopping.';
+          : 'وارد حساب کاربری شوید و خرید را ادامه دهید.';
 
   return (
     <section className="fixed inset-0 z-[200] bg-zinc-950 text-zinc-50">
@@ -251,25 +251,25 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
             {view === 'signup' ? (
               <div className="grid gap-2">
-                <Label htmlFor="auth-name" className="text-zinc-300">Full name</Label>
+                <Label htmlFor="auth-name" className="text-zinc-300">نام کامل</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                  <Input id="auth-name" type="text" placeholder="Your name" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
+                  <Input id="auth-name" type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
                 </div>
               </div>
             ) : null}
 
             <div className="grid gap-2">
-              <Label htmlFor="auth-email" className="text-zinc-300">Email</Label>
+              <Label htmlFor="auth-email" className="text-zinc-300">ایمیل یا شماره تماس</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                <Input id="auth-email" type="email" placeholder="you@company.com" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
+                <Input id="auth-email" type="email" placeholder="09xxxxxxxxx یا email@example.com" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
               </div>
             </div>
 
             {view !== 'forgot' ? (
               <div className="grid gap-2">
-                <Label htmlFor="auth-password" className="text-zinc-300">Password</Label>
+                <Label htmlFor="auth-password" className="text-zinc-300">رمز عبور</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                   <Input
@@ -293,7 +293,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Checkbox id="auth-remember" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                  <Label htmlFor="auth-remember" className="text-zinc-400">Remember me</Label>
+                  <Label htmlFor="auth-remember" className="text-zinc-400">مرا به خاطر بسپار</Label>
                 </div>
                 <button
                   type="button"
@@ -303,7 +303,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     setView('forgot');
                   }}
                 >
-                  Forgot password?
+                  فراموشی رمز عبور
                 </button>
               </div>
             ) : null}
@@ -317,25 +317,23 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                 else setMsg('ورود به‌زودی به سرور وصل می‌شود (فعلاً فقط ظاهر).');
               }}
             >
-              {view === 'signup' ? 'Create account' : view === 'forgot' ? 'Send reset link' : 'Sign in'}
+              {view === 'signup' ? 'ثبت‌نام' : view === 'forgot' ? 'Send reset link' : 'Sign in'}
             </Button>
 
             {view === 'signin' ? (
               <>
                 <div className="relative">
                   <Separator />
-                  <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-zinc-900/70 px-2 text-[11px] uppercase tracking-widest text-zinc-500">or</span>
+                  <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-zinc-900/70 px-2 text-[11px] tracking-wide text-zinc-500">ورود با:</span>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button variant="outline" className="h-10 rounded-lg border-zinc-800 bg-zinc-950">
-                    <Code2 className="h-4 w-4 mr-2" />
-                    GitHub
-                  </Button>
-                  <Button variant="outline" className="h-10 rounded-lg border-zinc-800 bg-zinc-950">
-                    <Globe className="h-4 w-4 mr-2" />
-                    Google
-                  </Button>
-                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-10 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50"
+                  onClick={() => setMsg('ورود با پیامک به‌زودی فعال می‌شود (فعلاً فقط ظاهر).')}
+                >
+                  ورود با پیامک
+                </Button>
               </>
             ) : null}
           </CardContent>
@@ -343,14 +341,13 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           <CardFooter className="flex flex-col items-center gap-3 text-sm text-zinc-400">
             {view === 'signin' ? (
               <div>
-                New here?
-                <button type="button" className="ml-1 text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signup'); }}>
-                  Create account
+                <button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signup'); }}>
+                  ثبت‌نام
                 </button>
               </div>
             ) : (
               <button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signin'); }}>
-                Back to sign in
+                بازگشت به ورود
               </button>
             )}
             <span className="text-[10px] tracking-wide text-zinc-600">pirahanmardane.ir</span>
