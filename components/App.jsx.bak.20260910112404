@@ -1503,8 +1503,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
     try {
       const url = new URL(window.location.href);
       const path = url.pathname || "";
-      const isAdminLogin = false;
-      const isAdmin = false; // public admin URLs removed
+      const isAdmin = path === "/amirshn" || path.endsWith("/amirshn") || path.includes("پنل-ادمین");
       const isProfile = url.searchParams.get("profile") === "1" || path === "/account" || path.startsWith("/account/") || path.includes("profile");
       const isSeller = url.searchParams.get("sellerPanel") === "1" || path === "/seller" || path.startsWith("/seller/") || sessionStorage.getItem("pm_panel") === "seller";
 
@@ -1576,66 +1575,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             }
           }
         } catch (_) {}
-        // اگر panel=1 یا pm_admin_ok هست، نرو /amirpnl — پنل را باز کن
-        try {
-          const q = new URLSearchParams(window.location.search || '');
-          const ok = sessionStorage.getItem('pm_admin_ok') === '1' || sessionStorage.getItem('pm_panel') === 'admin' || q.get('panel') === '1';
-          if (ok) {
-            try {
-              const raw = localStorage.getItem('adminUser');
-              if (raw) {
-                const saved = JSON.parse(raw);
-                const ph = String(saved?.phone || '').replace(/\D/g, '');
-                setAdminUser({
-                  name: saved.name || 'سوپر ادمین',
-                  role: saved.role || 'Super Admin',
-                  phone: ph.length >= 10 ? ph : (ph || '09000000000'),
-                  loggedAt: saved.loggedAt || Date.now(),
-                });
-              }
-            } catch (_) {}
-            try { openAdminPanelPage(); } catch (_) {}
-            setAdminAuthOpen(false);
-            return;
-          }
-        } catch (_) {}
-        try {
-          if (typeof window !== "undefined" && (window.location.pathname || "").indexOf("amirpnl") < 0) {
-            // فقط اگر واقعاً سشن نداریم
-            window.location.replace("/");
-            return;
-          }
-        } catch (_) {}
         setAdminAuthOpen(true);
         setAdminAuthStep("phone");
-        return;
-      }
-
-      if (typeof isAdminLogin !== "undefined" && isAdminLogin) {
-        try { window.location.replace("/"); return; } catch (_) {}
-        try {
-          const raw = localStorage.getItem("adminUser");
-          if (raw) {
-            const saved = JSON.parse(raw);
-            const ph = String(saved?.phone || "").replace(/\D/g, "");
-            if (ph.length >= 10) {
-              try {
-                setAdminUser({
-                  name: saved.name || "سوپر ادمین",
-                  role: saved.role || "Super Admin",
-                  phone: ph,
-                  loggedAt: saved.loggedAt || Date.now(),
-                });
-              } catch (_) {}
-              try { sessionStorage.setItem("pm_panel", "admin"); sessionStorage.setItem("pm_admin_ok", "1"); } catch (_) {}
-              try { window.location.replace("/amirshn?panel=1&t=" + Date.now()); return; } catch (_) {}
-            }
-          }
-        } catch (_) {}
-        try { setShowAdminPanel(false); } catch (_) {}
-        setAdminAuthOpen(true);
-        setAdminAuthStep("phone");
-        try { setAuthMode("admin"); setAuthOpen(true); } catch (_) {}
         return;
       }
 
@@ -1805,7 +1746,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         path === "/account" || path.startsWith("/account/") ||
         path === "/حساب-من" || path.startsWith("/حساب-من");
       const isAdminPanel =
-        false /* was amirshn */;
+        path === "/amirshn" || path.endsWith("/amirshn");
       if (isSellerPanel) {
         openSellerPanelPage();
         setShowProfilePage(false);
@@ -5481,18 +5422,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
-          if (parsed.type === 'admin-login' || parsed.page === 'admin-login') {
-            try { window.location.replace('/'); return; } catch (_) {}
-            return;
-          } catch (_) {}
-            try { setShowAdminPanel(false); } catch (_) {}
-            setAdminAuthOpen(true);
-            setAdminAuthStep('phone');
-            try { setAuthMode('admin'); setAuthOpen(true); } catch (_) {}
-            try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
-            return;
-          }
-          if (parsed.type === 'admin-panel' || parsed.page === 'admin-panel' || false /* was amirshn */) {
+          if (parsed.type === 'admin-panel' || parsed.page === 'admin-panel' || path === '/amirshn' || path.endsWith('/amirshn')) {
             let adminOk = false;
             try {
               if (adminUser && isAdminPhone(adminUser.phone)) adminOk = true;
@@ -5534,7 +5464,6 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             } else {
               setAdminAuthOpen(true);
               setAdminAuthStep('phone');
-              try { setAuthMode('admin'); setAuthOpen(true); } catch (_) {}
             }
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
@@ -6387,21 +6316,6 @@ const generateProductCode = (sellerKey, productId, shopName) => {
 
       const openAdminPanelPage = () => {
         try {
-          const raw = localStorage.getItem('adminUser');
-          if (raw) {
-            const saved = JSON.parse(raw);
-            const ph = String(saved?.phone || '').replace(/\D/g, '');
-            if (ph.length >= 10) {
-              setAdminUser({
-                name: saved.name || 'سوپر ادمین',
-                role: saved.role || 'Super Admin',
-                phone: ph,
-                loggedAt: saved.loggedAt || Date.now(),
-              });
-            }
-          }
-        } catch (_) {}
-        try {
           setShowAdminPanel(true);
           setAdminAuthOpen(false);
           setShowSellerPanel(false);
@@ -6410,13 +6324,16 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           setShowCheckout(false);
           setMobileMenuOpen(false);
         } catch (_) {}
-        try { setAuthOpen(false); } catch (_) {}
-        try { sessionStorage.setItem('pm_panel', 'admin'); } catch (_) {}
+        try {
+          sessionStorage.setItem('pm_panel', 'admin');
+          sessionStorage.setItem('pm_admin_ok', '1');
+        } catch (_) {}
         try {
           const path = (typeof window !== 'undefined' && window.location && window.location.pathname) || '';
           if (path !== '/amirshn' && !String(path).endsWith('/amirshn')) {
-            window.location.href = '/' + Date.now();
-            return;
+            try { pushFaUrl('/amirshn', { adminPanel: true }); } catch (_) {
+              try { window.history.replaceState({ panel: 'admin' }, '', '/amirshn?panel=1'); } catch (__) {}
+            }
           }
         } catch (_) {}
         try { scrollPageToTop(); } catch (_) {}
@@ -8047,7 +7964,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           setPdpProduct(null);
           openAdminPanelPage();
           setAdminTab('dashboard');
-          pushFaUrl('/', { adminPanel: true });
+          pushFaUrl('/amirshn', { adminPanel: true });
           pushLiveToast('ورود ادمین موفق', { type: 'success', duration: 2000 });
           try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { try { window.scrollTo(0, 0); } catch (__) {} }
           return;
@@ -12349,7 +12266,7 @@ const downloadSeoFile = (filename, content, mime) => {
         if (typeof window === 'undefined') return;
         try {
           if (sessionStorage.getItem('pm_admin_ok') === '1') {
-            // sessionStorage.removeItem('pm_admin_ok'); // غیرفعال — باعث برگشت به /amirpnl می‌شد
+            sessionStorage.removeItem('pm_admin_ok');
             const raw = localStorage.getItem('adminUser');
             if (raw) {
               const saved = JSON.parse(raw);
@@ -12376,12 +12293,13 @@ const downloadSeoFile = (filename, content, mime) => {
         try {
           const q = new URLSearchParams(window.location.search || '');
           if (q.get('panel') !== '1' && sessionStorage.getItem('pm_admin_ok') !== '1') return;
-          // sessionStorage.removeItem('pm_admin_ok'); // غیرفعال — باعث برگشت به /amirpnl می‌شد
+          sessionStorage.removeItem('pm_admin_ok');
           const raw = localStorage.getItem('adminUser');
           if (!raw) return;
           const saved = JSON.parse(raw);
           const ph = String(saved?.phone || '').replace(/\D/g, '');
-          setAdminUser({ name: saved.name || 'سوپر ادمین', role: saved.role || 'Super Admin', phone: ph.length >= 10 ? ph : (ph || '09000000000'), loggedAt: saved.loggedAt || Date.now() });
+          if (ph.length < 10) return;
+          setAdminUser({ name: saved.name || 'سوپر ادمین', role: saved.role || 'Super Admin', phone: ph, loggedAt: saved.loggedAt || Date.now() });
           try { setAdminAuthOpen(false); } catch (_) {}
           try { setAuthOpen(false); } catch (_) {}
           try { openAdminPanelPage(); } catch (_) {}
@@ -12409,7 +12327,7 @@ const downloadSeoFile = (filename, content, mime) => {
           const ph = String(saved?.phone || '').replace(/\D/g, '');
           if (ph.length < 10) return;
 
-          // sessionStorage.removeItem('pm_admin_ok'); // غیرفعال — باعث برگشت به /amirpnl می‌شد
+          sessionStorage.removeItem('pm_admin_ok');
           setAdminUser({
             name: saved.name || 'سوپر ادمین',
             role: saved.role || 'Super Admin',
@@ -12438,15 +12356,6 @@ const downloadSeoFile = (filename, content, mime) => {
         setAdminAuthOtp('');
         setAdminAuthError('');
         setAdminAuthLoading(false);
-        try {
-          const p = (typeof window !== 'undefined' && window.location.pathname) || '';
-          if (p !== '/amirshn' && !String(p).endsWith('/amirshn')) {
-            try { pushFaUrl('/', { adminPanel: true }); } catch (_) {
-              try { window.history.replaceState({ adminPanel: true }, '', '/amirshn'); } catch (__) {}
-            }
-          }
-        } catch (_) {}
-        try { setAuthMode('admin'); setAuthOpen(true); } catch (_) {}
         setMobileMenuOpen(false);
       };
 
@@ -12522,36 +12431,9 @@ const downloadSeoFile = (filename, content, mime) => {
             // از store مستقیم بخوان تا closure کهنه مانع نشود
             let u = null;
             try { u = adminUiStore.getState()?.adminUser; } catch (_) { u = adminUser; }
-            if (!(u && u.phone)) {
-              try {
-                const raw = localStorage.getItem('adminUser');
-                if (raw) {
-                  const saved = JSON.parse(raw);
-                  const ph0 = String(saved?.phone || '').replace(/\D/g, '');
-                  if (ph0.length >= 10) {
-                    u = { name: saved.name || 'سوپر ادمین', role: saved.role || 'Super Admin', phone: ph0, loggedAt: saved.loggedAt || Date.now() };
-                    try { setAdminUser(u); } catch (_) {}
-                  }
-                }
-              } catch (_) {}
-            }
-            const ph = String(u?.phone || '').replace(/\D/g, '');
-            let okFlag = false;
-            try { okFlag = sessionStorage.getItem('pm_admin_ok') === '1' || sessionStorage.getItem('pm_panel') === 'admin'; } catch (_) {}
-            let panelQuery = false;
-            try { panelQuery = new URLSearchParams(window.location.search).get('panel') === '1'; } catch (_) {}
-            if (
-              panelQuery ||
-              okFlag ||
-              (u && ph.length >= 10 && isAdminPhone(ph)) ||
-              (okFlag && ph.length >= 10) ||
-              (panelQuery && (ph.length >= 10 || okFlag)) ||
-              (okFlag && panelQuery)
-            ) {
-              try { sessionStorage.setItem('pm_panel', 'admin'); } catch (_) {}
+            if (u && isAdminPhone(u.phone)) {
               openAdminPanelPage();
               setAdminAuthOpen(false);
-              try { setAuthOpen(false); } catch (_) {}
               try {
                 const saved = sessionStorage.getItem('adminTab');
                 const cur = adminUiStore.getState()?.adminTab;
@@ -12559,25 +12441,6 @@ const downloadSeoFile = (filename, content, mime) => {
               } catch (_) { try { setAdminTab('dashboard'); } catch (__) {} }
               return;
             }
-            // قبلاً برمی‌گشت به /amirpnl و ریدایرکت را خنثی می‌کرد — دیگر برنگرد
-            try {
-              // اگر session تازه است پنل را باز کن
-              const raw = localStorage.getItem('adminUser');
-              if (raw) {
-                const saved = JSON.parse(raw);
-                const ph = String(saved?.phone || '').replace(/\D/g, '');
-                setAdminUser({
-                  name: saved.name || 'سوپر ادمین',
-                  role: saved.role || 'Super Admin',
-                  phone: ph.length >= 10 ? ph : (ph || '09000000000'),
-                  loggedAt: saved.loggedAt || Date.now(),
-                });
-                openAdminPanelPage();
-                setAdminAuthOpen(false);
-                try { setAuthOpen(false); } catch (_) {}
-                return;
-              }
-            } catch (_) {}
             setAdminAuthOpen(true);
             setAdminAuthStep('phone');
             setShowAdminPanel(false);
@@ -12728,16 +12591,10 @@ const downloadSeoFile = (filename, content, mime) => {
         setMobileMenuOpen(false);
         try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
         try { setShowAdminPanel(true); setAdminAuthOpen(false); } catch (_) {}
-        try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
-        try { setShowAdminPanel(true); setAdminAuthOpen(false); setAuthOpen(false); } catch (_) {}
-        try { setAdminTab('dashboard'); } catch (_) {}
-        try { pushLiveToast('ورود ادمین موفق', { type: 'success', duration: 1500 }); } catch (_) {}
-        try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); return; } catch (_) {}
-        try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
-        try { setShowAdminPanel(true); setAdminAuthOpen(false); setAuthOpen(false); } catch (_) {}
-        try { window.location.href = '/' + Date.now(); return; } catch (_) {}
         openAdminPanelPage();
-        try { pushFaUrl('/', { adminPanel: true }); } catch (_) {}
+        setAdminTab('dashboard');
+        try { pushFaUrl('/amirshn', { adminPanel: true }); } catch (_) {}
+        pushLiveToast('ورود ادمین موفق', { type: 'success', duration: 2000 });
         try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { try { window.scrollTo(0, 0); } catch (__) {} }
         // همیشه دیتا از سرور — یکسان برای OTP و رمز
         setTimeout(() => {
@@ -13072,7 +12929,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
           const url = new URL(window.location.href);
           ['plp','cat','seller','sellers','cart','wishlist','compare','profile','sellerPanel'].forEach(k => url.searchParams.delete(k));
           url.searchParams.set('adminPanel', '1');
-          pushFaUrl('/', { adminPanel: true });
+          pushFaUrl('/amirshn', { adminPanel: true });
         } catch (_) {}
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
@@ -14731,7 +14588,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         const applyFromUrl = () => {
           try {
             const path = (window.location.pathname || '').replace(/\/+$/, '');
-            if (false) {
+            if (path.endsWith('/amirshn') || path === '/amirshn') {
               if (adminUser) openAdminPanel('dashboard');
               else openAdminAuth();
               return;
@@ -17257,7 +17114,7 @@ const params = new URLSearchParams(window.location.search);
         />
       )}
 
-      {showAdminPanel && !pdpProduct && (
+      {showAdminPanel && adminUser && !pdpProduct && (
             <AdminPanelShell className="admin-panel-shell panel-ui panel-ui--admin w-full min-h-screen flex flex-col bg-[var(--p-bg,#fafafa)]">
               <AdminPanelContent
             hydrateAdminProducts={hydrateAdminProducts}

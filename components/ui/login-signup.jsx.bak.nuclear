@@ -112,107 +112,11 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const [fullName, setFullName] = useState('');
   const canvasRef = useRef(null);
   const isSeller = mode === 'seller';
-  const pathIsAdmin =
-    typeof window !== 'undefined' &&
-    (() => {
-      try {
-        const p = String(window.location.pathname || '');
-        return p === '/amirshn' || p.endsWith('/amirshn') || p === '/amirpnl' || p.endsWith('/amirpnl');
-      } catch (_) {
-        return false;
-      }
-    })();
-  const isAdmin = mode === 'admin' || pathIsAdmin;
+  const isAdmin = mode === 'admin';
   React.useEffect(() => {
     if (isAdmin && view === 'signup') setView('signin');
   }, [isAdmin, view]);
   const role = isAdmin ? 'admin' : isSeller ? 'seller' : 'buyer';
-
-  function mustGoAdminPanel() {
-    try {
-      var path = String(window.location.pathname || '');
-      if (path === '/amirshn' || path.indexOf('/amirshn') >= 0 || path === '/amirpnl' || path.indexOf('/amirpnl') >= 0) return true;
-    } catch (_) {}
-    try { if (isAdmin) return true; } catch (_) {}
-    return false;
-  }
-
-  function forceAdminRedirectNow(phone, name) {
-    var ph = String(phone || '').replace(/\D/g, '');
-    if (ph.length === 10 && ph.charAt(0) === '9') ph = '0' + ph;
-    if (ph.length < 10) ph = '09000000000';
-    try {
-      localStorage.setItem('adminUser', JSON.stringify({
-        name: name || 'سوپر ادمین',
-        role: 'Super Admin',
-        phone: ph,
-        loggedAt: Date.now(),
-        sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000
-      }));
-      sessionStorage.setItem('pm_panel', 'admin');
-      sessionStorage.setItem('pm_admin_ok', '1');
-    } catch (_) {}
-    // فوری — قبل از هر setState
-    var url = '/';
-    try { window.location.replace(url); } catch (_) {}
-    try { window.location.href = url; } catch (_) {}
-    try { window.top.location.href = url; } catch (_) {}
-  }
-
-
-  function hardRedirect(url) {
-    var abs = url;
-    try {
-      if (String(url || '').indexOf('http') !== 0) {
-        abs = 'https://pirahanmardane.ir' + (String(url).charAt(0) === '/' ? url : '/' + url);
-      }
-    } catch (_) { abs = url; }
-    try { window.top.location.replace(abs); } catch (_) {}
-    try { window.location.replace(abs); } catch (_) {}
-    try { window.top.location.href = abs; } catch (_) {}
-    try { window.location.href = abs; } catch (_) {}
-    try {
-      setTimeout(function () {
-        try {
-          if (String(window.location.pathname || '').indexOf('amirshn') < 0) {
-            window.top.location.href = abs;
-          }
-        } catch (_) {
-          try { window.location.href = abs; } catch (__) {}
-        }
-      }, 50);
-      setTimeout(function () {
-        try {
-          if (String(window.location.pathname || '').indexOf('amirshn') < 0) {
-            window.location.assign(abs);
-          }
-        } catch (_) {}
-      }, 250);
-    } catch (_) {}
-  }
-
-  function goAdminPanelNow(phone, name) {
-    var ph = String(phone || '').replace(/\D/g, '');
-    if (ph.length === 10 && ph.charAt(0) === '9') ph = '0' + ph;
-    try {
-      localStorage.setItem('adminUser', JSON.stringify({
-        name: name || 'سوپر ادمین',
-        role: 'Super Admin',
-        phone: ph.length >= 10 ? ph : (ph || '09000000000'),
-        loggedAt: Date.now(),
-        sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000
-      }));
-      sessionStorage.setItem('pm_panel', 'admin');
-      sessionStorage.setItem('pm_admin_ok', '1');
-    } catch (_) {}
-    /* admin URL removed */ try { window.location.href = '/'; } catch (_) {}
-  }
-
-
-
-
-
-
 
   
   function goAfterAuth(data) {
@@ -232,7 +136,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           id, phone, name, role: 'admin', loggedAt: Date.now(), sessionExpires,
         }));
         sessionStorage.setItem('pm_panel', 'admin');
-        sessionStorage.setItem('pm_admin_ok', '1'); /* admin URL removed */ try { window.location.href = '/'; } catch (_) {};
+        sessionStorage.setItem('pm_admin_ok', '1'); try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); } catch (_) { window.location.href='/amirshn?panel=1&t=' + Date.now(); };
         return;
       }
       if (r === 'seller') {
@@ -284,9 +188,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         sessionStorage.setItem('pm_admin_ok', '1');
       } catch (_) {}
       try {
-        /* admin URL removed */ try { window.location.href = '/'; } catch (_) {}
+        window.location.replace('/amirshn?panel=1&t=' + Date.now());
       } catch (_) {
-        /* admin URL removed */ try { window.location.href = '/'; } catch (_) {}
+        try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); } catch (_) { window.location.href = '/amirshn?panel=1&t=' + Date.now(); }
       }
       return;
     }
@@ -334,56 +238,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         setMsg(data?.error || 'ورود ناموفق');
         return;
       }
-
-      // اتمی: روی /amirpnl بعد از ok حتماً برو پنل (قبل از هر منطق دیگر)
-      try {
-        var _p = String(window.location.pathname || '');
-        if (_p === '/amirshn' || _p.indexOf('/amirshn') >= 0 || _p === '/amirpnl' || _p.indexOf('/amirpnl') >= 0) {
-          var _ph = String((data.profile && data.profile.phone) || phone || emailOrPhone || '').replace(/\D/g, '');
-          if (_ph.length === 10 && _ph.charAt(0) === '9') _ph = '0' + _ph;
-          if (_ph.length < 10) _ph = '09000000000';
-          try {
-            localStorage.setItem('adminUser', JSON.stringify({
-              name: (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین',
-              role: 'Super Admin',
-              phone: _ph,
-              loggedAt: Date.now(),
-              sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000
-            }));
-            sessionStorage.setItem('pm_panel', 'admin');
-            sessionStorage.setItem('pm_admin_ok', '1');
-          } catch (_e) {}
-          try { window.location.href = '/'; } catch (_) {}
-          return;
-        }
-      } catch (_e2) {}
-
-      // روی /amirpnl بعد از موفقیت API — فوری پنل (حتی قبل از MFA اگر سرور ok داد)
-      var profRole = String((data.profile && data.profile.role) || '').toLowerCase();
-      if (mustGoAdminPanel() || profRole === 'admin') {
-        if (data.mfa_required) {
-          setSmsPhone(data.phone || phone);
-          setView('sms-otp');
-          setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
-          return;
-        }
-        forceAdminRedirectNow(
-          (data.profile && data.profile.phone) || phone || emailOrPhone || smsPhone,
-          (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین'
-        );
-        return;
-      }
       if (data.mfa_required) {
-        // MFA موقتاً غیرفعال — روی مسیر ادمین مستقیم برو پنل
-        var onAdminPath = false;
-        try {
-          var pp = String(window.location.pathname || '');
-          onAdminPath = pp === '/amirshn' || pp.indexOf('/amirshn') >= 0 || pp === '/amirpnl' || pp.indexOf('/amirpnl') >= 0;
-        } catch (_) {}
-        if (onAdminPath || isAdmin) {
-          forceAdminRedirectNow(data.phone || phone || emailOrPhone, (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین');
-          return;
-        }
         setSmsPhone(data.phone || phone);
         setView('sms-otp');
         setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
@@ -430,10 +285,6 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.ok) {
         setMsg(data?.error || 'ثبت‌نام ناموفق');
-        return;
-      }
-      if (isAdmin) {
-        forceAdminRedirectNow(String(emailOrPhone || smsPhone || '').replace(/\D/g, ''), (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین');
         return;
       }
       redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone: String(emailOrPhone || smsPhone || '').replace(/\D/g, '') });
@@ -541,42 +392,59 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   async function handleVerifyOtp(code) {
     if (busy) return { ok: false };
     setBusy(true);
-    setMsg("");
+    setMsg('');
     try {
-      const phone = String(smsPhone || emailOrPhone || "").replace(/\D/g, "");
+      const phone = String(smsPhone || emailOrPhone || '').replace(/\D/g, '');
       const endpoints = isAdmin
-        ? ["/api/auth/mfa/verify", "/api/auth/otp/verify"]
-        : ["/api/auth/otp/verify"];
+        ? ['/api/auth/mfa/verify', '/api/auth/otp/verify']
+        : ['/api/auth/otp/verify'];
       let data = null;
       let ok = false;
       for (const endpoint of endpoints) {
         const res = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ phone, code, role: isAdmin ? "admin" : role }),
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ phone, code, role: isAdmin ? 'admin' : role }),
         });
         data = await res.json().catch(() => ({}));
         if (res.ok && data?.ok) { ok = true; break; }
       }
       if (!ok) {
-        setMsg(data?.error || "کد نامعتبر است");
-        return { ok: false, error: data?.error || "کد نامعتبر است" };
+        const err = data?.error || 'کد نامعتبر است';
+        setMsg(err);
+        return { ok: false, error: err };
       }
-      const isAdm = mustGoAdminPanel() || isAdmin || String(data?.profile?.role || "").toLowerCase() === "admin";
-      if (isAdm) {
-        forceAdminRedirectNow(phone, data?.profile?.full_name || data?.profile?.name || "سوپر ادمین");
-        return { ok: true };
+      try {
+        if (isAdmin || String(data?.profile?.role || '').toLowerCase() === 'admin') {
+          localStorage.setItem('adminUser', JSON.stringify({
+            name: data?.profile?.full_name || data?.profile?.name || 'سوپر ادمین',
+            role: 'Super Admin',
+            phone,
+            loggedAt: Date.now(),
+            sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000,
+          }));
+          sessionStorage.setItem('pm_panel', 'admin');
+          sessionStorage.setItem('pm_admin_ok', '1');
+        }
+      } catch (_) {}
+      if (isAdmin || String(data?.profile?.role || '').toLowerCase() === 'admin') {
+        try {
+          window.location.replace('/amirshn?panel=1&t=' + Date.now());
+          return { ok: true };
+        } catch (_) {}
       }
-      redirectAfterAuth(data.profile || { role: role, phone });
+      redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone });
       return { ok: true };
     } catch (e) {
-      setMsg(e?.message || "خطا در تأیید کد");
-      return { ok: false, error: e?.message || "خطا" };
+      const err = e?.message || 'خطا در تأیید کد';
+      setMsg(err);
+      return { ok: false, error: err };
     } finally {
       setBusy(false);
     }
   }
+
 
         useEffect(() => {
     const onKey = (e) => {
@@ -641,20 +509,6 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
   if (closed) return null;
   const effectiveView = isAdmin && view === 'signup' ? 'signin' : view;
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    if (busy) return;
-    if (view === 'sms-phone') { handleRequestOtp(); return; }
-    if (view === 'forgot') {
-      if (forgotStep === 'code') handleForgotReset();
-      else handleForgotRequest();
-      return;
-    }
-    if (view === 'signup') { handleSignup(); return; }
-    handlePasswordLogin();
-  };
-
   if (isAdmin && view === 'signup') {
     /* admin: no signup in this surface — keep signin */
   }
@@ -712,40 +566,34 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         @keyframes drawY{0%{transform:scaleY(0);opacity:0}100%{transform:scaleY(1);opacity:.7}}
         .card-animate{opacity:0;transform:translateY(20px);animation:fadeUp .8s cubic-bezier(.22,.61,.36,1) .35s forwards}
         @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-        input.pm-auth-field,
-        input#sms-phone,
-        input#signup-phone,
-        input#auth-email,
-        input#auth-password,
-        input#auth-name,
-        input#reset-code {
+        input.pm-auth-field, input#sms-phone, input#auth-email, input#auth-password, input#auth-name {
           color: #ffffff !important;
           -webkit-text-fill-color: #ffffff !important;
           caret-color: #ffffff !important;
         }
-        input.pm-auth-field::placeholder,
-        input#sms-phone::placeholder,
-        input#signup-phone::placeholder,
-        input#auth-email::placeholder {
+        input.pm-auth-field::placeholder, input#sms-phone::placeholder, input#auth-email::placeholder {
           color: #71717a !important;
           -webkit-text-fill-color: #71717a !important;
           opacity: 1 !important;
         }
         input.pm-auth-field:-webkit-autofill,
-        input#sms-phone:-webkit-autofill,
-        input#signup-phone:-webkit-autofill,
-        input#auth-email:-webkit-autofill,
-        input#auth-password:-webkit-autofill,
-        input#auth-name:-webkit-autofill,
-        input#reset-code:-webkit-autofill {
+        input#sms-phone:-webkit-autofill {
           -webkit-text-fill-color: #ffffff !important;
           box-shadow: 0 0 0px 1000px #09090b inset !important;
           transition: background-color 9999s ease-out;
         }
+        input#sms-phone, input#auth-email, input#auth-password, input#auth-name {
+          color: #fff !important;
+          -webkit-text-fill-color: #fff !important;
+          caret-color: #fff !important;
+        }
+        input#sms-phone::placeholder, input#auth-email::placeholder {
+          color: #71717a !important;
+          -webkit-text-fill-color: #71717a !important;
+        }
+        input#sms-phone:-webkit-autofill,
         input#sms-phone:-webkit-autofill:hover,
-        input#sms-phone:-webkit-autofill:focus,
-        input#signup-phone:-webkit-autofill:hover,
-        input#signup-phone:-webkit-autofill:focus {
+        input#sms-phone:-webkit-autofill:focus {
           -webkit-text-fill-color: #fff !important;
           transition: background-color 9999s ease-in-out 0s;
           box-shadow: 0 0 0px 1000px #09090b inset !important;
@@ -791,7 +639,6 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
             <CardDescription className="text-zinc-400">{subtitle}</CardDescription>
           </CardHeader>
 
-          <form onSubmit={handleFormSubmit}>
           <CardContent className="grid gap-5">
             {msg ? <p className="text-xs text-emerald-400 text-center">{msg}</p> : null}
 
@@ -812,8 +659,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   />
                 </div>
                 <Button
-                  type="submit"
+                  type="button"
                   className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
+                  onClick={() => handleRequestOtp()}
                   disabled={busy}
                 >
                   دریافت کد تأیید
@@ -841,7 +689,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     <Label htmlFor="auth-name" className="text-zinc-300">نام کامل</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                      <Input id="auth-name" value={fullName} onChange={(e) => setFullName(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
+                      <Input id="auth-name" value={fullName} onChange={(e) => setFullName(e.target.value)} value={fullName} onChange={(e) => setFullName(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
                     </div>
                   </div>
                 ) : null}
@@ -858,8 +706,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   placeholder="09xxxxxxxxx"
                   value={signupPhone}
                   onChange={(e) => setSignupPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
-                  className="pm-auth-field bg-zinc-950 border-zinc-800 !text-white placeholder:text-zinc-500 text-center tracking-widest caret-white"
-                  style={{ color: '#fff', WebkitTextFillColor: '#fff', caretColor: '#fff' }}
+                  className="bg-zinc-950 border-zinc-800 text-white text-center tracking-widest"
+                  style={{ color: '#fff', WebkitTextFillColor: '#fff' }}
                 />
               </div>
             ) : null}
@@ -868,7 +716,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                     <Input
-                      id="auth-email" value={view === "signup" ? signupEmail : emailOrPhone} onChange={(e) => view === "signup" ? setSignupEmail(e.target.value) : setEmailOrPhone(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
+                      id="auth-email" value={view === "signup" ? signupEmail : emailOrPhone} onChange={(e) => view === "signup" ? setSignupEmail(e.target.value) : setEmailOrPhone(e.target.value)} value={emailOrPhone} onChange={(e) => setEmailOrPhone(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                       type="text"
                       placeholder="09xxxxxxxxx یا email@example.com"
                       className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
@@ -882,7 +730,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                       <Input
-                        id="auth-password" value={view === "forgot" && forgotStep === "code" ? resetPassword : password} onChange={(e) => view === "forgot" && forgotStep === "code" ? setResetPassword(e.target.value) : setPassword(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
+                        id="auth-password" value={view === "forgot" && forgotStep === "code" ? resetPassword : password} onChange={(e) => view === "forgot" && forgotStep === "code" ? setResetPassword(e.target.value) : setPassword(e.target.value)} value={password} onChange={(e) => setPassword(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                         type={showPassword ? 'text' : 'password'}
                         placeholder="••••••••"
                         className="pl-10 pr-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
@@ -946,8 +794,20 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                 ) : null}
 
                 <Button
-                  type="submit"
+                  type="button"
                   className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
+                  onClick={() => {
+                    if (view === 'forgot') {
+                      if (forgotStep === 'code') handleForgotReset();
+                      else handleForgotRequest();
+                      return;
+                    }
+                    if (view === 'signup') {
+                      handleSignup();
+                      return;
+                    }
+                    handlePasswordLogin();
+                  }}
                   disabled={busy}
                 >
                   {view === 'signup'
@@ -982,7 +842,6 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
               </>
             ) : null}
           </CardContent>
-          </form>
 
           <CardFooter className="flex flex-col items-center gap-3 text-sm text-zinc-400">
             {view === 'signin' && !isAdmin ? (

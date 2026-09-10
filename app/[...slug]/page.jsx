@@ -35,7 +35,7 @@ function isAllowedSlug(slugParts) {
       '/sellers',
       '/categories',
       '/tags',
-      '/amirshn',
+      
     ]
       .map((p) => p.replace(/^\//, '').split('/')[0])
       .filter(Boolean),

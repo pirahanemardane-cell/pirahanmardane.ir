@@ -41,6 +41,8 @@ export const FA_PATHS = {
   recent: '/بازدیدهای-اخیر',
   profile: '/حساب-من',
   'seller-panel': '/پنل-فروشنده',
+  'admin-panel': '/amirshn',
+  'admin-login': '/amirshn',
   sellers: '/فروشندگان',
   categories: '/دسته-بندی-ها',
   tags: '/برچسب-ها',
@@ -73,6 +75,9 @@ export const LEGACY_EN_TO_FA = {
   '/account': FA_PATHS.profile,
   '/seller': FA_PATHS['seller-panel'],
   '/seller-panel': FA_PATHS['seller-panel'],
+  '/admin': '/amirshn',
+  '/admin-panel': '/amirshn',
+  '/پنل-ادمین': '/amirshn',
   '/sellers': FA_PATHS.sellers,
   '/categories': FA_PATHS.categories,
   '/tags': FA_PATHS.tags,
@@ -180,6 +185,7 @@ export function parseFaPath(pathname) {
   }
 
   if (path === "/" || path === "") return { type: "home" };
+  if (path === "/amirshn" || path.endsWith("/amirshn")) return { type: "admin-panel", page: "admin-panel" };
 
   const key = PATH_TO_KEY[path];
   if (key === "home") return { type: "home" };
