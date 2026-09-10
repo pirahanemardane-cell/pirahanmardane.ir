@@ -136,7 +136,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           id, phone, name, role: 'admin', loggedAt: Date.now(), sessionExpires,
         }));
         sessionStorage.setItem('pm_panel', 'admin');
-        window.location.href='/amirshn?panel=1';
+        sessionStorage.setItem('pm_admin_ok', '1'); try { window.location.replace('/amirshn?panel=1&t=' + Date.now()); } catch (_) { window.location.href='/amirshn?panel=1&t=' + Date.now(); };
         return;
       }
       if (r === 'seller') {
@@ -181,13 +181,17 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
             role: 'Super Admin',
             phone: phone || '09',
             loggedAt: Date.now(),
+            sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000,
           })
         );
         sessionStorage.setItem('pm_panel', 'admin');
         sessionStorage.setItem('pm_admin_ok', '1');
       } catch (_) {}
-      // همیشه با query تا حتی روی /amirshn رفرش واقعی شود
-      window.location.href = '/amirshn?panel=1&t=' + Date.now();
+      try {
+        window.location.replace('/amirshn?panel=1&t=' + Date.now());
+      } catch (_) {
+        window.location.href = '/amirshn?panel=1&t=' + Date.now();
+      }
       return;
     }
 
@@ -420,14 +424,12 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           sessionStorage.setItem('pm_admin_ok', '1');
         }
       } catch (_) {}
-      setTimeout(() => {
-        redirectAfterAuth(
-          data.profile || {
-            role: isAdmin ? 'admin' : role,
-            phone,
-          }
-        );
-      }, 400);
+      redirectAfterAuth(
+        data.profile || {
+          role: isAdmin ? 'admin' : role,
+          phone,
+        }
+      );
       return { ok: true };
     } catch (e) {
       const err = e?.message || 'خطا در تأیید کد';

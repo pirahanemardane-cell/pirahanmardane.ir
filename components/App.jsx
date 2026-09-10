@@ -5423,9 +5423,44 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             return;
           }
           if (parsed.type === 'admin-panel' || parsed.page === 'admin-panel' || path === '/amirshn' || path.endsWith('/amirshn')) {
-            if (adminUser && isAdminPhone(adminUser.phone)) {
+            let adminOk = false;
+            try {
+              if (adminUser && isAdminPhone(adminUser.phone)) adminOk = true;
+            } catch (_) {}
+            if (!adminOk) {
+              try {
+                const raw = localStorage.getItem('adminUser');
+                if (raw) {
+                  const saved = JSON.parse(raw);
+                  const ph = String(saved?.phone || '').replace(/\D/g, '');
+                  if (ph.length >= 10 && isAdminPhone(ph)) {
+                    adminOk = true;
+                    try {
+                      setAdminUser({
+                        name: saved.name || 'سوپر ادمین',
+                        role: saved.role || 'Super Admin',
+                        phone: ph,
+                        loggedAt: saved.loggedAt || Date.now(),
+                      });
+                    } catch (_) {}
+                  }
+                }
+              } catch (_) {}
+            }
+            try {
+              if (sessionStorage.getItem('pm_admin_ok') === '1' || sessionStorage.getItem('pm_panel') === 'admin') {
+                if (!adminOk) {
+                  try {
+                    const raw = localStorage.getItem('adminUser');
+                    if (raw) adminOk = true;
+                  } catch (_) {}
+                }
+              }
+            } catch (_) {}
+            if (adminOk) {
               setShowAdminPanel(true);
               setAdminAuthOpen(false);
+              try { sessionStorage.setItem('pm_panel', 'admin'); } catch (_) {}
             } else {
               setAdminAuthOpen(true);
               setAdminAuthStep('phone');
@@ -6279,7 +6314,30 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         navigateTo(FA_PATHS.shop || '/فروشگاه', { plp: true, reset: true });
       };
 
-      const openAdminPanelPage = () => { try { navigateTo('/amirshn'); } catch (_) { try { setShowAdminPanel(true); } catch (__) {} } };
+      const openAdminPanelPage = () => {
+        try {
+          setShowAdminPanel(true);
+          setAdminAuthOpen(false);
+          setShowSellerPanel(false);
+          setShowProfilePage(false);
+          setShowCartPage(false);
+          setShowCheckout(false);
+          setMobileMenuOpen(false);
+        } catch (_) {}
+        try {
+          sessionStorage.setItem('pm_panel', 'admin');
+          sessionStorage.setItem('pm_admin_ok', '1');
+        } catch (_) {}
+        try {
+          const path = (typeof window !== 'undefined' && window.location && window.location.pathname) || '';
+          if (path !== '/amirshn' && !String(path).endsWith('/amirshn')) {
+            try { pushFaUrl('/amirshn', { adminPanel: true }); } catch (_) {
+              try { window.history.replaceState({ panel: 'admin' }, '', '/amirshn?panel=1'); } catch (__) {}
+            }
+          }
+        } catch (_) {}
+        try { scrollPageToTop(); } catch (_) {}
+      };
       const openSellerPanelPage = () => { try { navigateTo(FA_PATHS['seller-panel'] || '/پنل-فروشنده'); } catch (_) { try { setShowSellerPanel(true); } catch (__) {} } };
       const openProfilePageNav = () => { try { navigateTo(FA_PATHS.profile || '/حساب-من'); } catch (_) { try { setShowProfilePage(true); } catch (__) {} } };
       try {
@@ -12531,6 +12589,8 @@ const downloadSeoFile = (filename, content, mime) => {
         setPdpProduct(null);
         setActiveSellerId(null);
         setMobileMenuOpen(false);
+        try { sessionStorage.setItem('pm_panel', 'admin'); sessionStorage.setItem('pm_admin_ok', '1'); } catch (_) {}
+        try { setShowAdminPanel(true); setAdminAuthOpen(false); } catch (_) {}
         openAdminPanelPage();
         setAdminTab('dashboard');
         try { pushFaUrl('/amirshn', { adminPanel: true }); } catch (_) {}
