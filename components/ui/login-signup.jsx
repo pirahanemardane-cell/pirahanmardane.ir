@@ -641,6 +641,20 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
   if (closed) return null;
   const effectiveView = isAdmin && view === 'signup' ? 'signin' : view;
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (busy) return;
+    if (view === 'sms-phone') { handleRequestOtp(); return; }
+    if (view === 'forgot') {
+      if (forgotStep === 'code') handleForgotReset();
+      else handleForgotRequest();
+      return;
+    }
+    if (view === 'signup') { handleSignup(); return; }
+    handlePasswordLogin();
+  };
+
   if (isAdmin && view === 'signup') {
     /* admin: no signup in this surface — keep signin */
   }
@@ -698,34 +712,40 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         @keyframes drawY{0%{transform:scaleY(0);opacity:0}100%{transform:scaleY(1);opacity:.7}}
         .card-animate{opacity:0;transform:translateY(20px);animation:fadeUp .8s cubic-bezier(.22,.61,.36,1) .35s forwards}
         @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-        input.pm-auth-field, input#sms-phone, input#auth-email, input#auth-password, input#auth-name {
+        input.pm-auth-field,
+        input#sms-phone,
+        input#signup-phone,
+        input#auth-email,
+        input#auth-password,
+        input#auth-name,
+        input#reset-code {
           color: #ffffff !important;
           -webkit-text-fill-color: #ffffff !important;
           caret-color: #ffffff !important;
         }
-        input.pm-auth-field::placeholder, input#sms-phone::placeholder, input#auth-email::placeholder {
+        input.pm-auth-field::placeholder,
+        input#sms-phone::placeholder,
+        input#signup-phone::placeholder,
+        input#auth-email::placeholder {
           color: #71717a !important;
           -webkit-text-fill-color: #71717a !important;
           opacity: 1 !important;
         }
         input.pm-auth-field:-webkit-autofill,
-        input#sms-phone:-webkit-autofill {
+        input#sms-phone:-webkit-autofill,
+        input#signup-phone:-webkit-autofill,
+        input#auth-email:-webkit-autofill,
+        input#auth-password:-webkit-autofill,
+        input#auth-name:-webkit-autofill,
+        input#reset-code:-webkit-autofill {
           -webkit-text-fill-color: #ffffff !important;
           box-shadow: 0 0 0px 1000px #09090b inset !important;
           transition: background-color 9999s ease-out;
         }
-        input#sms-phone, input#auth-email, input#auth-password, input#auth-name {
-          color: #fff !important;
-          -webkit-text-fill-color: #fff !important;
-          caret-color: #fff !important;
-        }
-        input#sms-phone::placeholder, input#auth-email::placeholder {
-          color: #71717a !important;
-          -webkit-text-fill-color: #71717a !important;
-        }
-        input#sms-phone:-webkit-autofill,
         input#sms-phone:-webkit-autofill:hover,
-        input#sms-phone:-webkit-autofill:focus {
+        input#sms-phone:-webkit-autofill:focus,
+        input#signup-phone:-webkit-autofill:hover,
+        input#signup-phone:-webkit-autofill:focus {
           -webkit-text-fill-color: #fff !important;
           transition: background-color 9999s ease-in-out 0s;
           box-shadow: 0 0 0px 1000px #09090b inset !important;
@@ -771,6 +791,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
             <CardDescription className="text-zinc-400">{subtitle}</CardDescription>
           </CardHeader>
 
+          <form onSubmit={handleFormSubmit}>
           <CardContent className="grid gap-5">
             {msg ? <p className="text-xs text-emerald-400 text-center">{msg}</p> : null}
 
@@ -791,9 +812,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   />
                 </div>
                 <Button
-                  type="button"
+                  type="submit"
                   className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
-                  onClick={() => handleRequestOtp()}
                   disabled={busy}
                 >
                   دریافت کد تأیید
@@ -821,7 +841,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     <Label htmlFor="auth-name" className="text-zinc-300">نام کامل</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                      <Input id="auth-name" value={fullName} onChange={(e) => setFullName(e.target.value)} value={fullName} onChange={(e) => setFullName(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
+                      <Input id="auth-name" value={fullName} onChange={(e) => setFullName(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
                     </div>
                   </div>
                 ) : null}
@@ -838,8 +858,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   placeholder="09xxxxxxxxx"
                   value={signupPhone}
                   onChange={(e) => setSignupPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
-                  className="bg-zinc-950 border-zinc-800 text-white text-center tracking-widest"
-                  style={{ color: '#fff', WebkitTextFillColor: '#fff' }}
+                  className="pm-auth-field bg-zinc-950 border-zinc-800 !text-white placeholder:text-zinc-500 text-center tracking-widest caret-white"
+                  style={{ color: '#fff', WebkitTextFillColor: '#fff', caretColor: '#fff' }}
                 />
               </div>
             ) : null}
@@ -848,7 +868,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                     <Input
-                      id="auth-email" value={view === "signup" ? signupEmail : emailOrPhone} onChange={(e) => view === "signup" ? setSignupEmail(e.target.value) : setEmailOrPhone(e.target.value)} value={emailOrPhone} onChange={(e) => setEmailOrPhone(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
+                      id="auth-email" value={view === "signup" ? signupEmail : emailOrPhone} onChange={(e) => view === "signup" ? setSignupEmail(e.target.value) : setEmailOrPhone(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                       type="text"
                       placeholder="09xxxxxxxxx یا email@example.com"
                       className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
@@ -862,7 +882,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                       <Input
-                        id="auth-password" value={view === "forgot" && forgotStep === "code" ? resetPassword : password} onChange={(e) => view === "forgot" && forgotStep === "code" ? setResetPassword(e.target.value) : setPassword(e.target.value)} value={password} onChange={(e) => setPassword(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
+                        id="auth-password" value={view === "forgot" && forgotStep === "code" ? resetPassword : password} onChange={(e) => view === "forgot" && forgotStep === "code" ? setResetPassword(e.target.value) : setPassword(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                         type={showPassword ? 'text' : 'password'}
                         placeholder="••••••••"
                         className="pl-10 pr-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
@@ -926,20 +946,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                 ) : null}
 
                 <Button
-                  type="button"
+                  type="submit"
                   className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
-                  onClick={() => {
-                    if (view === 'forgot') {
-                      if (forgotStep === 'code') handleForgotReset();
-                      else handleForgotRequest();
-                      return;
-                    }
-                    if (view === 'signup') {
-                      handleSignup();
-                      return;
-                    }
-                    handlePasswordLogin();
-                  }}
                   disabled={busy}
                 >
                   {view === 'signup'
@@ -974,6 +982,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
               </>
             ) : null}
           </CardContent>
+          </form>
 
           <CardFooter className="flex flex-col items-center gap-3 text-sm text-zinc-400">
             {view === 'signin' && !isAdmin ? (
