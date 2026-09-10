@@ -560,8 +560,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         if (res.ok && data?.ok) { ok = true; break; }
       }
       if (!ok) {
-        setMsg(data?.error || "کد نامعتبر است");
-        return { ok: false, error: data?.error || "کد نامعتبر است" };
+        setMsg(data?.error || "کد وارد شده صحیح نمی‌باشد.");
+        return { ok: false, error: data?.error || "کد وارد شده صحیح نمی‌باشد." };
       }
       const isAdm = mustGoAdminPanel() || isAdmin || String(data?.profile?.role || "").toLowerCase() === "admin";
       if (isAdm) {
