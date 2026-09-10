@@ -209,12 +209,12 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         return;
       }
       if (data.mfa_required) {
-        setSmsPhone(String(data.phone || phone || '').replace(/\D/g, ''));
+        setSmsPhone(data.phone || phone);
         setView('sms-otp');
-        setMsg(data.message || 'کد تأیید دو مرحله‌ای به پیامک شما ارسال شد');
+        setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
         return;
       }
-      redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone });
+      redirectAfterAuth(data.profile || { role });
     } catch (e) {
       setMsg(e?.message || 'خطا در ورود');
     } finally {
@@ -360,50 +360,32 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   }
 
   async function handleVerifyOtp(code) {
-    if (busy) return { ok: false, error: 'busy' };
+    if (busy) return;
     setBusy(true);
     setMsg('');
     try {
-      const phone = String(smsPhone || emailOrPhone || '').replace(/\D/g, '');
-      const endpoint = isAdmin ? '/api/auth/mfa/verify' : '/api/auth/otp/verify';
-      const res = await fetch(endpoint, {
+      const res = await fetch(isAdmin ? '/api/auth/mfa/verify' : '/api/auth/otp/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ phone, code, role: isAdmin ? 'admin' : role }),
+        body: JSON.stringify({ phone: smsPhone, code, role }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.ok) {
-        const err = data?.error || 'کد نامعتبر است';
-        setMsg(err);
-        return { ok: false, error: err };
+        setMsg(data?.error || 'کد نامعتبر است');
+        return;
       }
-      // success → set session + hard redirect
-      try {
-        if (isAdmin || String(data?.profile?.role || '').toLowerCase() === 'admin') {
-          localStorage.setItem('adminUser', JSON.stringify({
-            name: data?.profile?.full_name || data?.profile?.name || 'سوپر ادمین',
-            role: 'Super Admin',
-            phone: phone,
-            loggedAt: Date.now(),
-          }));
-          sessionStorage.setItem('pm_panel', 'admin');
-          sessionStorage.setItem('pm_admin_ok', '1');
-        }
-      } catch (_) {}
-      // small delay so success animation can show
-      setTimeout(() => {
-        try {
-          redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone });
-        } catch (_) {
-          window.location.replace(isAdmin ? '/amirshn' : '/account');
-        }
-      }, 600);
-      return { ok: true };
+      if (data.needs_profile) {
+        setFullName('');
+setView('signup');
+
+        setSignupPhone(smsPhone);
+        setMsg('تکمیل نام برای ثبت‌نام');
+        return;
+      }
+      redirectAfterAuth(data.profile || { role });
     } catch (e) {
-      const err = e?.message || 'خطا در تأیید کد';
-      setMsg(err);
-      return { ok: false, error: err };
+      setMsg(e?.message || 'خطا در تأیید کد');
     } finally {
       setBusy(false);
     }

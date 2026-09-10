@@ -54,7 +54,6 @@ const OTPSuccess = () => (
 export function OTPVerification({ phone = '', length = 6, onVerified, onResend, onBack }) {
   const [digits, setDigits] = useState(() => Array.from({ length }, () => ''));
   const [state, setState] = useState('idle');
-  const verifyingRef = React.useRef(false);
   const [countdown, setCountdown] = useState(60);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const refs = useRef([]);
