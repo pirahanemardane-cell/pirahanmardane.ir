@@ -45,16 +45,26 @@ const OTPSuccess = () => (
   </div>
 );
 
+/**
+ * زیرساخت اتوفیل OTP:
+ * - autocomplete=one-time-code روی باکس اول + input مخفی
+ * - WebOTP API (Chrome/Android) وقتی SMS با فرمت دامنه بیاید
+ * ظاهر و جریان دستی کاربر عوض نشده است.
+ */
 export function OTPVerification({ phone = '', length = 6, onVerified, onResend, onBack }) {
   const [digits, setDigits] = useState(() => Array.from({ length }, () => ''));
   const [state, setState] = useState('idle');
   const [countdown, setCountdown] = useState(60);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const refs = useRef([]);
+  const verifiedOnce = useRef(false);
+  const abortRef = useRef(null);
 
   useEffect(() => {
     setDigits(Array.from({ length }, () => ''));
-  }, [length]);
+    verifiedOnce.current = false;
+    setState('idle');
+  }, [length, phone]);
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -92,25 +102,81 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
     });
   };
 
+  const finishIfComplete = (clean) => {
+    const code = clean.join('');
+    if (code.length === length && clean.every(Boolean)) {
+      setState('success');
+      if (!verifiedOnce.current) {
+        verifiedOnce.current = true;
+        try {
+          if (typeof onVerified === 'function') onVerified(code);
+        } catch (_) {}
+      }
+      return true;
+    }
+    return false;
+  };
+
   const applyDigits = (next) => {
     const clean = next.slice(0, length);
     while (clean.length < length) clean.push('');
     setDigits(clean);
-    setState('idle');
-    const code = clean.join('');
-    if (code.length === length && clean.every(Boolean)) {
-      setState('success');
-      try {
-        if (typeof onVerified === 'function') onVerified(code);
-      } catch (_) {}
-    }
+    if (state !== 'success') setState('idle');
+    finishIfComplete(clean);
   };
+
+  // پر کردن از اتوفیل / WebOTP / paste کامل
+  const fillFromAutofill = (codeRaw) => {
+    const code = onlyDigits(codeRaw).slice(0, length);
+    if (!code) return;
+    const next = Array.from({ length }, (_, i) => code[i] || '');
+    applyDigits(next);
+    focusAt(Math.min(code.length, length - 1));
+  };
+
+  // WebOTP (Chrome Android و مرورگرهای سازگار)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (state === 'success') return;
+
+    const OTPCredential = typeof window !== 'undefined' ? window.OTPCredential : undefined;
+    if (!('OTPCredential' in window) && !OTPCredential) {
+      // بعضی مرورگرها فقط credentials.get را دارند
+    }
+
+    if (!navigator.credentials || typeof navigator.credentials.get !== 'function') return;
+
+    const ac = new AbortController();
+    abortRef.current = ac;
+
+    (async () => {
+      try {
+        const cred = await navigator.credentials.get({
+          otp: { transport: ['sms'] },
+          signal: ac.signal,
+        });
+        if (cred && cred.code) {
+          fillFromAutofill(cred.code);
+        }
+      } catch (_) {
+        // کاربر رد کرد / پشتیبانی نیست / abort — نادیده
+      }
+    })();
+
+    return () => {
+      try {
+        ac.abort();
+      } catch (_) {}
+    };
+    // فقط با باز شدن مرحله OTP
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phone, length]);
 
   const onChangeAt = (index, raw) => {
     if (state === 'success') return;
     const chars = onlyDigits(raw);
 
-    // paste or multi-digit from mobile keyboard
+    // اتوفیل مرورگر گاهی کل کد را در یک باکس می‌ریزد
     if (chars.length > 1) {
       const next = digits.slice();
       for (let i = 0; i < chars.length && index + i < length; i++) {
@@ -124,10 +190,7 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
     const next = digits.slice();
     next[index] = chars.slice(-1) || '';
     applyDigits(next);
-
-    if (next[index] && index < length - 1) {
-      focusAt(index + 1);
-    }
+    if (next[index] && index < length - 1) focusAt(index + 1);
   };
 
   const onKeyDown = (e, index) => {
@@ -172,6 +235,7 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
     setCountdown(60);
     setIsResendDisabled(true);
     setState('idle');
+    verifiedOnce.current = false;
     setDigits(Array.from({ length }, () => ''));
     focusAt(0);
     try {
@@ -194,7 +258,30 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
           box-shadow: 0 0 0px 1000px #09090b inset !important;
           transition: background-color 9999s ease-out;
         }
+        .pm-otp-autofill-host {
+          position: absolute;
+          opacity: 0;
+          pointer-events: none;
+          height: 0;
+          width: 0;
+          overflow: hidden;
+        }
       `}</style>
+
+      {/* میزبان اتوفیل iOS/Safari — ظاهر ندارد */}
+      <div className="pm-otp-autofill-host" aria-hidden="true">
+        <input
+          type="text"
+          name="one-time-code"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          pattern="[0-9]*"
+          tabIndex={-1}
+          value={digits.join('')}
+          onChange={(e) => fillFromAutofill(e.target.value)}
+          readOnly={state === 'success'}
+        />
+      </div>
 
       <div className="relative z-10">
         <h1 className="text-xl font-semibold text-center text-zinc-50 mb-2">
@@ -234,6 +321,10 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
                       type="text"
                       inputMode="numeric"
                       autoComplete={index === 0 ? 'one-time-code' : 'off'}
+                      name={index === 0 ? 'one-time-code' : undefined}
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck={false}
                       maxLength={length}
                       value={d}
                       disabled={state === 'success'}
