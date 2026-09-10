@@ -32,7 +32,6 @@ import {
 import { attachFocusTrap } from '@/lib/focus-trap';
 import { loadGsap } from '@/lib/load-gsap';
 import { useState, useEffect, useRef, useLayoutEffect, useCallback, useMemo, memo } from 'react';
-import { useWebOtp } from '../lib/useWebOtp';
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
 import ClientErrorBoundary from './ClientErrorBoundary';
