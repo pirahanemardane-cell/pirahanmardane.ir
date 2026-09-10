@@ -9,8 +9,8 @@ export default function AuthModalView() {
   if (!api.authOpen) return null;
 
   const handleClose = () => {
-    try { api.closeAuth?.(); } catch (_) {}
     try { patchModalUi({ authOpen: false }); } catch (_) {}
+    try { api.closeAuth?.(); } catch (_) {}
     try { api.setAuthOpen?.(false); } catch (_) {}
   };
 

@@ -67,13 +67,51 @@ function Separator({ className }) {
   return <div className={cn('h-px w-full bg-zinc-800', className)} />;
 }
 
+function forceCloseAuth(onClose) {
+  try {
+    patchModalUi({ authOpen: false });
+  } catch (_) {}
+  try {
+    if (typeof onClose === 'function') onClose();
+  } catch (_) {}
+}
+
+function goContact(onContact, onClose) {
+  forceCloseAuth(onClose);
+  try {
+    if (typeof onContact === 'function') {
+      onContact();
+      return;
+    }
+  } catch (_) {}
+  try {
+    window.location.assign('/تماس-با-ما');
+  } catch (_) {
+    try {
+      window.location.href = '/تماس-با-ما';
+    } catch (__) {}
+  }
+}
+
 export default function LoginCardSection({ mode = 'buyer', onClose, onContact }) {
   const [view, setView] = useState('signin');
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [msg, setMsg] = useState('');
+  const [closed, setClosed] = useState(false);
   const canvasRef = useRef(null);
   const isSeller = mode === 'seller';
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setClosed(true);
+        forceCloseAuth(onClose);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -125,6 +163,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
     };
   }, []);
 
+  if (closed) return null;
+
   const title =
     view === 'signup'
       ? isSeller
@@ -151,7 +191,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
     <section className="fixed inset-0 z-[200] bg-zinc-950 text-zinc-50">
       <style>{`
         .accent-lines{position:absolute;inset:0;pointer-events:none;opacity:.7}
-        .hline,.vline{position:absolute;background:#27272a}
+        .hline,.vline{position:absolute;background:#27272a;pointer-events:none}
         .hline{left:0;right:0;height:1px;transform:scaleX(0);transform-origin:50% 50%;animation:drawX .8s cubic-bezier(.22,.61,.36,1) forwards}
         .vline{top:0;bottom:0;width:1px;transform:scaleY(0);transform-origin:50% 0%;animation:drawY .9s cubic-bezier(.22,.61,.36,1) forwards}
         .hline:nth-child(1){top:18%;animation-delay:.12s}
@@ -167,49 +207,39 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       `}</style>
 
       <div className="absolute inset-0 pointer-events-none [background:radial-gradient(80%_60%_at_50%_30%,rgba(255,255,255,0.06),transparent_60%)]" />
-      <div className="accent-lines">
+      <div className="accent-lines" aria-hidden>
         <div className="hline" /><div className="hline" /><div className="hline" />
         <div className="vline" /><div className="vline" /><div className="vline" />
       </div>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-50 mix-blend-screen pointer-events-none" />
 
-      <header className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80 z-[9999]" dir="rtl">
-        <span className="text-xs tracking-wide text-zinc-400">
-          {isSeller ? 'کنسول فروشنده' : 'کنسول خریدار'}
-        </span>
-        <div className="flex items-center gap-2 relative z-[10000]">
-          <button
-            type="button"
-            onClick={() => {
-              try { patchModalUi({ authOpen: false }); } catch (_) {}
-              try { if (typeof onClose === 'function') onClose(); } catch (_) {}
-              try {
-                if (typeof onContact === 'function') onContact();
-                else window.location.assign('/تماس-با-ما');
-              } catch (_) {
-                try { window.location.href = '/تماس-با-ما'; } catch (__) {}
-              }
-            }}
-            className="h-9 px-3 inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-50 text-sm hover:bg-zinc-800 cursor-pointer"
-          >
-            <span>تماس با ما</span>
-            <ArrowRight className="h-4 w-4 rotate-180" />
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              try { patchModalUi({ authOpen: false }); } catch (_) {}
-              try { if (typeof onClose === 'function') onClose(); } catch (_) {}
-            }}
-            aria-label="بستن"
-            className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white cursor-pointer"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-      </header>
+      {/* دکمه‌های fixed — خارج از stacking کارت تا کلیک همیشه برسد */}
+      <button
+        type="button"
+        onClick={() => {
+          setClosed(true);
+          forceCloseAuth(onClose);
+        }}
+        aria-label="بستن"
+        className="fixed top-4 left-4 z-[2147483646] h-11 w-11 inline-flex items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-100 shadow-lg hover:bg-zinc-800 cursor-pointer"
+      >
+        <X className="h-5 w-5" />
+      </button>
 
-      <div className="h-full w-full grid place-items-center px-4 relative z-10">
+      <button
+        type="button"
+        onClick={() => goContact(onContact, onClose)}
+        className="fixed top-4 right-4 z-[2147483646] h-11 px-4 inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 text-zinc-50 text-sm shadow-lg hover:bg-zinc-800 cursor-pointer"
+      >
+        <span>تماس با ما</span>
+        <ArrowRight className="h-4 w-4 rotate-180" />
+      </button>
+
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[2147483645] text-xs tracking-wide text-zinc-400 pointer-events-none">
+        {isSeller ? 'کنسول فروشنده' : 'کنسول خریدار'}
+      </div>
+
+      <div className="relative z-10 h-full w-full grid place-items-center px-4 pt-16">
         <Card className="card-animate w-full max-w-sm border-zinc-800 bg-zinc-900/70 backdrop-blur">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-zinc-50">{title}</CardTitle>
