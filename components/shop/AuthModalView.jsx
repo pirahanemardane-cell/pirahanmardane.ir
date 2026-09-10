@@ -5,8 +5,12 @@ import LoginCardSection from '@/components/ui/login-signup';
 import { patchModalUi } from '@/lib/stores/modalUiStore';
 
 function isAdminLoginPath() {
-  // مسیر عمومی ادمین حذف شد — فقط از prop mode استفاده شود
-  return false;
+  try {
+    const p = String(typeof window !== 'undefined' ? window.location.pathname || '' : '');
+    return p === '/ashn' || p.endsWith('/ashn');
+  } catch (_) {
+    return false;
+  }
 }
 
 export default function AuthModalView() {

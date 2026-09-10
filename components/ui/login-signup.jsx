@@ -153,7 +153,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       sessionStorage.setItem('pm_admin_ok', '1');
     } catch (_) {}
     // فوری — قبل از هر setState
-    var url = '/';
+    var url = '/ashn-pnl';
     try { window.location.replace(url); } catch (_) {}
     try { window.location.href = url; } catch (_) {}
     try { window.top.location.href = url; } catch (_) {}
@@ -205,7 +205,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       sessionStorage.setItem('pm_panel', 'admin');
       sessionStorage.setItem('pm_admin_ok', '1');
     } catch (_) {}
-    /* admin URL removed */ try { window.location.href = '/'; } catch (_) {}
+    try { window.location.href = '/ashn-pnl'; } catch (_) {}
   }
 
 
@@ -232,7 +232,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           id, phone, name, role: 'admin', loggedAt: Date.now(), sessionExpires,
         }));
         sessionStorage.setItem('pm_panel', 'admin');
-        sessionStorage.setItem('pm_admin_ok', '1'); /* admin URL removed */ try { window.location.href = '/'; } catch (_) {};
+        sessionStorage.setItem('pm_admin_ok', '1'); try { window.location.href = '/ashn-pnl'; } catch (_) {};
         return;
       }
       if (r === 'seller') {
@@ -284,9 +284,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         sessionStorage.setItem('pm_admin_ok', '1');
       } catch (_) {}
       try {
-        /* admin URL removed */ try { window.location.href = '/'; } catch (_) {}
+        try { window.location.href = '/ashn-pnl'; } catch (_) {}
       } catch (_) {
-        /* admin URL removed */ try { window.location.href = '/'; } catch (_) {}
+        try { window.location.href = '/ashn-pnl'; } catch (_) {}
       }
       return;
     }
@@ -353,7 +353,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
             sessionStorage.setItem('pm_panel', 'admin');
             sessionStorage.setItem('pm_admin_ok', '1');
           } catch (_e) {}
-          try { window.location.href = '/'; } catch (_) {}
+          try { window.location.href = '/ashn-pnl'; } catch (_) {}
           return;
         }
       } catch (_e2) {}
@@ -375,7 +375,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       }
       if (data.mfa_required) {
         // MFA موقتاً غیرفعال — روی مسیر ادمین مستقیم برو پنل
-        var onAdminPath = false;
+        var onAdminPath = (typeof window !== 'undefined') && (window.location.pathname === '/ashn' || String(window.location.pathname||'').endsWith('/ashn'));
         try {
           var pp = String(window.location.pathname || '');
           onAdminPath = pp === '/amirshn' || pp.indexOf('/amirshn') >= 0 || pp === '/amirpnl' || pp.indexOf('/amirpnl') >= 0;

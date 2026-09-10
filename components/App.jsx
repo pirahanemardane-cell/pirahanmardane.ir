@@ -1503,8 +1503,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
     try {
       const url = new URL(window.location.href);
       const path = url.pathname || "";
-      const isAdminLogin = false;
-      const isAdmin = false; // public admin URLs removed
+      const isAdminLogin = path === '/ashn' || path.endsWith('/ashn');
+      const isAdmin = path === '/ashn-pnl' || path.endsWith('/ashn-pnl');
       const isProfile = url.searchParams.get("profile") === "1" || path === "/account" || path.startsWith("/account/") || path.includes("profile");
       const isSeller = url.searchParams.get("sellerPanel") === "1" || path === "/seller" || path.startsWith("/seller/") || sessionStorage.getItem("pm_panel") === "seller";
 
@@ -1805,7 +1805,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         path === "/account" || path.startsWith("/account/") ||
         path === "/حساب-من" || path.startsWith("/حساب-من");
       const isAdminPanel =
-        false /* was amirshn */;
+        path === '/ashn-pnl' || path.endsWith('/ashn-pnl');
       if (isSellerPanel) {
         openSellerPanelPage();
         setShowProfilePage(false);
@@ -5481,11 +5481,15 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
-          if (parsed.type === 'admin-login' || parsed.page === 'admin-login') {
-            try { window.location.replace('/'); return; } catch (_) {}
+          if (parsed.type === 'admin-login' || parsed.page === 'admin-login' || path === '/ashn' || path.endsWith('/ashn')) {
+            try { setShowAdminPanel(false); } catch (_) {}
+            setAdminAuthOpen(true);
+            setAdminAuthStep('phone');
+            try { setAuthMode('admin'); setAuthOpen(true); } catch (_) {}
+            try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
-          if (parsed.type === 'admin-panel' || parsed.page === 'admin-panel' || false /* was amirshn */) {
+          if (parsed.type === 'admin-panel' || parsed.page === 'admin-panel' || path === '/ashn-pnl' || path.endsWith('/ashn-pnl')) {
             let adminOk = false;
             try {
               if (adminUser && isAdminPhone(adminUser.phone)) adminOk = true;
@@ -8031,7 +8035,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           setPdpProduct(null);
           openAdminPanelPage();
           setAdminTab('dashboard');
-          pushFaUrl('/', { adminPanel: true });
+          pushFaUrl('/ashn', { adminPanel: true });
           pushLiveToast('ورود ادمین موفق', { type: 'success', duration: 2000 });
           try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { try { window.scrollTo(0, 0); } catch (__) {} }
           return;
@@ -8509,7 +8513,7 @@ const verifyOtp = async () => {
         try { clearAuthLocal(); } catch (_) {}
         const go = () => {
           try { clearAuthLocal(); } catch (_) {}
-          try { window.location.replace('/'); } catch (_) {
+          try { window.location.replace('/ashn-pnl'); } catch (_) {
             try { window.location.assign('/'); } catch (__) {}
           }
         };
@@ -9459,7 +9463,7 @@ const verifyOtp = async () => {
         setShowSellerPanel(false);
         setSellerOrderDetailId(null);
         try {
-          if (typeof pushFaUrl === 'function') pushFaUrl('/', { home: true });
+          if (typeof pushFaUrl === 'function') pushFaUrl('/ashn', { home: true });
           else if (typeof replaceFaUrl === 'function') replaceFaUrl('/');
           else window.history.pushState({}, '', '/');
         } catch (_) {
@@ -9477,7 +9481,7 @@ const verifyOtp = async () => {
 
         const go = () => {
           try { clearAuthLocal(); } catch (_) {}
-          try { window.location.replace('/'); } catch (_) {
+          try { window.location.replace('/ashn-pnl'); } catch (_) {
             try { window.location.assign('/'); } catch (__) {}
           }
         };
@@ -12425,7 +12429,7 @@ const downloadSeoFile = (filename, content, mime) => {
         try {
           const p = (typeof window !== 'undefined' && window.location.pathname) || '';
           if (p !== '/amirshn' && !String(p).endsWith('/amirshn')) {
-            try { pushFaUrl('/', { adminPanel: true }); } catch (_) {
+            try { pushFaUrl('/ashn', { adminPanel: true }); } catch (_) {
               try { window.history.replaceState({ adminPanel: true }, '', '/amirshn'); } catch (__) {}
             }
           }
@@ -12721,7 +12725,7 @@ const downloadSeoFile = (filename, content, mime) => {
         try { setShowAdminPanel(true); setAdminAuthOpen(false); setAuthOpen(false); } catch (_) {}
         try { window.location.href = '/' + Date.now(); return; } catch (_) {}
         openAdminPanelPage();
-        try { pushFaUrl('/', { adminPanel: true }); } catch (_) {}
+        try { pushFaUrl('/ashn', { adminPanel: true }); } catch (_) {}
         try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { try { window.scrollTo(0, 0); } catch (__) {} }
         // همیشه دیتا از سرور — یکسان برای OTP و رمز
         setTimeout(() => {
@@ -13056,14 +13060,14 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
           const url = new URL(window.location.href);
           ['plp','cat','seller','sellers','cart','wishlist','compare','profile','sellerPanel'].forEach(k => url.searchParams.delete(k));
           url.searchParams.set('adminPanel', '1');
-          pushFaUrl('/', { adminPanel: true });
+          pushFaUrl('/ashn', { adminPanel: true });
         } catch (_) {}
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
       const closeAdminPanel = () => {
         setShowAdminPanel(false);
         try {
-          if (typeof pushFaUrl === 'function') pushFaUrl('/', { home: true });
+          if (typeof pushFaUrl === 'function') pushFaUrl('/ashn', { home: true });
           else if (typeof replaceFaUrl === 'function') replaceFaUrl('/');
           else window.history.pushState({}, '', '/');
         } catch (_) {

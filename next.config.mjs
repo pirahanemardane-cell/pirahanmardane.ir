@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 
+  async redirects() {
+    return [
+      { source: '/amirpnl', destination: '/ashn', permanent: true },
+      { source: '/amirshn', destination: '/ashn-pnl', permanent: true },
+      { source: '/admin', destination: '/ashn', permanent: true },
+      { source: '/admin-login', destination: '/ashn', permanent: true },
+    ];
+  },
   async rewrites() {
     return [
       { source: '/seller', destination: '/' },

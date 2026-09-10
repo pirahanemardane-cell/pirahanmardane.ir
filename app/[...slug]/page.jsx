@@ -11,6 +11,12 @@ function decodePart(s) {
 }
 
 function isAllowedSlug(slugParts) {
+  // مسیرهای ادمین جدید
+  try {
+    const joined = '/' + (slugParts || []).map(decodePart).filter(Boolean).join('/');
+    if (joined === '/ashn' || joined === '/ashn-pnl') return true;
+  } catch (_) {}
+
   const parts = (slugParts || []).map(decodePart).filter(Boolean);
   if (!parts.length) return true;
 
