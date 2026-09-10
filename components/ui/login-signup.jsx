@@ -766,16 +766,29 @@ setView('signup');
           </CardContent>
 
           <CardFooter className="flex flex-col items-center gap-3 text-sm text-zinc-400">
-            {view === 'signin' ? (
-<button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signup'); }}>
+            {view === 'signin' && !isAdmin ? (
+              <button
+                type="button"
+                className="text-zinc-200 hover:underline"
+                onClick={() => {
+                  setMsg('');
+                  setView('signup');
+                }}
+              >
                 ثبت‌نام
               </button>
-
-            ) : view === 'sms-phone' || view === 'sms-otp' ? null : (
-              <button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signin'); }}>
+            ) : view === 'signin' && isAdmin ? null : view === 'sms-phone' || view === 'sms-otp' ? null : (
+              <button
+                type="button"
+                className="text-zinc-200 hover:underline"
+                onClick={() => {
+                  setMsg('');
+                  setView('signin');
+                }}
+              >
                 بازگشت به ورود
               </button>
-
+            )}
             <span className="text-[10px] tracking-wide text-zinc-600">pirahanmardane.ir</span>
           </CardFooter>
         </Card>
