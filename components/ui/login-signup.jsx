@@ -115,6 +115,45 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
   const role = isSeller ? 'seller' : 'buyer';
 
+  function goAfterAuth(data) {
+    const profile = data?.profile || {};
+    const user = data?.user || {};
+    const r = String(profile?.role || role || 'buyer').toLowerCase();
+    const phone = String(profile?.phone || user?.phone || smsPhone || emailOrPhone || '').replace(/\D/g, '');
+    const name = profile?.full_name || profile?.name || 'کاربر';
+    const id = profile?.id || user?.id || null;
+    const sessionExpires = Date.now() + 30 * 24 * 60 * 60 * 1000;
+    try { patchModalUi({ authOpen: false }); } catch (_) {}
+    try { if (typeof onClose === 'function') onClose(); } catch (_) {}
+
+    try {
+      if (r === 'admin') {
+        localStorage.setItem('adminUser', JSON.stringify({
+          id, phone, name, role: 'admin', loggedAt: Date.now(), sessionExpires,
+        }));
+        sessionStorage.setItem('pm_panel', 'admin');
+        window.location.assign('/amirshn');
+        return;
+      }
+      if (r === 'seller') {
+        localStorage.setItem('sellerUser', JSON.stringify({
+          id, phone, name, role: 'seller', sessionExpires,
+        }));
+        sessionStorage.setItem('pm_panel', 'seller');
+        window.location.assign('/seller');
+        return;
+      }
+      localStorage.setItem('buyerUser', JSON.stringify({
+        id, phone, name, role: 'buyer', sessionExpires,
+      }));
+      sessionStorage.setItem('pm_panel', 'account');
+      window.location.assign('/account');
+    } catch (e) {
+      window.location.assign(r === 'admin' ? '/amirshn' : r === 'seller' ? '/seller' : '/account');
+    }
+  }
+
+
   const redirectAfterAuth = (profile) => {
     const r = String(profile?.role || role || 'buyer').toLowerCase();
     try {
@@ -360,7 +399,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         return;
       }
       setMsg('ورود موفق');
-      window.location.reload();
+      goAfterAuth(data);
     } catch (e) {
       setMsg(e?.message || 'خطا در ورود');
     } finally {
@@ -416,11 +455,13 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         return;
       }
       if (data.needs_profile) {
-        setMsg('شماره تأیید شد — تکمیل پروفایل به‌زودی');
+        setMsg('شماره تأیید شد — برای تکمیل ثبت‌نام نام خود را وارد کنید');
+        setView('signup');
+        setSignupPhone?.(smsPhone);
         return;
       }
       setMsg('ورود موفق');
-      window.location.reload();
+      goAfterAuth(data);
     } catch (e) {
       setMsg(e?.message || 'خطا در تأیید کد');
     } finally {
