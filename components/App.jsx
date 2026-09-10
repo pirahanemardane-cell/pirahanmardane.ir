@@ -1599,46 +1599,29 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             return;
           }
         } catch (_) {}
-        try {
-          if (typeof window !== "undefined") {
-            window.location.replace("/ashn");
-            return;
-          }
-        } catch (_) {}
+        // ROOT-FIX: هرگز از /ashn-pnl به /ashn برنگردان — فقط فرم ورود را روی همین صفحه باز کن
+        try { setShowAdminPanel(false); } catch (_) {}
         setAdminAuthOpen(true);
         setAdminAuthStep("phone");
+        try { setAuthMode("admin"); setAuthOpen(true); } catch (_) {}
         return;
       }
 
       if (typeof isAdminLogin !== "undefined" && isAdminLogin) {
-        // /ashn = صفحه ورود ادمین — ریدایرکت به خانه نکن
-        try { setShowAdminPanel(false); } catch (_) {}
-        try { setAdminAuthOpen(true); setAdminAuthStep("phone"); } catch (_) {}
-        try { setAuthMode("admin"); setAuthOpen(true); } catch (_) {}
-        return;
-        /* was: window.location.replace("/") */
+        // /ashn = ورود ادمین — اگر قبلاً لاگین است مستقیم پنل
         try {
           const raw = localStorage.getItem("adminUser");
           if (raw) {
             const saved = JSON.parse(raw);
             const ph = String(saved?.phone || "").replace(/\D/g, "");
             if (ph.length >= 10) {
-              try {
-                setAdminUser({
-                  name: saved.name || "سوپر ادمین",
-                  role: saved.role || "Super Admin",
-                  phone: ph,
-                  loggedAt: saved.loggedAt || Date.now(),
-                });
-              } catch (_) {}
               try { sessionStorage.setItem("pm_panel", "admin"); sessionStorage.setItem("pm_admin_ok", "1"); } catch (_) {}
               try { window.location.replace("/ashn-pnl"); return; } catch (_) {}
             }
           }
         } catch (_) {}
         try { setShowAdminPanel(false); } catch (_) {}
-        setAdminAuthOpen(true);
-        setAdminAuthStep("phone");
+        try { setAdminAuthOpen(true); setAdminAuthStep("phone"); } catch (_) {}
         try { setAuthMode("admin"); setAuthOpen(true); } catch (_) {}
         return;
       }
