@@ -211,10 +211,10 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       if (data.mfa_required) {
         setSmsPhone(data.phone || phone);
         setView('sms-otp');
-        setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
+        setMsg(data.message || 'کد تأیید دو مرحله‌ای به پیامک شما ارسال شد');
         return;
       }
-      redirectAfterAuth(data.profile || { role });
+      redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone });
     } catch (e) {
       setMsg(e?.message || 'خطا در ورود');
     } finally {
@@ -364,26 +364,27 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
     setBusy(true);
     setMsg('');
     try {
-      const res = await fetch('/api/auth/otp/verify', {
+      const phone = String(smsPhone || '').replace(/\D/g, '');
+      const endpoint = isAdmin ? '/api/auth/mfa/verify' : '/api/auth/otp/verify';
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ phone: smsPhone, code, role }),
+        body: JSON.stringify({ phone, code, role: isAdmin ? 'admin' : role }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.ok) {
         setMsg(data?.error || 'کد نامعتبر است');
         return;
       }
-      if (data.needs_profile) {
+      if (data.needs_profile && !isAdmin) {
         setFullName('');
-setView('signup');
-
+        setView('signup');
         setSignupPhone(smsPhone);
         setMsg('تکمیل نام برای ثبت‌نام');
         return;
       }
-      redirectAfterAuth(data.profile || { role });
+      redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone });
     } catch (e) {
       setMsg(e?.message || 'خطا در تأیید کد');
     } finally {
