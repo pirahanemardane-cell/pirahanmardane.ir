@@ -337,6 +337,33 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       } catch (_) {}
 
       useEffect(() => { try { ensureStorageVersion(); } catch (_) {} }, []);
+
+      // SESSION soft: supabase منبع حقیقت برای خریدار/فروشنده — ادمین/ریدایرکت دست نخورده
+      useEffect(() => {
+        let cancelled = false;
+        (async () => {
+          try {
+            const path = (typeof window !== 'undefined' && window.location.pathname) || '';
+            const isAdminPath =
+              path.indexOf('/ashn-pnl') >= 0 ||
+              path.indexOf('/amirpnl') >= 0 ||
+              path.indexOf('/ashn') >= 0;
+            if (isAdminPath) return; // ریدایرکت و پنل ادمین را دست نزن
+            const r = await fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' });
+            const j = await r.json().catch(() => ({}));
+            if (cancelled) return;
+            if (j && j.ok && !j.user) {
+              try { localStorage.removeItem('buyerUser'); } catch (_) {}
+              try { localStorage.removeItem('sellerUser'); } catch (_) {}
+              try { localStorage.removeItem('user'); } catch (_) {}
+              try { if (typeof setSellerUser === 'function') setSellerUser(null); } catch (_) {}
+              try { if (typeof setUser === 'function') setUser(null); } catch (_) {}
+            }
+          } catch (_) {}
+        })();
+        return () => { cancelled = true; };
+      }, []);
+
       useEffect(() => {
         hydrateSiteSettingsFromApi();
         try { hydrateCampaignsFromApi(false); } catch (_) {}
@@ -8556,7 +8583,12 @@ const verifyOtp = async () => {
 
         try {
           const go = () => { try { window.location.assign('/'); } catch (_) {} };
-          const p = fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
+          const p = fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scope: 'global', allDevices: true }),
+          }).catch(() => {});
           Promise.resolve(p).finally(go);
           setTimeout(go, 400);
           return;

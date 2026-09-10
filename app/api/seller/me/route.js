@@ -3,6 +3,7 @@ import { createAdminClient } from '../../../../lib/supabase/admin'
 import { NextResponse } from 'next/server'
 import { logCritical } from '../../../../lib/critical-log'
 import { smsBankChanged } from '../../../../lib/sms/events'
+import { normalizePhone, isValidIranMobile, verifyOtp, markPhoneVerified, isPhoneVerified, clearPhoneVerified } from '../../../../lib/otp'
 
 function mapSeller(row, profile) {
   if (!row) return null
@@ -72,10 +73,23 @@ export async function GET() {
       return NextResponse.json({ ok: false, error: 'فروشگاه یافت نشد', code: 'NO_SHOP' }, { status: 404 })
     }
 
+    const mapped = mapSeller(seller, profile)
+    const sn = String(mapped?.shopName || '').trim()
+    const needsShop =
+      !sn ||
+      sn === 'فروشگاه' ||
+      sn === 'فروشنده' ||
+      !String(mapped?.city || '').trim() ||
+      !String(mapped?.about || '').trim()
+    const pn = String(profile?.full_name || '').trim()
+    const needsName = !pn || pn === 'کاربر' || pn === 'فروشنده' || pn === 'سوپر ادمین'
+
     return NextResponse.json({
       ok: true,
-      seller: mapSeller(seller, profile),
+      seller: mapped,
       profile: profile || null,
+      needs_shop_details: needsShop,
+      needs_name: needsName,
     })
   } catch (e) { try { await logCritical('app/api/seller/me/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
@@ -110,7 +124,35 @@ export async function PATCH(request) {
     if (body.city != null) patch.city = String(body.city).trim().slice(0, 80)
     if (body.address != null) patch.address = String(body.address).trim().slice(0, 300)
     if (body.phone != null) patch.phone = String(body.phone).replace(/\D/g, '').slice(0, 15)
-    if (body.sheba != null) patch.sheba = String(body.sheba).replace(/\s/g, '').slice(0, 34)
+    if (body.sheba != null) {
+      // تغییر شبا = عملیات حساس → OTP
+      let phoneForOtp = String(body.phone || '').replace(/\D/g, '')
+      try {
+        const { data: pr } = await admin.from('profiles').select('phone').eq('id', user.id).maybeSingle()
+        if (pr?.phone) phoneForOtp = String(pr.phone).replace(/\D/g, '')
+      } catch (_) {}
+      if (phoneForOtp.length === 10 && phoneForOtp.startsWith('9')) phoneForOtp = '0' + phoneForOtp
+      const code = String(body.code || body.otp || '').replace(/\D/g, '')
+      if (code) {
+        const check = await verifyOtp(phoneForOtp, code)
+        if (!check.ok) {
+          return NextResponse.json({ ok: false, error: check.error || 'کد وارد شده صحیح نمی‌باشد.', needs_otp: true }, { status: 400 })
+        }
+        await markPhoneVerified(phoneForOtp)
+      } else {
+        const okV = phoneForOtp ? await isPhoneVerified(phoneForOtp) : false
+        if (!okV) {
+          return NextResponse.json({
+            ok: false,
+            error: 'برای تغییر شبا، ابتدا کد پیامک را تأیید کنید',
+            needs_otp: true,
+            phone: phoneForOtp || null,
+          }, { status: 401 })
+        }
+      }
+      patch.sheba = String(body.sheba).replace(/\s/g, '').slice(0, 34)
+      try { await clearPhoneVerified(phoneForOtp) } catch (_) {}
+    }
     // تصاویر جدید تا تأیید ادمین فقط در pending — منتشر نمی‌شوند
     if (body.logo_url != null || body.logoUrl != null || body.logoPendingUrl != null || body.logo_pending_url != null) {
       const next = String(body.logoPendingUrl ?? body.logo_pending_url ?? body.logo_url ?? body.logoUrl ?? '').slice(0, 500)

@@ -9,7 +9,10 @@ export async function GET() {
       return NextResponse.json({ ok: false, error: 'پیکربندی Supabase ناقص است' }, { status: 500 })
     }
 
-    const { data: { user }, error } = await supabase.auth.getUser()
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
     if (error || !user) {
       return NextResponse.json({ ok: true, user: null, profile: null })
     }
@@ -20,12 +23,20 @@ export async function GET() {
       .eq('id', user.id)
       .maybeSingle()
 
+    const pn = String(profile?.full_name || '').trim()
+    const needsName = !pn || ['کاربر', 'فروشنده', 'سوپر ادمین'].includes(pn)
+
     return NextResponse.json({
       ok: true,
       user: { id: user.id, email: user.email },
       profile,
+      needs_name: needsName,
+      session_source: 'supabase',
     })
-  } catch (e) { try { await logCritical('app/api/auth/me/route.js', e) } catch (_lc) {}
+  } catch (e) {
+    try {
+      await logCritical('app/api/auth/me/route.js', e)
+    } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

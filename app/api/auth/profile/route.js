@@ -2,6 +2,7 @@ import { createClient } from '../../../../lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { logCritical } from '../../../../lib/critical-log'
 import { smsPhoneChanged } from '../../../../lib/sms/events'
+import { isPhoneVerified, verifyOtp, markPhoneVerified, clearPhoneVerified, isValidIranMobile } from '../../../../lib/otp'
 
 export async function GET() {
   try {
@@ -29,12 +30,15 @@ export async function GET() {
     }
 
     const needsPhone = !profile?.phone || String(profile.phone).replace(/\D/g, '').length < 10
+    const pn = String(profile?.full_name || '').trim()
+    const needsName = !pn || ['کاربر', 'فروشنده', 'سوپر ادمین'].includes(pn)
 
     return NextResponse.json({
       ok: true,
       user: { id: user.id, email: user.email },
       profile,
       needs_phone: needsPhone,
+      needs_name: needsName,
     })
   } catch (e) { try { await logCritical('app/api/auth/profile/route.js', e) } catch (_lc) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
@@ -127,6 +131,34 @@ export async function PATCH(request) {
         .maybeSingle()
       previousPhone = oldProf?.phone || null
       smsName = updates.full_name || oldProf?.full_name || 'کاربر'
+
+      // تغییر شماره = حساس → OTP روی شماره جدید (یا سشن تأیید)
+      if (previousPhone !== normalized) {
+        const code = String(body.code || body.otp || '').replace(/\D/g, '')
+        if (code) {
+          const check = await verifyOtp(normalized, code)
+          if (!check.ok) {
+            return NextResponse.json(
+              { ok: false, error: check.error || 'کد وارد شده صحیح نمی‌باشد.', needs_otp: true },
+              { status: 400 }
+            )
+          }
+          await markPhoneVerified(normalized)
+        } else {
+          const okV = await isPhoneVerified(normalized)
+          if (!okV) {
+            return NextResponse.json(
+              {
+                ok: false,
+                error: 'برای تغییر شماره، ابتدا کد پیامک به شماره جدید را تأیید کنید',
+                needs_otp: true,
+                phone: normalized,
+              },
+              { status: 401 }
+            )
+          }
+        }
+      }
     }
 
     updates.updated_at = new Date().toISOString()
