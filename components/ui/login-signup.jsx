@@ -101,8 +101,107 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const [msg, setMsg] = useState('');
   const [closed, setClosed] = useState(false);
   const [smsPhone, setSmsPhone] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [emailOrPhone, setEmailOrPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const canvasRef = useRef(null);
   const isSeller = mode === 'seller';
+  const role = isSeller ? 'seller' : 'buyer';
+
+  async function handlePasswordLogin() {
+    if (busy) return;
+    setBusy(true);
+    setMsg('');
+    try {
+      const phone = String(emailOrPhone || '').replace(/\D/g, '');
+      const res = await fetch('/api/auth/login-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ phone: phone || emailOrPhone, password, remember }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setMsg(data?.error || 'ورود ناموفق');
+        return;
+      }
+      if (data.mfa_required) {
+        setSmsPhone(data.phone || phone);
+        setView('sms-otp');
+        setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
+        return;
+      }
+      setMsg('ورود موفق');
+      window.location.reload();
+    } catch (e) {
+      setMsg(e?.message || 'خطا در ورود');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleRequestOtp() {
+    if (busy) return;
+    const phone = String(smsPhone || '').replace(/\D/g, '');
+    if (phone.length < 11) {
+      setMsg('شماره موبایل ۱۱ رقمی وارد کنید');
+      return;
+    }
+    setBusy(true);
+    setMsg('');
+    try {
+      const res = await fetch('/api/auth/otp/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ phone, purpose: 'login', role }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setMsg(data?.error || 'ارسال کد ناموفق');
+        return;
+      }
+      setSmsPhone(phone);
+      setView('sms-otp');
+      setMsg(data.mock ? 'کد در حالت آزمایشی ثبت شد' : (data.message || 'کد ارسال شد'));
+    } catch (e) {
+      setMsg(e?.message || 'خطا در ارسال کد');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleVerifyOtp(code) {
+    if (busy) return;
+    setBusy(true);
+    setMsg('');
+    try {
+      const res = await fetch('/api/auth/otp/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ phone: smsPhone, code, role }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setMsg(data?.error || 'کد نامعتبر است');
+        return;
+      }
+      if (data.needs_profile) {
+        setMsg('شماره تأیید شد — تکمیل پروفایل به‌زودی');
+        return;
+      }
+      setMsg('ورود موفق');
+      window.location.reload();
+    } catch (e) {
+      setMsg(e?.message || 'خطا در تأیید کد');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+
 
   useEffect(() => {
     const onKey = (e) => {
@@ -309,14 +408,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                 <Button
                   type="button"
                   className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
-                  onClick={() => {
-                    if ((smsPhone || '').length < 11) {
-                      setMsg('شماره موبایل ۱۱ رقمی وارد کنید');
-                      return;
-                    }
-                    setMsg('');
-                    setView('sms-otp');
-                  }}
+                  onClick={() => handleRequestOtp()}
+                  disabled={busy}
                 >
                   دریافت کد تأیید
                 </Button>
@@ -330,8 +423,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
               <OTPVerification
                 phone={smsPhone}
                 length={6}
-                onVerified={() => setMsg('ورود با پیامک به‌زودی به سرور وصل می‌شود')}
-                onResend={() => setMsg('کد مجدداً ارسال می‌شود (ظاهر)')}
+                onVerified={(code) => handleVerifyOtp(code)}
+                onResend={() => handleRequestOtp()}
                 onBack={() => { setMsg(''); setView('sms-phone'); }}
               />
             ) : null}
@@ -343,7 +436,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     <Label htmlFor="auth-name" className="text-zinc-300">نام کامل</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                      <Input id="auth-name" style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
+                      <Input id="auth-name" value={fullName} onChange={(e) => setFullName(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
                     </div>
                   </div>
                 ) : null}
@@ -353,7 +446,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                     <Input
-                      id="auth-email" style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
+                      id="auth-email" value={emailOrPhone} onChange={(e) => setEmailOrPhone(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                       type="text"
                       placeholder="09xxxxxxxxx یا email@example.com"
                       className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
@@ -367,7 +460,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                       <Input
-                        id="auth-password" style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
+                        id="auth-password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                         type={showPassword ? 'text' : 'password'}
                         placeholder="••••••••"
                         className="pl-10 pr-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
@@ -408,7 +501,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   onClick={() => {
                     if (view === 'forgot') setMsg('لینک بازیابی به‌زودی فعال می‌شود (فعلاً فقط ظاهر).');
                     else if (view === 'signup') setMsg('ثبت‌نام به‌زودی به سرور وصل می‌شود (فعلاً فقط ظاهر).');
-                    else setMsg('ورود به‌زودی به سرور وصل می‌شود (فعلاً فقط ظاهر).');
+                    else { handlePasswordLogin(); return; }
                   }}
                 >
                   {view === 'signup' ? 'ثبت‌نام' : view === 'forgot' ? 'ارسال لینک بازیابی' : 'ورود'}
