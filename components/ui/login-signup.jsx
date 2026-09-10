@@ -118,7 +118,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   function goAfterAuth(data) {
     const profile = data?.profile || {};
     const user = data?.user || {};
-    const r = String(profile?.role || role || 'buyer').toLowerCase();
+    const r = String(profile?.role || (isAdmin ? 'admin' : role) || 'buyer').toLowerCase();
     const phone = String(profile?.phone || user?.phone || smsPhone || emailOrPhone || '').replace(/\D/g, '');
     const name = profile?.full_name || profile?.name || 'کاربر';
     const id = profile?.id || user?.id || null;
@@ -155,7 +155,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
 
   const redirectAfterAuth = (profile) => {
-    const r = String(profile?.role || role || 'buyer').toLowerCase();
+    const r = String(profile?.role || (isAdmin ? 'admin' : role) || 'buyer').toLowerCase();
     try {
       if (typeof onClose === 'function') onClose();
     } catch (_) {}
@@ -536,18 +536,22 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
   const title =
     view === 'signup'
-      ? isSeller
-        ? 'ثبت‌نام فروشنده'
-        : 'ثبت‌نام'
+      ? isAdmin
+        ? 'ورود ادمین'
+        : isSeller
+          ? 'ثبت‌نام فروشنده'
+          : 'ثبت‌نام'
       : view === 'forgot'
         ? 'بازیابی رمز عبور'
         : view === 'sms-phone'
           ? 'ورود با پیامک'
           : view === 'sms-otp'
             ? 'کد تأیید'
-            : isSeller
-              ? 'ورود فروشنده'
-              : 'خوش آمدید';
+            : isAdmin
+              ? 'ورود ادمین'
+              : isSeller
+                ? 'ورود فروشنده'
+                : 'خوش آمدید';
 
   const subtitle =
     view === 'signup'
@@ -560,9 +564,11 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           ? 'شماره موبایل خود را وارد کنید تا کد تأیید ارسال شود.'
           : view === 'sms-otp'
             ? 'کد ارسال‌شده را وارد کنید.'
-            : isSeller
-              ? 'وارد پنل فروشنده شوید و فروشگاه را مدیریت کنید.'
-              : 'وارد حساب کاربری شوید و خرید را ادامه دهید.';
+            : isAdmin
+              ? 'وارد پنل مدیریت شوید.'
+              : isSeller
+                ? 'وارد پنل فروشنده شوید و فروشگاه را مدیریت کنید.'
+                : 'وارد حساب کاربری شوید و خرید را ادامه دهید.';
 
   return (
     <section className="fixed inset-0 z-[200] bg-zinc-950 text-zinc-50">
@@ -644,7 +650,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       </button>
 
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[2147483645] text-xs tracking-wide text-zinc-400 pointer-events-none">
-        {isSeller ? 'کنسول فروشنده' : 'کنسول خریدار'}
+        {isAdmin ? 'کنسول ادمین' : isSeller ? 'کنسول فروشنده' : 'کنسول خریدار'}
       </div>
 
       <div className="relative z-10 h-full w-full grid place-items-center px-4 pt-16">

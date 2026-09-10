@@ -16934,137 +16934,16 @@ const params = new URLSearchParams(window.location.search);
           {/* ===================== ADMIN PANEL ===================== */}
 
       {adminAuthOpen && (
-        <div className="site-modal-root" role="dialog" aria-modal="true" style={{ zIndex: 2147483000 }}>
-          <div className="site-modal-backdrop" onClick={() => { try { closeAdminAuth(); } catch (_) {} }} />
-          <div className="site-modal-panel admin-auth-modal bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 p-5 max-w-sm mx-auto rounded-2xl">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-base font-bold text-primary-900 dark:text-white">ورود ادمین</h3>
-              <button type="button" onClick={() => { try { closeAdminAuth(); } catch (_) {} }} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-primary-100 dark:hover:bg-primary-800" aria-label="بستن">
-                <Icon name="x" size={18} />
-              </button>
-            </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                try {
-                  if (adminAuthStep === 'mfa') adminVerifyMfa();
-                  else if (adminAuthStep === 'otp') verifyAdminOtp();
-                  else if (adminAuthMethod === 'password') adminLoginWithPassword();
-                  else sendAdminOtp();
-                } catch (_) {}
-              }}
-            >
-              {(adminAuthStep === 'otp' || adminAuthStep === 'mfa') ? (
-                <>
-                  <p className="text-sm text-primary-600 dark:text-white/70 mb-3">
-                    {adminAuthStep === 'mfa' ? 'کد تأیید دو مرحله‌ای ارسال‌شده به' : 'کد ارسال‌شده به'}{' '}
-                    <span dir="ltr">{adminAuthPhone}</span>
-                  </p>
-                  <input
-                    id="admin-otp-code-input"
-                    type="text"
-                    name="one-time-code"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    autoComplete="one-time-code"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck={false}
-                    enterKeyHint="done"
-                    maxLength={6}
-                    autoFocus
-                    value={adminAuthOtp || ''}
-                    onFocus={(e) => {
-                      try {
-                        setTimeout(() => e.target.scrollIntoView({ block: 'center', behavior: 'smooth' }), 280);
-                      } catch (_) {}
-                    }}
-                    onChange={(e) => {
-                      const code = onlyDigits(e.target.value).slice(0, 6);
-                      setAdminAuthOtp(code);
-                      setAdminAuthError('');
-                    }}
-                    dir="ltr"
-                    className="w-full mb-3 px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-950 text-primary-900 dark:text-white text-center tracking-[0.3em]"
-                    placeholder="------"
-                    data-admin-auth="true"
-                  />
-                  {adminAuthError ? <p className="text-sm text-red-600 mb-2">{adminAuthError}</p> : null}
-                  <button
-                    type="submit"
-                    disabled={adminAuthLoading}
-                    className="w-full py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium disabled:opacity-60"
-                  >
-                    {adminAuthLoading ? '...' : 'تأیید'}
-                  </button>
-                  <div className="flex items-center justify-between gap-2 mt-2 text-xs text-primary-500">
-                    <button
-                      type="button"
-                      className="text-sm text-primary-500"
-                      onClick={() => { setAdminAuthStep('phone'); setAdminAuthOtp(''); setAdminAuthError(''); setAdminAuthOtpTimer(0); }}
-                    >
-                      {adminAuthStep === 'mfa' ? 'بازگشت' : 'تغییر شماره'}
-                    </button>
-                    {(adminAuthStep === 'otp' || adminAuthStep === 'mfa') ? (
-                      adminAuthOtpTimer > 0 ? (
-                        <span>ارسال مجدد تا {adminAuthOtpTimer} ثانیه</span>
-                      ) : (
-                        <button
-                          type="button"
-                          className="text-apple-blue font-medium"
-                          disabled={adminAuthLoading}
-                          onClick={() => {
-                            try {
-                              if (adminAuthStep === 'mfa') adminLoginWithPassword();
-                              else sendAdminOtp();
-                            } catch (_) {}
-                          }}
-                        >
-                          ارسال مجدد کد
-                        </button>
-                      )
-                    ) : null}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex gap-2 mb-3">
-                    <button
-                      type="button"
-                      onClick={() => { setAdminAuthMethod('otp'); setAdminAuthError(''); }}
-                      className={`flex-1 py-2 rounded-xl text-xs font-bold border ${adminAuthMethod !== 'password' ? 'bg-apple-blue text-white border-apple-blue' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white'}`}
-                    >
-                      پیامک (OTP)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { setAdminAuthMethod('password'); setAdminAuthError(''); }}
-                      className={`flex-1 py-2 rounded-xl text-xs font-bold border ${adminAuthMethod === 'password' ? 'bg-apple-blue text-white border-apple-blue' : 'border-primary-200 dark:border-white/20 text-primary-700 dark:text-white'}`}
-                    >
-                      رمز عبور
-                    </button>
-                  </div>
-                  <input
-                    type="tel"
-                    inputMode="numeric"
-                    autoFocus
-                    value={adminAuthPhone}
-                    onChange={(e) => setAdminAuthPhone(e.target.value)}
-                    className="w-full mb-3 px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-950 text-primary-900 dark:text-white"
-                    placeholder="09xxxxxxxxx"
-                    data-admin-auth="true"
-                  />
-                  {adminAuthMethod === 'password' && (
-                    <input
-                      type="password"
-                      value={adminAuthPassword || ''}
-                      onChange={(e) => setAdminAuthPassword(e.target.value)}
-                      className="w-full mb-3 px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-950 text-primary-900 dark:text-white"
-                      placeholder="رمز عبور"
-                      autoComplete="current-password"
-                      data-admin-auth="true"
-                    />
-                  )}
+        <AdminAuthView
+          open={adminAuthOpen}
+          onClose={() => { try { closeAdminAuth(); } catch (_) {} }}
+          onContact={() => {
+            try { closeAdminAuth(); } catch (_) {}
+            try { if (typeof openStaticPage === 'function') openStaticPage('contact'); }
+            catch (_) { try { window.location.assign('/تماس-با-ما'); } catch (__) {} }
+          }}
+        />
+      )}
                   {adminAuthError ? <p className="text-sm text-red-600 mb-2">{adminAuthError}</p> : null}
                   <button
                     type="submit"
