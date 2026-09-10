@@ -1,63 +1,89 @@
 import { createClient } from '../../../../lib/supabase/server'
+import { createAdminClient } from '../../../../lib/supabase/admin'
 import { NextResponse } from 'next/server'
 import { logCritical } from '../../../../lib/critical-log'
 
+function normalizePhone(p) {
+  let d = String(p || '').replace(/\D/g, '')
+  if (d.startsWith('98') && d.length >= 12) d = '0' + d.slice(2)
+  if (d.startsWith('9') && d.length === 10) d = '0' + d
+  return d
+}
+
+function phoneEmail(phone0) {
+  return 'u' + normalizePhone(phone0) + '@otp.local'
+}
+
 export async function POST(request) {
   try {
-    const body = await request.json()
-    const email = String(body.email || '').trim().toLowerCase()
-    const password = String(body.password || '')
+    const body = await request.json().catch(() => ({}))
     const fullName = String(body.fullName || body.full_name || '').trim()
     const role = body.role === 'seller' ? 'seller' : 'buyer'
-    let phone = String(body.phone || '').replace(/\D/g, '')
-    if (phone.startsWith('98') && phone.length === 12) phone = '0' + phone.slice(2)
-    if (phone.startsWith('9') && phone.length === 10) phone = '0' + phone
+    const password = String(body.password || '')
+    const phone = normalizePhone(body.phone || body.mobile || '')
+    const emailRaw = String(body.email || '').trim().toLowerCase()
+    const email = emailRaw && emailRaw.includes('@') ? emailRaw : phoneEmail(phone)
 
-    if (!email || !password) {
-      return NextResponse.json({ ok: false, error: 'ایمیل و رمز الزامی است' }, { status: 400 })
+    if (!/^09\d{9}$/.test(phone)) {
+      return NextResponse.json({ ok: false, error: 'شماره موبایل معتبر (۱۱ رقم با ۰۹) الزامی است' }, { status: 400 })
     }
-    if (password.length < 6) {
+    if (!password || password.length < 6) {
       return NextResponse.json({ ok: false, error: 'رمز حداقل ۶ کاراکتر باشد' }, { status: 400 })
     }
-    if (!/^09\d{9}$/.test(phone)) {
-      return NextResponse.json(
-        { ok: false, error: 'شماره موبایل معتبر (۱۱ رقم با ۰۹) الزامی است' },
-        { status: 400 }
-      )
+    if (!fullName || fullName.length < 2) {
+      return NextResponse.json({ ok: false, error: 'نام الزامی است' }, { status: 400 })
     }
 
-    const supabase = await createClient()
-    if (!supabase) {
-      return NextResponse.json({ ok: false, error: 'پیکربندی Supabase ناقص است' }, { status: 500 })
+    let admin
+    try {
+      admin = createAdminClient()
+    } catch {
+      return NextResponse.json({ ok: false, error: 'پیکربندی سرور ناقص است' }, { status: 500 })
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    const { data: existing } = await admin.from('profiles').select('id').eq('phone', phone).limit(1).maybeSingle()
+    if (existing?.id) {
+      return NextResponse.json({ ok: false, error: 'این شماره قبلاً ثبت شده — وارد شوید' }, { status: 400 })
+    }
+
+    const { data: created, error: cErr } = await admin.auth.admin.createUser({
       email,
       password,
-      options: { data: { full_name: fullName, role, phone } },
+      email_confirm: true,
+      user_metadata: { full_name: fullName, role, phone, has_user_password: true },
+    })
+    if (cErr) {
+      return NextResponse.json({ ok: false, error: cErr.message || 'ثبت‌نام ناموفق' }, { status: 400 })
+    }
+
+    const userId = created.user.id
+    await admin.from('profiles').upsert({
+      id: userId,
+      full_name: fullName,
+      phone,
+      role,
+      updated_at: new Date().toISOString(),
     })
 
-    if (error) {
-      return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+    const supabase = await createClient()
+    if (supabase) {
+      await supabase.auth.signInWithPassword({ email, password })
     }
 
-    // ذخیره شماره در profiles
-    if (data.user?.id) {
-      await supabase.from('profiles').upsert({
-        id: data.user.id,
-        full_name: fullName || null,
-        phone,
-        role,
-        updated_at: new Date().toISOString(),
-      })
-    }
+    const { data: profile } = await admin
+      .from('profiles')
+      .select('id, full_name, role, phone, avatar_url')
+      .eq('id', userId)
+      .maybeSingle()
 
     return NextResponse.json({
       ok: true,
       message: 'ثبت‌نام موفق بود',
-      user: data.user ? { id: data.user.id, email: data.user.email } : null,
+      user: { id: userId, email },
+      profile: profile || { id: userId, full_name: fullName, role, phone },
     })
-  } catch (e) { try { await logCritical('app/api/auth/signup/route.js', e) } catch (_lc) {}
+  } catch (e) {
+    try { await logCritical('app/api/auth/signup/route.js', e) } catch (_) {}
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }

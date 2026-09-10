@@ -335,7 +335,6 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   }
 
 
-  const role = isSeller ? 'seller' : 'buyer';
 
   async function handlePasswordLogin() {
     if (busy) return;
