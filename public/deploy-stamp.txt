@@ -1,1 +1,1 @@
-a75e5ea-admin-panel-fix
+admin-root-redirect-v2

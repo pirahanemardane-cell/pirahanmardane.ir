@@ -159,37 +159,63 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
 
   const redirectAfterAuth = (profile) => {
-    const phone = String((profile && (profile.phone || profile.mobile)) || smsPhone || emailOrPhone || '').replace(/\D/g, '');
-    const r = isAdmin ? 'admin' : String((profile && profile.role) || role || 'buyer').toLowerCase();
+    const phone = String(
+      (profile && (profile.phone || profile.mobile)) ||
+        smsPhone ||
+        emailOrPhone ||
+        ''
+    ).replace(/\D/g, '');
+    const r = isAdmin
+      ? 'admin'
+      : String((profile && profile.role) || role || 'buyer').toLowerCase();
+
     try { if (typeof onClose === 'function') onClose(); } catch (_) {}
     try { patchModalUi({ authOpen: false }); } catch (_) {}
-    if (r === 'admin') {
+
+    if (r === 'admin' || isAdmin) {
       try {
-        localStorage.setItem('adminUser', JSON.stringify({
-          name: (profile && (profile.full_name || profile.name)) || 'سوپر ادمین',
-          role: 'Super Admin',
-          phone: phone || '09',
-          loggedAt: Date.now(),
-        }));
+        localStorage.setItem(
+          'adminUser',
+          JSON.stringify({
+            name: (profile && (profile.full_name || profile.name)) || 'سوپر ادمین',
+            role: 'Super Admin',
+            phone: phone || '09',
+            loggedAt: Date.now(),
+          })
+        );
         sessionStorage.setItem('pm_panel', 'admin');
         sessionStorage.setItem('pm_admin_ok', '1');
       } catch (_) {}
-      window.location.href='/amirshn?panel=1';
+      // همیشه با query تا حتی روی /amirshn رفرش واقعی شود
+      window.location.href = '/amirshn?panel=1&t=' + Date.now();
       return;
     }
+
     if (r === 'seller' || isSeller) {
       try {
         sessionStorage.setItem('pm_panel', 'seller');
-        if (profile) localStorage.setItem('sellerUser', JSON.stringify(Object.assign({}, profile, { phone: phone, loggedAt: Date.now() })));
+        if (profile) {
+          localStorage.setItem(
+            'sellerUser',
+            JSON.stringify(Object.assign({}, profile, { phone: phone, loggedAt: Date.now() }))
+          );
+        }
       } catch (_) {}
-      window.location.replace('/seller');
+      window.location.href = '/seller';
       return;
     }
+
     try {
-      if (profile) localStorage.setItem('buyerUser', JSON.stringify(Object.assign({}, profile, { phone: phone, loggedAt: Date.now() })));
+      if (profile) {
+        localStorage.setItem(
+          'buyerUser',
+          JSON.stringify(Object.assign({}, profile, { phone: phone, loggedAt: Date.now() }))
+        );
+      }
     } catch (_) {}
-    window.location.replace('/account');
+    window.location.href = '/account';
   };
+
 
   async function handlePasswordLogin() {
     if (busy) return;
@@ -214,7 +240,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
         return;
       }
-      redirectAfterAuth(data.profile || { role });
+      redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone: String(emailOrPhone || smsPhone || '').replace(/\D/g, '') });
     } catch (e) {
       setMsg(e?.message || 'خطا در ورود');
     } finally {
@@ -257,7 +283,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         setMsg(data?.error || 'ثبت‌نام ناموفق');
         return;
       }
-      redirectAfterAuth(data.profile || { role });
+      redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone: String(emailOrPhone || smsPhone || '').replace(/\D/g, '') });
     } catch (e) {
       setMsg(e?.message || 'خطا در ثبت‌نام');
     } finally {
@@ -360,32 +386,53 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   }
 
   async function handleVerifyOtp(code) {
-    if (busy) return;
+    if (busy) return { ok: false };
     setBusy(true);
     setMsg('');
     try {
-      const res = await fetch(isAdmin ? '/api/auth/mfa/verify' : '/api/auth/otp/verify', {
+      const phone = String(smsPhone || emailOrPhone || '').replace(/\D/g, '');
+      const endpoint = isAdmin ? '/api/auth/mfa/verify' : '/api/auth/otp/verify';
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ phone: smsPhone, code, role }),
+        body: JSON.stringify({ phone, code, role: isAdmin ? 'admin' : role }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.ok) {
-        setMsg(data?.error || 'کد نامعتبر است');
-        return;
+        const err = data?.error || 'کد نامعتبر است';
+        setMsg(err);
+        return { ok: false, error: err };
       }
-      if (data.needs_profile) {
-        setFullName('');
-setView('signup');
-
-        setSignupPhone(smsPhone);
-        setMsg('تکمیل نام برای ثبت‌نام');
-        return;
-      }
-      redirectAfterAuth(data.profile || { role });
+      // قبل از ریدایرکت session را قطعی ذخیره کن
+      try {
+        if (isAdmin || String(data?.profile?.role || '').toLowerCase() === 'admin') {
+          localStorage.setItem(
+            'adminUser',
+            JSON.stringify({
+              name: data?.profile?.full_name || data?.profile?.name || 'سوپر ادمین',
+              role: 'Super Admin',
+              phone,
+              loggedAt: Date.now(),
+            })
+          );
+          sessionStorage.setItem('pm_panel', 'admin');
+          sessionStorage.setItem('pm_admin_ok', '1');
+        }
+      } catch (_) {}
+      setTimeout(() => {
+        redirectAfterAuth(
+          data.profile || {
+            role: isAdmin ? 'admin' : role,
+            phone,
+          }
+        );
+      }, 400);
+      return { ok: true };
     } catch (e) {
-      setMsg(e?.message || 'خطا در تأیید کد');
+      const err = e?.message || 'خطا در تأیید کد';
+      setMsg(err);
+      return { ok: false, error: err };
     } finally {
       setBusy(false);
     }

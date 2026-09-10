@@ -12255,8 +12255,12 @@ const downloadSeoFile = (filename, content, mime) => {
         try {
           const path = (window.location.pathname || '').replace(/\/+$/, '') || '/';
           const q = new URLSearchParams(window.location.search || '');
-          const isAdminPath = path === '/amirshn' || path.endsWith('/amirshn') || path.includes('پنل-ادمین');
-          const wantPanel = q.get('panel') === '1' || sessionStorage.getItem('pm_admin_ok') === '1';
+          const isAdminPath =
+            path === '/amirshn' ||
+            path.endsWith('/amirshn') ||
+            path.includes('پنل-ادمین');
+          const wantPanel =
+            q.get('panel') === '1' || sessionStorage.getItem('pm_admin_ok') === '1';
           if (!isAdminPath && !wantPanel) return;
 
           const raw = localStorage.getItem('adminUser');
@@ -12276,11 +12280,12 @@ const downloadSeoFile = (filename, content, mime) => {
           try { setAuthOpen(false); } catch (_) {}
           try { openAdminPanelPage(); } catch (_) {}
           try {
-            if (q.get('panel') === '1') {
+            if (q.get('panel') === '1' || q.get('t')) {
               const u = new URL(window.location.href);
               u.searchParams.delete('panel');
               u.searchParams.delete('t');
-              window.history.replaceState({}, '', u.pathname + (u.searchParams.toString() ? '?' + u.searchParams.toString() : ''));
+              const qs = u.searchParams.toString();
+              window.history.replaceState({}, '', u.pathname + (qs ? '?' + qs : ''));
             }
           } catch (_) {}
         } catch (_) {}
