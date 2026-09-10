@@ -529,10 +529,10 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const subtitle =
     view === 'signup'
       ? isSeller
-        ? 'اطلاعات فروشگاه را وارد کنید (ظاهر — منطق بعداً).'
+        ? 'اطلاعات فروشگاه را وارد کنید.'
         : 'برای شروع خرید حساب بسازید.'
       : view === 'forgot'
-        ? 'ایمیل یا شماره خود را وارد کنید (فعلاً فقط ظاهر).'
+        ? 'ایمیل یا شماره خود را وارد کنید.'
         : view === 'sms-phone'
           ? 'شماره موبایل خود را وارد کنید تا کد تأیید ارسال شود.'
           : view === 'sms-otp'
@@ -763,8 +763,8 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   type="button"
                   className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
                   onClick={() => {
-                    if (view === 'forgot') setMsg('لینک بازیابی به‌زودی فعال می‌شود (فعلاً فقط ظاهر).');
-                    else if (view === 'signup') setMsg('ثبت‌نام به‌زودی به سرور وصل می‌شود (فعلاً فقط ظاهر).');
+                    if (view === 'forgot') setMsg('لینک بازیابی به‌زودی فعال می‌شود .');
+                    else if (view === 'signup') setMsg('ثبت‌نام به‌زودی به سرور وصل می‌شود .');
                     else { handlePasswordLogin(); return; }
                   }}
                 >
