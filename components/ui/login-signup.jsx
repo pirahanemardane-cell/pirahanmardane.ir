@@ -209,7 +209,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         return;
       }
       if (data.mfa_required) {
-        setSmsPhone(data.phone || phone);
+        setSmsPhone(String(data.phone || phone || '').replace(/\D/g, ''));
         setView('sms-otp');
         setMsg(data.message || 'کد تأیید دو مرحله‌ای به پیامک شما ارسال شد');
         return;

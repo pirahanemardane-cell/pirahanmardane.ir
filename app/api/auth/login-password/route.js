@@ -212,7 +212,7 @@ export async function POST(req) {
       })
       res.cookies.set('pm_mfa_pending', phone, {
         path: '/',
-        maxAge: 5 * 60,
+        maxAge: 10 * 60,
         sameSite: 'lax',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

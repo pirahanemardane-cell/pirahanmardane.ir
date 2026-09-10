@@ -36,8 +36,10 @@ export async function POST(req) {
       return rateLimitResponse(!rlPhone.ok ? rlPhone : rlIp, 'تعداد تلاش زیاد است')
     }
 
-    const pending = req.cookies.get('pm_mfa_pending')?.value || ''
-    if (!pending || pending !== phone) {
+    const pendingRaw = req.cookies.get('pm_mfa_pending')?.value || ''
+    const pending = String(pendingRaw || '').replace(/\D/g, '')
+    // اگر کوکی نبود ولی OTP معتبر و شماره ادمین است، ادامه بده (کوکی گاهی پشت Cloudflare ست نمی‌شود)
+    if (pending && pending !== phone) {
       return NextResponse.json(
         { ok: false, error: 'نشست تأیید دو مرحله‌ای منقضی شده. دوباره وارد شوید.' },
         { status: 401 }
