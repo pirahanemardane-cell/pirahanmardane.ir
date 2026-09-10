@@ -265,12 +265,13 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   <Input
                     id="sms-phone"
                     type="tel"
+                    style={{ color: "#fff", WebkitTextFillColor: "#fff" }}
                     inputMode="numeric"
                     dir="ltr"
                     placeholder="09xxxxxxxxx"
                     value={smsPhone}
                     onChange={(e) => setSmsPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
-                    className="bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600 text-center tracking-widest"
+                    className="bg-zinc-950 border-zinc-800 text-white placeholder:text-zinc-500 text-center tracking-widest caret-white"
                   />
                 </div>
                 <Button
@@ -296,7 +297,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
             {view === 'sms-otp' ? (
               <OTPVerification
                 phone={smsPhone}
-                length={4}
+                length={6}
                 onVerified={() => setMsg('ورود با پیامک به‌زودی به سرور وصل می‌شود')}
                 onResend={() => setMsg('کد مجدداً ارسال می‌شود (ظاهر)')}
                 onBack={() => { setMsg(''); setView('sms-phone'); }}

@@ -42,7 +42,7 @@ const OTPError = () => (
   </motion.div>
 );
 
-const OTPInputBox = ({ index, verifyOTP, state, length = 4 }) => {
+const OTPInputBox = ({ index, verifyOTP, state, length = 6 }) => {
   const animationControls = useAnimationControls();
   const springTransition = { type: 'spring', stiffness: 700, damping: 20, delay: index * 0.05 };
   const noDelay = { type: 'spring', stiffness: 700, damping: 20 };
@@ -55,7 +55,7 @@ const OTPInputBox = ({ index, verifyOTP, state, length = 4 }) => {
 
   useEffect(() => {
     if (state === 'success') {
-      animationControls.start({ x: -(index * 68), transition: slowSuccess });
+      animationControls.start({ x: -(index * 52), transition: slowSuccess });
     }
   }, [state, index, animationControls]);
 
@@ -121,7 +121,7 @@ const OTPInputBox = ({ index, verifyOTP, state, length = 4 }) => {
   );
 };
 
-export function OTPVerification({ phone = '', length = 4, onVerified, onResend, onBack }) {
+export function OTPVerification({ phone = '', length = 6, onVerified, onResend, onBack }) {
   const [state, setState] = useState('idle');
   const [countdown, setCountdown] = useState(60);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
@@ -159,7 +159,7 @@ export function OTPVerification({ phone = '', length = 4, onVerified, onResend, 
       setState('idle');
       return;
     }
-    // ظاهر: هر کد ۴ رقمی را موفق نشان بده — منطق واقعی بعداً
+    // ظاهر: هر کد ۶ رقمی را موفق نشان بده — منطق واقعی بعداً
     if (code.length === length) {
       setState('success');
       try {
@@ -211,7 +211,7 @@ export function OTPVerification({ phone = '', length = 4, onVerified, onResend, 
           ) : (
             <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <p className="text-center text-zinc-400 mt-2 mb-6 text-sm">
-                کد ۴ رقمی به این شماره ارسال شد
+                کد ۶ رقمی به این شماره ارسال شد
                 <br />
                 <span dir="ltr" className="font-medium text-zinc-200">
                   {phone || '09xxxxxxxxx'}
