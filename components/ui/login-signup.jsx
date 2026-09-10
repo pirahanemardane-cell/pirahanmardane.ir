@@ -360,11 +360,11 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   }
 
   async function handleVerifyOtp(code) {
-    if (busy) return;
+    if (busy) return { ok: false, error: 'busy' };
     setBusy(true);
     setMsg('');
     try {
-      const phone = String(smsPhone || '').replace(/\D/g, '');
+      const phone = String(smsPhone || emailOrPhone || '').replace(/\D/g, '');
       const endpoint = isAdmin ? '/api/auth/mfa/verify' : '/api/auth/otp/verify';
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -374,19 +374,36 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.ok) {
-        setMsg(data?.error || 'کد نامعتبر است');
-        return;
+        const err = data?.error || 'کد نامعتبر است';
+        setMsg(err);
+        return { ok: false, error: err };
       }
-      if (data.needs_profile && !isAdmin) {
-        setFullName('');
-        setView('signup');
-        setSignupPhone(smsPhone);
-        setMsg('تکمیل نام برای ثبت‌نام');
-        return;
-      }
-      redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone });
+      // success → set session + hard redirect
+      try {
+        if (isAdmin || String(data?.profile?.role || '').toLowerCase() === 'admin') {
+          localStorage.setItem('adminUser', JSON.stringify({
+            name: data?.profile?.full_name || data?.profile?.name || 'سوپر ادمین',
+            role: 'Super Admin',
+            phone: phone,
+            loggedAt: Date.now(),
+          }));
+          sessionStorage.setItem('pm_panel', 'admin');
+          sessionStorage.setItem('pm_admin_ok', '1');
+        }
+      } catch (_) {}
+      // small delay so success animation can show
+      setTimeout(() => {
+        try {
+          redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone });
+        } catch (_) {
+          window.location.replace(isAdmin ? '/amirshn' : '/account');
+        }
+      }, 600);
+      return { ok: true };
     } catch (e) {
-      setMsg(e?.message || 'خطا در تأیید کد');
+      const err = e?.message || 'خطا در تأیید کد';
+      setMsg(err);
+      return { ok: false, error: err };
     } finally {
       setBusy(false);
     }
@@ -624,7 +641,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
               <OTPVerification
                 phone={smsPhone}
                 length={6}
-                onVerified={(code) => handleVerifyOtp(code)}
+                onVerified={async (code) => handleVerifyOtp(code)}
                 onResend={() => handleRequestOtp()}
                 onBack={() => { setMsg(''); setView('sms-phone'); }}
               />

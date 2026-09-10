@@ -1,23 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-
-function toEnDigit(ch) {
-  const map = {
-    '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9',
-    '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4', '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9',
-  };
-  return map[ch] || ch;
-}
-
-function onlyDigits(str) {
-  return String(str || '')
-    .split('')
-    .map(toEnDigit)
-    .filter((c) => c >= '0' && c <= '9')
-    .join('');
-}
+import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 
 const CheckIcon = ({ size = 16, strokeWidth = 3, ...props }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -38,6 +22,7 @@ const OTPSuccess = () => (
     <motion.p
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.3, duration: 0.4 }}
       className="text-emerald-400 font-semibold text-lg"
     >
       کد تأیید شد
@@ -45,199 +30,163 @@ const OTPSuccess = () => (
   </div>
 );
 
-/**
- * زیرساخت اتوفیل OTP:
- * - autocomplete=one-time-code روی باکس اول + input مخفی
- * - WebOTP API (Chrome/Android) وقتی SMS با فرمت دامنه بیاید
- * ظاهر و جریان دستی کاربر عوض نشده است.
- */
-export function OTPVerification({ phone = '', length = 6, onVerified, onResend, onBack }) {
-  const [digits, setDigits] = useState(() => Array.from({ length }, () => ''));
-  const [state, setState] = useState('idle');
-  const [countdown, setCountdown] = useState(60);
-  const [isResendDisabled, setIsResendDisabled] = useState(true);
-  const refs = useRef([]);
-  const verifiedOnce = useRef(false);
-  const abortRef = useRef(null);
+const OTPError = ({ message }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    transition={{ duration: 0.2 }}
+    className="text-center text-red-400 font-medium mt-2 absolute -bottom-10 w-full px-2"
+  >
+    {message || 'کد نامعتبر است. دوباره تلاش کنید.'}
+  </motion.div>
+);
+
+const OTPInputBox = ({ index, onDigit, state, length = 6, digit }) => {
+  const animationControls = useAnimationControls();
+  const springTransition = { type: 'spring', stiffness: 700, damping: 20, delay: index * 0.05 };
+  const noDelay = { type: 'spring', stiffness: 700, damping: 20 };
 
   useEffect(() => {
-    setDigits(Array.from({ length }, () => ''));
-    verifiedOnce.current = false;
-    setState('idle');
-  }, [length, phone]);
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      try {
-        refs.current[0]?.focus();
-      } catch (_) {}
-    }, 80);
-    return () => clearTimeout(t);
+    animationControls.start({ opacity: 1, y: 0, transition: springTransition });
+    return () => animationControls.stop();
   }, []);
 
-  useEffect(() => {
-    let timer;
-    if (isResendDisabled) {
-      timer = setInterval(() => {
-        setCountdown((c) => {
-          if (c <= 1) {
-            clearInterval(timer);
-            setIsResendDisabled(false);
-            return 0;
+  return (
+    <motion.div
+      className={`w-9 h-11 sm:w-10 sm:h-12 rounded-md ring-2 overflow-hidden transition-all duration-300 shrink-0 ${
+        state === 'error'
+          ? 'ring-red-500'
+          : state === 'success'
+            ? 'ring-emerald-500'
+            : state === 'loading'
+              ? 'ring-zinc-500'
+              : 'ring-zinc-700 focus-within:ring-zinc-400'
+      }`}
+      initial={{ opacity: 0, y: 10 }}
+      animate={animationControls}
+    >
+      <input
+        id={`otp-input-${index}`}
+        type="text"
+        inputMode="numeric"
+        maxLength={1}
+        value={digit || ''}
+        disabled={state === 'success' || state === 'loading'}
+        onFocus={() => animationControls.start({ y: -5, transition: noDelay })}
+        onBlur={() => animationControls.start({ y: 0, transition: noDelay })}
+        onChange={(e) => {
+          const v = e.target.value.replace(/\D/g, '').slice(-1);
+          onDigit(index, v);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Backspace' && !digit && index > 0) {
+            document.getElementById(`otp-input-${index - 1}`)?.focus();
           }
-          return c - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [isResendDisabled]);
+        }}
+        onPaste={(e) => {
+          e.preventDefault();
+          const text = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length);
+          if (!text) return;
+          text.split('').forEach((ch, i) => onDigit(index + i, ch));
+        }}
+        className="pm-otp-cell w-full h-full text-center text-lg sm:text-xl font-semibold outline-none bg-zinc-950 !text-white caret-white"
+        style={{ color: '#fff', WebkitTextFillColor: '#fff', caretColor: '#fff', backgroundColor: '#09090b' }}
+        autoComplete={index === 0 ? 'one-time-code' : 'off'}
+      />
+    </motion.div>
+  );
+};
 
-  const focusAt = (i) => {
-    const idx = Math.max(0, Math.min(length - 1, i));
-    requestAnimationFrame(() => {
-      try {
-        refs.current[idx]?.focus();
-        refs.current[idx]?.select?.();
-      } catch (_) {}
-    });
-  };
+export function OTPVerification({ phone = '', length = 6, onVerified, onResend, onBack }) {
+  const [state, setState] = useState('idle');
+  const [digits, setDigits] = useState(() => Array(length).fill(''));
+  const [countdown, setCountdown] = useState(60);
+  const [errMsg, setErrMsg] = useState('');
+  const verifyingRef = useRef(false);
+  const animationControls = useAnimationControls();
 
-  const finishIfComplete = (clean) => {
-    const code = clean.join('');
-    if (code.length === length && clean.every(Boolean)) {
-      setState('success');
-      if (!verifiedOnce.current) {
-        verifiedOnce.current = true;
-        try {
-          if (typeof onVerified === 'function') onVerified(code);
-        } catch (_) {}
-      }
-      return true;
-    }
-    return false;
-  };
-
-  const applyDigits = (next) => {
-    const clean = next.slice(0, length);
-    while (clean.length < length) clean.push('');
-    setDigits(clean);
-    if (state !== 'success') setState('idle');
-    finishIfComplete(clean);
-  };
-
-  // پر کردن از اتوفیل / WebOTP / paste کامل
-  const fillFromAutofill = (codeRaw) => {
-    const code = onlyDigits(codeRaw).slice(0, length);
-    if (!code) return;
-    const next = Array.from({ length }, (_, i) => code[i] || '');
-    applyDigits(next);
-    focusAt(Math.min(code.length, length - 1));
-  };
-
-  // WebOTP (Chrome Android و مرورگرهای سازگار)
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (state === 'success') return;
+    if (countdown <= 0) return;
+    const t = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [countdown]);
 
-    const OTPCredential = typeof window !== 'undefined' ? window.OTPCredential : undefined;
-    if (!('OTPCredential' in window) && !OTPCredential) {
-      // بعضی مرورگرها فقط credentials.get را دارند
+  const code = digits.join('');
+
+  const onDigit = (index, value) => {
+    if (index < 0 || index >= length) return;
+    setDigits((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
+    if (value && index < length - 1) {
+      setTimeout(() => document.getElementById(`otp-input-${index + 1}`)?.focus(), 0);
     }
+  };
 
-    if (!navigator.credentials || typeof navigator.credentials.get !== 'function') return;
+  useEffect(() => {
+    if (code.length !== length) {
+      if (state === 'error') setState('idle');
+      return;
+    }
+    if (verifyingRef.current || state === 'success' || state === 'loading') return;
 
-    const ac = new AbortController();
-    abortRef.current = ac;
+    verifyingRef.current = true;
+    setState('loading');
+    setErrMsg('');
 
     (async () => {
       try {
-        const cred = await navigator.credentials.get({
-          otp: { transport: ['sms'] },
-          signal: ac.signal,
-        });
-        if (cred && cred.code) {
-          fillFromAutofill(cred.code);
+        let ok = false;
+        let message = '';
+        if (typeof onVerified === 'function') {
+          const result = await onVerified(code);
+          // true / {ok:true} = success; false / {ok:false} = fail; undefined = treat as success for backward compat only if not object
+          if (result === false) {
+            ok = false;
+            message = 'کد نامعتبر است';
+          } else if (result && typeof result === 'object') {
+            ok = !!result.ok;
+            message = result.error || result.message || '';
+          } else {
+            ok = true;
+          }
+        } else {
+          ok = true;
         }
-      } catch (_) {
-        // کاربر رد کرد / پشتیبانی نیست / abort — نادیده
+
+        if (ok) {
+          setState('success');
+        } else {
+          setState('error');
+          setErrMsg(message || 'کد نامعتبر است. دوباره تلاش کنید.');
+          setDigits(Array(length).fill(''));
+          setTimeout(() => {
+            setState('idle');
+            document.getElementById('otp-input-0')?.focus();
+          }, 1200);
+        }
+      } catch (e) {
+        setState('error');
+        setErrMsg(e?.message || 'خطا در تأیید');
+        setDigits(Array(length).fill(''));
+        setTimeout(() => setState('idle'), 1200);
+      } finally {
+        verifyingRef.current = false;
       }
     })();
+  }, [code, length]);
 
-    return () => {
-      try {
-        ac.abort();
-      } catch (_) {}
-    };
-    // فقط با باز شدن مرحله OTP
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phone, length]);
-
-  const onChangeAt = (index, raw) => {
-    if (state === 'success') return;
-    const chars = onlyDigits(raw);
-
-    // اتوفیل مرورگر گاهی کل کد را در یک باکس می‌ریزد
-    if (chars.length > 1) {
-      const next = digits.slice();
-      for (let i = 0; i < chars.length && index + i < length; i++) {
-        next[index + i] = chars[i];
-      }
-      applyDigits(next);
-      focusAt(Math.min(index + chars.length, length - 1));
-      return;
-    }
-
-    const next = digits.slice();
-    next[index] = chars.slice(-1) || '';
-    applyDigits(next);
-    if (next[index] && index < length - 1) focusAt(index + 1);
-  };
-
-  const onKeyDown = (e, index) => {
-    if (state === 'success') return;
-    if (e.key === 'Backspace') {
-      e.preventDefault();
-      const next = digits.slice();
-      if (next[index]) {
-        next[index] = '';
-        applyDigits(next);
-        focusAt(index);
-      } else if (index > 0) {
-        next[index - 1] = '';
-        applyDigits(next);
-        focusAt(index - 1);
-      }
-      return;
-    }
-    if (e.key === 'ArrowLeft' && index > 0) {
-      e.preventDefault();
-      focusAt(index - 1);
-    }
-    if (e.key === 'ArrowRight' && index < length - 1) {
-      e.preventDefault();
-      focusAt(index + 1);
-    }
-  };
-
-  const onPaste = (e, index) => {
-    e.preventDefault();
-    const chars = onlyDigits(e.clipboardData?.getData('text') || '');
-    if (!chars) return;
-    const next = digits.slice();
-    for (let i = 0; i < chars.length && index + i < length; i++) {
-      next[index + i] = chars[i];
-    }
-    applyDigits(next);
-    focusAt(Math.min(index + chars.length, length - 1));
-  };
+  const isResendDisabled = countdown > 0;
 
   const handleResend = () => {
+    if (isResendDisabled) return;
     setCountdown(60);
-    setIsResendDisabled(true);
+    setDigits(Array(length).fill(''));
     setState('idle');
-    verifiedOnce.current = false;
-    setDigits(Array.from({ length }, () => ''));
-    focusAt(0);
+    setErrMsg('');
     try {
       if (typeof onResend === 'function') onResend();
     } catch (_) {}
@@ -245,47 +194,9 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
 
   return (
     <div className="w-full relative">
-      <style>{`
-        input.pm-otp-cell {
-          color: #ffffff !important;
-          -webkit-text-fill-color: #ffffff !important;
-          caret-color: #ffffff !important;
-          background-color: #09090b !important;
-        }
-        input.pm-otp-cell:-webkit-autofill,
-        input.pm-otp-cell:-webkit-autofill:focus {
-          -webkit-text-fill-color: #ffffff !important;
-          box-shadow: 0 0 0px 1000px #09090b inset !important;
-          transition: background-color 9999s ease-out;
-        }
-        .pm-otp-autofill-host {
-          position: absolute;
-          opacity: 0;
-          pointer-events: none;
-          height: 0;
-          width: 0;
-          overflow: hidden;
-        }
-      `}</style>
-
-      {/* میزبان اتوفیل iOS/Safari — ظاهر ندارد */}
-      <div className="pm-otp-autofill-host" aria-hidden="true">
-        <input
-          type="text"
-          name="one-time-code"
-          inputMode="numeric"
-          autoComplete="one-time-code"
-          pattern="[0-9]*"
-          tabIndex={-1}
-          value={digits.join('')}
-          onChange={(e) => fillFromAutofill(e.target.value)}
-          readOnly={state === 'success'}
-        />
-      </div>
-
       <div className="relative z-10">
         <h1 className="text-xl font-semibold text-center text-zinc-50 mb-2">
-          {state === 'success' ? 'تأیید موفق' : 'کد تأیید را وارد کنید'}
+          {state === 'success' ? 'تأیید موفق' : state === 'loading' ? 'در حال بررسی…' : 'کد تأیید را وارد کنید'}
         </h1>
 
         <AnimatePresence mode="wait">
@@ -309,39 +220,20 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
                 </span>
               </p>
 
-              <div className="flex flex-col items-center justify-center gap-2 mb-8 relative min-h-[3rem]" dir="ltr">
-                <div className="flex items-center justify-center gap-1.5 sm:gap-2 w-full">
-                  {digits.map((d, index) => (
-                    <input
+              <div className="flex flex-col items-center justify-center gap-2 mb-8 relative h-20">
+                <motion.div animate={animationControls} className="flex items-center justify-center gap-1.5 sm:gap-2 w-full max-w-full px-1">
+                  {Array.from({ length }).map((_, index) => (
+                    <OTPInputBox
                       key={index}
-                      ref={(el) => {
-                        refs.current[index] = el;
-                      }}
-                      id={`otp-input-${index}`}
-                      type="text"
-                      inputMode="numeric"
-                      autoComplete={index === 0 ? 'one-time-code' : 'off'}
-                      name={index === 0 ? 'one-time-code' : undefined}
-                      autoCorrect="off"
-                      autoCapitalize="off"
-                      spellCheck={false}
-                      maxLength={length}
-                      value={d}
-                      disabled={state === 'success'}
-                      onChange={(e) => onChangeAt(index, e.target.value)}
-                      onKeyDown={(e) => onKeyDown(e, index)}
-                      onPaste={(e) => onPaste(e, index)}
-                      onFocus={(e) => {
-                        try {
-                          e.target.select();
-                        } catch (_) {}
-                      }}
-                      aria-label={`رقم ${index + 1}`}
-                      className="pm-otp-cell w-9 h-11 sm:w-10 sm:h-12 rounded-md border border-zinc-700 text-center text-lg sm:text-xl font-semibold outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 shrink-0"
-                      style={{ color: '#fff', WebkitTextFillColor: '#fff', caretColor: '#fff', backgroundColor: '#09090b' }}
+                      index={index}
+                      onDigit={onDigit}
+                      state={state}
+                      length={length}
+                      digit={digits[index]}
                     />
                   ))}
-                </div>
+                </motion.div>
+                <AnimatePresence>{state === 'error' && <OTPError message={errMsg} />}</AnimatePresence>
               </div>
 
               <div className="text-center text-sm text-zinc-400">
@@ -349,15 +241,15 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
                 {isResendDisabled ? (
                   <span className="text-zinc-500">ارسال مجدد تا {countdown} ثانیه</span>
                 ) : (
-                  <button type="button" onClick={handleResend} className="font-medium text-zinc-100 hover:underline">
+                  <button type="button" className="text-zinc-200 underline" onClick={handleResend}>
                     ارسال مجدد
                   </button>
                 )}
               </div>
 
               {typeof onBack === 'function' ? (
-                <button type="button" onClick={onBack} className="mt-4 w-full text-center text-sm text-zinc-400 hover:text-zinc-200">
-                  تغییر شماره
+                <button type="button" className="mt-4 w-full text-sm text-zinc-500 hover:text-zinc-300" onClick={onBack}>
+                  بازگشت
                 </button>
               ) : null}
             </motion.div>
