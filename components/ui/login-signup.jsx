@@ -113,6 +113,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const canvasRef = useRef(null);
   const isSeller = mode === 'seller';
   const isAdmin = mode === 'admin';
+  React.useEffect(() => {
+    if (isAdmin && (view === 'signup' || view === 'forgot')) setView('signin');
+  }, [isAdmin, view]);
   const role = isAdmin ? 'admin' : isSeller ? 'seller' : 'buyer';
 
   
@@ -361,7 +364,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       }
       if (data.needs_profile) {
         setFullName('');
+{!isAdmin && (
         setView('signup');
+)}
         setSignupPhone(smsPhone);
         setMsg('تکمیل نام برای ثبت‌نام');
         return;
@@ -457,7 +462,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       }
       if (data.needs_profile) {
         setMsg('شماره تأیید شد — برای تکمیل ثبت‌نام نام خود را وارد کنید');
+{!isAdmin && (
         setView('signup');
+)}
         setSignupPhone?.(smsPhone);
         return;
       }
@@ -534,6 +541,10 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   }, []);
 
   if (closed) return null;
+  const effectiveView = isAdmin && (view === 'signup' || view === 'forgot') ? 'signin' : view;
+  if (isAdmin && (view === 'signup' || view === 'forgot')) {
+    /* admin: no signup/forgot in this surface — keep signin */
+  }
 
   const title =
     view === 'signup'
@@ -855,9 +866,11 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
           <CardFooter className="flex flex-col items-center gap-3 text-sm text-zinc-400">
             {view === 'signin' ? (
+{!isAdmin && (
               <button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signup'); }}>
                 ثبت‌نام
               </button>
+)}
             ) : view === 'sms-phone' || view === 'sms-otp' ? null : (
               <button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signin'); }}>
                 بازگشت به ورود
