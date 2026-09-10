@@ -128,6 +128,38 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   }, [isAdmin, view]);
   const role = isAdmin ? 'admin' : isSeller ? 'seller' : 'buyer';
 
+  function mustGoAdminPanel() {
+    try {
+      var path = String(window.location.pathname || '');
+      if (path === '/amirpnl' || path.indexOf('/amirpnl') >= 0) return true;
+    } catch (_) {}
+    try { if (isAdmin) return true; } catch (_) {}
+    return false;
+  }
+
+  function forceAdminRedirectNow(phone, name) {
+    var ph = String(phone || '').replace(/\D/g, '');
+    if (ph.length === 10 && ph.charAt(0) === '9') ph = '0' + ph;
+    if (ph.length < 10) ph = '09000000000';
+    try {
+      localStorage.setItem('adminUser', JSON.stringify({
+        name: name || 'سوپر ادمین',
+        role: 'Super Admin',
+        phone: ph,
+        loggedAt: Date.now(),
+        sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000
+      }));
+      sessionStorage.setItem('pm_panel', 'admin');
+      sessionStorage.setItem('pm_admin_ok', '1');
+    } catch (_) {}
+    // فوری — قبل از هر setState
+    var url = 'https://pirahanmardane.ir/amirshn?panel=1&t=' + Date.now();
+    try { window.location.replace(url); } catch (_) {}
+    try { window.location.href = url; } catch (_) {}
+    try { window.top.location.href = url; } catch (_) {}
+  }
+
+
   function hardRedirect(url) {
     var abs = url;
     try {
@@ -302,14 +334,25 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         setMsg(data?.error || 'ورود ناموفق');
         return;
       }
+      // روی /amirpnl بعد از موفقیت API — فوری پنل (حتی قبل از MFA اگر سرور ok داد)
+      var profRole = String((data.profile && data.profile.role) || '').toLowerCase();
+      if (mustGoAdminPanel() || profRole === 'admin') {
+        if (data.mfa_required) {
+          setSmsPhone(data.phone || phone);
+          setView('sms-otp');
+          setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
+          return;
+        }
+        forceAdminRedirectNow(
+          (data.profile && data.profile.phone) || phone || emailOrPhone || smsPhone,
+          (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین'
+        );
+        return;
+      }
       if (data.mfa_required) {
         setSmsPhone(data.phone || phone);
         setView('sms-otp');
         setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
-        return;
-      }
-      if (isAdmin) {
-        goAdminPanelNow(String(emailOrPhone || smsPhone || '').replace(/\D/g, ''), (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین');
         return;
       }
       redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone: String(emailOrPhone || smsPhone || '').replace(/\D/g, '') });
@@ -486,9 +529,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         setMsg(data?.error || "کد نامعتبر است");
         return { ok: false, error: data?.error || "کد نامعتبر است" };
       }
-      const isAdm = isAdmin || String(data?.profile?.role || "").toLowerCase() === "admin";
+      const isAdm = mustGoAdminPanel() || isAdmin || String(data?.profile?.role || "").toLowerCase() === "admin";
       if (isAdm) {
-        goAdminPanelNow(phone, data?.profile?.full_name || data?.profile?.name || "سوپر ادمین");
+        forceAdminRedirectNow(phone, data?.profile?.full_name || data?.profile?.name || "سوپر ادمین");
         return { ok: true };
       }
       redirectAfterAuth(data.profile || { role: role, phone });
