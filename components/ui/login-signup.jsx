@@ -114,7 +114,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const isSeller = mode === 'seller';
   const isAdmin = mode === 'admin';
   React.useEffect(() => {
-    if (isAdmin && (view === 'signup' || view === 'forgot')) setView('signin');
+    if (isAdmin && view === 'signup') setView('signin');
   }, [isAdmin, view]);
   const role = isAdmin ? 'admin' : isSeller ? 'seller' : 'buyer';
 
@@ -504,9 +504,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   }, []);
 
   if (closed) return null;
-  const effectiveView = isAdmin && (view === 'signup' || view === 'forgot') ? 'signin' : view;
-  if (isAdmin && (view === 'signup' || view === 'forgot')) {
-    /* admin: no signup/forgot in this surface — keep signin */
+  const effectiveView = isAdmin && view === 'signup' ? 'signin' : view;
+  if (isAdmin && view === 'signup') {
+    /* admin: no signup in this surface — keep signin */
   }
 
   const title =
@@ -534,7 +534,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         ? 'اطلاعات فروشگاه را وارد کنید.'
         : 'برای شروع خرید حساب بسازید.'
       : view === 'forgot'
-        ? 'ایمیل یا شماره خود را وارد کنید.'
+        ? 'شماره موبایل خود را وارد کنید تا کد بازیابی پیامک شود.'
         : view === 'sms-phone'
           ? 'شماره موبایل خود را وارد کنید تا کد تأیید ارسال شود.'
           : view === 'sms-otp'
@@ -761,45 +761,56 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                   </div>
                 ) : null}
 
+                {view === 'forgot' && forgotStep === 'code' ? (
+                  <>
+                    <div className="grid gap-2">
+                      <Label className="text-zinc-300">کد پیامک</Label>
+                      <Input
+                        id="reset-code"
+                        type="text"
+                        inputMode="numeric"
+                        dir="ltr"
+                        value={resetCode}
+                        onChange={(e) => setResetCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                        className="bg-zinc-950 border-zinc-800 text-white text-center tracking-widest"
+                        style={{ color: '#fff', WebkitTextFillColor: '#fff' }}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label className="text-zinc-300">رمز جدید</Label>
+                      <Input
+                        type="password"
+                        value={resetPassword}
+                        onChange={(e) => setResetPassword(e.target.value)}
+                        className="bg-zinc-950 border-zinc-800 text-white"
+                        style={{ color: '#fff', WebkitTextFillColor: '#fff' }}
+                      />
+                    </div>
+                  </>
+                ) : null}
+
                 <Button
                   type="button"
                   className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
                   onClick={() => {
-                    if (view === 'forgot') setMsg('لینک بازیابی به‌زودی فعال می‌شود .');
-                    else if (view === 'signup') setMsg('ثبت‌نام به‌زودی به سرور وصل می‌شود .');
-                    else { handlePasswordLogin(); return; }
+                    if (view === 'forgot') {
+                      if (forgotStep === 'code') handleForgotReset();
+                      else handleForgotRequest();
+                      return;
+                    }
+                    if (view === 'signup') {
+                      handleSignup();
+                      return;
+                    }
+                    handlePasswordLogin();
                   }}
                   disabled={busy}
                 >
-                  
-            {view === 'forgot' && forgotStep === 'code' ? (
-              <>
-                <div className="grid gap-2">
-                  <Label className="text-zinc-300">کد پیامک</Label>
-                  <Input
-                    id="reset-code"
-                    type="text"
-                    inputMode="numeric"
-                    dir="ltr"
-                    value={resetCode}
-                    onChange={(e) => setResetCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    className="bg-zinc-950 border-zinc-800 text-white text-center tracking-widest"
-                    style={{ color: '#fff', WebkitTextFillColor: '#fff' }}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label className="text-zinc-300">رمز جدید</Label>
-                  <Input
-                    type="password"
-                    value={resetPassword}
-                    onChange={(e) => setResetPassword(e.target.value)}
-                    className="bg-zinc-950 border-zinc-800 text-white"
-                    style={{ color: '#fff', WebkitTextFillColor: '#fff' }}
-                  />
-                </div>
-              </>
-            ) : null}
-{view === 'signup' ? 'ثبت‌نام' : view === 'forgot' ? (forgotStep === 'code' ? 'ذخیره رمز جدید' : 'ارسال کد بازیابی') : 'ورود'}
+                  {view === 'signup'
+                    ? (busy ? 'لطفاً صبر کنید...' : 'ثبت‌نام')
+                    : view === 'forgot'
+                      ? (busy ? 'لطفاً صبر کنید...' : forgotStep === 'code' ? 'ذخیره رمز جدید' : 'ارسال کد بازیابی')
+                      : (busy ? 'لطفاً صبر کنید...' : 'ورود')}
                 </Button>
 
                 {view === 'signin' ? (
@@ -846,6 +857,9 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                 className="text-zinc-200 hover:underline"
                 onClick={() => {
                   setMsg('');
+                  setForgotStep('phone');
+                  setResetCode('');
+                  setResetPassword('');
                   setView('signin');
                 }}
               >
