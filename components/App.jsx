@@ -5777,16 +5777,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             return;
           }
           if (parsed.type === 'unknown') {
-            // آخرین شانس: تک‌بخشی ناشناخته را به‌جای ۴۰۴ به فروشگاه ببر
-            try {
-              const parts = (window.location.pathname || '/').split('/').filter(Boolean);
-              if (parts.length === 1) {
-                const label = decodeURIComponent(parts[0]).replace(/_/g, ' ');
-                openPLP({ cat: label, silent: true });
-                try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
-                return;
-              }
-            } catch (_) {}
+            // هر مسیر ناشناخته در کل سایت → صفحه ۴۰۴
             setStaticPage('error-404');
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;

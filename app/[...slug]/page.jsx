@@ -15,6 +15,16 @@ function isAllowedSlug(slugParts) {
   if (!parts.length) return true;
 
   const path = '/' + parts.join('/');
+  const first = String(parts[0] || '');
+  const firstLower = first.toLowerCase();
+
+  // مسیرهای حذف‌شده / ممنوع
+  const blocked = new Set([
+    'amirpnl', 'amirshn', 'admin', 'admin-login', 'admin-panel',
+    'پنل-ادمین', 'پنل_ادمین',
+  ]);
+  if (blocked.has(firstLower) || blocked.has(first)) return false;
+  if (firstLower.startsWith('amirpnl') || firstLower.startsWith('amirshn')) return false;
 
   const exact = new Set([
     ...Object.values(FA_PATHS),
@@ -22,7 +32,6 @@ function isAllowedSlug(slugParts) {
   ]);
   if (exact.has(path)) return true;
 
-  const first = parts[0];
   const knownFirst = new Set(
     [
       ...Object.values(FA_PATHS),
@@ -35,25 +44,30 @@ function isAllowedSlug(slugParts) {
       '/sellers',
       '/categories',
       '/tags',
-      
     ]
       .map((p) => p.replace(/^\//, '').split('/')[0])
-      .filter(Boolean),
+      .filter(Boolean)
+      .map((s) => String(s).toLowerCase()),
   );
 
-  // تک‌بخشی: دسته یا برند (مثل /مجلسی)
-  if (parts.length === 1) return true;
-
-  // مسیرهای اختصاصی
-  if (first === 'product' || first === 'blog' || first === 'seller' || first === 'account') {
-    return true;
+  // تک‌بخشی
+  if (parts.length === 1) {
+    if (knownFirst.has(firstLower)) return true;
+    // فارسی / غیرلاتین → دسته یا برند محتمل
+    if (!/^[a-z0-9_-]+$/i.test(first)) return true;
+    // لاتین ناشناخته → 404 سرور
+    return false;
   }
 
-  // نامک محصول فارسی: /نام_محصول/نام_فروشگاه
+  if (['product', 'blog', 'seller', 'account'].includes(firstLower)) return true;
+
+  // /محصول/فروشگاه
   if (parts.length === 2) return true;
 
+  // بقیه (۳ بخش و بیشتر ناشناخته) → 404
   return false;
 }
+
 
 export default async function FaCatchAllPage({ params }) {
   const resolved = typeof params?.then === 'function' ? await params : params;
