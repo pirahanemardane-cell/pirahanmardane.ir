@@ -2,6 +2,7 @@ import { createClient } from '../../../../lib/supabase/server'
 import { createAdminClient } from '../../../../lib/supabase/admin'
 import { NextResponse } from 'next/server'
 import { logCritical } from '../../../../lib/critical-log'
+import { isPhoneVerified, normalizePhone as normOtpPhone } from '../../../../lib/otp'
 
 function normalizePhone(p) {
   let d = String(p || '').replace(/\D/g, '')
@@ -33,6 +34,17 @@ export async function POST(request) {
     if (!fullName || fullName.length < 2) {
       return NextResponse.json({ ok: false, error: 'نام الزامی است' }, { status: 400 })
     }
+
+    // استاندارد: ثبت‌نام با رمز فقط بعد از تأیید OTP همان شماره
+    try {
+      const verified = await isPhoneVerified(phone)
+      if (!verified) {
+        return NextResponse.json(
+          { ok: false, error: 'ابتدا شماره را با کد پیامک تأیید کنید', needs_otp: true },
+          { status: 401 }
+        )
+      }
+    } catch (_) {}
 
     let admin
     try {

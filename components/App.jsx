@@ -8501,6 +8501,7 @@ const verifyOtp = async () => {
       };
 
 
+      /* SESSION_SOURCE: supabase /api/auth/me is source of truth; localStorage is cache only */
       const clearAuthLocal = () => {
         try {
           ['buyerUser', 'sellerUser', 'adminUser', 'pm_remember', 'user'].forEach((k) => {

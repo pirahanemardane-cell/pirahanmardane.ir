@@ -415,30 +415,38 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
     setBusy(true);
     setMsg('');
     try {
-      const res = await fetch('/api/auth/signup', {
+      // استاندارد: اول OTP با همان UI موجود — بدون فرم/ظاهر جدید
+      try {
+        sessionStorage.setItem(
+          'pm_pending_signup',
+          JSON.stringify({
+            phone,
+            fullName: fullName.trim(),
+            password,
+            email: signupEmail || '',
+            role,
+            shopName: isSeller ? fullName.trim() : '',
+          })
+        );
+      } catch (_) {}
+      const res = await fetch('/api/auth/otp/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({
-          phone,
-          email: signupEmail || undefined,
-          password,
-          fullName: fullName.trim(),
-          role,
-        }),
+        body: JSON.stringify({ phone, purpose: 'register', role }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.ok) {
-        setMsg(data?.error || 'ثبت‌نام ناموفق');
+        setMsg(data?.error || 'ارسال کد ناموفق');
+        try { sessionStorage.removeItem('pm_pending_signup'); } catch (_) {}
         return;
       }
-      if (isAdmin) {
-        forceAdminRedirectNow(String(emailOrPhone || smsPhone || '').replace(/\D/g, ''), (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین');
-        return;
-      }
-      redirectAfterAuth(data.profile || { role: isAdmin ? 'admin' : role, phone: String(emailOrPhone || smsPhone || '').replace(/\D/g, '') });
+      setSmsPhone(phone);
+      setView('sms-otp');
+      setMsg(data.message || 'کد ارسال شد');
     } catch (e) {
       setMsg(e?.message || 'خطا در ثبت‌نام');
+      try { sessionStorage.removeItem('pm_pending_signup'); } catch (_) {}
     } finally {
       setBusy(false);
     }
@@ -544,6 +552,18 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
     setMsg("");
     try {
       const phone = String(smsPhone || emailOrPhone || "").replace(/\D/g, "");
+      let pending = null;
+      try {
+        const raw = sessionStorage.getItem("pm_pending_signup");
+        if (raw) pending = JSON.parse(raw);
+      } catch (_) {}
+      const nameFromPending = pending && pending.fullName ? String(pending.fullName).trim() : "";
+      const shopFromPending = pending && pending.shopName ? String(pending.shopName).trim() : "";
+      const nameFromState = fullName && String(fullName).trim().length >= 2 ? String(fullName).trim() : "";
+      const fullNameSend = nameFromPending || nameFromState || "";
+      const shopSend = shopFromPending || (isSeller ? fullNameSend : "");
+      const roleSend = pending && pending.role ? pending.role : isAdmin ? "admin" : role;
+
       const endpoints = isAdmin
         ? ["/api/auth/mfa/verify", "/api/auth/otp/verify"]
         : ["/api/auth/otp/verify"];
@@ -554,21 +574,59 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ phone, code, role: isAdmin ? "admin" : role }),
+          body: JSON.stringify({
+            phone,
+            code,
+            role: roleSend,
+            fullName: fullNameSend || undefined,
+            shopName: shopSend || undefined,
+          }),
         });
         data = await res.json().catch(() => ({}));
-        if (res.ok && data?.ok) { ok = true; break; }
+        if (res.ok && data?.ok) {
+          ok = true;
+          break;
+        }
       }
       if (!ok) {
         setMsg(data?.error || "کد وارد شده صحیح نمی‌باشد.");
         return { ok: false, error: data?.error || "کد وارد شده صحیح نمی‌باشد." };
       }
-      const isAdm = mustGoAdminPanel() || isAdmin || String(data?.profile?.role || "").toLowerCase() === "admin";
+
+      // بعد از OTP: اگر ثبت‌نام در جریان بود، رمز انتخابی کاربر را روی سشن ست کن
+      if (pending && pending.password && String(pending.password).length >= 6) {
+        try {
+          await fetch("/api/auth/password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ password: pending.password }),
+          });
+        } catch (_) {}
+        try {
+          sessionStorage.removeItem("pm_pending_signup");
+        } catch (_) {}
+      }
+
+      const isAdm =
+        mustGoAdminPanel() ||
+        isAdmin ||
+        String(data?.profile?.role || "").toLowerCase() === "admin";
       if (isAdm) {
-        forceAdminRedirectNow(phone, data?.profile?.full_name || data?.profile?.name || "سوپر ادمین");
+        forceAdminRedirectNow(
+          phone,
+          data?.profile?.full_name || data?.profile?.name || fullNameSend || "سوپر ادمین"
+        );
         return { ok: true };
       }
-      redirectAfterAuth(data.profile || { role: role, phone });
+      // ریدایرکت‌ها عمداً دست نخورده
+      redirectAfterAuth(
+        data.profile || {
+          role: roleSend,
+          phone,
+          full_name: fullNameSend || undefined,
+        }
+      );
       return { ok: true };
     } catch (e) {
       setMsg(e?.message || "خطا در تأیید کد");
