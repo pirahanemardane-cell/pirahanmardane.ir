@@ -99,6 +99,11 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [msg, setMsg] = useState('');
+  const [forgotStep, setForgotStep] = useState('phone');
+  const [resetPassword, setResetPassword] = useState('');
+  const [resetCode, setResetCode] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPhone, setSignupPhone] = useState('');
   const [closed, setClosed] = useState(false);
   const [smsPhone, setSmsPhone] = useState('');
   const [busy, setBusy] = useState(false);
@@ -107,6 +112,229 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
   const [fullName, setFullName] = useState('');
   const canvasRef = useRef(null);
   const isSeller = mode === 'seller';
+
+  const role = isSeller ? 'seller' : 'buyer';
+
+  const redirectAfterAuth = (profile) => {
+    const r = String(profile?.role || role || 'buyer').toLowerCase();
+    try {
+      if (typeof onClose === 'function') onClose();
+    } catch (_) {}
+    try {
+      patchModalUi({ authOpen: false });
+    } catch (_) {}
+    if (r === 'admin') {
+      window.location.assign('/amirshn');
+      return;
+    }
+    if (r === 'seller') {
+      try { sessionStorage.setItem('pm_panel', 'seller'); } catch (_) {}
+      window.location.assign('/?sellerPanel=1');
+      return;
+    }
+    window.location.assign('/?profile=1');
+  };
+
+  async function handlePasswordLogin() {
+    if (busy) return;
+    setBusy(true);
+    setMsg('');
+    try {
+      const phone = String(emailOrPhone || '').replace(/\D/g, '');
+      const res = await fetch('/api/auth/login-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ phone: phone || emailOrPhone, password, remember }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setMsg(data?.error || 'ورود ناموفق');
+        return;
+      }
+      if (data.mfa_required) {
+        setSmsPhone(data.phone || phone);
+        setView('sms-otp');
+        setMsg(data.message || 'کد تأیید دو مرحله‌ای ارسال شد');
+        return;
+      }
+      redirectAfterAuth(data.profile || { role });
+    } catch (e) {
+      setMsg(e?.message || 'خطا در ورود');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleSignup() {
+    if (busy) return;
+    const phone = String(signupPhone || '').replace(/\D/g, '');
+    if (!/^09\d{9}$/.test(phone)) {
+      setMsg('شماره موبایل ۱۱ رقمی با ۰۹ الزامی است');
+      return;
+    }
+    if (!fullName || fullName.trim().length < 2) {
+      setMsg('نام را وارد کنید');
+      return;
+    }
+    if (!password || password.length < 6) {
+      setMsg('رمز حداقل ۶ کاراکتر باشد');
+      return;
+    }
+    setBusy(true);
+    setMsg('');
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          phone,
+          email: signupEmail || undefined,
+          password,
+          fullName: fullName.trim(),
+          role,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setMsg(data?.error || 'ثبت‌نام ناموفق');
+        return;
+      }
+      redirectAfterAuth(data.profile || { role });
+    } catch (e) {
+      setMsg(e?.message || 'خطا در ثبت‌نام');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleForgotRequest() {
+    if (busy) return;
+    const phone = String(emailOrPhone || signupPhone || '').replace(/\D/g, '');
+    if (!/^09\d{9}$/.test(phone)) {
+      setMsg('شماره موبایل ۱۱ رقمی وارد کنید');
+      return;
+    }
+    setBusy(true);
+    setMsg('');
+    try {
+      const res = await fetch('/api/auth/otp/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ phone, purpose: 'recovery' }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setMsg(data?.error || 'ارسال کد ناموفق');
+        return;
+      }
+      setSmsPhone(phone);
+      setForgotStep('code');
+      setMsg(data.message || 'کد بازیابی ارسال شد');
+    } catch (e) {
+      setMsg(e?.message || 'خطا');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleForgotReset() {
+    if (busy) return;
+    if (resetPassword.length < 6) {
+      setMsg('رمز جدید حداقل ۶ کاراکتر باشد');
+      return;
+    }
+    setBusy(true);
+    setMsg('');
+    try {
+      const res = await fetch('/api/auth/password-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ phone: smsPhone, code: resetCode, password: resetPassword }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setMsg(data?.error || 'بازیابی ناموفق');
+        return;
+      }
+      setMsg(data.message || 'رمز تغییر کرد');
+      setView('signin');
+      setForgotStep('phone');
+      setPassword('');
+      setResetCode('');
+      setResetPassword('');
+    } catch (e) {
+      setMsg(e?.message || 'خطا');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleRequestOtp() {
+    if (busy) return;
+    const phone = String(smsPhone || '').replace(/\D/g, '');
+    if (phone.length < 11) {
+      setMsg('شماره موبایل ۱۱ رقمی وارد کنید');
+      return;
+    }
+    setBusy(true);
+    setMsg('');
+    try {
+      const res = await fetch('/api/auth/otp/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ phone, purpose: 'login', role }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setMsg(data?.error || 'ارسال کد ناموفق');
+        return;
+      }
+      setView('sms-otp');
+      setMsg(data.message || 'کد ارسال شد');
+    } catch (e) {
+      setMsg(e?.message || 'خطا در ارسال کد');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleVerifyOtp(code) {
+    if (busy) return;
+    setBusy(true);
+    setMsg('');
+    try {
+      const res = await fetch('/api/auth/otp/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ phone: smsPhone, code, role }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setMsg(data?.error || 'کد نامعتبر است');
+        return;
+      }
+      if (data.needs_profile) {
+        setFullName('');
+        setView('signup');
+        setSignupPhone(smsPhone);
+        setMsg('تکمیل نام برای ثبت‌نام');
+        return;
+      }
+      redirectAfterAuth(data.profile || { role });
+    } catch (e) {
+      setMsg(e?.message || 'خطا در تأیید کد');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+
   const role = isSeller ? 'seller' : 'buyer';
 
   async function handlePasswordLogin() {
@@ -436,17 +664,34 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     <Label htmlFor="auth-name" className="text-zinc-300">نام کامل</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                      <Input id="auth-name" value={fullName} onChange={(e) => setFullName(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
+                      <Input id="auth-name" value={fullName} onChange={(e) => setFullName(e.target.value)} value={fullName} onChange={(e) => setFullName(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }} type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
                     </div>
                   </div>
                 ) : null}
 
-                <div className="grid gap-2">
-                  <Label htmlFor="auth-email" className="text-zinc-300">ایمیل یا شماره تماس</Label>
+                
+            {view === 'signup' ? (
+              <div className="grid gap-2">
+                <Label htmlFor="signup-phone" className="text-zinc-300">شماره تماس *</Label>
+                <Input
+                  id="signup-phone"
+                  type="tel"
+                  inputMode="numeric"
+                  dir="ltr"
+                  placeholder="09xxxxxxxxx"
+                  value={signupPhone}
+                  onChange={(e) => setSignupPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
+                  className="bg-zinc-950 border-zinc-800 text-white text-center tracking-widest"
+                  style={{ color: '#fff', WebkitTextFillColor: '#fff' }}
+                />
+              </div>
+            ) : null}
+<div className="grid gap-2">
+                  <Label htmlFor="auth-email" className="text-zinc-300">{view === "signup" ? "ایمیل (اختیاری)" : view === "forgot" ? "شماره تماس" : "ایمیل یا شماره تماس"}</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                     <Input
-                      id="auth-email" value={emailOrPhone} onChange={(e) => setEmailOrPhone(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
+                      id="auth-email" value={view === "signup" ? signupEmail : emailOrPhone} onChange={(e) => view === "signup" ? setSignupEmail(e.target.value) : setEmailOrPhone(e.target.value)} value={emailOrPhone} onChange={(e) => setEmailOrPhone(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                       type="text"
                       placeholder="09xxxxxxxxx یا email@example.com"
                       className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
@@ -460,7 +705,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                       <Input
-                        id="auth-password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
+                        id="auth-password" value={view === "forgot" && forgotStep === "code" ? resetPassword : password} onChange={(e) => view === "forgot" && forgotStep === "code" ? setResetPassword(e.target.value) : setPassword(e.target.value)} value={password} onChange={(e) => setPassword(e.target.value)} style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                         type={showPassword ? 'text' : 'password'}
                         placeholder="••••••••"
                         className="pl-10 pr-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
@@ -504,7 +749,35 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     else { handlePasswordLogin(); return; }
                   }}
                 >
-                  {view === 'signup' ? 'ثبت‌نام' : view === 'forgot' ? 'ارسال لینک بازیابی' : 'ورود'}
+                  
+            {view === 'forgot' && forgotStep === 'code' ? (
+              <>
+                <div className="grid gap-2">
+                  <Label className="text-zinc-300">کد پیامک</Label>
+                  <Input
+                    id="reset-code"
+                    type="text"
+                    inputMode="numeric"
+                    dir="ltr"
+                    value={resetCode}
+                    onChange={(e) => setResetCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    className="bg-zinc-950 border-zinc-800 text-white text-center tracking-widest"
+                    style={{ color: '#fff', WebkitTextFillColor: '#fff' }}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label className="text-zinc-300">رمز جدید</Label>
+                  <Input
+                    type="password"
+                    value={resetPassword}
+                    onChange={(e) => setResetPassword(e.target.value)}
+                    className="bg-zinc-950 border-zinc-800 text-white"
+                    style={{ color: '#fff', WebkitTextFillColor: '#fff' }}
+                  />
+                </div>
+              </>
+            ) : null}
+{view === 'signup' ? 'ثبت‌نام' : view === 'forgot' ? 'ارسال لینک بازیابی' : 'ورود'}
                 </Button>
 
                 {view === 'signin' ? (
