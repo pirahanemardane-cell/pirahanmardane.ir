@@ -55,13 +55,13 @@ const OTPInputBox = ({ index, verifyOTP, state, length = 6 }) => {
 
   useEffect(() => {
     if (state === 'success') {
-      animationControls.start({ x: -(index * 52), transition: slowSuccess });
+      animationControls.start({ x: -(index * 40), transition: slowSuccess });
     }
   }, [state, index, animationControls]);
 
   return (
     <motion.div
-      className={`w-12 h-14 sm:w-14 sm:h-16 rounded-lg ring-2 overflow-hidden transition-all duration-300 ${
+      className={`w-9 h-11 sm:w-10 sm:h-12 rounded-md ring-2 overflow-hidden transition-all duration-300 shrink-0 ${
         state === 'error'
           ? 'ring-red-500'
           : state === 'success'
@@ -115,7 +115,7 @@ const OTPInputBox = ({ index, verifyOTP, state, length = 6 }) => {
           document.getElementById(`otp-input-${next}`)?.focus();
           setTimeout(verifyOTP, 0);
         }}
-        className="w-full h-full text-center text-2xl sm:text-3xl font-semibold outline-none bg-zinc-950 text-zinc-50 caret-zinc-200"
+        className="w-full h-full text-center text-lg sm:text-xl font-semibold outline-none bg-zinc-950 !text-white caret-white"
       />
     </motion.div>
   );
@@ -219,7 +219,7 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
               </p>
 
               <div className="flex flex-col items-center justify-center gap-2 mb-8 relative h-20">
-                <motion.div animate={animationControls} className="flex items-center justify-center gap-3">
+                <motion.div animate={animationControls} className="flex items-center justify-center gap-1.5 sm:gap-2 w-full max-w-full px-1">
                   {Array.from({ length }).map((_, index) => (
                     <OTPInputBox key={index} index={index} verifyOTP={verifyOTP} state={state} length={length} />
                   ))}

@@ -214,6 +214,22 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         @keyframes drawY{0%{transform:scaleY(0);opacity:0}100%{transform:scaleY(1);opacity:.7}}
         .card-animate{opacity:0;transform:translateY(20px);animation:fadeUp .8s cubic-bezier(.22,.61,.36,1) .35s forwards}
         @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+        input#sms-phone, input#auth-email, input#auth-password, input#auth-name {
+          color: #fff !important;
+          -webkit-text-fill-color: #fff !important;
+          caret-color: #fff !important;
+        }
+        input#sms-phone::placeholder, input#auth-email::placeholder {
+          color: #71717a !important;
+          -webkit-text-fill-color: #71717a !important;
+        }
+        input#sms-phone:-webkit-autofill,
+        input#sms-phone:-webkit-autofill:hover,
+        input#sms-phone:-webkit-autofill:focus {
+          -webkit-text-fill-color: #fff !important;
+          transition: background-color 9999s ease-in-out 0s;
+          box-shadow: 0 0 0px 1000px #09090b inset !important;
+        }
       `}</style>
 
       <div className="absolute inset-0 pointer-events-none [background:radial-gradient(80%_60%_at_50%_30%,rgba(255,255,255,0.06),transparent_60%)]" />
@@ -271,7 +287,7 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                     placeholder="09xxxxxxxxx"
                     value={smsPhone}
                     onChange={(e) => setSmsPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
-                    className="bg-zinc-950 border-zinc-800 text-white placeholder:text-zinc-500 text-center tracking-widest caret-white"
+                    className="bg-zinc-950 border-zinc-800 !text-white placeholder:text-zinc-500 text-center tracking-widest caret-white"
                   />
                 </div>
                 <Button
