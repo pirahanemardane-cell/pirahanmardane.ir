@@ -1,5 +1,5 @@
-import AdminAuthView from './shop/AdminAuthView';
 'use client';
+import AdminAuthView from './shop/AdminAuthView';
 import { checkSellerSeoSpam } from '@/lib/seo-spam';
 import {
   ensureStorageVersion,
