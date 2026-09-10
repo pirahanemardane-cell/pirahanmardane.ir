@@ -334,6 +334,30 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
         setMsg(data?.error || 'ورود ناموفق');
         return;
       }
+
+      // اتمی: روی /amirpnl بعد از ok حتماً برو پنل (قبل از هر منطق دیگر)
+      try {
+        var _p = String(window.location.pathname || '');
+        if (_p === '/amirpnl' || _p.indexOf('/amirpnl') >= 0) {
+          var _ph = String((data.profile && data.profile.phone) || phone || emailOrPhone || '').replace(/\D/g, '');
+          if (_ph.length === 10 && _ph.charAt(0) === '9') _ph = '0' + _ph;
+          if (_ph.length < 10) _ph = '09000000000';
+          try {
+            localStorage.setItem('adminUser', JSON.stringify({
+              name: (data.profile && (data.profile.full_name || data.profile.name)) || 'سوپر ادمین',
+              role: 'Super Admin',
+              phone: _ph,
+              loggedAt: Date.now(),
+              sessionExpires: Date.now() + 30 * 24 * 60 * 60 * 1000
+            }));
+            sessionStorage.setItem('pm_panel', 'admin');
+            sessionStorage.setItem('pm_admin_ok', '1');
+          } catch (_e) {}
+          window.location.href = 'https://pirahanmardane.ir/amirshn?panel=1&t=' + Date.now();
+          return;
+        }
+      } catch (_e2) {}
+
       // روی /amirpnl بعد از موفقیت API — فوری پنل (حتی قبل از MFA اگر سرور ok داد)
       var profRole = String((data.profile && data.profile.role) || '').toLowerCase();
       if (mustGoAdminPanel() || profRole === 'admin') {

@@ -1576,8 +1576,32 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             }
           }
         } catch (_) {}
+        // اگر panel=1 یا pm_admin_ok هست، نرو /amirpnl — پنل را باز کن
+        try {
+          const q = new URLSearchParams(window.location.search || '');
+          const ok = sessionStorage.getItem('pm_admin_ok') === '1' || sessionStorage.getItem('pm_panel') === 'admin' || q.get('panel') === '1';
+          if (ok) {
+            try {
+              const raw = localStorage.getItem('adminUser');
+              if (raw) {
+                const saved = JSON.parse(raw);
+                const ph = String(saved?.phone || '').replace(/\D/g, '');
+                setAdminUser({
+                  name: saved.name || 'سوپر ادمین',
+                  role: saved.role || 'Super Admin',
+                  phone: ph.length >= 10 ? ph : (ph || '09000000000'),
+                  loggedAt: saved.loggedAt || Date.now(),
+                });
+              }
+            } catch (_) {}
+            try { openAdminPanelPage(); } catch (_) {}
+            setAdminAuthOpen(false);
+            return;
+          }
+        } catch (_) {}
         try {
           if (typeof window !== "undefined" && (window.location.pathname || "").indexOf("amirpnl") < 0) {
+            // فقط اگر واقعاً سشن نداریم
             window.location.replace("/amirpnl");
             return;
           }
@@ -12319,7 +12343,7 @@ const downloadSeoFile = (filename, content, mime) => {
         if (typeof window === 'undefined') return;
         try {
           if (sessionStorage.getItem('pm_admin_ok') === '1') {
-            sessionStorage.removeItem('pm_admin_ok');
+            // sessionStorage.removeItem('pm_admin_ok'); // غیرفعال — باعث برگشت به /amirpnl می‌شد
             const raw = localStorage.getItem('adminUser');
             if (raw) {
               const saved = JSON.parse(raw);
@@ -12346,7 +12370,7 @@ const downloadSeoFile = (filename, content, mime) => {
         try {
           const q = new URLSearchParams(window.location.search || '');
           if (q.get('panel') !== '1' && sessionStorage.getItem('pm_admin_ok') !== '1') return;
-          sessionStorage.removeItem('pm_admin_ok');
+          // sessionStorage.removeItem('pm_admin_ok'); // غیرفعال — باعث برگشت به /amirpnl می‌شد
           const raw = localStorage.getItem('adminUser');
           if (!raw) return;
           const saved = JSON.parse(raw);
@@ -12379,7 +12403,7 @@ const downloadSeoFile = (filename, content, mime) => {
           const ph = String(saved?.phone || '').replace(/\D/g, '');
           if (ph.length < 10) return;
 
-          sessionStorage.removeItem('pm_admin_ok');
+          // sessionStorage.removeItem('pm_admin_ok'); // غیرفعال — باعث برگشت به /amirpnl می‌شد
           setAdminUser({
             name: saved.name || 'سوپر ادمین',
             role: saved.role || 'Super Admin',
@@ -12528,11 +12552,28 @@ const downloadSeoFile = (filename, content, mime) => {
               } catch (_) { try { setAdminTab('dashboard'); } catch (__) {} }
               return;
             }
-            try { window.location.replace('/amirpnl'); } catch (_) {
-              setAdminAuthOpen(true);
-              setAdminAuthStep('phone');
-              setShowAdminPanel(false);
-            }
+            // قبلاً برمی‌گشت به /amirpnl و ریدایرکت را خنثی می‌کرد — دیگر برنگرد
+            try {
+              // اگر session تازه است پنل را باز کن
+              const raw = localStorage.getItem('adminUser');
+              if (raw) {
+                const saved = JSON.parse(raw);
+                const ph = String(saved?.phone || '').replace(/\D/g, '');
+                setAdminUser({
+                  name: saved.name || 'سوپر ادمین',
+                  role: saved.role || 'Super Admin',
+                  phone: ph.length >= 10 ? ph : (ph || '09000000000'),
+                  loggedAt: saved.loggedAt || Date.now(),
+                });
+                openAdminPanelPage();
+                setAdminAuthOpen(false);
+                try { setAuthOpen(false); } catch (_) {}
+                return;
+              }
+            } catch (_) {}
+            setAdminAuthOpen(true);
+            setAdminAuthStep('phone');
+            setShowAdminPanel(false);
           } catch (_) {}
         };
         run();
