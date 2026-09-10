@@ -11,6 +11,7 @@ import {
 } from '../../../../../lib/otp'
 import { isAdminPhone } from '../../../../../lib/api/admin-guard'
 import { rateLimit, clientIp, rateLimitResponse } from "../../../../../lib/rate-limit"
+import crypto from 'crypto'
 
 function phoneEmail(phone) {
   return `u${normalizePhone(phone)}@otp.local`
@@ -176,18 +177,47 @@ if (!isValidIranMobile(phone)) {
           .eq('owner_id', profile.id)
           .maybeSingle()
         if (!shop?.id) {
-          // پروفایل هست ولی فروشگاه حذف شده یا هرگز ساخته نشده → تکمیل ثبت فروشگاه
+          // بدون تغییر ظاهر/ریدایرکت: فروشگاه pending حداقلی بساز تا پنل باز شود
+          const slug = ('shop-' + String(profile.id).replace(/-/g, '').slice(0, 8) + '-' + Date.now().toString(36).slice(-4))
+          const { data: createdSeller, error: sErr } = await admin
+            .from('sellers')
+            .insert({
+              owner_id: profile.id,
+              shop_name: profile.full_name || 'فروشگاه',
+              slug,
+              status: 'pending',
+              phone,
+            })
+            .select('id, shop_name, slug, status, owner_id')
+            .maybeSingle()
+          if (sErr || !createdSeller?.id) {
+            console.error('[otp/verify] auto seller', sErr)
+            return NextResponse.json({
+              ok: true,
+              message: 'ورود موفق',
+              needs_profile: false,
+              needs_shop: true,
+              phone,
+              user: signed.user
+                ? { id: signed.user.id, email: signed.user.email }
+                : { id: profile.id },
+              profile: { ...profile, role: 'seller' },
+            })
+          }
+          try {
+            await admin.from('profiles').update({ role: 'seller', updated_at: new Date().toISOString() }).eq('id', profile.id).neq('role', 'admin')
+          } catch (_) {}
           return NextResponse.json({
             ok: true,
-            message: 'تکمیل ثبت فروشگاه',
-            needs_profile: true,
-            needs_shop: true,
+            message: 'ورود موفق',
+            needs_profile: false,
+            needs_shop: false,
             phone,
-            existing_id: profile.id,
             user: signed.user
               ? { id: signed.user.id, email: signed.user.email }
               : { id: profile.id },
             profile: { ...profile, role: 'seller' },
+            seller: createdSeller,
           })
         }
         return NextResponse.json({
@@ -228,13 +258,128 @@ if (!isValidIranMobile(phone)) {
       return res
     }
 
-    return NextResponse.json({
-      ok: true,
-      message: 'شماره تأیید شد؛ تکمیل مشخصات',
-      needs_profile: true,
-      phone,
-      existing_id: profile?.id || null,
-    })
+    // بدون UI جدید: حساب حداقلی بساز و همان شکل پاسخ ورود موفق را بده
+    {
+      const email = phoneEmail(phone)
+      const defaultName =
+        roleWanted === 'seller' ? 'فروشنده' : roleWanted === 'admin' ? 'سوپر ادمین' : 'کاربر'
+      let userId = profile?.id || null
+      let sessionPassword = null
+
+      if (!userId) {
+        sessionPassword = crypto.randomBytes(24).toString('base64url')
+        const createRole = roleWanted === 'admin' && isAdminPhone(phone) ? 'admin' : (roleWanted === 'seller' ? 'seller' : 'buyer')
+        const { data: created, error: cErr } = await admin.auth.admin.createUser({
+          email,
+          password: sessionPassword,
+          email_confirm: true,
+          user_metadata: { full_name: defaultName, role: createRole, phone },
+        })
+        if (cErr) {
+          const msg = String(cErr.message || '').toLowerCase()
+          if (msg.includes('already') || msg.includes('registered')) {
+            try {
+              const { data: listed } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 })
+              const found = (listed?.users || []).find((u) => u.email === email)
+              if (found?.id) userId = found.id
+            } catch (_) {}
+            sessionPassword = null
+          }
+          if (!userId) {
+            return NextResponse.json({ ok: false, error: cErr.message || 'ساخت حساب ناموفق' }, { status: 400 })
+          }
+        } else {
+          userId = created.user.id
+        }
+      }
+
+      const finalRole =
+        roleWanted === 'admin' && isAdminPhone(phone)
+          ? 'admin'
+          : roleWanted === 'seller'
+            ? 'seller'
+            : (profile?.role === 'admin' ? 'admin' : 'buyer')
+
+      await admin.from('profiles').upsert({
+        id: userId,
+        full_name: (profile && profile.full_name) || defaultName,
+        phone,
+        role: finalRole,
+        updated_at: new Date().toISOString(),
+      })
+
+      profile = {
+        id: userId,
+        full_name: (profile && profile.full_name) || defaultName,
+        role: finalRole,
+        phone,
+        avatar_url: profile?.avatar_url || null,
+      }
+
+      let signed = await signInAsUser(admin, supabase, userId, phone)
+      if (!signed.ok && sessionPassword) {
+        try {
+          const { data: s, error: signErr } = await supabase.auth.signInWithPassword({
+            email,
+            password: sessionPassword,
+          })
+          if (!signErr && s?.user) signed = { ok: true, user: s.user }
+        } catch (_) {}
+      }
+      if (!signed.ok) {
+        return NextResponse.json({ ok: false, error: signed.error || 'ورود ناموفق' }, { status: 500 })
+      }
+
+      let seller = undefined
+      if (finalRole === 'seller') {
+        const { data: shop } = await admin
+          .from('sellers')
+          .select('id, shop_name, slug, status, owner_id')
+          .eq('owner_id', userId)
+          .maybeSingle()
+        if (shop?.id) {
+          seller = shop
+        } else {
+          const slug = ('shop-' + String(userId).replace(/-/g, '').slice(0, 8) + '-' + Date.now().toString(36).slice(-4))
+          const { data: createdSeller } = await admin
+            .from('sellers')
+            .insert({
+              owner_id: userId,
+              shop_name: profile.full_name || 'فروشگاه',
+              slug,
+              status: 'pending',
+              phone,
+            })
+            .select('id, shop_name, slug, status, owner_id')
+            .maybeSingle()
+          seller = createdSeller || undefined
+        }
+      }
+
+      const res = NextResponse.json({
+        ok: true,
+        message: 'ورود موفق',
+        needs_profile: false,
+        phone,
+        user: signed.user
+          ? { id: signed.user.id, email: signed.user.email }
+          : { id: userId },
+        profile,
+        seller,
+      })
+      if (finalRole === 'admin' && isAdminPhone(phone)) {
+        const maxAge = Number(process.env.ADMIN_SESSION_MAX_AGE_SEC || 2 * 60 * 60)
+        const secure = process.env.NODE_ENV === 'production'
+        res.cookies.set('pm_admin_since', String(Date.now()), {
+          path: '/',
+          httpOnly: true,
+          sameSite: 'lax',
+          secure,
+          maxAge: Number.isFinite(maxAge) && maxAge > 300 ? maxAge : 2 * 60 * 60,
+        })
+      }
+      return res
+    }
   } catch (e) {
     console.error('otp/verify', e)
     return NextResponse.json({ ok: false, error: 'خطای سرور' }, { status: 500 })

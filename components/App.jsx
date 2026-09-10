@@ -8509,6 +8509,7 @@ const verifyOtp = async () => {
           });
         } catch (_) {}
         try { sessionStorage.removeItem('pm_panel'); } catch (_) {}
+        try { sessionStorage.removeItem('pm_admin_ok'); } catch (_) {}
         try { sessionStorage.removeItem('adminTab'); } catch (_) {}
         try {
           if (typeof window !== 'undefined') {
