@@ -1602,7 +1602,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         try {
           if (typeof window !== "undefined" && (window.location.pathname || "").indexOf("amirpnl") < 0) {
             // فقط اگر واقعاً سشن نداریم
-            window.location.replace("/amirpnl");
+            window.location.replace("/amirshn");
             return;
           }
         } catch (_) {}
@@ -1612,6 +1612,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }
 
       if (typeof isAdminLogin !== "undefined" && isAdminLogin) {
+        try { window.location.replace("/amirshn"); return; } catch (_) {}
         try {
           const raw = localStorage.getItem("adminUser");
           if (raw) {
@@ -5481,9 +5482,12 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             return;
           }
           if (parsed.type === 'admin-login' || parsed.page === 'admin-login' || path === '/amirpnl' || path.endsWith('/amirpnl')) {
+            // /amirpnl حذف شد — برو /amirshn و مودال ورود ادمین
+            try { window.location.replace('/amirshn'); return; } catch (_) {}
             try { setShowAdminPanel(false); } catch (_) {}
             setAdminAuthOpen(true);
             setAdminAuthStep('phone');
+            try { setAuthMode('admin'); setAuthOpen(true); } catch (_) {}
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
           }
@@ -5529,6 +5533,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
             } else {
               setAdminAuthOpen(true);
               setAdminAuthStep('phone');
+              try { setAuthMode('admin'); setAuthOpen(true); } catch (_) {}
             }
             try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
             return;
@@ -12434,12 +12439,13 @@ const downloadSeoFile = (filename, content, mime) => {
         setAdminAuthLoading(false);
         try {
           const p = (typeof window !== 'undefined' && window.location.pathname) || '';
-          if (p !== '/amirpnl' && !String(p).endsWith('/amirpnl')) {
-            try { pushFaUrl('/amirpnl', { adminLogin: true }); } catch (_) {
-              try { window.history.replaceState({ adminLogin: true }, '', '/amirpnl'); } catch (__) {}
+          if (p !== '/amirshn' && !String(p).endsWith('/amirshn')) {
+            try { pushFaUrl('/amirshn', { adminPanel: true }); } catch (_) {
+              try { window.history.replaceState({ adminPanel: true }, '', '/amirshn'); } catch (__) {}
             }
           }
         } catch (_) {}
+        try { setAuthMode('admin'); setAuthOpen(true); } catch (_) {}
         setMobileMenuOpen(false);
       };
 

@@ -7,7 +7,11 @@ import { patchModalUi } from '@/lib/stores/modalUiStore';
 function isAdminLoginPath() {
   try {
     const p = String(typeof window !== 'undefined' ? window.location.pathname || '' : '');
-    return p === '/amirpnl' || p.endsWith('/amirpnl');
+    return (
+      p === '/amirshn' || p.endsWith('/amirshn') ||
+      p === '/amirpnl' || p.endsWith('/amirpnl') ||
+      p.includes('پنل-ادمین')
+    );
   } catch (_) {
     return false;
   }
