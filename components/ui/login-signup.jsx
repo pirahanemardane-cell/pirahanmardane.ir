@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
-import { Eye, EyeOff, Lock, Mail, ArrowRight, X, Code2, Globe, User } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, ArrowRight, X, User } from 'lucide-react';
 import { patchModalUi } from '@/lib/stores/modalUiStore';
 import OTPVerification from '@/components/ui/otp-input';
 
@@ -223,7 +223,6 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
       </div>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-50 mix-blend-screen pointer-events-none" />
 
-      {/* دکمه‌های fixed — خارج از stacking کارت تا کلیک همیشه برسد */}
       <button
         type="button"
         onClick={() => {
@@ -257,103 +256,10 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
           </CardHeader>
 
           <CardContent className="grid gap-5">
-            {msg && view !== 'sms-otp' ? <p className="text-xs text-emerald-400 text-center">{msg}</p> : null}
-
-            {view === 'signup' ? (
-              <div className="grid gap-2">
-                <Label htmlFor="auth-name" className="text-zinc-300">نام کامل</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                  <Input id="auth-name" type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
-                </div>
-              </div>
-            ) : null}
-
-            {view !== 'sms-phone' && view !== 'sms-otp' ? (
-            <div className="grid gap-2">
-              <Label htmlFor="auth-email" className="text-zinc-300">ایمیل یا شماره تماس</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                <Input id="auth-email" type="email" placeholder="09xxxxxxxxx یا email@example.com" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
-              </div>
-            </div>
-
-            {view !== 'forgot' ? (
-              <div className="grid gap-2">
-                <Label htmlFor="auth-password" className="text-zinc-300">رمز عبور</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                  <Input
-                    id="auth-password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    className="pl-10 pr-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md text-zinc-400 hover:text-zinc-200"
-                    onClick={() => setShowPassword((v) => !v)}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-            ) : null}
-
-            {view === 'signin' ? (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Checkbox id="auth-remember" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                  <Label htmlFor="auth-remember" className="text-zinc-400">مرا به خاطر بسپار</Label>
-                </div>
-                <button
-                  type="button"
-                  className="text-sm text-zinc-300 hover:text-zinc-100"
-                  onClick={() => {
-                    setMsg('');
-                    setView('forgot');
-                  }}
-                >
-                  فراموشی رمز عبور
-                </button>
-              </div>
-            ) : null}
-
-            <Button
-              type="button"
-              className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
-              onClick={() => {
-                if (view === 'forgot') setMsg('لینک بازیابی به‌زودی فعال می‌شود (فعلاً فقط ظاهر).');
-                else if (view === 'signup') setMsg('ثبت‌نام به‌زودی به سرور وصل می‌شود (فعلاً فقط ظاهر).');
-                else setMsg('ورود به‌زودی به سرور وصل می‌شود (فعلاً فقط ظاهر).');
-              }}
-            >
-              {view === 'signup' ? 'ثبت‌نام' : view === 'forgot' ? 'Send reset link' : 'Sign in'}
-            </Button>
-
-            {view === 'signin' ? (
-              <>
-                <div className="relative">
-                  <Separator />
-                  <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-zinc-900/70 px-2 text-[11px] tracking-wide text-zinc-500">ورود با:</span>
-                </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full h-10 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50"
-                  onClick={() => { setMsg(''); setSmsPhone(''); setView('sms-phone'); }}
-                >
-                  ورود با پیامک
-                </Button>
-              </>
-            ) : null}
-          </CardContent>
-
-
-            ) : null}
+            {msg ? <p className="text-xs text-emerald-400 text-center">{msg}</p> : null}
 
             {view === 'sms-phone' ? (
-              <div className="grid gap-5">
+              <>
                 <div className="grid gap-2">
                   <Label htmlFor="sms-phone" className="text-zinc-300">شماره تماس</Label>
                   <Input
@@ -381,10 +287,10 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                 >
                   دریافت کد تأیید
                 </Button>
-                <button type="button" className="text-sm text-zinc-400 hover:text-zinc-200" onClick={() => setView('signin')}>
+                <button type="button" className="text-sm text-zinc-400 hover:text-zinc-200" onClick={() => { setMsg(''); setView('signin'); }}>
                   بازگشت به ورود با رمز
                 </button>
-              </div>
+              </>
             ) : null}
 
             {view === 'sms-otp' ? (
@@ -393,18 +299,120 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
                 length={4}
                 onVerified={() => setMsg('ورود با پیامک به‌زودی به سرور وصل می‌شود')}
                 onResend={() => setMsg('کد مجدداً ارسال می‌شود (ظاهر)')}
-                onBack={() => setView('sms-phone')}
+                onBack={() => { setMsg(''); setView('sms-phone'); }}
               />
             ) : null}
 
+            {view !== 'sms-phone' && view !== 'sms-otp' ? (
+              <>
+                {view === 'signup' ? (
+                  <div className="grid gap-2">
+                    <Label htmlFor="auth-name" className="text-zinc-300">نام کامل</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                      <Input id="auth-name" type="text" placeholder="نام شما" className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600" />
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="grid gap-2">
+                  <Label htmlFor="auth-email" className="text-zinc-300">ایمیل یا شماره تماس</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                    <Input
+                      id="auth-email"
+                      type="text"
+                      placeholder="09xxxxxxxxx یا email@example.com"
+                      className="pl-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
+                    />
+                  </div>
+                </div>
+
+                {view !== 'forgot' ? (
+                  <div className="grid gap-2">
+                    <Label htmlFor="auth-password" className="text-zinc-300">رمز عبور</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                      <Input
+                        id="auth-password"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="••••••••"
+                        className="pl-10 pr-10 bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md text-zinc-400 hover:text-zinc-200"
+                        onClick={() => setShowPassword((v) => !v)}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+
+                {view === 'signin' ? (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="auth-remember" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+                      <Label htmlFor="auth-remember" className="text-zinc-400">مرا به خاطر بسپار</Label>
+                    </div>
+                    <button
+                      type="button"
+                      className="text-sm text-zinc-300 hover:text-zinc-100"
+                      onClick={() => {
+                        setMsg('');
+                        setView('forgot');
+                      }}
+                    >
+                      فراموشی رمز عبور
+                    </button>
+                  </div>
+                ) : null}
+
+                <Button
+                  type="button"
+                  className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
+                  onClick={() => {
+                    if (view === 'forgot') setMsg('لینک بازیابی به‌زودی فعال می‌شود (فعلاً فقط ظاهر).');
+                    else if (view === 'signup') setMsg('ثبت‌نام به‌زودی به سرور وصل می‌شود (فعلاً فقط ظاهر).');
+                    else setMsg('ورود به‌زودی به سرور وصل می‌شود (فعلاً فقط ظاهر).');
+                  }}
+                >
+                  {view === 'signup' ? 'ثبت‌نام' : view === 'forgot' ? 'ارسال لینک بازیابی' : 'ورود'}
+                </Button>
+
+                {view === 'signin' ? (
+                  <>
+                    <div className="relative">
+                      <Separator />
+                      <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-zinc-900/70 px-2 text-[11px] tracking-wide text-zinc-500">
+                        ورود با:
+                      </span>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full h-10 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50"
+                      onClick={() => {
+                        setMsg('');
+                        setSmsPhone('');
+                        setView('sms-phone');
+                      }}
+                    >
+                      ورود با پیامک
+                    </Button>
+                  </>
+                ) : null}
+              </>
+            ) : null}
+          </CardContent>
+
           <CardFooter className="flex flex-col items-center gap-3 text-sm text-zinc-400">
             {view === 'signin' ? (
-              <div>
-                <button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signup'); }}>
-                  ثبت‌نام
-                </button>
-              </div>
-            ) : (
+              <button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signup'); }}>
+                ثبت‌نام
+              </button>
+            ) : view === 'sms-phone' || view === 'sms-otp' ? null : (
               <button type="button" className="text-zinc-200 hover:underline" onClick={() => { setMsg(''); setView('signin'); }}>
                 بازگشت به ورود
               </button>
