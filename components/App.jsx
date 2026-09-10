@@ -11001,7 +11001,7 @@ const verifyOtp = async () => {
         const dKey = statusOf(deskPx, deskLim);
         const mKey = statusOf(mobPx, mobLim);
         const worst = [dKey, mKey].includes('over') ? 'over' : ([dKey, mKey].includes('short') ? 'short' : ([dKey, mKey].includes('near') ? 'near' : (chars ? 'ok' : 'empty')));
-        const tone = worst === 'over' ? 'text-red-500' : (worst === 'short' || worst === 'near') ? 'text-amber-600' : worst === 'ok' ? 'text-emerald-600' : 'text-primary-400';
+        const tone = worst === 'over' ? 'text-red-300' : (worst === 'short' || worst === 'near') ? 'text-amber-600' : worst === 'ok' ? 'text-emerald-600' : 'text-primary-400';
         const label = !chars
           ? `خالی · هدف دسکتاپ ≤${deskLim}px`
           : `دسکتاپ ${deskPx}/${deskLim}px · موبایل ${mobPx}/${mobLim}px · ${chars} نویسه`;
@@ -11034,11 +11034,11 @@ const verifyOtp = async () => {
             <div className="flex items-center gap-2 text-[10px] text-primary-500 dark:text-white/60">
               <span className="w-14 flex-shrink-0">دسکتاپ</span>
               {bar(report.deskRatio, report.deskOver)}
-              <span className={`tabular-nums flex-shrink-0 ${report.deskOver ? 'text-red-500 font-medium' : ''}`}>{report.deskPx}/{report.deskLim}px</span>
+              <span className={`tabular-nums flex-shrink-0 ${report.deskOver ? 'text-red-300 font-medium' : ''}`}>{report.deskPx}/{report.deskLim}px</span>
             </div>
             <div className="flex items-center gap-2 text-[10px] text-primary-500 dark:text-white/60">
               {bar(report.mobRatio, report.mobOver)}
-              <span className={`tabular-nums flex-shrink-0 ${report.mobOver ? 'text-red-500 font-medium' : ''}`}>{report.mobPx}/{report.mobLim}px</span>
+              <span className={`tabular-nums flex-shrink-0 ${report.mobOver ? 'text-red-300 font-medium' : ''}`}>{report.mobPx}/{report.mobLim}px</span>
             </div>
             <p className="text-[10px] text-primary-400 dark:text-white/50">محاسبه با عرض پیکسل نمایش گوگل (فونت تقریبی Arial) · نه صرفاً تعداد کاراکتر</p>
           </div>
@@ -11723,7 +11723,7 @@ const verifyOtp = async () => {
               <div>
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <label className="text-xs text-primary-500">کلمات کلیدی فوکوس (با ویرگول) · حداکثر ۳</label>
-                  <span className={`text-xs ${kwCount > kwLimit ? 'text-red-500' : 'text-primary-400'}`}>{kwCount}/{kwLimit}</span>
+                  <span className={`text-xs ${kwCount > kwLimit ? 'text-red-300' : 'text-primary-400'}`}>{kwCount}/{kwLimit}</span>
                 </div>
                 <input
                   value={focusKeywords}
@@ -11768,7 +11768,7 @@ const verifyOtp = async () => {
                     <div key={i} className="space-y-1 p-2 rounded-lg border border-primary-50 dark:border-white/5">
                       <input value={f.q || ''} onChange={e => { const next = [...faqItems]; next[i] = { ...next[i], q: e.target.value }; onFaqChange(next); }} placeholder="سؤال" className="w-full px-2 py-1.5 rounded-lg border border-primary-200 dark:border-white/15 bg-transparent text-xs" />
                       <textarea value={f.a || ''} onChange={e => { const next = [...faqItems]; next[i] = { ...next[i], a: e.target.value }; onFaqChange(next); }} placeholder="پاسخ" rows={2} className="w-full px-2 py-1.5 rounded-lg border border-primary-200 dark:border-white/15 bg-transparent text-xs resize-y" />
-                      <button type="button" className="text-xs text-red-500" onClick={() => onFaqChange(faqItems.filter((_, j) => j !== i))}>حذف</button>
+                      <button type="button" className="text-xs text-red-300" onClick={() => onFaqChange(faqItems.filter((_, j) => j !== i))}>حذف</button>
                     </div>
                   ))}
                   {!(faqItems || []).length && <p className="text-xs text-primary-400">خالی · از «پیشنهاد FAQ» یا افزودن دستی استفاده کنید</p>}
@@ -11840,16 +11840,16 @@ const verifyOtp = async () => {
                 <p className="text-xs font-semibold text-primary-600 dark:!text-white/90">پیش‌نمایش گوگل (پیکسل دسکتاپ / موبایل)</p>
                 <div className="space-y-1">
                   <p className="text-[10px] font-medium text-primary-500">دسکتاپ · عنوان ≤{SEO_PX_LIMITS.titleDesktop}px · متا ≤{SEO_PX_LIMITS.descDesktop}px</p>
-                  <p className="text-xs text-emerald-700 dark:text-emerald-400 truncate" dir="ltr">{serpUrl}</p>
+                  <p className="text-xs text-emerald-700 dark:text-emerald-300 truncate" dir="ltr">{serpUrl}</p>
                   <p className="text-base text-blue-700 dark:text-blue-400 font-medium" style={{ maxWidth: SEO_PX_LIMITS.titleDesktop, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', fontFamily: 'arial, sans-serif', fontSize: 20 }}>{title || 'عنوان سئو (خالی = نام محتوا)'}</p>
                   <p className="text-xs text-primary-600 dark:text-white/70" style={{ maxWidth: SEO_PX_LIMITS.descDesktop, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', fontFamily: 'arial, sans-serif', fontSize: 14 }}>{description || 'توضیحات متا اینجا نمایش داده می‌شود…'}</p>
-                  {(titleReport.deskOver || descReport.deskOver) && <p className="text-[10px] text-red-500">در دسکتاپ بخشی از متن بریده می‌شود</p>}
+                  {(titleReport.deskOver || descReport.deskOver) && <p className="text-[10px] text-red-300">در دسکتاپ بخشی از متن بریده می‌شود</p>}
                 </div>
                 <div className="space-y-1 pt-2 border-t border-primary-100 dark:border-white/10">
-                  <p className="text-xs text-emerald-700 dark:text-emerald-400 truncate" dir="ltr">{serpUrl}</p>
+                  <p className="text-xs text-emerald-700 dark:text-emerald-300 truncate" dir="ltr">{serpUrl}</p>
                   <p className="text-sm text-blue-700 dark:text-blue-400 font-medium" style={{ maxWidth: SEO_PX_LIMITS.titleMobile, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', fontFamily: 'arial, sans-serif', fontSize: 16 }}>{title || 'عنوان سئو (خالی = نام محتوا)'}</p>
                   <p className="text-[11px] text-primary-600 dark:text-white/70" style={{ maxWidth: SEO_PX_LIMITS.descMobile, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', fontFamily: 'arial, sans-serif', fontSize: 12 }}>{description || 'توضیحات متا اینجا نمایش داده می‌شود…'}</p>
-                  {(titleReport.mobOver || descReport.mobOver) && <p className="text-[10px] text-red-500">در موبایل بخشی از متن بریده می‌شود</p>}
+                  {(titleReport.mobOver || descReport.mobOver) && <p className="text-[10px] text-red-300">در موبایل بخشی از متن بریده می‌شود</p>}
                 </div>
               </div>
               )}
@@ -11884,7 +11884,7 @@ const verifyOtp = async () => {
               <div>
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <label className="text-xs text-primary-500">کلمات کلیدی فوکوس (با ویرگول) · حداکثر ۳</label>
-                  <span className={`text-xs ${kwCount > kwLimit ? 'text-red-500' : 'text-primary-400'}`}>{kwCount}/{kwLimit}</span>
+                  <span className={`text-xs ${kwCount > kwLimit ? 'text-red-300' : 'text-primary-400'}`}>{kwCount}/{kwLimit}</span>
                 </div>
                 <input value={focusKeywords} onChange={e => { let v = e.target.value; const parts = v.split(/[,،]/).map(x => x.trim()).filter(Boolean); if (parts.length > kwLimit) v = parts.slice(0, kwLimit).join('، '); onChange?.({ focusKeywords: v }); }} placeholder="حداکثر ۳ کلمه" className="w-full px-3 py-2.5 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-sm text-primary-900 dark:text-white" />
               </div>
@@ -11904,7 +11904,7 @@ const verifyOtp = async () => {
                   <div className="rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 p-3 space-y-1">
                     <p className="text-[10px] font-semibold text-primary-500">پیش‌نمایش گوگل · دسکتاپ</p>
                     <p className="text-sm text-[#1a0dab] dark:text-[#8ab4f8] leading-snug" style={{ maxWidth: SEO_PX_LIMITS.titleDesktop, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', fontFamily: 'arial, sans-serif' }}>{title || 'عنوان سئو'}</p>
-                    <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-latin" dir="ltr" style={{ maxWidth: SEO_PX_LIMITS.titleDesktop, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{previewUrl || 'https://example.com/page'}</p>
+                    <p className="text-[11px] text-emerald-700 dark:text-emerald-300 font-latin" dir="ltr" style={{ maxWidth: SEO_PX_LIMITS.titleDesktop, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{previewUrl || 'https://example.com/page'}</p>
                     <p className="text-[11px] text-primary-600 dark:text-white/70" style={{ maxWidth: SEO_PX_LIMITS.descDesktop, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', fontFamily: 'arial, sans-serif', fontSize: 13 }}>{description || 'توضیحات متا…'}</p>
                   </div>
                   <div className="rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 p-3 space-y-1">
@@ -11930,7 +11930,7 @@ const verifyOtp = async () => {
                   <div className="rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 p-3 space-y-1">
                     <p className="text-[10px] font-semibold text-primary-500">پیش‌نمایش گوگل · دسکتاپ</p>
                     <p className="text-sm text-[#1a0dab] dark:text-[#8ab4f8] leading-snug" style={{ maxWidth: SEO_PX_LIMITS.titleDesktop, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', fontFamily: 'arial, sans-serif' }}>{title || 'عنوان سئو'}</p>
-                    <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-latin" dir="ltr" style={{ maxWidth: SEO_PX_LIMITS.titleDesktop, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{previewUrl || 'https://example.com/page'}</p>
+                    <p className="text-[11px] text-emerald-700 dark:text-emerald-300 font-latin" dir="ltr" style={{ maxWidth: SEO_PX_LIMITS.titleDesktop, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{previewUrl || 'https://example.com/page'}</p>
                     <p className="text-[11px] text-primary-600 dark:text-white/70" style={{ maxWidth: SEO_PX_LIMITS.descDesktop, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', fontFamily: 'arial, sans-serif', fontSize: 13 }}>{description || 'توضیحات متا…'}</p>
                   </div>
                   <div className="rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 p-3 space-y-1">
@@ -11952,7 +11952,7 @@ const verifyOtp = async () => {
                   <div key={idx} className="p-2 rounded-xl border border-primary-100 dark:border-white/10 space-y-1.5">
                     <input value={it.q || ''} onChange={e => { const next = [...faqItems]; next[idx] = { ...next[idx], q: e.target.value }; onFaqChange(next); }} placeholder="سؤال" className="w-full px-2 py-1.5 rounded-lg border border-primary-200 dark:border-white/20 bg-transparent text-xs text-primary-900 dark:text-white" />
                     <textarea value={it.a || ''} onChange={e => { const next = [...faqItems]; next[idx] = { ...next[idx], a: e.target.value }; onFaqChange(next); }} placeholder="پاسخ" rows={2} className="w-full px-2 py-1.5 rounded-lg border border-primary-200 dark:border-white/20 bg-transparent text-xs text-primary-900 dark:text-white resize-y" />
-                    <button type="button" className="text-xs text-red-500" onClick={() => onFaqChange(faqItems.filter((_, j) => j !== idx))}>حذف</button>
+                    <button type="button" className="text-xs text-red-300" onClick={() => onFaqChange(faqItems.filter((_, j) => j !== idx))}>حذف</button>
                   </div>
                 ))}
                 {!(faqItems || []).length && <p className="text-xs text-primary-400">خالی · از «پیشنهاد FAQ» یا افزودن دستی استفاده کنید</p>}
@@ -12049,7 +12049,7 @@ const verifyOtp = async () => {
             {/* SERP preview */}
             <div className="rounded-xl border border-primary-200 dark:border-white/25 bg-white dark:bg-primary-800 p-3 space-y-1">
               <p className="text-xs font-semibold text-primary-600 dark:!text-white/90 mb-1">پیش‌نمایش گوگل</p>
-              <p className="text-xs text-emerald-700 dark:text-emerald-400 truncate" dir="ltr">{serpUrl}</p>
+              <p className="text-xs text-emerald-700 dark:text-emerald-300 truncate" dir="ltr">{serpUrl}</p>
               <p className="text-base text-blue-700 dark:text-blue-400 font-medium line-clamp-2">{title || 'عنوان سئو (خالی = نام محتوا)'}</p>
               <p className="text-xs text-primary-600 dark:text-white/70 line-clamp-2">{description || 'توضیحات متا اینجا نمایش داده می‌شود…'}</p>
             </div>
@@ -12122,7 +12122,7 @@ const verifyOtp = async () => {
                   <div key={i} className="space-y-1 p-2 rounded-lg border border-primary-50 dark:border-white/5">
                     <input value={f.q || ''} onChange={e => { const next = [...faqItems]; next[i] = { ...next[i], q: e.target.value }; onFaqChange(next); }} placeholder="سؤال" className="w-full px-2 py-1.5 rounded-lg border border-primary-200 dark:border-white/15 bg-transparent text-xs" />
                     <textarea value={f.a || ''} onChange={e => { const next = [...faqItems]; next[i] = { ...next[i], a: e.target.value }; onFaqChange(next); }} placeholder="پاسخ" rows={2} className="w-full px-2 py-1.5 rounded-lg border border-primary-200 dark:border-white/15 bg-transparent text-xs resize-y" />
-                    <button type="button" className="text-xs text-red-500" onClick={() => onFaqChange(faqItems.filter((_, j) => j !== i))}>حذف</button>
+                    <button type="button" className="text-xs text-red-300" onClick={() => onFaqChange(faqItems.filter((_, j) => j !== i))}>حذف</button>
                   </div>
                 ))}
                 {!(faqItems || []).length && <p className="text-xs text-primary-400">خالی · از «پیشنهاد FAQ» یا افزودن دستی استفاده کنید</p>}
@@ -12194,7 +12194,7 @@ const verifyOtp = async () => {
                     className="w-full px-3 py-2 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900 text-xs text-left font-latin text-primary-900 dark:text-white"
                   />
                   {ogImage ? (
-                    <button type="button" onClick={() => onChange?.({ ogImage: '' })} className="text-xs text-red-500">حذف تصویر</button>
+                    <button type="button" onClick={() => onChange?.({ ogImage: '' })} className="text-xs text-red-300">حذف تصویر</button>
                   ) : null}
                 </div>
               </div>
@@ -12225,7 +12225,7 @@ const verifyOtp = async () => {
             <div>
               <div className="flex items-center justify-between gap-2 mb-1">
                 <label className="text-xs text-primary-500">کلمات کلیدی فوکوس (با ویرگول)</label>
-                <span className={`text-xs ${kwCount > kwLimit ? 'text-red-500' : 'text-primary-400'}`}>{kwCount}/{kwLimit}</span>
+                <span className={`text-xs ${kwCount > kwLimit ? 'text-red-300' : 'text-primary-400'}`}>{kwCount}/{kwLimit}</span>
               </div>
               <input
                 value={focusKeywords}
@@ -16747,7 +16747,7 @@ const params = new URLSearchParams(window.location.search);
                         <div className="px-3 pt-3 pb-2">
                           <div className="flex items-center justify-between mb-1.5">
                             <span className="text-xs font-bold text-primary-400">جستجوهای اخیر</span>
-                            <button type="button" onClick={clearRecentSearches} className="text-xs text-primary-400 hover:text-red-500">پاک کردن</button>
+                            <button type="button" onClick={clearRecentSearches} className="text-xs text-primary-400 hover:text-red-300">پاک کردن</button>
                           </div>
                           <div className="flex flex-wrap gap-1.5">
                             {(recentSearches || []).map(q => (
@@ -17121,7 +17121,7 @@ const params = new URLSearchParams(window.location.search);
                         <div className="px-3 pt-3 pb-2">
                           <div className="flex items-center justify-between mb-1.5">
                             <span className="text-xs font-bold text-primary-400">جستجوهای اخیر</span>
-                            <button type="button" onClick={clearRecentSearches} className="text-xs text-primary-400 hover:text-red-500">پاک کردن</button>
+                            <button type="button" onClick={clearRecentSearches} className="text-xs text-primary-400 hover:text-red-300">پاک کردن</button>
                           </div>
                           <div className="flex flex-wrap gap-1.5">
                             {(recentSearches || []).map(q => (
@@ -17717,7 +17717,7 @@ const params = new URLSearchParams(window.location.search);
                         {couponApplied ? (
                           <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-apple-blue/30 bg-apple-blue/5">
                             <span className="text-xs font-bold text-apple-blue">{couponApplied.code}</span>
-                            <button type="button" onClick={removeCoupon} className="text-xs text-primary-500 hover:text-red-500 transition">حذف</button>
+                            <button type="button" onClick={removeCoupon} className="text-xs text-primary-500 hover:text-red-300 transition">حذف</button>
                           </div>
                         ) : (
                           <div className="flex gap-2">
@@ -17735,7 +17735,7 @@ const params = new URLSearchParams(window.location.search);
                           </div>
                         )}
                         {couponMsg && (
-                          <p className={`text-xs mt-1.5 ${couponMsg.type === 'ok' ? 'text-apple-blue' : 'text-red-500'}`}>{couponMsg.text}</p>
+                          <p className={`text-xs mt-1.5 ${couponMsg.type === 'ok' ? 'text-apple-blue' : 'text-red-300'}`}>{couponMsg.text}</p>
                         )}
 
                       </div>
