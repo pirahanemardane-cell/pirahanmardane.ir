@@ -107,7 +107,7 @@ import { mapProfileToSeller as mapProfileToSellerLib } from '@/lib/seller-map';
 import { mapAdminProductRow as mapAdminProductRowLib, mapAdminSellerRow as mapAdminSellerRowLib } from '@/lib/admin-row-map';
 import { buildRobotsTxt as buildRobotsTxtLib, buildSitemapXml as buildSitemapXmlLib, buildSitemapIndexXml as buildSitemapIndexXmlLib, buildNewsSitemapXml as buildNewsSitemapXmlLib, buildVideoSitemapXml as buildVideoSitemapXmlLib, buildLocalBusinessSchema as buildLocalBusinessSchemaLib } from '@/lib/seo-build';
 import { runSeoHealthCheck as runSeoHealthCheckLib } from '@/lib/seo-health';
-import { isDealActive as isDealActiveLib, matchSellerId as matchSellerIdLib, getCheckoutTaxRate as getCheckoutTaxRateLib } from '@/lib/product-flags';
+import { isDealActive as isDealActiveLib, matchSellerId as matchSellerIdLib, getCheckoutTaxRate as getCheckoutTaxRateLib, isSellerFastShipAllowed as isSellerFastShipAllowedLib, isProductFastShip as isProductFastShipLib} from '@/lib/product-flags';
 
 
 import { mapExternalRowToProduct as mapExternalRowToProductLib } from '@/lib/import-map';
@@ -3496,20 +3496,11 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       /** شگفت‌انگیز فقط با درخواست فروشنده + تأیید ادمین (amazing + dealEndsAt ≤۷روز). فروشنده مستقیم اضافه نمی‌کند. */
       /** ارسال سریع: محصول + مجوز فروشنده (پیش‌فرض فعال؛ ادمین می‌تواند غیرفعال کند) */
-      const isSellerFastShipAllowed = (sellerId) => {
-        try {
-          const id = sellerId || 'own';
-          const fromAdmin = (adminSellers || []).find((x) => x && (x.id === id || x.phone === id));
-          if (fromAdmin) return fromAdmin.fastShipEnabled !== false;
-          if (sellerUser && (sellerUser.id === id || id === 'own')) return sellerUser.fastShipEnabled !== false;
-        } catch (_) {}
-        return true; // پیش‌فرض: فعال
-      };
-      const isProductFastShip = (p) => {
-        if (!p || !p.fastShip) return false;
-        const sid = p.sellerId || p.seller?.id || 'own';
-        return isSellerFastShipAllowed(sid);
-      };
+            // isSellerFastShipAllowed → @/lib/product-flags
+      const isSellerFastShipAllowed = (sellerId) =>
+        isSellerFastShipAllowedLib(sellerId, adminSellers, sellerUser);
+            // isProductFastShip → @/lib/product-flags
+      const isProductFastShip = (p) => isProductFastShipLib(p, adminSellers, sellerUser);
             // isDealActive → @/lib/product-flags
       const isDealActive = (p) => isDealActiveLib(p);
       const catalogProducts = useMemo(() => {
