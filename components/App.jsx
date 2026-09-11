@@ -1,4 +1,7 @@
 'use client';
+import { classifyToastVariant } from '@/lib/toast-variant';
+import { generateTicketCode } from '@/lib/ticket-code';
+import { getPageShareUrl, copyTextSilent, nativeShare } from '@/lib/share-utils';
 import {
   normalizeAttrMap,
   attrsKeyPart,
@@ -15,7 +18,7 @@ import { scrollPageToTop } from '@/lib/scroll-page-to-top';
 import { HOME_FEATURES, HOME_STATS, TREND_QUERIES, CAT_LABEL_MAP } from '@/lib/site-content';
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES } from '@/lib/size-guide';
-import { shopCodePrefix } from '@/lib/product-codes';
+import { shopCodePrefix, normProductCode, findProductByCode } from '@/lib/product-codes';
 import { findOpenChatConversation, conversationChannelLabel, ticketMessagesToChatUI } from '@/lib/ticket-chat';
 import { downloadBlobFile } from '@/lib/download-blob';
 import { checkSellerSeoSpam } from '@/lib/seo-spam';
@@ -4373,19 +4376,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         w.document.close();
       };
 
-      const classifyToastVariant = (text, type = 'info') => {
-        const t = String(text || '');
-        const ty = String(type || 'info');
-        if (ty === 'error') return 'error';
-        if (ty === 'success' || ty === 'order') return 'success';
-        if (ty === 'cart') return /اضافه|افزود/.test(t) ? 'success' : 'default';
-        if (ty === 'warning') return 'error'; // اخطار هم قرمز پاستیلی
-        if (ty === 'system') return /موفق|نصب شد/.test(t) ? 'success' : 'default';
-        // info و بقیه: موفقیت‌های رایج → سبز، خطاها → قرمز، راهنما → بنفش
-        if (/خطا|نامعتبر|مجاز نیست|رد شد|شکست|ناموفق|اجباری|الزامی|پیدا نشد|مسدود/.test(t)) return 'error';
-        if (/موفق|ثبت شد|تأیید|تایید|ارسال شد|ذخیره|کپی شد|به‌روز|بازگردانی|دانلود|منتشر|فعال شد|انجام شد|خوش آمدید|اضافه شد|افزوده|پرداخت موفق|نصب شد|باز شد|تعطیل شد|غیرفعال شد|آماده‌سازی|رهگیری/.test(t)) return 'success';
-        return 'default';
-      };
+      // classifyToastVariant → @/lib/toast-variant
       const pushLiveToast = (text, opts = {}) => {
         const type = opts.type || 'info';
         // success→سبز پاستیلی · error→قرمز پاستیلی · info→بنفش پاستیلی
@@ -5207,33 +5198,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       // shopCodePrefix → @/lib/product-codes
       /** کد یکتا: ۴حرف فروشگاه + ۹ رقم — بدون هم‌پوشانی بین همه فروشگاه‌ها */
 
-      /** کد یکتای تیکت: TK + 9 رقم — بدون هم‌پوشانی بین خریدار/فروشنده/ادمین */
-      const generateTicketCode = () => {
-        const collect = () => {
-          const codes = new Set();
-          const add = (arr) => {
-            (arr || []).forEach((t) => {
-              if (t && t.code) codes.add(String(t.code));
-              if (t && t.id) codes.add(String(t.id));
-            });
-          };
-          try { add(JSON.parse(localStorage.getItem('buyerTickets') || '[]')); } catch (_) {}
-          try { add(JSON.parse(localStorage.getItem('sellerTickets') || '[]')); } catch (_) {}
-          try { add(JSON.parse(localStorage.getItem('adminTickets') || '[]')); } catch (_) {}
-          try { if (typeof buyerTickets !== 'undefined') add(buyerTickets); } catch (_) {}
-          try { if (typeof sellerTickets !== 'undefined') add(sellerTickets); } catch (_) {}
-          try { if (typeof adminTickets !== 'undefined') add(adminTickets); } catch (_) {}
-          return codes;
-        };
-        const existing = collect();
-        for (let i = 0; i < 40; i++) {
-          let digits = '';
-          for (let j = 0; j < 9; j++) digits += String(Math.floor(Math.random() * 10));
-          const code = 'TK' + digits;
-          if (!existing.has(code)) return code;
-        }
-        return 'TK' + String(Date.now()).slice(-9);
-      };
+      // generateTicketCode → @/lib/ticket-code
+      
 
       /** گفتگوی باز چت (یکپارچه با تیکت) */
       // ticket-chat helpers → @/lib/ticket-chat
@@ -5388,19 +5354,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       };
 
 
-      const normProductCode = (v) => onlyDigits(toEnDigits(String(v ?? '')));
-      const findProductByCode = (pools, rawCode) => {
-        const want = normProductCode(rawCode);
-        if (!want) return null;
-        const list = pools || [];
-        return list.find((x) => {
-          const c = normProductCode(x?.productCode || x?.product_code || '');
-          if (c && c === want) return true;
-          if (c && (c.endsWith(want) || want.endsWith(c)) && Math.min(c.length, want.length) >= 8) return true;
-          if (String(x?.id) === String(rawCode)) return true;
-          return false;
-        }) || null;
-      };
+      // normProductCode/findProductByCode → @/lib/product-codes
 
       const openPDP = (p, opts = {}) => {
         if (!(opts && opts.silent)) beginPageLoad('product');
@@ -14318,30 +14272,13 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         }
       };
 
-      /** نوار اشتراک‌گذاری شبکه اجتماعی — انتهای صفحه محصول / مطلب */
-      const getPageShareUrl = () => {
-        try { return typeof window !== 'undefined' ? window.location.href : ''; } catch { return ''; }
-      };
+      // getPageShareUrl/nativeShare → @/lib/share-utils
       const copyShareLink = async (url) => {
         const u = url || getPageShareUrl();
         try {
-          if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(u);
-          else {
-            const ta = document.createElement('textarea');
-            ta.value = u; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-          }
+          await copyTextSilent(u);
           try { showToast({ message: 'لینک کپی شد', variant: 'success', position: 'top-center' }); } catch (_) {
             try { pushLiveToast('لینک کپی شد', { type: 'success' }); } catch (__) {}
-          }
-        } catch (_) {}
-      };
-      const nativeShare = async (title, text, url) => {
-        const u = url || getPageShareUrl();
-        try {
-          if (navigator.share) {
-            await navigator.share({ title: title || document.title, text: text || '', url: u });
-          } else {
-            await copyShareLink(u);
           }
         } catch (_) {}
       };
