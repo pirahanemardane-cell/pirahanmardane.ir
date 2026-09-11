@@ -107,7 +107,9 @@ import { buildShippingOptions as buildShippingOptionsLib, getCheckoutShippingCos
 import { isKnownCategory as isKnownCategoryLib } from '@/lib/category-known';
 import { buildCurrentPageSeoContext } from '@/lib/page-seo-context';
 import { normalizeProduct } from '@/lib/product-normalize';
-import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib } from '@/lib/seller-helpers';
+import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
+import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
+
 
 
 
@@ -5176,14 +5178,13 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       };
 
       // product variant helpers → @/lib/product-variants
-      const syncFormVariants = (f) => {
-        const colorNames = (adminCatalogColors || []).filter(c => (f.colorIds || []).includes(c.id)).map(c => c.name);
-        const sizes = f.sizes || [];
-        const attrDims = getAttrDimensions(f.attributes || {}, adminCatalogAttributes || []);
-        const basePrice = onlyDigits(String(f.price || '')) || f.price;
-        const baseStock = onlyDigits(String(f.stock || '')) || f.stock;
-        return buildVariantMatrix(colorNames, sizes, attrDims, basePrice, baseStock, f.variants || []);
-      };
+      const syncFormVariants = (f) => syncFormVariantsLib(f, {
+        adminCatalogColors,
+        adminCatalogAttributes,
+        getAttrDimensions,
+        onlyDigits,
+        buildVariantMatrix,
+      });
 
       const addToCart = (p, opts = {}) => {
         if (!p) return;
@@ -12273,14 +12274,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                   norm(c.name) === sf || norm(c.slug) === sf || String(c.slug) === String(slug) || String(c.name) === String(slug)
                 )) || null;
               };
-              const findSeller = (slug) => {
-                const sf = norm(slug);
-                if (!sf) return null;
-                return sellers.find((x) => {
-                  const n = norm(x && (x.shopName || x.name) || "");
-                  return n === sf || String(x.id) === String(slug);
-                }) || null;
-              };
+              const findSeller = (slug) => findSellerLib(slug, sellers, norm);
               if (parts.length === 1) {
                 const cat = findCat(parts[0]);
                 if (cat) {
