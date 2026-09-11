@@ -1,4 +1,5 @@
 'use client';
+import { SIZE_GUIDE_TABLE, ALL_SIZES } from '@/lib/size-guide';
 import { shopCodePrefix } from '@/lib/product-codes';
 import { findOpenChatConversation, conversationChannelLabel, ticketMessagesToChatUI } from '@/lib/ticket-chat';
 import { downloadBlobFile } from '@/lib/download-blob';
@@ -42,7 +43,7 @@ import Icon from './Icon';
 import { AppApiProvider } from './AppApiContext';
 import ShopShell from './panels/ShopShell';
 import { htmlToPlain } from '@/lib/html-plain';
-import { toFa, toEnDigits, onlyDigits, normalizeIranMobile } from '@/lib/format-digits';
+import { toFa, toEnDigits, onlyDigits, normalizeIranMobile, isAdminPhone } from '@/lib/format-digits';
 import { normalizeBreadcrumbs } from '@/lib/breadcrumbs';
 import EmptyState from './EmptyState';
 import { Textarea } from './ui/textarea';
@@ -136,7 +137,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
     };
 
         // user-link-guard → @/lib/user-link-guard
-    const allSizes = ['S', 'M', 'L', 'XL', 'XXL'];
+    const allSizes = ALL_SIZES;
 
     const OWN_SELLER = { id: 'own', name: 'فروشگاه مرکزی', rating: 0, ratingCount: 0 };
     const SELLERS = {
@@ -148,13 +149,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
     const sampleReviews = [];
     const completeTheLook = [];
     const sampleQuestions = [];
-    const sizeGuideTable = [
-      { size: 'S', chest: '۹۶', waist: '۸۴', length: '۷۲' },
-      { size: 'M', chest: '۱۰۰', waist: '۸۸', length: '۷۴' },
-      { size: 'L', chest: '۱۰۴', waist: '۹۲', length: '۷۶' },
-      { size: 'XL', chest: '۱۱۰', waist: '۹۸', length: '۷۸' },
-      { size: 'XXL', chest: '۱۱۶', waist: '۱۰۴', length: '۸۰' },
-    ];
+    const sizeGuideTable = SIZE_GUIDE_TABLE;
 
     /* ============================================================================
      * دسته‌بندی‌ها — قانون معماری (ریشه‌ای)
