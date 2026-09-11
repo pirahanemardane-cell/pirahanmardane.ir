@@ -109,7 +109,7 @@ import { buildCurrentPageSeoContext } from '@/lib/page-seo-context';
 import { normalizeProduct } from '@/lib/product-normalize';
 import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
 import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
-import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi } from '@/lib/auth-session';
+import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi, verifyMfaApi, completeOtpRegisterApi, setAccountPasswordApi } from '@/lib/auth-session';
 
 
 
@@ -7133,19 +7133,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
 
 
-      const setAccountPassword = async (password) => {
-        const res = await fetch('/api/auth/password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ password }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data?.ok === false) {
-          throw new Error(data?.error || 'ذخیره رمز ناموفق');
-        }
-        return data;
-      };
+      const setAccountPassword = async (password) => setAccountPasswordApi(password);
 
       const loginWithPassword = async () => {
         setAuthLoading(true);
@@ -7372,20 +7360,14 @@ const verifyOtp = async () => {
         try { trackGa4Event('sign_up', { method: 'otp' }); } catch (_) {}
         setAuthLoading(true);
         try {
-          const res = await fetch('/api/auth/otp/complete', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              phone: phoneDigits,
-              fullName: authName.trim(),
-              lastName: authLastName.trim(),
-              ownerName: authLastName.trim(),
-              shopName: authName.trim(),
-              role: authMode === 'seller' ? 'seller' : 'buyer',
-            }),
+          const data = await completeOtpRegisterApi({
+            phone: phoneDigits,
+            fullName: authName.trim(),
+            lastName: authLastName.trim(),
+            ownerName: authLastName.trim(),
+            shopName: authName.trim(),
+            role: authMode === 'seller' ? 'seller' : 'buyer',
           });
-          const data = await res.json();
           if (!data.ok) {
             setAuthError(data.error || 'ثبت‌نام ناموفق بود');
             setAuthLoading(false);
@@ -10464,18 +10446,12 @@ const downloadSeoFile = (filename, content, mime) => {
             setAuthStep('phone');
             return;
           }
-          const res = await fetch('/api/auth/login-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
-              phone,
-              password,
-              remember: !!(authRemember || (typeof window !== 'undefined' && window.__pmAuthRemember)),
-            }),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || !data?.ok) {
+          const data = await loginWithPasswordApi(
+            phone,
+            password,
+            !!(authRemember || (typeof window !== 'undefined' && window.__pmAuthRemember)),
+          );
+          if (!data?.ok) {
             setAuthError(data?.error || 'ارسال مجدد ناموفق');
             return;
           }
@@ -10504,14 +10480,8 @@ const downloadSeoFile = (filename, content, mime) => {
             setAuthError('کد ۶ رقمی را وارد کنید');
             return;
           }
-          const res = await fetch('/api/auth/mfa/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ phone, code }),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || !data?.ok) {
+          const data = await verifyMfaApi(phone, code);
+          if (!data?.ok) {
             setAuthError(data?.error || 'کد اشتباه است');
             return;
           }
