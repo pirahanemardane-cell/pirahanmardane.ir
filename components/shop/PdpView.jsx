@@ -381,9 +381,9 @@ export default function PdpView() {
                       )}
 
                       {/* Price */}
-                      <div className="mt-4 p-4 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10">
+                      <div className="mt-4 p-4 sm:p-5 rounded-2xl bg-white dark:bg-primary-900 border-2 border-apple-blue/30 dark:border-[#13ABC4]/40 shadow-sm">
                         <div className="flex items-end gap-3 flex-wrap">
-                          <p className="text-2xl sm:text-3xl font-bold text-primary-900 dark:text-white">{variantPriceText} <span className="text-sm font-normal text-primary-500">تومان</span></p>
+                          <p className="text-3xl sm:text-4xl font-black tracking-tight text-primary-900 dark:text-white">{variantPriceText} <span className="text-sm font-medium text-primary-500">تومان</span></p>
                           {p.oldPrice && (
                             <div className="flex items-center gap-2 pb-1">
                               <span className="text-sm text-primary-400 line-through">{p.oldPrice}</span>
@@ -605,16 +605,17 @@ export default function PdpView() {
                       </div>
 
                       {/* CTA */}
-                      <div className="mt-5 flex flex-col sm:flex-row gap-2.5">
+                      <div className="mt-5 flex flex-col gap-2.5">
                         {stockOk ? (
-                          <button type="button" onClick={() => addToCart(p, { colorIdx: pdpColorIdx, size: pdpSize || '', qty: pdpQty, attrs: activeAttrs, requireSize: true })} className="flex-1 py-3 rounded-full bg-apple-blue text-white text-sm font-bold hover:opacity-90 transition shadow-md">
+                          <button type="button" onClick={() => addToCart(p, { colorIdx: pdpColorIdx, size: pdpSize || '', qty: pdpQty, attrs: activeAttrs, requireSize: true })} className="w-full py-3.5 sm:py-4 rounded-2xl bg-apple-blue text-white text-base sm:text-lg font-black hover:opacity-95 active:scale-[0.99] transition shadow-lg shadow-apple-blue/25">
                             افزودن به سبد
                           </button>
                         ) : (
-                          <button type="button" onClick={() => setPdpNotifyOpen(v => !v)} className="flex-1 py-3 rounded-full bg-primary-800 dark:bg-[#13ABC4] text-white dark:text-white text-sm font-bold">
+                          <button type="button" onClick={() => setPdpNotifyOpen(v => !v)} className="w-full py-3.5 sm:py-4 rounded-2xl bg-primary-800 dark:bg-[#13ABC4] text-white text-base sm:text-lg font-black">
                             خبرم کن وقتی موجود شد
                           </button>
                         )}
+                        <p className="text-[11px] sm:text-xs text-center text-primary-500 dark:text-white/60">پرداخت امن · ارسال سریع · ۷ روز ضمانت بازگشت</p>
                       </div>
                       {pdpNotifyOpen && (
                         <div className="mt-2 p-3 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900">
@@ -638,9 +639,11 @@ export default function PdpView() {
                       )}
 
                       {/* Return summary under CTA */}
-                      <p className="mt-3 text-xs text-primary-500 dark:!text-white leading-relaxed">
-                        ۷ روز ضمانت بازگشت کالا · ضمانت اصالت · ارسال از {fullSeller.city || 'تهران'}
-                      </p>
+                      <div className="mt-3 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/40">
+                        <p className="text-xs sm:text-sm font-medium text-emerald-800 dark:text-emerald-300 leading-relaxed text-center">
+                          ✓ ۷ روز ضمانت بازگشت · ✓ ضمانت اصالت · ✓ ارسال از {fullSeller.city || 'تهران'}
+                        </p>
+                      </div>
 
                       {/* Trust bar — موبایل/تبلت */}
                       <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-2 lg:hidden">
@@ -960,18 +963,22 @@ export default function PdpView() {
                 </div>
 
                 {/* Mobile sticky CTA */}
-                <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-primary-950/95 backdrop-blur-xl border-t border-primary-100 dark:border-white/15 px-3 py-2.5 safe-pb safe-area-pb">
+                <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/98 dark:bg-primary-950/98 backdrop-blur-xl border-t border-primary-100 dark:border-white/15 px-3 py-3 safe-pb safe-area-pb shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
                   <div className="flex items-center gap-3">
                     <div className="min-w-0">
-                      <p className="text-sm font-bold text-primary-900 dark:text-white">{p.priceText} <span className="text-xs font-normal text-primary-500">تومان</span></p>
-                      {p.discount && <p className="text-xs text-red-500">{toFa(p.discount)}٪ تخفیف</p>}
+                      <p className="text-base font-black text-primary-900 dark:text-white">{p.priceText} <span className="text-xs font-medium text-primary-500">تومان</span></p>
+                      {p.discount ? (
+                        <p className="text-xs text-red-500 font-medium">{toFa(p.discount)}٪ تخفیف</p>
+                      ) : (
+                        <p className="text-[10px] text-primary-400">پرداخت امن</p>
+                      )}
                     </div>
                     {stockOk ? (
-                      <button type="button" onClick={() => addToCart(p, { colorIdx: pdpColorIdx, size: pdpSize || '', qty: pdpQty, attrs: activeAttrs, requireSize: true })} className="flex-1 py-2.5 rounded-full bg-apple-blue text-white text-sm font-bold">
+                      <button type="button" onClick={() => addToCart(p, { colorIdx: pdpColorIdx, size: pdpSize || '', qty: pdpQty, attrs: activeAttrs, requireSize: true })} className="flex-1 py-3 rounded-2xl bg-apple-blue text-white text-sm font-black shadow-md shadow-apple-blue/20">
                         افزودن به سبد
                       </button>
                     ) : (
-                      <button type="button" onClick={() => setPdpNotifyOpen(true)} className="flex-1 py-2.5 rounded-full bg-primary-800 text-white text-sm font-bold">
+                      <button type="button" onClick={() => setPdpNotifyOpen(true)} className="flex-1 py-3 rounded-2xl bg-primary-800 text-white text-sm font-black">
                         خبرم کن
                       </button>
                     )}
