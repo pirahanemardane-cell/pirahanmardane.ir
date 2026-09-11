@@ -109,7 +109,7 @@ import { buildCurrentPageSeoContext } from '@/lib/page-seo-context';
 import { normalizeProduct } from '@/lib/product-normalize';
 import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
 import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
-import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi, verifyMfaApi, completeOtpRegisterApi, setAccountPasswordApi, mapProfileToBuyer as mapProfileToBuyerLib, fetchAuthMe } from '@/lib/auth-session';
+import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi, verifyMfaApi, completeOtpRegisterApi, setAccountPasswordApi, mapProfileToBuyer as mapProfileToBuyerLib, fetchAuthMe, updateAuthProfile, postLogoutGlobal } from '@/lib/auth-session';
 import { fetchSellerMe, registerSellerApi } from '@/lib/api/seller';
 
 
@@ -7433,12 +7433,7 @@ const verifyOtp = async () => {
 
         try {
           const go = () => { try { window.location.assign('/'); } catch (_) {} };
-          const p = fetch('/api/auth/logout', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ scope: 'global', allDevices: true }),
-          }).catch(() => {});
+          const p = postLogoutGlobal({ scope: 'global', allDevices: true }).catch(() => {});
           Promise.resolve(p).finally(go);
           setTimeout(go, 400);
           return;
@@ -7537,18 +7532,13 @@ const verifyOtp = async () => {
         try {
           if (next?.supabase || next?.id) {
             const fullName = `${next.firstName || ''} ${next.lastName || ''}`.trim();
-            fetch('/api/auth/profile', {
-              method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({
+            updateAuthProfile({
                 fullName: fullName || undefined,
                 phone: next.phone || undefined,
                 email: next.email || undefined,
                 birthDate: next.birthDate || undefined,
                 gender: next.gender || undefined,
-              }),
-            }).catch(() => {});
+              }).catch(() => {});
           }
         } catch (_) {}
       };
