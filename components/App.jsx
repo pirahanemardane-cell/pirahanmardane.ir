@@ -16674,7 +16674,7 @@ const params = new URLSearchParams(window.location.search);
             } ${scrolled || headerRevealedAfterHero || cartOpen || wishlistOpen || compareOpen || recentOpen || notifPanelOpen || mobileMenuOpen ? 'bg-white dark:bg-primary-900 shadow-md border-b border-primary-100/50 dark:border-primary-800/50' : 'bg-white dark:bg-primary-900 shadow-sm'}`}
           >
             {/* Top bar — موبایل: پایین (منو/جستجو/ورود) · دسکتاپ: بالا */}
-            <div className="order-2 md:order-1 bg-primary-50 dark:bg-primary-900 text-primary-400 dark:text-white text-xs sm:text-sm py-1.5 sm:py-2 px-3 sm:px-4 border-b border-primary-200 dark:border-white/30 transition-colors relative overflow-visible">
+            <div className="order-2 md:order-1 bg-primary-50 dark:bg-primary-900 text-primary-400 dark:text-white text-xs sm:text-sm py-1 sm:py-2 px-2.5 sm:px-4 border-b border-primary-200 dark:border-white/30 transition-colors relative overflow-visible">
               <div className="max-w-7xl mx-auto flex justify-between items-center gap-2">
                 {/* Burger (mobile) */}
                 <div className="flex md:contents items-center gap-1.5 sm:gap-2 flex-shrink-0">
@@ -16692,19 +16692,20 @@ const params = new URLSearchParams(window.location.search);
                   </div>
 
                 {/* Mobile search — between phone and login, with filters */}
-                <div className="md:hidden flex-1 min-w-0 mx-1.5 relative z-[300] overflow-visible">
-                  <div className="flex items-stretch bg-white dark:bg-primary-900 rounded-2xl border border-primary-200/80 dark:border-white/20 shadow-sm overflow-hidden h-[50px]">
+                <div className="md:hidden flex-1 min-w-0 mx-1 relative z-[300] overflow-visible">
+                  <div className="flex items-stretch bg-white dark:bg-primary-900 rounded-2xl border-2 border-primary-200 dark:border-white/25 shadow-sm overflow-hidden h-[48px] focus-within:border-apple-blue dark:focus-within:border-[#13ABC4]">
                     <button
                       type="button"
                       data-filter-toggle="true"
+                      aria-label="فیلتر جستجو"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         setCatOpen((v) => !v);
                       }}
-                      className="flex items-center gap-0.5 flex-shrink-0 px-2 text-xs font-medium text-primary-800 dark:text-white border-l border-primary-200 dark:border-white"
+                      className="flex items-center gap-0.5 flex-shrink-0 px-2.5 text-xs font-bold text-primary-800 dark:text-white border-l border-primary-200 dark:border-white/30 bg-primary-50/80 dark:bg-primary-800/40"
                     >
-                      <span className="max-w-[3.5rem] truncate">فیلتر</span>
+                      <span className="max-w-[3.2rem] truncate">فیلتر</span>
                       <Icon name="chevronDown" size={14} className={`transition-transform dark:text-white ${catOpen ? 'rotate-180' : ''}`} />
                     </button>
                     <div className="relative flex-1 min-w-0">
@@ -16714,15 +16715,16 @@ const params = new URLSearchParams(window.location.search);
                         onChange={e => { setSearchQuery(e.target.value); setSearchSuggestOpen(true); setSearchActiveIdx(-1); }}
                         onFocus={(e) => { setCatOpen(false); setSearchSuggestOpen(true); try { e.target.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (_) {} }}
                         onBlur={() => setTimeout(() => setSearchSuggestOpen(false), 280)}
-                        placeholder={['پیراهن رسمی…', 'لینن…', 'آستین کوتاه…', 'سفید…', 'کروات…', 'جستجو…'][searchPhIdx]}
+                        placeholder={['پیراهن رسمی…', 'لینن…', 'آستین کوتاه…', 'سفید…', 'کروات…', 'جستجو محصول…'][searchPhIdx]}
                         dir="rtl"
                         enterKeyHint="search"
                         autoComplete="off"
+                        aria-label="جستجوی محصول"
                         onKeyDown={e => {
                           if (e.key === 'Enter') { e.preventDefault(); submitSearch(); }
                           if (e.key === 'Escape') { setSearchSuggestOpen(false); e.target.blur(); }
                         }}
-                        className={`w-full bg-transparent text-primary-900 dark:text-white py-3 pr-9 text-sm text-right focus:outline-none caret-primary-900 dark:caret-white placeholder:text-xs placeholder:text-primary-400 dark:placeholder:text-white/50 ${(searchQuery || searchColors.length > 0 || searchSizes.length > 0 || searchCategories.length > 0) ? 'pl-7' : 'pl-1.5'}`}
+                        className={`w-full bg-transparent text-primary-900 dark:text-white py-3 pr-9 text-sm text-right focus:outline-none caret-primary-900 dark:caret-white placeholder:text-sm placeholder:text-primary-400 dark:placeholder:text-white/55 ${(searchQuery || searchColors.length > 0 || searchSizes.length > 0 || searchCategories.length > 0) ? 'pl-7' : 'pl-1.5'}`}
                       />
                       <div className="absolute right-1.5 top-1/2 -translate-y-1/2 text-primary-400 pointer-events-none">
                         <Icon name="search" size={14} />
@@ -16902,12 +16904,12 @@ const params = new URLSearchParams(window.location.search);
                       <button
                         type="button"
                         onClick={() => setRoleGateOpen(true)}
-                        className="hover:text-primary-600 dark:hover:text-white flex items-center gap-1 text-primary-400 dark:text-white whitespace-nowrap shrink-0"
+                        className="hover:text-primary-600 dark:hover:text-white flex items-center gap-1 text-primary-700 dark:text-white whitespace-nowrap shrink-0 font-medium px-1"
                         title="ورود / ثبت‌نام"
                       >
-                        <Icon name="user" size={14} />
+                        <Icon name="user" size={15} />
                         <span className="hidden sm:inline text-xs lg:text-sm">ورود / ثبت‌نام</span>
-                        <span className="sm:hidden text-xs">ورود</span>
+                        <span className="sm:hidden text-xs font-bold">ورود</span>
                       </button>
                     )}
                   </div>
