@@ -132,26 +132,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       return p.length === 11 && p.startsWith('09');
     };
 
-    /** ممنوعیت لینک برای خریدار و فروشنده */
-    const USER_LINK_RE = /(?:https?:\/\/|www\.|\/\/)|(?:\b[a-z0-9][a-z0-9-]{0,61}[a-z0-9]?\.(?:com|ir|net|org|io|co|me|info|app|dev|shop|store|xyz|online|site|link|blog|cloud|pro|tv|cc|biz|ai|eu|uk|de|fr|ca|us)\b)|(?:\b(?:t\.me|telegram\.me|instagram\.com|ig\.me|wa\.me|chat\.whatsapp\.com|youtu\.be|youtube\.com|twitter\.com|x\.com|linkedin\.com|facebook\.com|fb\.me|tiktok\.com|threads\.net|bit\.ly|cutt\.ly|rb\.gy|goo\.gl|eitaa\.com|splus\.ir|ble\.ir|rubika\.ir)\/[^\s]*)|(?:\[url\b|href\s*=|src\s*=)|(?:@\w{3,})/i;
-    const textContainsForbiddenLink = (text) => {
-      const t = String(text || '');
-      if (!t.trim()) return false;
-      if (USER_LINK_RE.test(t)) return true;
-      if (/(?:^|[\s(])[a-z0-9-]+\.(?:com|ir|net|org)\//i.test(t)) return true;
-      return false;
-    };
-    const assertNoUserLinks = (text, opts = {}) => {
-      if (opts.allowAdmin) return { ok: true, text: String(text || '') };
-      if (textContainsForbiddenLink(text)) {
-        return { ok: false, error: opts.message || 'ارسال هرگونه لینک، آدرس وب، یا شناسه شبکه‌های اجتماعی مجاز نیست.' };
-      }
-      return { ok: true, text: String(text || '') };
-    };
-    const stripLinksForDisplay = (text) => String(text || '')
-      .replace(/https?:\/\/[^\s]+/gi, '[لینک حذف‌شده]')
-      .replace(/\bwww\.[^\s]+/gi, '[لینک حذف‌شده]');
-
+        // user-link-guard → @/lib/user-link-guard
     const allSizes = ['S', 'M', 'L', 'XL', 'XXL'];
 
     const OWN_SELLER = { id: 'own', name: 'فروشگاه مرکزی', rating: 0, ratingCount: 0 };
