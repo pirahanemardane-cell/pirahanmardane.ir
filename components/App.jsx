@@ -1807,7 +1807,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         } catch (_) {}
       }, [adminTab]);
       // ——— تاکسونومی سراسری (دسته ایندکس‌پذیر / برچسب ممنوع از ایندکس) ———
-      const slugifyTaxonomy = (s) => slugifyFa(s);
+      const slugifyTaxonomy = slugifyFa;
       const productSlugFromNameAndShop = (productName, shopName) =>
         productSlugFromNameAndShopLib(productName, shopName, slugifyFa);
       const applySellerDescFormat = (type) => {
