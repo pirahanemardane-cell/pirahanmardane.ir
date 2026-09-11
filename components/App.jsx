@@ -6,6 +6,8 @@ import {
   buildLlmsTxt as buildLlmsTxtLib,
   defaultOrganizationSchema as defaultOrganizationSchemaLib,
   buildBreadcrumbSchema as buildBreadcrumbSchemaLib,
+  buildProductSchema as buildProductSchemaLib,
+  buildArticleSchema as buildArticleSchemaLib,
 } from '@/lib/seo-head';
 import { stripHtmlSeo, measureSeoPx, SEO_PX_LIMITS, SEO_FONTS, seoPixelReport, seoCharHint } from '@/lib/seo-pixel';
 import { formatPrice, plpSortLabel as plpSortLabelOf, scrollCarousel } from '@/lib/format-price';
@@ -9887,127 +9889,9 @@ const verifyOtp = async () => {
       // setCanonicalLink → @/lib/seo-head
       // upsertJsonLd → @/lib/seo-head
       const defaultOrganizationSchema = () => defaultOrganizationSchemaLib(seoCfg());
-      const buildProductSchema = (p) => {
-        if (!p) return null;
-        const s = seoCfg();
-        const base = (s.canonicalBase || 'https://pirahanemardane.ir').replace(/\/$/, '');
-        const price = Number(p.price) || Number(String(p.price || '').replace(/[^\d]/g, '')) || 0;
-        const stock = Number(p.stock);
-        const inStock = Number.isFinite(stock) ? stock > 0 : p.inStock !== false;
-        const availability = inStock
-          ? 'https://schema.org/InStock'
-          : 'https://schema.org/OutOfStock';
-        const images = [];
-        const pushImg = (u) => { if (u && !images.includes(u)) images.push(u); };
-        pushImg(p.seoOgImage);
-        (p.images || []).forEach(pushImg);
-        (p.colors || []).forEach((c) => pushImg(c?.image));
-        pushImg(p.image);
-        const brandName = p.brandName || p.brand || p.seller?.name || s.organizationName || 'پیراهن مردانه';
-        const sku = p.productCode || p.sku || p.id || '';
-        const url = typeof getProductPublicUrl === 'function' ? getProductPublicUrl(p) : `${base}/`;
-        const offer = {
-          '@type': 'Offer',
-          url,
-          priceCurrency: 'IRR',
-          price: String(price),
-          availability,
-          itemCondition: 'https://schema.org/NewCondition',
-          seller: {
-            '@type': 'Organization',
-            name: p.sellerName || p.seller?.name || brandName,
-          },
-        };
-        if (p.dealEndsAt || p.saleEndsAt) {
-          try {
-            const until = new Date(p.dealEndsAt || p.saleEndsAt);
-            if (!Number.isNaN(until.getTime())) offer.priceValidUntil = until.toISOString().slice(0, 10);
-          } catch (_) {}
-        }
-        // سیاست مرجوعی و ارسال (سطح فروشگاه)
-        offer.hasMerchantReturnPolicy = {
-          '@type': 'MerchantReturnPolicy',
-          applicableCountry: 'IR',
-          returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-          merchantReturnDays: 7,
-          returnMethod: 'https://schema.org/ReturnByMail',
-          returnFees: 'https://schema.org/FreeReturn',
-        };
-        offer.shippingDetails = {
-          '@type': 'OfferShippingDetails',
-          shippingDestination: {
-            '@type': 'DefinedRegion',
-            addressCountry: 'IR',
-          },
-          deliveryTime: {
-            '@type': 'ShippingDeliveryTime',
-            handlingTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' },
-            transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 5, unitCode: 'DAY' },
-          },
-          shippingRate: {
-            '@type': 'MonetaryAmount',
-            currency: 'IRR',
-            value: '0',
-          },
-        };
-        const schema = {
-          '@context': 'https://schema.org',
-          '@type': 'Product',
-          name: p.seoTitle || p.name || '',
-          description: stripHtmlSeo(p.seoDescription || p.desc || p.description || ''),
-          image: images.length ? images : undefined,
-          sku: sku || undefined,
-          mpn: p.mpn || sku || undefined,
-          gtin: p.gtin || p.barcode || undefined,
-          brand: { '@type': 'Brand', name: brandName },
-          category: p.category || (Array.isArray(p.categories) ? p.categories[0] : undefined),
-          offers: offer,
-        };
-        const rating = Number(p.rating);
-        const reviewCount = Number(p.reviewsCount || p.reviewCount || p.ratingsCount || 0);
-        if (rating > 0 && reviewCount > 0) {
-          schema.aggregateRating = {
-            '@type': 'AggregateRating',
-            ratingValue: String(Math.min(5, Math.max(1, rating))),
-            reviewCount: String(reviewCount),
-            bestRating: '5',
-            worstRating: '1',
-          };
-        }
-        return schema;
-      };
-
-      const buildArticleSchema = (post) => {
-        if (!post) return null;
-        const s = seoCfg();
-        const base = (s.canonicalBase || 'https://pirahanemardane.ir').replace(/\/$/, '');
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'Article',
-          headline: post.seoTitle || post.title,
-          description: stripHtmlSeo(post.seoDescription || post.excerpt || ''),
-          image: post.image || undefined,
-          datePublished: post.date || undefined,
-          author: { '@type': 'Person', name: post.author || 'تحریریه' },
-          publisher: { '@type': 'Organization', name: s.siteTitle || 'پیراهن مردانه', logo: { '@type': 'ImageObject', url: base + '/logo.webp' } },
-          mainEntityOfPage: base + (typeof window !== 'undefined' ? window.location.pathname + window.location.search : ''),
-        };
-      };
-      const buildBreadcrumbSchema = (items) => {
-        if (!items || !items.length) return null;
-        const s = seoCfg();
-        const base = (s.canonicalBase || 'https://pirahanemardane.ir').replace(/\/$/, '');
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: items.map((it, i) => ({
-            '@type': 'ListItem',
-            position: i + 1,
-            name: it.name,
-            item: it.path ? (base + it.path) : undefined,
-          })),
-        };
-      };
+      const buildProductSchema = (p) => buildProductSchemaLib(p, seoCfg(), getProductPublicUrl);
+      const buildArticleSchema = (post) => buildArticleSchemaLib(post, seoCfg());
+      const buildBreadcrumbSchema = (items) => buildBreadcrumbSchemaLib(items, seoCfg());
       /** باکس سئوی محتوا — mode: product | article | page */
 
       /** فاز B: تحلیل on-page با قوانین فارسی‌محور */
