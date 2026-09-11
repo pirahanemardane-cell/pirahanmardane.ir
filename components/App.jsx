@@ -45,6 +45,7 @@ import ShopShell from './panels/ShopShell';
 import { htmlToPlain } from '@/lib/html-plain';
 import { toFa, toEnDigits, onlyDigits, normalizeIranMobile, isAdminPhone } from '@/lib/format-digits';
 import { normalizeBreadcrumbs } from '@/lib/breadcrumbs';
+import { normalizeSearch, expandQuery, scoreProduct, SEARCH_SYNONYMS } from '@/lib/search-normalize';
 import EmptyState from './EmptyState';
 import { Textarea } from './ui/textarea';
 import { Breadcrumb } from './ui/breadcrumb';
@@ -6683,51 +6684,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         return 'یقه معمولی';
       };
 
-      const normalizeSearch = (s) => String(s || '')
-        .replace(/ي/g, 'ی').replace(/ك/g, 'ک')
-        .replace(/[\u064B-\u065F]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .toLowerCase();
-
-      const SEARCH_SYNONYMS = {
-        'کتان': 'لینن', 'linen': 'لینن', 'نیم آستین': 'آستین کوتاه', 'نیم‌آستین': 'آستین کوتاه',
-        'boss': 'باس', 'hugo': 'باس', 'polo': 'پولو', 'tommy': 'تامی', 'lacoste': 'لاکوست',
-        'formal': 'رسمی', 'shirt': 'پیراهن', 'white': 'سفید', 'black': 'مشکی',
-      };
-      const expandQuery = (q) => {
-        let t = normalizeSearch(q);
-        Object.entries(SEARCH_SYNONYMS).forEach(([k, v]) => {
-          if (t === normalizeSearch(k) || t.includes(normalizeSearch(k))) {
-            t = `${t} ${normalizeSearch(v)}`;
-          }
-        });
-        return t;
-      };
-
-      const scoreProduct = (p, qRaw) => {
-        if (!qRaw) return 1;
-        const q = expandQuery(qRaw);
-        const tokens = q.split(' ').filter(Boolean);
-        const name = normalizeSearch(p.name);
-        const cat = normalizeSearch(p.category);
-        const seller = normalizeSearch(p.seller?.name);
-        const colors = (p.colors || []).map(c => normalizeSearch(c.name)).join(' ');
-        let score = 0;
-        tokens.forEach(t => {
-          if (name === t) score += 100;
-          else if (name.startsWith(t)) score += 50;
-          else if (name.includes(t)) score += 30;
-          if (cat.includes(t)) score += 25;
-          if (seller.includes(t)) score += 15;
-          if (colors.includes(t)) score += 12;
-          if (normalizeSearch(`پیراهن ${p.category}`).includes(t)) score += 20;
-        });
-        if (p.discount) score += 2;
-        if (p.rating >= 5) score += 2;
-        if (p.amazing) score += 1;
-        return score;
-      };
+      // normalizeSearch/expandQuery/scoreProduct → @/lib/search-normalize
 
       const searchCatsSafe = Array.isArray(searchCategories) ? searchCategories : [];
       const searchColorsSafe = Array.isArray(searchColors) ? searchColors : [];
