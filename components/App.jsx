@@ -110,7 +110,7 @@ import { normalizeProduct } from '@/lib/product-normalize';
 import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
 import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
 import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi, verifyMfaApi, completeOtpRegisterApi, setAccountPasswordApi, mapProfileToBuyer as mapProfileToBuyerLib, fetchAuthMe, updateAuthProfile, postLogoutGlobal } from '@/lib/auth-session';
-import { fetchSellerMe, registerSellerApi } from '@/lib/api/seller';
+import { fetchSellerMe, registerSellerApi, patchSellerMe, fetchSellerOrders, fetchSellerPayouts, createSellerPayout } from '@/lib/api/seller';
 
 
 
@@ -149,7 +149,7 @@ import {
   processProductImageFile as processProductImageFileUtil,
   fileToImage as fileToImageUtil,
 } from '@/lib/image-webp-client';
-import { apiUploadSellerProductImage, apiUploadMediaImage } from '@/lib/api/seller-products';
+import { apiSellerProducts, apiCreateSellerProduct, apiPatchSellerProduct, apiDeleteSellerProduct } from '@/lib/api/seller-products';
 import {
   slugifyFa,
   FA_PATHS,
@@ -3818,8 +3818,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                   }
                 })
                 .catch(() => {});
-              fetch('/api/seller/products', { credentials: 'include', cache: 'no-store' })
-                .then((r) => r.json())
+              apiSellerProducts()
                 .then((j) => {
                   const list = j?.products || j?.data || (Array.isArray(j) ? j : null);
                   if (list && typeof setSellerProducts === 'function') {
@@ -3860,8 +3859,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                   }
                 })
                 .catch(() => {});
-              fetch('/api/seller/orders', { credentials: 'include', cache: 'no-store' })
-                .then((r) => r.json())
+              fetchSellerOrders()
                 .then((j) => {
                   const list = j?.orders || j?.data;
                   if (Array.isArray(list)) {
@@ -3895,8 +3893,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             if (scope === 'sellers' || scope === 'all') {
               try { window.dispatchEvent(new CustomEvent('seller-status-changed')); } catch (_) {}
               // فروشنده لاگین‌شده: فوری status را از سرور بگیر (تأیید ادمین زنده)
-              fetch('/api/seller/me', { credentials: 'include', cache: 'no-store' })
-                .then((r) => r.json())
+              fetchSellerMe()
                 .then((j) => {
                   if (!j?.ok || !j?.seller) return;
                   const s = j.seller;
@@ -4037,8 +4034,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               } catch (_) {}
             }
             if (scope === 'payouts' || scope === 'all') {
-              fetch('/api/seller/payouts', { credentials: 'include', cache: 'no-store' })
-                .then((r) => r.json())
+              fetchSellerPayouts()
                 .then((j) => {
                   try {
                     window.dispatchEvent(new CustomEvent('pm:payouts', { detail: j, ts: Date.now() }));
@@ -6716,8 +6712,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const hydrateSellerOrdersFromApi = async () => {
         try {
-          const res = await fetch('/api/seller/orders', { credentials: 'include', cache: 'no-store' });
-          const json = await res.json().catch(() => ({}));
+          const json = await fetchSellerOrders();
           if (!json?.ok || !Array.isArray(json.orders)) return;
           const mapped = json.orders.map((o) => ({
             id: o.id,
@@ -7182,8 +7177,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                 setAuthOpen(false);
                 try { pushFaUrl(FA_PATHS['seller-panel'], { sellerPanel: true }); } catch (_) {}
                 try {
-                  const pr = await fetch('/api/seller/products', { credentials: 'include' });
-                  const pj = await pr.json().catch(() => ({}));
+                  const pj = await apiSellerProducts();
                   if (pj?.ok && Array.isArray(pj.products) && typeof setSellerProducts === 'function') {
                     setSellerProducts(pj.products.map((row) => (typeof mapServerProductToSellerUi === 'function' ? mapServerProductToSellerUi(row) : row)).filter(Boolean));
                   }
@@ -7580,7 +7574,7 @@ const verifyOtp = async () => {
             (sellerUser && (sellerUser.sellerId || sellerUser.seller_id || sellerUser.id)) ||
             null;
           try {
-            const me = await fetch("/api/seller/me", { cache: "no-store" }).then((r) => r.json()).catch(() => ({}));
+            const me = await fetchSellerMe();
             if (me && (me.seller_id || me.id || (me.seller && me.seller.id))) {
               sellerId = me.seller_id || me.id || me.seller.id;
             }
@@ -7612,15 +7606,14 @@ const verifyOtp = async () => {
               (sellerUser.sellerId || sellerUser.seller_id || sellerUser.id)) ||
             null;
           try {
-            const me = await fetch("/api/seller/me", { cache: "no-store" }).then((r) => r.json()).catch(() => ({}));
+            const me = await fetchSellerMe();
             if (me && (me.seller_id || me.id || (me.seller && me.seller.id))) {
               sellerId = me.seller_id || me.id || me.seller.id;
             }
           } catch (_) {}
           let list = null;
           try {
-            const res2 = await fetch("/api/seller/products", { credentials: "include", cache: "no-store" });
-            const data2 = await res2.json().catch(() => ({}));
+            const data2 = await apiSellerProducts();
             if (data2 && data2.ok && Array.isArray(data2.products)) {
               list = data2.products.map((row) => mapServerProductToSellerUi(row)).filter(Boolean);
             }
@@ -7693,11 +7686,7 @@ const verifyOtp = async () => {
       const saveSellerUser = async (next) => {
         setSellerUser(next);
         try {
-          const res = await fetch('/api/seller/me', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
+          const data = await patchSellerMe({
               shopName: next.shopName || next.name,
               about: next.about,
               city: next.city,
@@ -7706,10 +7695,8 @@ const verifyOtp = async () => {
               sheba: next.sheba,
               logoUrl: next.logoUrl || next.logo,
               bannerUrl: next.bannerUrl || next.banner,
-            }),
-          });
-          const data = await res.json().catch(() => null);
-          if (res.ok && data?.seller) setSellerUser(data.seller);
+            });
+          if (data?.seller) setSellerUser(data.seller);
         } catch (_) {}
       };
 
@@ -7722,8 +7709,7 @@ const verifyOtp = async () => {
       const mapServerProductToSellerUi = (p) => mapServerProductToSellerUiLib(p, sellerUser);
       const fetchSellerProductsFromServer = async () => {
         try {
-          const res = await fetch('/api/seller/products', { credentials: 'include' });
-          const data = await res.json().catch(() => null);
+          const data = await apiSellerProducts();
           if (!data?.ok) return [];
           return (Array.isArray(data.products) ? data.products : []).map(mapServerProductToSellerUi).filter(Boolean);
         } catch (_) {
@@ -7731,32 +7717,19 @@ const verifyOtp = async () => {
         }
       };
       const createSellerProductOnServer = async (payload) => {
-        const res = await fetch('/api/seller/products', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify(payload),
-        });
-        const data = await res.json().catch(() => ({}));
+        const data = await apiCreateSellerProduct(payload);
         if (!data?.ok) throw new Error(data?.error || 'ثبت محصول ناموفق');
         return data.product;
       };
       const updateSellerProductOnServer = async (id, payload) => {
-        const res = await fetch('/api/seller/products/' + encodeURIComponent(id), {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify(payload),
-        });
-        const data = await res.json().catch(() => ({}));
+        const data = await apiPatchSellerProduct(id, payload);
         if (!data?.ok) throw new Error(data?.error || 'بروزرسانی محصول ناموفق');
         return data.product;
       };
 
       const fetchSellerMe = async () => {
         try {
-          const res = await fetch('/api/seller/me', { credentials: 'include', cache: 'no-store' });
-          const data = await res.json().catch(() => null);
+          const data = await fetchSellerMe();
           if (!res.ok || !data?.ok || !data?.seller) {
             // بدون ردیف واقعی در DB — state لوکال را پاک کن (سایت real است)
             if (res.status === 404 || data?.code === 'NO_SHOP' || (data && data.ok && !data.seller)) {
@@ -7798,13 +7771,7 @@ const verifyOtp = async () => {
 
       const createSellerShopOnServer = async (payload = {}) => {
         try {
-          const res = await fetch('/api/seller/register', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          const data = await res.json().catch(() => null);
+          const data = await registerSellerApi(payload);
           if (!data?.ok) {
             if (typeof showToast === 'function') showToast({ message: data?.error || 'ثبت فروشگاه ناموفق', variant: 'error', duration: 4000, position: 'top-center' });
             return null;
@@ -7819,13 +7786,7 @@ const verifyOtp = async () => {
       };
       const updateSellerShopOnServer = async (payload = {}) => {
         try {
-          const res = await fetch('/api/seller/me', {
-            method: 'PATCH',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          const data = await res.json().catch(() => null);
+          const data = await patchSellerMe(payload);
           if (!data?.ok) {
             // اگر فروشگاه وجود ندارد → ثبت جدید
             if (res.status === 404 || data?.code === 'NO_SHOP') {
@@ -7876,14 +7837,8 @@ const verifyOtp = async () => {
       const requestSellerProductPurge = async (id) => {
         if (!id) return false;
         try {
-          const res = await fetch('/api/seller/products/' + encodeURIComponent(id), {
-            method: 'PATCH',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify({ status: 'purge_requested' }),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || data?.ok === false) {
+          const data = await apiPatchSellerProduct(id, { status: 'purge_requested' });
+          if (data?.ok === false) {
             if (typeof showToast === 'function') showToast({ message: data?.error || 'ثبت درخواست حذف ناموفق', variant: 'error', duration: 4000, position: 'top-center' });
             return false;
           }
@@ -7906,14 +7861,8 @@ const verifyOtp = async () => {
       const cancelSellerProductPurge = async (id) => {
         if (!id) return false;
         try {
-          const res = await fetch('/api/seller/products/' + encodeURIComponent(id), {
-            method: 'PATCH',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify({ status: 'archived' }),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || data?.ok === false) {
+          const data = await apiPatchSellerProduct(id, { status: 'archived' });
+          if (data?.ok === false) {
             if (typeof showToast === 'function') showToast({ message: data?.error || 'لغو درخواست ناموفق', variant: 'error', duration: 4000, position: 'top-center' });
             return false;
           }
@@ -7930,12 +7879,8 @@ const verifyOtp = async () => {
       const deleteSellerProductOnServer = async (id) => {
         if (!id) return false;
         try {
-          const res = await fetch('/api/seller/products/' + encodeURIComponent(id), {
-            method: 'DELETE',
-            credentials: 'include',
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || data?.ok === false) {
+          const data = await apiDeleteSellerProduct(id);
+          if (data?.ok === false) {
             if (typeof showToast === 'function') showToast({ message: data?.error || 'حذف محصول ناموفق', variant: 'error', duration: 4000, position: 'top-center' });
             return false;
           }
@@ -7971,8 +7916,7 @@ const verifyOtp = async () => {
         let cancelled = false
         const load = async () => {
           try {
-            const res = await fetch('/api/seller/me', { credentials: 'include' })
-            const data = await res.json().catch(() => null)
+            const data = await fetchSellerMe()
             if (cancelled || !data?.ok) return
             const s = data.seller || data
             if (!s) return
@@ -8020,8 +7964,7 @@ const verifyOtp = async () => {
 
         const loadSellerMe = async () => {
           try {
-            const res = await fetch('/api/seller/me', { credentials: 'include' });
-            const data = await res.json().catch(() => null);
+            const data = await fetchSellerMe();
             if (!data?.ok) return;
             applySellerPayload(data.seller || data);
           } catch (_) {}
@@ -10694,8 +10637,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
 
             if (hasUser && (role === 'seller' || role === 'admin' || role === 'superadmin')) {
               try {
-                const sm = await fetch('/api/seller/me', { credentials: 'include', cache: 'no-store' })
-                  .then((r) => r.json())
+                const sm = await fetchSellerMe()
                   .catch(() => ({}));
                 if (cancelled) return;
                 if (sm?.ok && sm?.seller) {
@@ -10934,8 +10876,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
 
       const hydrateSellerPayouts = async () => {
         try {
-          const res = await fetch('/api/seller/payouts', { credentials: 'include', cache: 'no-store' });
-          const json = await res.json().catch(() => ({}));
+          const json = await fetchSellerPayouts();
           if (!json?.ok || !Array.isArray(json.items)) return;
           const mapped = json.items.map((r) => ({
             id: r.id,
@@ -10953,14 +10894,8 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
       };
       const requestSellerPayout = async (amount, note) => {
         try {
-          const res = await fetch('/api/seller/payouts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ amount, note }),
-          });
-          const json = await res.json().catch(() => ({}));
-          if (!res.ok || json?.ok === false) throw new Error(json?.error || 'خطا در ثبت درخواست');
+          const json = await createSellerPayout({ amount, note });
+          if (json?.ok === false) throw new Error(json?.error || 'خطا در ثبت درخواست');
           await hydrateSellerPayouts();
         try { hydrateSellerOrdersFromApi(); } catch (_) {}
           return json.item;
