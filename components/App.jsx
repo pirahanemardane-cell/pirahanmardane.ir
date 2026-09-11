@@ -1,5 +1,6 @@
 'use client';
-import { generateGiftCode as generateGiftCodeLib, nextRecentSearches, removeFromRecentSearches } from '@/lib/promo-codes';
+import { parseResponseHours, smartScore, rankSellers } from '@/lib/seller-rank';
+import { generateGiftCode as generateGiftCodeLib, nextRecentSearches, removeFromRecentSearches, getUsedPromoCodes, markPromoCodeUsed } from '@/lib/promo-codes';
 import {
   cartItemKey,
   calcCartTotals,
@@ -35,7 +36,7 @@ import {
 import { defaultSeoConfig } from '@/lib/default-seo-config';
 import { defaultShippingMethods, blankShippingMethod, mapShippingMethodsFromApi, shippingMethodsToApiPayload } from '@/lib/default-shipping-methods';
 import { normalizeCategoryKey as normalizeCategoryKeyLib } from '@/lib/category-key';
-import { COMPARE_MAX, WISHLIST_MAX, PAGE_LOAD_LABELS, RT_CHANNEL_NAME, RT_KEYS } from '@/lib/app-constants';
+import { COMPARE_MAX, WISHLIST_MAX, PAGE_LOAD_LABELS, RT_CHANNEL_NAME, RT_KEYS, TREND_QUERIES } from '@/lib/app-constants';
 import { isUsableProductImage, pickProductImage, mapCatalogRow, mapServerProductToSellerUi as mapServerProductToSellerUiLib } from '@/lib/catalog-map';
 import { classifyToastVariant } from '@/lib/toast-variant';
 import { generateTicketCode } from '@/lib/ticket-code';
@@ -3191,12 +3192,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         : IRAN_CITIES.slice(0, 10);
       // نزدیک‌ترین شهرها برای حالت خالی
       const popularCities = POPULAR_CITIES;
-      const topSellersRanked = (() => {
-        const list = [...topSellers];
-        if (topSellersTab === 'sales') return list.sort((a, b) => (b.products || 0) - (a.products || 0)).slice(0, 20);
-        if (topSellersTab === 'new') return list.sort((a, b) => String(b.joinDate || '').localeCompare(String(a.joinDate || ''), 'fa')).slice(0, 20);
-        return list.sort((a, b) => smartScore(b) - smartScore(a)).slice(0, 20);
-      })();
+      const topSellersRanked = rankSellers(topSellers, topSellersTab);
 
 
 
