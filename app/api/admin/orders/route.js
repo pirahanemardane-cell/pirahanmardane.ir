@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { logCritical } from '../../../../lib/critical-log'
-import { requireAdmin } from '../../../../lib/api/admin-guard'
+import { requireAdmin, requireAdminSensitive } from '../../../../lib/api/admin-guard'
 import { notifyUser } from '../../../../lib/api/notify'
 import {
   smsOrderConfirmed,
@@ -76,7 +76,7 @@ export async function GET(request) {
 
 export async function PATCH(request) {
   try {
-    const gate = await requireAdmin()
+    const gate = await requireAdminSensitive()
     if (gate.error) return gate.error
     const body = await request.json().catch(() => ({}))
     const id = body.id || body.orderId

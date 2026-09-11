@@ -1,28 +1,15 @@
 import { createClient } from '../../../../../lib/supabase/server'
 import { createAdminClient } from '../../../../../lib/supabase/admin'
 import { NextResponse } from 'next/server'
+import { requireAdminSensitive } from '../../../../../lib/api/admin-guard'
 import { logCritical } from '../../../../../lib/critical-log'
 import { writeAdminAudit } from '../../../../../lib/api/audit-log'
 import { notifyUser } from '../../../../../lib/api/notify'
 
-async function requireAdmin() {
-  const supabase = await createClient()
-  if (!supabase) return { error: NextResponse.json({ ok: false, error: 'پیکربندی ناقص' }, { status: 500 }) }
-  const { data: { user }, error: authErr } = await supabase.auth.getUser()
-  if (authErr || !user) return { error: NextResponse.json({ ok: false, error: 'وارد نشده‌اید' }, { status: 401 }) }
-  const admin = createAdminClient()
-  const { data: profile } = await admin.from('profiles').select('id, role').eq('id', user.id).maybeSingle()
-  const role = String(profile?.role || '').toLowerCase()
-  if (role !== 'admin' && role !== 'superadmin') {
-    return { error: NextResponse.json({ ok: false, error: 'فقط ادمین' }, { status: 403 }) }
-  }
-  return { admin }
-}
-
 /** PATCH /api/admin/products/[id] — تأیید / رد / بایگانی محصول */
 export async function PATCH(request, { params }) {
   try {
-    const gate = await requireAdmin()
+    const gate = await requireAdminSensitive()
     if (gate.error) return gate.error
     const { admin } = gate
     const id = params?.id || (await params)?.id
@@ -109,7 +96,7 @@ export async function PATCH(request, { params }) {
  */
 export async function DELETE(request, { params }) {
   try {
-    const gate = await requireAdmin()
+    const gate = await requireAdminSensitive()
     if (gate.error) return gate.error
     const { admin } = gate
     const id = params?.id || (await params)?.id
