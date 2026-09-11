@@ -5756,7 +5756,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             // didYouMean → @/lib/search-normalize
       const didYouMean = (() =>
         didYouMeanLib(searchQuery, filteredProducts, products, TREND_QUERIES)
-      );)();
+      )();
 
       const catLabelMap = CAT_LABEL_MAP;
       /**
