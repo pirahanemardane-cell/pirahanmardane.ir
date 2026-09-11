@@ -1,4 +1,6 @@
 'use client';
+import { defaultSeoConfig } from '@/lib/default-seo-config';
+import { defaultShippingMethods, blankShippingMethod } from '@/lib/default-shipping-methods';
 import { normalizeCategoryKey as normalizeCategoryKeyLib } from '@/lib/category-key';
 import { COMPARE_MAX, WISHLIST_MAX, PAGE_LOAD_LABELS, RT_CHANNEL_NAME, RT_KEYS } from '@/lib/app-constants';
 import { isUsableProductImage, pickProductImage, mapCatalogRow, mapServerProductToSellerUi as mapServerProductToSellerUiLib } from '@/lib/catalog-map';
@@ -158,10 +160,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         // user-link-guard → @/lib/user-link-guard
     const allSizes = ALL_SIZES;
 
-    const OWN_SELLER = { id: 'own', name: 'فروشگاه مرکزی', rating: 0, ratingCount: 0 };
-    const SELLERS = {
-      own: OWN_SELLER,
-    };
+    // OWN_SELLER / SELLERS → @/lib/site-content
     const products = [];
 
 
@@ -184,13 +183,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
     ];
     const normalizeCategoryKey = (raw) => normalizeCategoryKeyLib(raw, categories);
 
-    const navLinks = [
-      { label: "خانه", href: "#" },
-      { label: "فروشگاه", href: "#" },
-      { label: "دسته‌بندی‌ها", href: "#" },
-      { label: "درباره ما", href: "#" },
-      { label: "تماس با ما", href: "#" },
-    ];
+    const navLinks = NAV_LINKS;
 
 
     const brands = [];
@@ -1805,9 +1798,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         persistGsc(next);
         return result;
       };
-      const GA4_STORAGE_KEY = 'siteGa4Analytics';
+      // GA4_STORAGE_KEY → @/lib/site-content
       const buildGa4Seed = () => ({}); /* production: no demo seed */
-;
       const loadGa4Store = () => {
         try {
           const raw = localStorage.getItem(GA4_STORAGE_KEY);
@@ -2907,147 +2899,11 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const [adminCoupons, setAdminCoupons] = useStoreField(adminUiStore, 'adminCoupons');
       const [adminTickets, setAdminTickets] = useStoreField(adminUiStore, 'adminTickets');
       const [adminBuyers, setAdminBuyers] = useStoreField(adminUiStore, 'adminBuyers');
-      const defaultSeoConfig = () => ({
-        globalIndex: true,
-        indexHome: true,
-        indexProducts: true,
-        indexCategories: true,
-        indexTags: false,
-        indexBlog: true,
-        indexBlogPosts: true,
-        indexSellers: true,
-        indexStatic: true,
-        siteTitle: 'پیراهن مردانه | PIRAHANMARDANE.IR',
-        siteTitleTemplate: '%s | پیراهن مردانه',
-        metaDescription: 'فروشگاه اینترنتی پیراهن مردانه — رسمی، کروات، لینن و آستین کوتاه از فروشندگان معتبر',
-        metaKeywords: 'پیراهن مردانه, خرید پیراهن, پیراهن رسمی, لینن',
-        canonicalBase: 'https://pirahanemardane.ir',
-        schemaOrgJson: '',
-        schemaProductExtra: '',
-        schemaArticleExtra: '',
-        robotsTxtExtra: '',
-        googleSiteVerification: '',
-        bingSiteVerification: '',
-        yandexVerification: '',
-        yahooVerification: '',
-        baiduVerification: '',
-        duckduckVerification: '',
-        customMetaVerifications: '',
-        gtmId: '',
-        gaId: '',
-        googleSearchConsoleUrl: 'https://search.google.com/search-console',
-        bingWebmasterUrl: 'https://www.bing.com/webmasters',
-        yandexWebmasterUrl: 'https://webmaster.yandex.com',
-        sitemapIncludeProducts: true,
-        sitemapIncludeCategories: true,
-        sitemapIncludeBlog: true,
-        sitemapIncludeStatic: true,
-        sitemapIncludeSellers: true,
-        noindexWhenGlobalOff: true,
-        llmsTxtExtra: '',
-        llmsEnabled: true,
-        indexNowKey: '',
-        indexNowEnabled: false,
-        imageSeoAutoAlt: true,
-        imageSeoAltTemplate: '{name} | {brand} | پیراهن مردانه',
-        customSchemas: [],
-        // فاز D
-        localSeoEnabled: false,
-        localBusinessName: 'پیراهن مردانه',
-        localPhone: '021-3456789',
-        localEmail: 'info@pirahanemardane.ir',
-        localPriceRange: '$$',
-        localLocations: [
-          {
-            id: 'loc-1',
-            name: 'فروشگاه مرکزی تهران',
-            address: 'تهران، خیابان ولیعصر',
-            city: 'تهران',
-            postalCode: '1234567890',
-            phone: '021-3456789',
-            lat: '35.6892',
-            lng: '51.3890',
-            hours: 'شنبه تا پنجشنبه ۹–۱۸',
-            mapsUrl: '',
-          },
-        ],
-        newsSitemapEnabled: false,
-        videoSitemapEnabled: false,
-        brandWatchEnabled: true,
-        brandNames: ['پیراهن مردانه', 'PIRAHANMARDANE'],
-        brandMentions: [],
-        rankKeywords: [],
-      });
+      // defaultSeoConfig → @/lib/default-seo-config
 
       const [adminSettings, setAdminSettings] = useStoreField(adminUiStore, 'adminSettings');
       // روش‌های ارسال — فقط ادمین تعریف می‌کند؛ فروشنده از بین آن‌ها انتخاب می‌کند
-      const defaultShippingMethods = () => [
-        {
-          id: 'snapbox',
-          name: 'اسنپ‌باکس',
-          priceMode: 'dynamic_cod',
-          baseCost: 0,
-          apiProvider: 'snapbox',
-          apiKey: '',
-          apiEndpoint: '',
-          apiEnabled: false,
-          enabled: true,
-          eta: 'همان‌روز / روز بعد',
-          note: 'قیمت داینامیک است. مبلغ نمایش‌داده‌شده تقریبی همین لحظه است؛ فروشنده هنگام ارسال تماس می‌گیرد و هزینه نهایی را اعلام می‌کند. در صورت تأیید، ارسال انجام و هزینه در مقصد توسط خریدار پرداخت می‌شود. در غیر این صورت خریدار موظف است پیک مورد نظر خود را از مبدأ بگیرد.',
-        },
-        {
-          id: 'aloopeyk',
-          name: 'الوپیک',
-          priceMode: 'dynamic_cod',
-          baseCost: 0,
-          apiProvider: 'aloopeyk',
-          apiKey: '',
-          apiEndpoint: '',
-          apiEnabled: false,
-          enabled: true,
-          eta: 'همان‌روز',
-          note: 'قیمت داینامیک است. مبلغ نمایش‌داده‌شده تقریبی همین لحظه است؛ فروشنده هنگام ارسال تماس می‌گیرد و هزینه نهایی را اعلام می‌کند. در صورت تأیید، ارسال انجام و هزینه در مقصد توسط خریدار پرداخت می‌شود. در غیر این صورت خریدار موظف است پیک مورد نظر خود را از مبدأ بگیرد.',
-        },
-        {
-          id: 'tipax',
-          name: 'تیپاکس',
-          priceMode: 'fixed',
-          baseCost: 65000,
-          apiProvider: 'tipax',
-          apiKey: '',
-          apiEndpoint: '',
-          apiEnabled: false,
-          enabled: true,
-          eta: '۱ تا ۳ روز کاری',
-          note: '',
-        },
-        {
-          id: 'mahax',
-          name: 'ماهکس',
-          priceMode: 'fixed',
-          baseCost: 55000,
-          apiProvider: 'mahax',
-          apiKey: '',
-          apiEndpoint: '',
-          apiEnabled: false,
-          enabled: true,
-          eta: '۱ تا ۳ روز کاری',
-          note: '',
-        },
-        {
-          id: 'post',
-          name: 'پست',
-          priceMode: 'fixed',
-          baseCost: 45000,
-          apiProvider: 'post',
-          apiKey: '',
-          apiEndpoint: '',
-          apiEnabled: false,
-          enabled: true,
-          eta: '۲ تا ۴ روز کاری',
-          note: '',
-        },
-      ];
+      // defaultShippingMethods → @/lib/default-shipping-methods
       const [adminShippingMethods, setAdminShippingMethods] = useStoreField(adminUiStore, 'adminShippingMethods');
       const saveAdminShippingMethods = (next) => {
         setAdminShippingMethods(next);
@@ -3096,19 +2952,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }, []);
       const [shippingMethodFormOpen, setShippingMethodFormOpen] = useStoreField(formsStore, 'shippingMethodFormOpen')
       const [shippingMethodForm, setShippingMethodForm] = useStoreField(formsStore, 'shippingMethodForm')
-      const blankShippingMethod = () => ({
-        id: 'ship-' + Date.now(),
-        name: '',
-        priceMode: 'fixed',
-        baseCost: 0,
-        eta: '۲ تا ۴ روز کاری',
-        apiKey: '',
-        apiEndpoint: '',
-        apiEnabled: false,
-        note: '',
-        enabled: true,
-        isNew: true,
-      });
+      // blankShippingMethod → @/lib/default-shipping-methods
       const openNewShippingMethod = () => {
         setShippingMethodForm(blankShippingMethod());
         setShippingMethodFormOpen(true);
