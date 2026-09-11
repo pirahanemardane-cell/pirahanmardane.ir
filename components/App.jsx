@@ -1,4 +1,5 @@
 'use client';
+import { collectFullSiteBackupPayload, isValidFullSiteBackup, ADMIN_PRESET, FULL_BACKUP_KEYS } from '@/lib/site-backup';
 import { orderStatusColor, orderStatusLabel, unreadNotificationsCount } from '@/lib/order-status';
 import { logoForTheme, onProductImgError } from '@/lib/image-fallback';
 import { favIdsFromList, isFavoriteId, getFavEntry as getFavEntryLib } from '@/lib/wishlist-helpers';
@@ -1711,20 +1712,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         persistGsc(next);
         return result;
       };
-      // GA4_STORAGE_KEY → @/lib/site-content
-      const buildGa4Seed = () => ({}); /* production: no demo seed */
-      const loadGa4Store = () => {
-        try {
-          const raw = localStorage.getItem(GA4_STORAGE_KEY);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            if (parsed && Array.isArray(parsed.events) && parsed.events.length > 100) return parsed;
-          }
-        } catch (_) {}
-        const seed = buildGa4Seed();
-        try { localStorage.setItem(GA4_STORAGE_KEY, JSON.stringify(seed)); } catch (_) {}
-        return seed;
-      };
+      const buildGa4Seed = () => buildGa4SeedLib();
+      const loadGa4Store = () => loadGa4StoreLib();
       const [ga4Store, setGa4Store] = useStoreField(shopUiStore, 'ga4Store');
       const persistGa4 = (next) => {
         setGa4Store(next);
@@ -7930,10 +7919,9 @@ const verifyOtp = async () => {
       const unreadNotifCount = unreadNotificationsCount(notifications);
 
       // ——— Seller Panel helpers ———
-      const seedSellerProducts = () => []; /* production: no demo seed */
-      const seedSellerOrders = () => []; /* production: no demo seed */
-
-      const seedSellerTickets = () => []; /* production: no demo seed */
+      const seedSellerProducts = () => [];
+      const seedSellerOrders = () => [];
+      const seedSellerTickets = () => [];
       useEffect(() => {
         if (!showSellerPanel) return;
         let cancelled = false;
@@ -8709,26 +8697,14 @@ const verifyOtp = async () => {
 
 
       // ——— Admin Panel helpers ———
-      const ADMIN_PRESET = { name: 'سوپر ادمین', role: 'Super Admin' };
-      const seedAdminData = () => {
-      };
-
+      // ADMIN_PRESET → @/lib/site-backup
+      const seedAdminData = () => {};
       const collectFullSiteBackup = () => {
-        const keys = [
-          'adminOrders','adminSellers','adminProducts','adminCoupons','adminTickets','adminBuyers',
-          'adminShippingMethods','adminCatalogCategories','adminCatalogTags','adminCatalogBrands',
-          'adminCategories','adminTags','adminBlogCategories',
-          'adminCatalogColors','adminCatalogSizes','adminCatalogAttrs','adminSettings','adminBlogPosts',
-          'adminCampaigns','adminPageContent','adminModerationQueue','sellerUser','sellerProducts',
-          'sellerOrders','sellerGifts','sellerTickets','buyerUser','buyerOrders','buyerTickets',
-          'cart','favorites','compare','recentlyViewed','buyerAddresses','notifications'
-        ];
-        const data = { version: 1, exportedAt: new Date().toISOString(), site: 'pirahanemardane', payload: {} };
-        keys.forEach(k => {
-          try { data.payload[k] = JSON.parse(localStorage.getItem(k) || 'null'); } catch { data.payload[k] = null; }
-        });
-        try { data.payload.productsSeed = products; } catch (_) {}
-        return data;
+        try {
+          return collectFullSiteBackupPayload({ productsSeed: products });
+        } catch (_) {
+          return collectFullSiteBackupPayload();
+        }
       };
       const downloadFullSiteBackup = () => {
         const data = collectFullSiteBackup();
@@ -8743,7 +8719,7 @@ const verifyOtp = async () => {
         reader.onload = () => {
           try {
             const data = JSON.parse(String(reader.result || '{}'));
-            if (!data || data.site !== 'pirahanemardane' || !data.payload) {
+            if (!isValidFullSiteBackup(data)) {
               showToast({ message: 'فایل بک‌آپ معتبر نیست (باید از همین سایت باشد).', variant: 'error', duration: 4500, position: 'top-center' });
               return;
             }
