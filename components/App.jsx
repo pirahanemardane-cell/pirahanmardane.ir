@@ -150,6 +150,7 @@ import {
   fileToImage as fileToImageUtil,
 } from '@/lib/image-webp-client';
 import { apiSellerProducts, apiCreateSellerProduct, apiPatchSellerProduct, apiDeleteSellerProduct } from '@/lib/api/seller-products';
+import { fetchCatalogProducts, putCatalogProducts, fetchCatalogCategories, putCatalogCategories, fetchCatalogTags, putCatalogTags, fetchCatalogColors, putCatalogColors, fetchCatalogSizes, putCatalogSizes, fetchCatalogBrands, putCatalogBrands, fetchCatalogAttributes, putCatalogAttributes, fetchCatalogSellers } from '@/lib/api/catalog';
 import {
   slugifyFa,
   FA_PATHS,
@@ -534,12 +535,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const reloadServerCatalog = async () => {
         try {
-          const res = await fetch('/api/catalog/products?limit=200&_=' + Date.now(), {
-            credentials: 'include',
-            headers: { Accept: 'application/json', 'Cache-Control': 'no-cache', Pragma: 'no-cache' },
-            cache: 'no-store',
-          });
-          const data = await res.json().catch(() => null);
+          const data = await fetchCatalogProducts({ limit: 200, bust: true, headers: { Accept: 'application/json', 'Cache-Control': 'no-cache', Pragma: 'no-cache' } });
           const list = Array.isArray(data?.products) ? data.products : [];
           if (!data?.ok && !list.length) return;
           const mapped = list.map(mapCatalogRow).filter(Boolean);
@@ -1871,12 +1867,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               ? Number(c.sort_order != null ? c.sort_order : c.sortOrder)
               : i,
           }));
-          const res = await fetch("/api/catalog/categories", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ categories: payload }),
-          });
-          const data = await res.json().catch(() => ({}));
+          const data = await putCatalogCategories(payload);
           if (!res.ok) {
             console.error("categories PUT failed", data);
             setAdminCategories(prev);
@@ -1909,8 +1900,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const refreshCatalogCategories = async () => {
         try {
-          const res = await fetch("/api/catalog/categories", { cache: "no-store" });
-          const data = await res.json().catch(() => ({}));
+          const data = await fetchCatalogCategories();
           const list = Array.isArray(data.categories) ? data.categories : null;
           if (list && list.length) {
             const mapped = list.map((s) => Object.assign({}, s, { parentId: s.parent_id }));
@@ -1958,12 +1948,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               ? Number(tag.sort_order != null ? tag.sort_order : tag.sortOrder)
               : i,
           }));
-          const res = await fetch("/api/catalog/tags", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ tags: payload }),
-          });
-          const data = await res.json().catch(() => ({}));
+          const data = await putCatalogTags(payload);
           if (!res.ok) {
             console.error("tags PUT failed", data);
             setAdminTags(prev);
@@ -1996,8 +1981,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const refreshCatalogTags = async () => {
         try {
-          const res = await fetch("/api/catalog/tags", { cache: "no-store" });
-          const data = await res.json().catch(() => ({}));
+          const data = await fetchCatalogTags();
           const list = Array.isArray(data.tags) ? data.tags : null;
           if (list && list.length) {
             setAdminTags(list);
@@ -2193,12 +2177,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
     const arr = Array.isArray(list) ? list : [];
     setAdminCatalogColors(arr);
     try {
-      const res = await fetch("/api/catalog/colors", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ colors: arr }),
-      });
-      const data = await res.json().catch(() => ({}));
+      const data = await putCatalogColors(arr);
       if (!res.ok) {
         console.error("catalog colors PUT failed", data);
         setAdminCatalogColors(prev);
@@ -2226,8 +2205,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
   const refreshCatalogColors = async () => {
     try {
-      const res = await fetch("/api/catalog/colors", { cache: "no-store" });
-      const data = await res.json().catch(() => ({}));
+      const data = await fetchCatalogColors();
       const list = Array.isArray(data?.colors) ? data.colors : null;
       if (list) {
         setAdminCatalogColors(list);
@@ -2284,12 +2262,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               sort_order: Number.isFinite(Number(so)) ? Number(so) : i,
             };
           });
-          const res = await fetch("/api/catalog/sizes", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sizes: payload2 }),
-          });
-          const data = await res.json().catch(() => ({}));
+          const data = await putCatalogSizes(payload2);
           if (!res.ok) {
             console.error("sizes PUT failed", data);
             setAdminCatalogSizes(prev);
@@ -2321,8 +2294,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const refreshCatalogSizes = async () => {
         try {
-          const res = await fetch("/api/catalog/sizes", { cache: "no-store" });
-          const data = await res.json().catch(() => ({}));
+          const data = await fetchCatalogSizes();
           const list = Array.isArray(data.sizes) ? data.sizes : null;
           if (list && list.length) {
             setAdminCatalogSizes(list);
@@ -2377,13 +2349,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               ? true
               : !!(b.home_opt_out ?? b.homeOptOut),
           }));
-          const res = await fetch("/api/catalog/brands", {
-            method: "PUT",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ brands: payload }),
-          });
-          const data = await res.json().catch(() => ({}));
+          const data = await putCatalogBrands(payload);
           if (!res.ok) {
             console.error("brands PUT failed", data);
             setAdminCatalogBrands(prev);
@@ -2418,8 +2384,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const refreshCatalogBrands = async () => {
         try {
-          const res = await fetch("/api/catalog/brands", { cache: "no-store" });
-          const data = await res.json().catch(() => ({}));
+          const data = await fetchCatalogBrands();
           const list = Array.isArray(data.brands) ? data.brands : null;
           if (list && list.length) {
             const mapped = list.map((s) => Object.assign({}, s, {
@@ -2490,12 +2455,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               category_names: cats.map((x) => String(x).trim()).filter(Boolean),
             };
           });
-          const res = await fetch("/api/catalog/attributes", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ attributes: payload }),
-          });
-          const data = await res.json().catch(() => ({}));
+          const data = await putCatalogAttributes(payload);
           if (!res.ok) {
             console.error("attributes PUT failed", data);
             setAdminCatalogAttributes(prev);
@@ -2532,8 +2492,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const refreshCatalogAttributes = async () => {
         try {
-          const res = await fetch("/api/catalog/attributes", { cache: "no-store" });
-          const data = await res.json().catch(() => ({}));
+          const data = await fetchCatalogAttributes();
           const list = Array.isArray(data.attributes) ? data.attributes : null;
           if (list && list.length) {
             const mapped = list.map((s) => Object.assign({}, s, {
@@ -2899,11 +2858,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         let cancelled = false;
         const load = async () => {
           try {
-            const res = await fetch('/api/catalog/sellers', {
-              cache: 'no-store',
-              headers: { Accept: 'application/json' },
-            });
-            const data = await res.json().catch(() => null);
+            const data = await fetchCatalogSellers();
             if (cancelled || !data || !data.ok) return;
             const mapped = (data.sellers || []).map((s) => {
               const products = Number(
@@ -3803,11 +3758,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               try {
                 if (typeof reloadServerCatalog === 'function') reloadServerCatalog();
               } catch (_) {}
-              fetch('/api/catalog/products?limit=200', {
-                cache: 'no-store',
-                headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' },
-              })
-                .then((r) => r.json())
+              fetchCatalogProducts({ limit: 200, headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' } })
                 .then((j) => {
                   const list = j?.products;
                   if (Array.isArray(list) && typeof mapCatalogRow === 'function' && typeof setServerProducts === 'function') {
@@ -3942,8 +3893,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                   } catch (_) {}
                 })
                 .catch(() => {});
-              fetch('/api/catalog/sellers', { cache: 'no-store' })
-                .then((r) => r.json())
+              fetchCatalogSellers()
                 .then((j) => {
                   if (j?.ok && Array.isArray(j.sellers) && typeof setTopSellers === 'function') {
                     const mapped = (j.sellers || []).map((s) => {
@@ -7619,10 +7569,7 @@ const verifyOtp = async () => {
             }
           } catch (_) {}
           if (!list && sellerId) {
-            const res = await fetch("/api/catalog/products?sellerId=" + encodeURIComponent(String(sellerId)), {
-              cache: "no-store",
-            });
-            const data = await res.json().catch(() => ({}));
+            const data = await fetchCatalogProducts({ sellerId, credentials: false });
             if (Array.isArray(data.products)) {
               list = data.products.map((row) => {
                 const mapped = mapServerProductToSellerUi(row) || {};
@@ -11805,8 +11752,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         // اگر هنوز در topSellers نیست، یک‌بار از API بگیر و merge کن
         try {
           if (!(Array.isArray(topSellers) && topSellers.some((x) => String(x.id) === String(id)))) {
-            fetch('/api/catalog/sellers', { cache: 'no-store', headers: { Accept: 'application/json' } })
-              .then((r) => r.json())
+            fetchCatalogSellers()
               .then((data) => {
                 if (!data?.ok || !Array.isArray(data.sellers)) return;
                 const mapped = data.sellers.map((s) => {
