@@ -10349,7 +10349,7 @@ const downloadSeoFile = (filename, content, mime) => {
         setAdminAuthError('');
         setAdminAuthLoading(true);
         try {
-          const data = await requestOtp(phoneDigits);
+          const data = await requestOtp(phone);
 
           if (!data.ok) {
             setAdminAuthError(data.error || 'ارسال کد ناموفق بود');
@@ -10380,7 +10380,7 @@ const downloadSeoFile = (filename, content, mime) => {
         setAdminAuthError('');
         setAdminAuthLoading(true);
         try {
-          const data = await verifyOtpApi(phone, code, role);
+          const data = await verifyOtpApi(phone, code, 'admin');
 
           if (!data.ok) {
             setAdminAuthError(data.error || 'کد نادرست است');
