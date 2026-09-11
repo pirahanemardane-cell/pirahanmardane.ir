@@ -1,4 +1,5 @@
 'use client';
+import { defaultAdminCategories, defaultAdminTags, defaultAdminBlogCategories } from '@/lib/default-taxonomy';
 import {
   loadGa4Store as loadGa4StoreLib,
   buildGa4Seed as buildGa4SeedLib,
@@ -32,7 +33,7 @@ import { scrollPageToTop } from '@/lib/scroll-page-to-top';
 import { HOME_FEATURES, HOME_STATS, TREND_QUERIES, CAT_LABEL_MAP } from '@/lib/site-content';
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
-import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath } from '@/lib/product-codes';
+import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib } from '@/lib/product-codes';
 import { findOpenChatConversation, conversationChannelLabel, ticketMessagesToChatUI } from '@/lib/ticket-chat';
 import { downloadBlobFile } from '@/lib/download-blob';
 import { checkSellerSeoSpam } from '@/lib/seo-spam';
@@ -1901,13 +1902,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }, [adminTab]);
       // ——— تاکسونومی سراسری (دسته ایندکس‌پذیر / برچسب ممنوع از ایندکس) ———
       const slugifyTaxonomy = (s) => slugifyFa(s);
-      /** نامک محصول: نام_محصول / نام_فروشگاه */
-      const productSlugFromNameAndShop = (productName, shopName) => {
-        const a = slugifyFa(productName);
-        const b = slugifyFa(shopName || '');
-        if (a && b && b !== 'مورد') return `${a}/${b}`;
-        return a || 'محصول';
-      };
+      const productSlugFromNameAndShop = (productName, shopName) =>
+        productSlugFromNameAndShopLib(productName, shopName, slugifyFa);
       const applySellerDescFormat = (type) => {
         const el = sellerDescRef.current;
         if (!el) return;
@@ -1959,16 +1955,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         });
       };
 
-      const defaultAdminCategories = () => [
-        { id: 'cat-rasmi', name: 'رسمی', slug: 'rasmi', url: '/shop?cat=rasmi', indexable: true, active: true, image: '/logo.webp', description: 'پیراهن رسمی مردانه برای محیط کار، مراسم و استایل کلاسیک. تنوع پارچه و رنگ از فروشندگان معتبر.' },
-        { id: 'cat-kravati', name: 'کروات', slug: 'kravati', url: '/shop?cat=kravati', indexable: true, active: true, image: '/logo.webp', description: 'پیراهن مناسب کروات با یقه رسمی و دوخت دقیق برای استایل اداری و رسمی.' },
-        { id: 'cat-short', name: 'آستین کوتاه', slug: 'astin-kutah', url: '/shop?cat=astin-kutah', indexable: true, active: true, image: '/logo.webp', description: 'پیراهن آستین کوتاه و لینن برای فصل گرم؛ سبک، خنک و مناسب استفاده روزمره.' },
-      ];
-      const defaultAdminTags = () => [
-        { id: 'tag-linen', name: 'لینن', slug: 'linen', url: '/shop?tag=linen', indexable: false, active: true, image: '/logo.webp', description: 'محصولات با پارچه لینن — خنک و مناسب تابستان. این صفحه برچسب است و ایندکس نمی‌شود.' },
-        { id: 'tag-summer', name: 'تابستانه', slug: 'tabestane', url: '/shop?tag=tabestane', indexable: false, active: true, image: '/logo.webp', description: 'انتخاب‌های سبک و خنک برای فصل تابستان. صفحه برچسب — noindex.' },
-        { id: 'tag-luxury', name: 'لوکس', slug: 'luxury', url: '/shop?tag=luxury', indexable: false, active: true, image: '/logo.webp', description: 'محصولات با دوخت و متریال لوکس. صفحه برچسب — noindex.' },
-      ];
+      // defaultAdminCategories/Tags → @/lib/default-taxonomy
       const [adminCategories, setAdminCategories] = useStoreField(adminUiStore, 'adminCategories');
       const [adminTags, setAdminTags] = useStoreField(adminUiStore, 'adminTags');
       const saveAdminCategories = async (next) => {
@@ -2145,13 +2132,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }, []);
 
 
-      const defaultAdminBlogCategories = () => [
-        { id: 'bc-guide', name: 'راهنمای خرید', active: true },
-        { id: 'bc-fashion', name: 'مد و فشن', active: true },
-        { id: 'bc-care', name: 'مراقبت و نگهداری', active: true },
-        { id: 'bc-news', name: 'اخبار فروشگاه', active: true },
-        { id: 'bc-other', name: 'سایر', active: true },
-      ];
+      // defaultAdminBlogCategories → @/lib/default-taxonomy
       const [adminBlogCategories, setAdminBlogCategories] = useStoreField(adminUiStore, 'adminBlogCategories');
       const saveAdminBlogCategories = async (next) => {
         const prev = Array.isArray(adminBlogCategories) ? adminBlogCategories : [];
