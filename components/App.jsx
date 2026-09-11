@@ -48,8 +48,7 @@ import {
   calcCartTotals,
   toggleInList,
   TAX_RATE,
-  FREE_SHIP_THRESHOLD,
-} from '@/lib/cart-math';
+  FREE_SHIP_THRESHOLD,, applyCartQtyDelta, removeCartLine, findCartLine } from '@/lib/cart-math';
 import {
   setOrCreateMeta,
   setCanonicalLink,
@@ -3666,16 +3665,15 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         });
 
         const applyLocal = () => {
-          setCart(prev => prev.map(it => {
-            if (!(it.id === id && (it.selectedColor?.name || '') === (colorName || '') && (it.selectedSize || '') === (size || ''))) return it;
-            const prod = (catalogProducts || products || []).find(pr => pr.id === it.id);
-            const maxStock = getVariantStock(prod || it, it.selectedColor?.name, it.selectedSize || it.size, it.selectedAttrs || {}) || it.stockLeft || 99;
-            const nextQty = Math.max(0, Math.min(maxStock, it.qty + delta));
-            if (delta > 0 && it.qty >= maxStock) {
+          setCart(prev => {
+            const line = findCartLine(prev, { id, colorName, size });
+            const prod = (catalogProducts || products || []).find(pr => pr.id === (line?.id || id));
+            const maxStock = getVariantStock(prod || line || {}, line?.selectedColor?.name || colorName, line?.selectedSize || size || line?.size, line?.selectedAttrs || {}) || line?.stockLeft || 99;
+            if (delta > 0 && line && line.qty >= maxStock) {
               try { pushLiveToast(`حداکثر موجودی این ترکیب ${toFa(maxStock)} عدد است`, { type: 'error' }); } catch (_) {}
             }
-            return { ...it, qty: nextQty };
-          }).filter(i => i.qty > 0));
+            return applyCartQtyDelta(prev, { id, colorName, size, delta, maxStock });
+          });
           setTimeout(finishLoading, 220);
         };
 
@@ -3706,7 +3704,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         const item = cart.find(i => i.id === id && i.selectedColor?.name === colorName && (i.selectedSize || '') === (size || ''));
         setCartItemLoading(prev => ({ ...prev, [key]: true }));
         const finishLocal = () => {
-          setCart(prev => prev.filter(i => !(i.id === id && i.selectedColor?.name === colorName && (i.selectedSize || '') === (size || ''))));
+          setCart(prev => removeCartLine(prev, { id, colorName, size }));
           setCartItemLoading(prev => {
             const next = { ...prev };
             delete next[key];
