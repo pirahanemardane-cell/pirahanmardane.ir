@@ -18,7 +18,6 @@ export async function GET() {
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (url && anon) checks.supabase_env = 'ok'
-  // وضعیت service_role عمداً به بیرون اعلام نمی‌شود
 
   try {
     const supabase = await createClient()
@@ -48,13 +47,28 @@ export async function GET() {
   const criticalFail =
     checks.supabase_env !== 'ok' || checks.db === 'error' || checks.app !== 'ok'
 
+  if (criticalFail) {
+    try {
+      await logCritical('health', new Error('health_check_failed'), { checks })
+    } catch (_) {}
+  }
+
+  const rateLimitBackend = process.env.UPSTASH_REDIS_REST_URL
+    ? 'upstash'
+    : 'memory_or_db'
+
   return NextResponse.json(
     {
       ok: !criticalFail,
       service: 'pirahanemardane',
       version: process.env.npm_package_version || '0.0.0',
+      region: process.env.VERCEL_REGION || process.env.AWS_REGION || 'unknown',
+      deployment: process.env.VERCEL_GIT_COMMIT_SHA
+        ? String(process.env.VERCEL_GIT_COMMIT_SHA).slice(0, 7)
+        : undefined,
       time: new Date().toISOString(),
       latency_ms: Date.now() - started,
+      rate_limit_backend: rateLimitBackend,
       checks,
     },
     {
