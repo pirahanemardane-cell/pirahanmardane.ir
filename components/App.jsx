@@ -109,7 +109,7 @@ import { buildCurrentPageSeoContext } from '@/lib/page-seo-context';
 import { normalizeProduct } from '@/lib/product-normalize';
 import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
 import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
-import { clearAuthLocal as clearAuthLocalLib } from '@/lib/auth-session';
+import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout } from '@/lib/auth-session';
 
 
 
@@ -7111,13 +7111,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         setAuthError('');
         setAuthLoading(true);
         try {
-          const res = await fetch('/api/auth/otp/request', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone: phoneDigits }),
-          });
-          const data = await res.json();
+          const data = await requestOtp(phoneDigits);
           if (!data.ok) {
             setAuthError(data.error || 'ارسال کد ناموفق بود');
             setAuthLoading(false);
@@ -7471,8 +7465,7 @@ const verifyOtp = async () => {
           }
         };
         try {
-          fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
-            .catch(() => {})
+          postLogout()
             .finally(go);
           setTimeout(go, 600);
         } catch (_) {
