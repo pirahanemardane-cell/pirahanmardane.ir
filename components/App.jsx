@@ -40,7 +40,7 @@ import {
   gscAggregate as gscAggregateLib,
   buildGscInspectResult,
 } from '@/lib/gsc-analytics';
-import { parseResponseHours, smartScore, rankSellers, buildSellerPriceMap, getSellerMinPrice as getSellerMinPriceLib, getSellerMaxDiscount as getSellerMaxDiscountLib, filterAndSortSellers } from '@/lib/seller-rank';
+import { parseResponseHours, smartScore, rankSellers, buildSellerPriceMap, getSellerMinPrice as getSellerMinPriceLib, getSellerMaxDiscount as getSellerMaxDiscountLib, filterAndSortSellers, isSellerListFilterActive as isSellerListFilterActiveLib, countSellerListFilters, sellerNameSuggestions as sellerNameSuggestionsLib, citySuggestionsFromList } from '@/lib/seller-rank';
 import { emptyTaxonomyForm, taxonomyTypeLabel } from '@/lib/taxonomy-form';
 import { generateGiftCode as generateGiftCodeLib, nextRecentSearches, removeFromRecentSearches, getUsedPromoCodes, markPromoCodeUsed } from '@/lib/promo-codes';
 import { markGiftListUsed, collectExistingPromoCodes, markPromoCodeUsed as markPromoCodeUsedLib } from '@/lib/promo-codes';
@@ -2993,17 +2993,21 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         minProducts: sellerMinProductsSafe,
         sort: sellerListSort,
       }, sellerPriceMap);
-      const isSellerListFilterActive = sellerCitiesSafe.length > 0 || !!sellerQuerySafe.trim() || sellerMinRatingSafe > 0 || sellerMaxResponseSafe > 0 || sellerMinProductsSafe > 0;
-      const sellerFilterCount = sellerCitiesSafe.length + (sellerMinRatingSafe > 0 ? 1 : 0) + (sellerMaxResponseSafe > 0 ? 1 : 0) + (sellerMinProductsSafe > 0 ? 1 : 0);
-      const sellerNameSuggestions = sellerListQuery.trim()
-        ? topSellers.filter(s => {
-            const q = sellerListQuery.trim().toLowerCase();
-            return s.name.toLowerCase().includes(q) || (s.desc || '').toLowerCase().includes(q) || (s.city || '').includes(q);
-          }).slice(0, 8)
-        : [];
-      const citySuggestions = sellerCityInput.trim()
-        ? IRAN_CITIES.filter(c => c.includes(sellerCityInput.trim()) || c.replace(/‌/g, '').includes(sellerCityInput.trim().replace(/‌/g, ''))).slice(0, 10)
-        : IRAN_CITIES.slice(0, 10);
+      const isSellerListFilterActive = isSellerListFilterActiveLib({
+        cities: sellerCitiesSafe,
+        query: sellerQuerySafe,
+        minRating: sellerMinRatingSafe,
+        maxResponse: sellerMaxResponseSafe,
+        minProducts: sellerMinProductsSafe,
+      });
+      const sellerFilterCount = countSellerListFilters({
+        cities: sellerCitiesSafe,
+        minRating: sellerMinRatingSafe,
+        maxResponse: sellerMaxResponseSafe,
+        minProducts: sellerMinProductsSafe,
+      });
+      const sellerNameSuggestions = sellerNameSuggestionsLib(topSellers, sellerListQuery, 8);
+      const citySuggestions = citySuggestionsFromList(IRAN_CITIES, sellerCityInput, 10);
       // نزدیک‌ترین شهرها برای حالت خالی
       const popularCities = POPULAR_CITIES;
       const topSellersRanked = rankSellers(topSellers, topSellersTab);
