@@ -1,4 +1,6 @@
 'use client';
+import { HOME_FEATURES, HOME_STATS, TREND_QUERIES, CAT_LABEL_MAP } from '@/lib/site-content';
+import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES } from '@/lib/size-guide';
 import { shopCodePrefix } from '@/lib/product-codes';
 import { findOpenChatConversation, conversationChannelLabel, ticketMessagesToChatUI } from '@/lib/ticket-chat';
@@ -47,7 +49,7 @@ import { toFa, toEnDigits, onlyDigits, normalizeIranMobile, isAdminPhone } from 
 import { normalizeBreadcrumbs } from '@/lib/breadcrumbs';
 import { normalizeSearch, expandQuery, scoreProduct, SEARCH_SYNONYMS } from '@/lib/search-normalize';
 import { deriveFabric, deriveSleeve, deriveCollar } from '@/lib/product-attrs';
-import { detectImportSource, normKey, pickField, splitList } from '@/lib/import-csv';
+import { detectImportSource, normKey, pickField, splitList, parseCsvText } from '@/lib/import-csv';
 import EmptyState from './EmptyState';
 import { Textarea } from './ui/textarea';
 import { Breadcrumb } from './ui/breadcrumb';
@@ -189,23 +191,13 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
     const brands = [];
 
-    const features = [
-      { title: "ضمانت بازگشت", desc: "۷ روز ضمانت بازگشت کالا", icon: "refresh" },
-      { title: "اصالت کالا", desc: "تأمین از فروشندگان معتبر", icon: "badge" },
-      { title: "خرید مطمئن", desc: "پیگیری سفارش در پنل", icon: "shield" },
-      { title: "پشتیبانی سریع", desc: "پاسخگویی سریع", icon: "headphones" },
-    ];
+    const features = HOME_FEATURES;
 
     const topSellersSeed = [];
 
     const blogs = [];
 
-    const stats = [
-      { title: "تنوع در کیفیت", desc: "از بهترین برندها", icon: "gift" },
-      { title: "تخفیف های ویژه", desc: "در مناسبت های مختلف", icon: "percent" },
-      { title: "پشتیبانی آنلاین", desc: "پاسخگوی شما هستیم", icon: "headphones" },
-      { title: "باشگاه مشتریان", desc: "امتیاز جمع کنید و تخفیف بگیرید", icon: "users" },
-    ];
+    const stats = HOME_STATS;
 
     const reviews = [];
 
@@ -6691,7 +6683,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       const allColors = [...new Set((catalogProducts || products || []).flatMap(p => (p.colors || []).map(c => c.name)))];
       const isSearchActive = !!(searchQuerySafe.trim() || searchCatsSafe.length > 0 || searchColorsSafe.length > 0 || searchSizesSafe.length > 0);
 
-      const TREND_QUERIES = ['پیراهن رسمی', 'لینن', 'آستین کوتاه', 'سفید', 'چهارخانه', 'کروات'];
+      // TREND_QUERIES → @/lib/site-content
       const searchCategorySuggestions = ['رسمی', 'کروات', 'آستین کوتاه'].filter(c => {
         const q = normalizeSearch(searchQuery);
         return !q || normalizeSearch(c).includes(q) || normalizeSearch(`پیراهن ${c}`).includes(q);
@@ -6766,11 +6758,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         return bestScore >= 4 ? best : null;
       })();
 
-      const catLabelMap = {
-        'رسمی': 'پیراهن رسمی مردانه',
-        'کروات': 'پیراهن کروات مردانه',
-        'آستین کوتاه': 'پیراهن آستین کوتاه مردانه',
-      };
+      const catLabelMap = CAT_LABEL_MAP;
       /**
        * تنها نقطهٔ ورود به لیست محصولات (فروشگاه + همهٔ دسته‌ها).
        * opts.cat → هر نام دسته (فعلی/آینده)؛ همیشه همان ساختار PLP.
@@ -9683,161 +9671,9 @@ const verifyOtp = async () => {
 
       // downloadBlobFile → @/lib/download-blob
 
-      const PRODUCT_BACKUP_SITE = 'pirahan-mardane';
-      const PRODUCT_BACKUP_MAGIC = 'PM-PRODUCT-BACKUP-v1';
+      // productBackupPayload → @/lib/product-export
 
-      const productBackupPayload = (list, meta = {}) => ({
-        magic: PRODUCT_BACKUP_MAGIC,
-        site: PRODUCT_BACKUP_SITE,
-        version: 1,
-        exportedAt: new Date().toISOString(),
-        exportedAtFa: new Date().toLocaleString('fa-IR'),
-        source: meta.source || 'unknown',
-        sellerId: meta.sellerId || null,
-        sellerName: meta.sellerName || null,
-        count: (list || []).length,
-        products: (list || []).map(p => ({ ...p })),
-      });
-
-      /** خروجی CSV سازگار با ورود WooCommerce */
-      const productsToWooCsv = (list) => {
-        const rows = list || [];
-        const headers = [
-          'Name', 'SKU', 'Description', 'Short description',
-          'Regular price', 'Sale price', 'Stock', 'Published',
-          'Categories', 'Tags', 'Brands', 'Images',
-          'Attribute 1 name', 'Attribute 1 value(s)',
-          'Attribute 2 name', 'Attribute 2 value(s)',
-          'Attribute 3 name', 'Attribute 3 value(s)',
-        ];
-        const esc = (v) => {
-          if (v == null) return '';
-          let s = String(v);
-          if (s.includes('"') || s.includes(',') || s.includes('\n') || s.includes('\r')) {
-            s = '"' + s.replace(/"/g, '""') + '"';
-          }
-          return s;
-        };
-        const lines = [headers.join(',')];
-        rows.forEach((p) => {
-          const sizes = Array.isArray(p.sizes)
-            ? p.sizes.map((x) => (x && x.name) ? x.name : x).filter(Boolean).join(', ')
-            : (p.sizes || '');
-          const colors = Array.isArray(p.colors)
-            ? p.colors.map((c) => (c && c.name) ? c.name : c).filter(Boolean).join(', ')
-            : (p.colors || '');
-          const imgs = Array.isArray(p.images) && p.images.length
-            ? p.images.join(', ')
-            : (p.image || p.cover_image || (p.colors && p.colors[0] && p.colors[0].image) || '');
-          const price = Number(p.price) || 0;
-          let oldPrice = 0;
-          if (p.oldPrice != null) {
-            oldPrice = Number(String(p.oldPrice).replace(/[^\d.]/g, '')) || 0;
-          }
-          const regular = oldPrice > price && price > 0 ? oldPrice : price;
-          const sale = oldPrice > price && price > 0 ? price : '';
-          const cats = Array.isArray(p.categories) && p.categories.length
-            ? p.categories.join(', ')
-            : (p.category || '');
-          const tags = Array.isArray(p.tags) ? p.tags.join(', ') : (p.tags || '');
-          const published = ['active', 'approved', 'published'].includes(String(p.status || '').toLowerCase()) ? '1' : '0';
-          lines.push([
-            p.name || '',
-            p.sku || p.productCode || p.code || '',
-            p.desc || p.description || '',
-            String(p.desc || p.description || '').slice(0, 120),
-            regular || '',
-            sale,
-            p.stock ?? '',
-            published,
-            cats,
-            tags,
-            p.brand || p.brandName || '',
-            imgs,
-            sizes ? 'سایز' : '',
-            sizes,
-            colors ? 'رنگ' : '',
-            colors,
-            '',
-            '',
-          ].map(esc).join(','));
-        });
-        return '\uFEFF' + lines.join('\n');
-      };
-
-      const productsToCsv = (list) => {
-        const rows = list || [];
-        const headers = ['id', 'name', 'sku', 'category', 'categories', 'tags', 'price', 'oldPrice', 'discount', 'stock', 'reorderPoint', 'status', 'sellerId', 'sellerName', 'sizes', 'colors', 'rating', 'reviews', 'desc', 'fit', 'material', 'createdAt', 'updatedAt'];
-        const esc = (v) => {
-          if (v == null) return '';
-          let s = typeof v === 'object' ? JSON.stringify(v) : String(v);
-          if (s.includes('"') || s.includes(',') || s.includes('\n') || s.includes('\r')) {
-            s = '"' + s.replace(/"/g, '""') + '"';
-          }
-          return s;
-        };
-        const lines = [headers.join(',')];
-        rows.forEach(p => {
-          const seller = p.seller || {};
-          lines.push([
-            p.id,
-            p.name,
-            p.sku || p.code || '',
-            p.category || '',
-            Array.isArray(p.categories) ? p.categories.join('|') : (p.categories || ''),
-            Array.isArray(p.tags) ? p.tags.join('|') : (p.tags || ''),
-            p.price ?? '',
-            p.oldPrice ?? '',
-            p.discount ?? '',
-            p.stock ?? '',
-            p.reorderPoint ?? '',
-            p.status || '',
-            p.sellerId || seller.id || '',
-            p.sellerName || seller.name || '',
-            Array.isArray(p.sizes) ? p.sizes.join('|') : (p.sizes || ''),
-            Array.isArray(p.colors) ? p.colors.map(c => (c && c.name) ? c.name : c).join('|') : '',
-            p.rating ?? '',
-            p.reviews ?? '',
-            p.desc || p.description || '',
-            p.fit || '',
-            p.material || p.fabric || '',
-            p.createdAt || '',
-            p.updatedAt || '',
-          ].map(esc).join(','));
-        });
-        return '\uFEFF' + lines.join('\n');
-      };
-
-      const validateProductBackup = (data, opts = {}) => {
-        if (!data || typeof data !== 'object') return { ok: false, error: 'فایل نامعتبر است' };
-        // فقط بک‌آپ خروجی همین سایت
-        if (data.magic !== PRODUCT_BACKUP_MAGIC || data.site !== PRODUCT_BACKUP_SITE) {
-          return { ok: false, error: 'این فایل بک‌آپ پیراهن مردانه نیست. فقط فایل خروجی همین سایت قابل بازگردانی است.' };
-        }
-        if (Number(data.version) !== 1) {
-          return { ok: false, error: 'نسخه بک‌آپ پشتیبانی نمی‌شود' };
-        }
-        const list = Array.isArray(data.products) ? data.products : null;
-        if (!list || !list.length) {
-          return { ok: false, error: 'فایل بک‌آپ خالی است یا محصولات ندارد' };
-        }
-        if (opts.requireSource && data.source !== opts.requireSource) {
-          return { ok: false, error: opts.requireSource === 'seller'
-            ? 'این بک‌آپ مربوط به فروشنده نیست'
-            : 'این بک‌آپ مربوط به ادمین نیست' };
-        }
-        // فروشنده فقط بک‌آپ خودش (یا بدون sellerId قدیمی) را می‌تواند برگرداند
-        if (opts.sellerId != null && data.source === 'seller' && data.sellerId != null) {
-          const sid = String(opts.sellerId);
-          if (String(data.sellerId) !== sid && String(data.sellerId) !== 'own') {
-            // allow if phone matches etc.
-            if (String(data.sellerId) !== String(opts.sellerPhone || '')) {
-              return { ok: false, error: 'این بک‌آپ متعلق به فروشگاه دیگری است و قابل بازگردانی در پنل شما نیست.' };
-            }
-          }
-        }
-        return { ok: true, list, meta: data };
-      };
+      // productsToCsv/Woo/validate → @/lib/product-export
 
       const backupAdminProducts = (fmt = 'json') => {
         const list = adminProducts || [];
