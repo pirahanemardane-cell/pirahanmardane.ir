@@ -95,6 +95,7 @@ import {
   buildVariantMatrix,
 } from '@/lib/product-variants';
 import { scrollPageToTop } from '@/lib/scroll-page-to-top';
+import { assertNoUserLinks, textContainsForbiddenLink, stripLinksForDisplay } from '@/lib/user-link-guard';
 import { HOME_FEATURES, HOME_STATS, CAT_LABEL_MAP, POPULAR_CITIES, OWN_SELLER, SELLERS, NAV_LINKS } from '@/lib/site-content';
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
