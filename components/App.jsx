@@ -109,6 +109,8 @@ import { buildCurrentPageSeoContext } from '@/lib/page-seo-context';
 import { normalizeProduct } from '@/lib/product-normalize';
 import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
 import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
+import { clearAuthLocal as clearAuthLocalLib } from '@/lib/auth-session';
+
 
 
 
@@ -7452,23 +7454,7 @@ const verifyOtp = async () => {
 
 
       /* SESSION_SOURCE: supabase /api/auth/me is source of truth; localStorage is cache only */
-      const clearAuthLocal = () => {
-        try {
-          ['buyerUser', 'sellerUser', 'adminUser', 'pm_remember', 'user'].forEach((k) => {
-            try { localStorage.removeItem(k); } catch (_) {}
-            try { sessionStorage.removeItem(k); } catch (_) {}
-          });
-        } catch (_) {}
-        try { sessionStorage.removeItem('pm_panel'); } catch (_) {}
-        try { sessionStorage.removeItem('pm_admin_ok'); } catch (_) {}
-        try { sessionStorage.removeItem('adminTab'); } catch (_) {}
-        try {
-          if (typeof window !== 'undefined') {
-            try { delete window.__pmAuthPassword; } catch (_) {}
-            try { delete window.__pmAuthRemember; } catch (_) {}
-          }
-        } catch (_) {}
-      };
+      const clearAuthLocal = () => clearAuthLocalLib();
 
       const logout = () => {
         try { if (typeof setSellerUser === 'function') setSellerUser(null); } catch (_) {}
