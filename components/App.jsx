@@ -1,4 +1,11 @@
 'use client';
+import {
+  getPageCmsFromMap,
+  getShopSeoBodyFrom,
+  mergePageCmsEntry,
+  plainTextFromHtml,
+  mergeSeoConfig,
+} from '@/lib/page-cms';
 import { buildOrderInvoiceHtml } from '@/lib/order-invoice';
 import { isInCompareList, removeFromCompareList, canAddToCompare, replaceInCompareList } from '@/lib/compare-helpers';
 import { applyMarkdownFormat } from '@/lib/markdown-format';
@@ -5478,23 +5485,15 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       };
       const closeStaticPage = () => { setStaticPage(null); setBlogPostId(null); setBrandDetailId(null); };
 
-      const getPageCms = (pageKey) => (adminPageContent && adminPageContent[pageKey]) || null;
-      /** منبع واحد توضیح فروشگاه: CMS صفحه shop (با همگام‌سازی به adminSettings) */
-      const getShopSeoBody = () => {
-        const cmsBody = (getPageCms('shop') || {}).body;
-        if (cmsBody != null && String(cmsBody).trim() !== '') return cmsBody;
-        return adminSettings?.shopSeoHtml || adminSettings?.shopSeoText || '';
-      };
+      const getPageCms = (pageKey) => getPageCmsFromMap(adminPageContent, pageKey);
+      const getShopSeoBody = () => getShopSeoBodyFrom(adminPageContent, adminSettings);
       const updatePageCms = (pageKey, patch) => {
-        const prev = (adminPageContent && adminPageContent[pageKey]) || {};
-        const merged = { ...prev, ...patch, updatedAt: new Date().toISOString() };
+        const prev = getPageCmsFromMap(adminPageContent, pageKey) || {};
+        const merged = mergePageCmsEntry(prev, patch);
         saveAdminPageContentMap({ ...adminPageContent, [pageKey]: merged });
         if (pageKey === 'shop' && patch && patch.body != null) {
           try {
-            const plain = (typeof htmlToPlain === 'function'
-              ? htmlToPlain(patch.body)
-              : String(patch.body).replace(/<[^>]+>/g, ' ')
-            ).replace(/\s+/g, ' ').trim().slice(0, 500);
+            const plain = plainTextFromHtml(patch.body, htmlToPlain, 500);
             if (typeof saveAdminSettings === 'function') {
               saveAdminSettings({ ...adminSettings, shopSeoHtml: patch.body, shopSeoText: plain });
             }
@@ -9467,7 +9466,7 @@ const verifyOtp = async () => {
       }, []);
 
 
-      const seoCfg = () => ({ ...defaultSeoConfig(), ...(adminSettings?.seo || {}) });
+      const seoCfg = () => mergeSeoConfig(defaultSeoConfig(), adminSettings?.seo);
 
       const saveSeoPatch = (patch) => {
         const next = { ...adminSettings, seo: { ...seoCfg(), ...patch } };
