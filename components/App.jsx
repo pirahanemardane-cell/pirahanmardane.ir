@@ -41,7 +41,6 @@ import {
   buildGscInspectResult,
 } from '@/lib/gsc-analytics';
 import { parseResponseHours, smartScore, rankSellers, buildSellerPriceMap, getSellerMinPrice as getSellerMinPriceLib, getSellerMaxDiscount as getSellerMaxDiscountLib, filterAndSortSellers, isSellerListFilterActive as isSellerListFilterActiveLib, countSellerListFilters, sellerNameSuggestions as sellerNameSuggestionsLib, citySuggestionsFromList } from '@/lib/seller-rank';
-import { normalizeCategoryKey as normalizeCategoryKeyLib } from '@/lib/category-normalize';
 import { emptyTaxonomyForm, taxonomyTypeLabel } from '@/lib/taxonomy-form';
 import { generateGiftCode as generateGiftCodeLib, nextRecentSearches, removeFromRecentSearches, getUsedPromoCodes, markPromoCodeUsed } from '@/lib/promo-codes';
 import { markGiftListUsed, collectExistingPromoCodes, markPromoCodeUsed as markPromoCodeUsedLib } from '@/lib/promo-codes';
