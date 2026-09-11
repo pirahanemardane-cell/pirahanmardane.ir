@@ -161,7 +161,7 @@ import { htmlToPlain } from '@/lib/html-plain';
 import { isBlogLiked as isBlogLikedLib, toggleBlogLikeList, buildBlogCommentEntry, appendBlogComment } from '@/lib/blog-helpers';
 import { toFa, toEnDigits, onlyDigits, normalizeIranMobile, isAdminPhone, isNumericFieldEl } from '@/lib/format-digits';
 import { normalizeBreadcrumbs } from '@/lib/breadcrumbs';
-import { normalizeSearch, expandQuery, scoreProduct, SEARCH_SYNONYMS } from '@/lib/search-normalize';
+import {normalizeSearch, expandQuery, scoreProduct, SEARCH_SYNONYMS,  didYouMean as didYouMeanLib} from '@/lib/search-normalize';
 import { deriveFabric, deriveSleeve, deriveCollar } from '@/lib/product-attrs';
 import { detectImportSource, normKey, pickField, splitList, parseCsvText } from '@/lib/import-csv';
 import EmptyState from './EmptyState';
@@ -5753,24 +5753,10 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           keepSort: true,
         });
       };
-      const didYouMean = (() => {
-        const q = normalizeSearch(searchQuery);
-        if (!q || filteredProducts.length > 0) return null;
-        const pool = [...TREND_QUERIES, ...products.map(p => p.name), ...products.map(p => p.category)];
-        let best = null, bestScore = 0;
-        pool.forEach(cand => {
-          const c = normalizeSearch(cand);
-          if (!c) return;
-          let s = 0;
-          if (c.includes(q) || q.includes(c)) s = 10;
-          const qa = [...q], ca = [...c];
-          // simple char overlap
-          const setc = new Set(ca);
-          s += qa.filter(ch => setc.has(ch)).length * 0.5;
-          if (s > bestScore) { bestScore = s; best = cand; }
-        });
-        return bestScore >= 4 ? best : null;
-      })();
+            // didYouMean → @/lib/search-normalize
+      const didYouMean = (() =>
+        didYouMeanLib(searchQuery, filteredProducts, products, TREND_QUERIES)
+      );)();
 
       const catLabelMap = CAT_LABEL_MAP;
       /**
