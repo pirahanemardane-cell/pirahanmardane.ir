@@ -4495,7 +4495,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           body: JSON.stringify({ status }),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data?.ok) throw new Error(data?.error || 'تأیید محصول ناموفق');
+        if (!data?.ok) throw new Error(data?.error || 'تأیید محصول ناموفق');
         return data.product;
       };
 
@@ -7739,7 +7739,7 @@ const verifyOtp = async () => {
         try {
           const res = await fetch('/api/seller/products', { credentials: 'include' });
           const data = await res.json().catch(() => null);
-          if (!res.ok || !data?.ok) return [];
+          if (!data?.ok) return [];
           return (Array.isArray(data.products) ? data.products : []).map(mapServerProductToSellerUi).filter(Boolean);
         } catch (_) {
           return [];
@@ -7753,7 +7753,7 @@ const verifyOtp = async () => {
           body: JSON.stringify(payload),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data?.ok) throw new Error(data?.error || 'ثبت محصول ناموفق');
+        if (!data?.ok) throw new Error(data?.error || 'ثبت محصول ناموفق');
         return data.product;
       };
       const updateSellerProductOnServer = async (id, payload) => {
@@ -7764,7 +7764,7 @@ const verifyOtp = async () => {
           body: JSON.stringify(payload),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data?.ok) throw new Error(data?.error || 'بروزرسانی محصول ناموفق');
+        if (!data?.ok) throw new Error(data?.error || 'بروزرسانی محصول ناموفق');
         return data.product;
       };
 
@@ -7820,7 +7820,7 @@ const verifyOtp = async () => {
             body: JSON.stringify(payload),
           });
           const data = await res.json().catch(() => null);
-          if (!res.ok || !data?.ok) {
+          if (!data?.ok) {
             if (typeof showToast === 'function') showToast({ message: data?.error || 'ثبت فروشگاه ناموفق', variant: 'error', duration: 4000, position: 'top-center' });
             return null;
           }
@@ -7841,7 +7841,7 @@ const verifyOtp = async () => {
             body: JSON.stringify(payload),
           });
           const data = await res.json().catch(() => null);
-          if (!res.ok || !data?.ok) {
+          if (!data?.ok) {
             // اگر فروشگاه وجود ندارد → ثبت جدید
             if (res.status === 404 || data?.code === 'NO_SHOP') {
               return await createSellerShopOnServer(payload);
@@ -8037,7 +8037,7 @@ const verifyOtp = async () => {
           try {
             const res = await fetch('/api/seller/me', { credentials: 'include' });
             const data = await res.json().catch(() => null);
-            if (!res.ok || !data?.ok) return;
+            if (!data?.ok) return;
             applySellerPayload(data.seller || data);
           } catch (_) {}
         };
@@ -8317,7 +8317,7 @@ const verifyOtp = async () => {
           }
         };
         try {
-          fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
+          postLogout()
             .catch(() => {})
             .finally(go);
           setTimeout(go, 600);
@@ -10349,13 +10349,8 @@ const downloadSeoFile = (filename, content, mime) => {
         setAdminAuthError('');
         setAdminAuthLoading(true);
         try {
-          const res = await fetch('/api/auth/otp/request', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone }),
-          });
-          const data = await res.json();
+          const data = await requestOtp(phoneDigits);
+
           if (!data.ok) {
             setAdminAuthError(data.error || 'ارسال کد ناموفق بود');
             setAdminAuthLoading(false);
@@ -10385,13 +10380,8 @@ const downloadSeoFile = (filename, content, mime) => {
         setAdminAuthError('');
         setAdminAuthLoading(true);
         try {
-          const res = await fetch('/api/auth/otp/verify', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone, code, role: 'admin' }),
-          });
-          const data = await res.json();
+          const data = await verifyOtpApi(phone, code, role);
+
           if (!data.ok) {
             setAdminAuthError(data.error || 'کد نادرست است');
             setAdminAuthLoading(false);
@@ -10536,14 +10526,9 @@ const downloadSeoFile = (filename, content, mime) => {
         setAdminAuthError('');
         setAdminAuthLoading(true);
         try {
-          const res = await fetch('/api/auth/mfa/verify', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone, code }),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || !data?.ok) {
+          const data = await verifyMfaApi(phone, code);
+
+          if (!data?.ok) {
             setAdminAuthError(data?.error || 'کد اشتباه است');
             setAdminAuthLoading(false);
             return;
@@ -10572,14 +10557,9 @@ const downloadSeoFile = (filename, content, mime) => {
         setAdminAuthError('');
         setAdminAuthLoading(true);
         try {
-          const res = await fetch('/api/auth/login-password', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone, password, remember: true }),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || !data?.ok) {
+          const data = await loginWithPasswordApi(phone, password, true);
+
+          if (!data?.ok) {
             setAdminAuthError(data?.error || 'شماره یا رمز اشتباه است');
             setAdminAuthLoading(false);
             return;
@@ -10683,7 +10663,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
 
         try {
           const go = () => { try { window.location.assign('/'); } catch (_) {} };
-          const p = fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
+          const p = postLogout().catch(() => {});
           Promise.resolve(p).finally(go);
           setTimeout(go, 400);
           return;
@@ -14752,7 +14732,7 @@ const params = new URLSearchParams(window.location.search);
                       body: JSON.stringify({ code }),
                     });
                     const data = await res.json().catch(() => ({}));
-                    if (!res.ok || !data?.ok) {
+                    if (!data?.ok) {
                       setPublicTrackError(data?.error || 'سفارشی یافت نشد');
                     } else {
                       setPublicTrackResult(data.order || data);
