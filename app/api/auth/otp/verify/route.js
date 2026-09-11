@@ -10,7 +10,7 @@ import {
   markPhoneVerified,
 } from '../../../../../lib/otp'
 import { isAdminPhone } from '../../../../../lib/api/admin-guard'
-import { rateLimit, clientIp, rateLimitResponse } from '../../../../../lib/rate-limit'
+import { rateLimitAsync, clientIp, rateLimitResponse, RATE_POLICIES } from '../../../../../lib/rate-limit'
 import crypto from 'crypto'
 
 function phoneEmail(phone) {
@@ -114,15 +114,13 @@ export async function POST(request) {
     {
       const ip = clientIp(request)
       const digits = String(phone || '').replace(/\D/g, '')
-      const byPhone = rateLimit('otp:verify:' + digits, { limit: 15, windowMs: 15 * 60 * 1000 })
-      const byIp = rateLimit('otp:verify:ip:' + ip, { limit: 40, windowMs: 15 * 60 * 1000 })
+      const byPhone = await rateLimitAsync('otp:verify:' + digits, RATE_POLICIES.otp_verify_phone)
+      const byIp = await rateLimitAsync('otp:verify:ip:' + ip, RATE_POLICIES.otp_verify_ip)
       if (!byPhone.ok || !byIp.ok) {
-        const ra = Math.max(byPhone.retryAfterSec || 0, byIp.retryAfterSec || 0)
-        const rl = rateLimitResponse(
-          ra,
-          'تعداد تلاش وارد کردن کد بیش از حد است. کمی بعد دوباره تلاش کنید.'
+        return rateLimitResponse(
+          !byPhone.ok ? byPhone : byIp,
+          'تعداد تلاش وارد کردن کد بیش از حد است. کمی بعد دوباره تلاش کنید.',
         )
-        return NextResponse.json(rl.body, { status: rl.status, headers: rl.headers })
       }
     }
 
