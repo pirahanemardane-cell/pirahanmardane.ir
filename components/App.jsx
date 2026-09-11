@@ -143,6 +143,7 @@ import Icon from './Icon';
 import { AppApiProvider } from './AppApiContext';
 import ShopShell from './panels/ShopShell';
 import { htmlToPlain } from '@/lib/html-plain';
+import { isBlogLiked as isBlogLikedLib, toggleBlogLikeList, buildBlogCommentEntry, appendBlogComment } from '@/lib/blog-helpers';
 import { toFa, toEnDigits, onlyDigits, normalizeIranMobile, isAdminPhone, isNumericFieldEl } from '@/lib/format-digits';
 import { normalizeBreadcrumbs } from '@/lib/breadcrumbs';
 import { normalizeSearch, expandQuery, scoreProduct, SEARCH_SYNONYMS } from '@/lib/search-normalize';
@@ -611,17 +612,15 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         /* no localStorage (strict buyer) */
         return next;
       };
-      const isBlogLiked = (blogId) => likedBlogs.some(b => String(b.id) === String(blogId));
+      // isBlogLiked → @/lib/blog-helpers
+      const isBlogLiked = (blogId) => isBlogLikedLib(likedBlogs, blogId);
       const toggleBlogLike = (blogId) => {
         if (!blogId) return;
         setLikedBlogs(prev => {
-          const exists = prev.some(b => String(b.id) === String(blogId));
-          let next;
-          if (exists) {
-            next = prev.filter(b => String(b.id) !== String(blogId));
+          const { next, action } = toggleBlogLikeList(prev, blogId);
+          if (action === 'removed') {
             showToast({ message: 'لایک بلاگ برداشته شد', variant: 'success', position: 'top-center' });
-          } else {
-            next = [{ id: blogId, likedAt: Date.now() }, ...prev];
+          } else if (action === 'added') {
             showToast({ message: 'بلاگ به علاقه‌مندی‌ها اضافه شد', variant: 'success', position: 'top-center', actions: { label: 'مشاهده', onClick: () => setWishlistOpen(true), variant: 'outline' } });
           }
           return persistLikedBlogs(next);
@@ -640,18 +639,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         const chkName = assertNoUserLinks(name);
         const chkBody = assertNoUserLinks(body);
         if (!chkName.ok || !chkBody.ok) { showToast({ message: chkName.error || chkBody.error || 'لینک مجاز نیست', variant: 'error', position: 'top-center' }); return; }
-        const entry = {
-          id: `c${Date.now()}`,
-          name: chkName.text.slice(0, 40),
-          text: chkBody.text.slice(0, 500),
-          html: (bodyHtml || '').slice(0, 2000),
-          date: new Date().toLocaleDateString('fa-IR'),
-        };
-        setBlogComments(prev => {
-          const list = Array.isArray(prev[blogId]) ? prev[blogId] : [];
-          const next = { ...prev, [blogId]: [entry, ...list] };
-          return persistBlogComments(next);
-        });
+        const entry = buildBlogCommentEntry({ name: chkName.text, body: chkBody.text, bodyHtml });
+        setBlogComments(prev => persistBlogComments(appendBlogComment(prev, blogId, entry)));
         setBlogCommentText('');
         showToast({ message: 'دیدگاه شما ثبت شد', variant: 'success', position: 'top-center' });
       };
