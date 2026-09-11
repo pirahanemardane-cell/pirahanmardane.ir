@@ -9809,7 +9809,6 @@ const verifyOtp = async () => {
       const aiOptimizeTextHints = (opts) => aiOptimizeTextHintsLib(opts);
       const buildImageAlt = (p) => buildImageAltFromTemplate(p, seoCfg());
       const buildFaqSchema = (faqs) => buildFaqSchemaLib(faqs);
-      };
       const pingIndexNow = async (urlList) => {
         const s = seoCfg();
         if (!s.indexNowEnabled || !s.indexNowKey) {
