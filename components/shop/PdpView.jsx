@@ -482,18 +482,25 @@ export default function PdpView() {
                       <div className="mt-5 p-4 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 space-y-5">
                       {/* Color */}
                       <div>
-                        <p className="text-xs font-bold text-primary-600 dark:text-white/70 mb-2">رنگ: <span className="text-primary-900 dark:text-white font-medium">{activeColor.name}</span></p>
-                        <div className="flex flex-wrap gap-2">
+                        <p className="text-sm font-bold text-primary-700 dark:text-white/80 mb-2.5">
+                          رنگ: <span className="text-primary-900 dark:text-white font-black">{activeColor.name}</span>
+                        </p>
+                        <div className="flex flex-wrap gap-2.5">
                           {colors.map((c, i) => (
                             <button
                               key={c.name}
                               type="button"
                               title={c.name}
+                              aria-label={`رنگ ${c.name}`}
+                              aria-pressed={pdpColorIdx === i}
                               onClick={() => { setPdpColorIdx(i); setPdpGalleryIdx(0); }}
-                              className={`color-swatch w-9 h-9 rounded-full border-2 transition relative ${pdpColorIdx === i ? 'color-swatch--active border-apple-blue' : 'border-primary-200 dark:border-white/60'}`}
+                              className={`color-swatch w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 transition relative shadow-sm ${pdpColorIdx === i ? 'color-swatch--active border-apple-blue ring-2 ring-apple-blue/30 scale-105' : 'border-primary-200 dark:border-white/60 hover:scale-105'}`}
                               style={{ ["--swatch-color"]: c.hex || '#888', backgroundColor: c.hex || '#888' }}
                             >
                               {(c.name === 'سفید' || c.name === 'کرم') && <span className="absolute inset-0 rounded-full border border-primary-200" />}
+                              {pdpColorIdx === i && (
+                                <span className="absolute -bottom-1 -left-1 w-4 h-4 rounded-full bg-apple-blue text-white text-[10px] flex items-center justify-center shadow">✓</span>
+                              )}
                             </button>
                           ))}
                         </div>
@@ -501,14 +508,19 @@ export default function PdpView() {
 
                       {/* Size */}
                       <div className="mt-5" id="pdp-size-section">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-xs font-bold text-primary-600 dark:text-white/70">سایز <span className="text-red-500">*</span></p>
-                          <button type="button" onClick={() => openStaticPage('size-guide')} className="text-xs text-apple-blue dark:text-[#13ABC4] hover:underline">راهنمای سایز</button>
+                        <div className="flex items-center justify-between mb-2.5">
+                          <p className="text-sm font-bold text-primary-700 dark:text-white/80">
+                            سایز <span className="text-red-500">*</span>
+                            {pdpSize ? <span className="text-primary-900 dark:text-white font-black mr-1">: {pdpSize}</span> : <span className="text-primary-400 font-medium mr-1">انتخاب کنید</span>}
+                          </p>
+                          <button type="button" onClick={() => openStaticPage('size-guide')} className="text-xs font-medium text-apple-blue dark:text-[#13ABC4] hover:underline">راهنمای سایز</button>
                         </div>
                         {!pdpSize && sizes.length > 0 && (
-                          <p className="text-xs text-amber-600 dark:text-amber-400 mb-2">برای افزودن به سبد، یک سایز انتخاب کنید</p>
+                          <p className="text-xs text-amber-700 dark:text-amber-300 mb-2.5 px-2.5 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-900/30 border border-amber-100 dark:border-amber-800/40">
+                            برای افزودن به سبد، حتماً یک سایز انتخاب کنید
+                          </p>
                         )}
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2.5">
                           {sizes.map(sz => {
                             const szStock = getVariantStock(p, activeColor.name, sz, activeAttrs);
                             const disabled = szStock <= 0;
@@ -519,9 +531,10 @@ export default function PdpView() {
                                 type="button"
                                 disabled={disabled}
                                 title={disabled ? 'ناموجود' : `موجودی: ${toFa(szStock)}`}
+                                aria-pressed={on}
                                 onClick={() => { setPdpSize(sz); setSelectedSizes(prev => ({ ...prev, [p.id]: sz })); setPdpGalleryIdx(0); }}
                                 dir="ltr" lang="en"
-                                className={`latin-label size-chip min-w-[2.75rem] px-3 py-2 rounded-xl text-sm font-medium border transition ${disabled ? 'opacity-40 cursor-not-allowed border-primary-200 text-primary-400 line-through' : on ? 'size-chip--active bg-primary-800 text-white border-primary-800 dark:bg-[#13ABC4] dark:!text-white dark:border-[#13ABC4]' : 'border-primary-200 dark:border-white/30 text-primary-800 dark:!text-white hover:border-primary-400'}`}
+                                className={`latin-label size-chip min-w-[3.25rem] px-3.5 py-2.5 rounded-xl text-sm font-bold border-2 transition ${disabled ? 'opacity-40 cursor-not-allowed border-primary-200 text-primary-400 line-through' : on ? 'size-chip--active bg-apple-blue text-white border-apple-blue shadow-md shadow-apple-blue/20 dark:bg-[#13ABC4] dark:!text-white dark:border-[#13ABC4]' : 'border-primary-200 dark:border-white/30 text-primary-800 dark:!text-white hover:border-apple-blue/60'}`}
                               >{sz}</button>
                             );
                           })}
