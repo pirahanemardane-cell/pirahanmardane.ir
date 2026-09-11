@@ -8196,6 +8196,9 @@ const generateProductCode = (sellerKey, productId, shopName) => {
 
 
       const finishAuthSuccess = async (mode, u) => {
+        try {
+          trackGa4Event('login', { method: 'otp', role: String(mode || 'buyer') });
+        } catch (_) {}
         setAuthOpen(false);
         setAuthLoading(false);
         setDemoOtpCode('');
@@ -8640,6 +8643,7 @@ const verifyOtp = async () => {
           return;
         }
         setAuthError('');
+        try { trackGa4Event('sign_up', { method: 'otp' }); } catch (_) {}
         setAuthLoading(true);
         try {
           const res = await fetch('/api/auth/otp/complete', {

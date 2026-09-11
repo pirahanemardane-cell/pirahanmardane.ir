@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { logCritical } from '../../../../lib/critical-log'
-import { requireAdmin } from '../../../../lib/api/admin-guard'
+import { requireAdmin, requireAdminSensitive } from '../../../../lib/api/admin-guard'
 
 export async function GET() {
   try {
@@ -54,7 +54,7 @@ export async function GET() {
 
 export async function PATCH(request) {
   try {
-    const gate = await requireAdmin()
+    const gate = await requireAdminSensitive()
     if (gate.error) return gate.error
     const body = await request.json().catch(() => ({}))
     const id = String(body.id || body.seller_id || '').trim()

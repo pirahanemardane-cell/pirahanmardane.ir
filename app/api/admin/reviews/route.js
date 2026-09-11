@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { logCritical } from '../../../../lib/critical-log'
-import { requireAdmin } from '../../../../lib/api/admin-guard'
+import { requireAdmin, requireAdminSensitive } from '../../../../lib/api/admin-guard'
 
 export async function GET(request) {
   try {
@@ -167,7 +167,7 @@ export async function PATCH(request) {
 
 export async function DELETE(request) {
   try {
-    const gate = await requireAdmin()
+    const gate = await requireAdminSensitive()
     if (gate.error) return gate.error
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
