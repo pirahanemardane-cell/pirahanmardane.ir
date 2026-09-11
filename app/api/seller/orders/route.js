@@ -40,13 +40,12 @@ export async function GET(request) {
       .eq('seller_id', ctx.seller.id)
       .limit(500)
     if (itemsErr) {
-      const { data: orders, error } = await ctx.admin
-        .from('orders')
-        .select('id, order_number, status, payable, total, created_at, updated_at, user_id, shipping_method')
-        .order('created_at', { ascending: false })
-        .limit(limit)
-      if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
-      return NextResponse.json({ ok: true, orders: orders || [], note: 'seller_id filter unavailable' })
+      // هرگز همه سفارش‌ها را برنگردان — fail-closed
+      try { await logCritical('seller-orders-filter', itemsErr) } catch (_) {}
+      return NextResponse.json(
+        { ok: false, error: 'دریافت سفارش‌های فروشنده ممکن نیست', code: 'SELLER_ORDER_FILTER_FAILED' },
+        { status: 503 },
+      )
     }
     const orderIds = [...new Set((items || []).map((i) => i.order_id).filter(Boolean))]
     if (!orderIds.length) return NextResponse.json({ ok: true, orders: [] })
@@ -133,15 +132,8 @@ export async function PATCH(request) {
       .eq('seller_id', ctx.seller.id)
       .limit(1)
     if (!ownItems?.length) {
-      const { count } = await ctx.admin
-        .from('order_items')
-        .select('id', { count: 'exact', head: true })
-        .eq('order_id', id)
-      if (count === null) {
-        /* proceed */
-      } else if (count > 0 && !ownItems?.length) {
-        return NextResponse.json({ ok: false, error: 'این سفارش متعلق به شما نیست' }, { status: 403 })
-      }
+      // fail-closed: بدون مالکیت قطعی، اجازه تغییر نیست
+      return NextResponse.json({ ok: false, error: 'این سفارش متعلق به شما نیست', code: 'FORBIDDEN_ORDER' }, { status: 403 })
     }
 
     const patch = { status, updated_at: new Date().toISOString() }
