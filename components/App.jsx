@@ -46,6 +46,8 @@ import { htmlToPlain } from '@/lib/html-plain';
 import { toFa, toEnDigits, onlyDigits, normalizeIranMobile, isAdminPhone } from '@/lib/format-digits';
 import { normalizeBreadcrumbs } from '@/lib/breadcrumbs';
 import { normalizeSearch, expandQuery, scoreProduct, SEARCH_SYNONYMS } from '@/lib/search-normalize';
+import { deriveFabric, deriveSleeve, deriveCollar } from '@/lib/product-attrs';
+import { detectImportSource, normKey, pickField, splitList } from '@/lib/import-csv';
 import EmptyState from './EmptyState';
 import { Textarea } from './ui/textarea';
 import { Breadcrumb } from './ui/breadcrumb';
@@ -6664,25 +6666,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         setShowComparePage(false);
         leaveCurrentPage();
       };
-      const deriveFabric = (p) => {
-        const n = p.name || '';
-        if (n.includes('لینن')) return 'لینن';
-        if (n.includes('نخی') || n.includes('پنبه')) return 'پنبه / نخی';
-        if (n.includes('چهارخانه') || n.includes('راه راه')) return 'نخی ترکیبی';
-        return 'پارچه رسمی';
-      };
-      const deriveSleeve = (p) => {
-        const c = p.category || '';
-        const n = p.name || '';
-        if (c.includes('آستین کوتاه') || n.includes('آستین کوتاه') || n.includes('لینن')) return 'آستین کوتاه';
-        return 'آستین بلند';
-      };
-      const deriveCollar = (p) => {
-        const c = p.category || '';
-        if (c.includes('کروات')) return 'یقه کروات';
-        if (c.includes('رسمی')) return 'یقه رسمی';
-        return 'یقه معمولی';
-      };
+      // deriveFabric/Sleeve/Collar → @/lib/product-attrs
 
       // normalizeSearch/expandQuery/scoreProduct → @/lib/search-normalize
 
@@ -9998,34 +9982,7 @@ const verifyOtp = async () => {
         return { headers, records };
       };
 
-      const detectImportSource = (headers) => {
-        const h = headers.map(x => x.toLowerCase());
-        const has = (names) => names.some(n => h.includes(n.toLowerCase()));
-        if (has(['Handle', 'Option1 Name', 'Variant Price', 'Image Src']) || has(['handle', 'variant price'])) return 'shopify';
-        if (has(['Regular price', 'Attribute 1 name', 'Images', 'Published']) || has(['regular price', 'attribute 1 name'])) return 'woocommerce';
-        if (has(['Name', 'SKU', 'Categories']) && has(['Regular price', 'Sale price'])) return 'woocommerce';
-        return 'unknown';
-      };
-
-      const normKey = (s) => String(s || '').trim().toLowerCase().replace(/\s+/g, ' ');
-      const pickField = (row, candidates) => {
-        const keys = Object.keys(row || {});
-        for (const cand of candidates) {
-          const hit = keys.find(k => normKey(k) === normKey(cand));
-          if (hit && String(row[hit] || '').trim() !== '') return String(row[hit]).trim();
-        }
-        // partial match
-        for (const cand of candidates) {
-          const hit = keys.find(k => normKey(k).includes(normKey(cand)));
-          if (hit && String(row[hit] || '').trim() !== '') return String(row[hit]).trim();
-        }
-        return '';
-      };
-
-      const splitList = (val) => String(val || '')
-        .split(/[,|،;/]+/)
-        .map(s => s.trim())
-        .filter(Boolean);
+      // detectImportSource/normKey/pickField/splitList → @/lib/import-csv
 
 
       /** کاتالوگ لحظه‌ای ایمپورت (پر از ensureCatalogSnapshot) */
