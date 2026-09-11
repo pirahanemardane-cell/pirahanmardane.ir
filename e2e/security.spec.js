@@ -76,6 +76,12 @@ test.describe('security — unauthenticated access', () => {
     expect(res.status()).toBeLessThan(500)
   })
 
+
+  test('GET /api/account/export without auth is blocked', async ({ request }) => {
+    const res = await request.get(BASE + '/api/account/export')
+    expect([401, 403]).toContain(res.status())
+  })
+
 test.describe('security — public APIs shape', () => {
   test('health returns structured payload', async ({ request }) => {
     const res = await request.get(BASE + '/api/health')

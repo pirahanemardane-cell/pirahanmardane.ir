@@ -1516,11 +1516,19 @@ export default function ProfileView() {
                         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                           <button type="button" onClick={() => { const first = document.getElementById('edit-first')?.value?.trim() || user.firstName; const last = document.getElementById('edit-last')?.value?.trim() || ''; const email = document.getElementById('edit-email')?.value?.trim() || ''; const birth = document.getElementById('edit-birth')?.value?.trim() || ''; saveUser({ ...user, firstName: first, lastName: last, email, birthDate: birth }); showToast({ message: 'اطلاعات ذخیره شد', variant: 'success', duration: 4500, position: 'top-center' }); }} className="w-full sm:flex-1 py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium hover:opacity-90 transition">ذخیره تغییرات</button>
                           <button type="button" onClick={logoutAllDevices} className="w-full sm:flex-1 py-2.5 rounded-full border border-primary-200 dark:border-white/20 text-primary-700 dark:!text-white text-sm font-medium hover:bg-primary-50 dark:hover:bg-primary-900 transition">خروج از همه دستگاه‌ها</button>
-                          <button type="button" onClick={() => { siteConfirm('آیا از حذف حساب کاربری مطمئن هستید؟ این عمل قابل بازگشت نیست.', 'حذف حساب').then(async ok=>{ if(!ok) return; try { await fetch('/api/account', { method: 'DELETE', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ confirm: 'DELETE' }) }); } catch(_){}
-                try { await fetch('/api/auth/delete', { method: 'POST', credentials: 'include' }); } catch(_){}
-                logout(); /* server is source of truth */ setOrders(null); setAddresses(null); setNotifications(null); }); }} className="w-full sm:flex-1 py-2.5 rounded-full border border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition"><button type="button" onClick={async () => { try { const r = await fetch('/api/account/export', { credentials: 'include' }); if (!r.ok) { try { showToast?.({ message: 'خروجی ناموفق', variant: 'error' }); } catch(_){} return; } const blob = await r.blob(); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'pirahanmardane-export.json'; a.click(); URL.revokeObjectURL(a.href); } catch(_){} }} className="w-full sm:flex-1 py-2.5 rounded-full border border-primary-200 dark:border-white/20 text-primary-800 dark:text-white text-sm font-medium hover:bg-primary-50 dark:hover:bg-primary-800/40 transition">دانلود اطلاعات من</button>
-                        
-                        حذف حساب کاربری</button>
+                          <button type="button" onClick={async () => {
+                            try {
+                              const r = await fetch('/api/account/export', { credentials: 'include' });
+                              if (!r.ok) { try { showToast?.({ message: 'خروجی ناموفق', variant: 'error' }); } catch (_) {} return; }
+                              const blob = await r.blob();
+                              const a = document.createElement('a');
+                              a.href = URL.createObjectURL(blob);
+                              a.download = 'pirahanmardane-export.json';
+                              a.click();
+                              URL.revokeObjectURL(a.href);
+                            } catch (_) {}
+                          }} className="w-full sm:flex-1 py-2.5 rounded-full border border-primary-200 dark:border-white/20 text-primary-800 dark:text-white text-sm font-medium hover:bg-primary-50 dark:hover:bg-primary-800/40 transition">دانلود اطلاعات من</button>
+                          <button type="button" onClick={() => { siteConfirm('آیا از حذف حساب کاربری مطمئن هستید؟ این عمل قابل بازگشت نیست.', 'حذف حساب').then(async ok => { if (!ok) return; try { await fetch('/api/account', { method: 'DELETE', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ confirm: 'DELETE' }) }); } catch (_) {} try { await fetch('/api/auth/delete', { method: 'POST', credentials: 'include' }); } catch (_) {} logout(); setOrders(null); setAddresses(null); setNotifications(null); }); }} className="w-full sm:flex-1 py-2.5 rounded-full border border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition">حذف حساب کاربری</button>
                         </div>
                         <SecurityPasswordForm setAccountPassword={setAccountPassword} showToast={showToast} />
                       </div>
