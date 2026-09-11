@@ -1,4 +1,6 @@
 'use client';
+import { safeColorIdx as safeColorIdxLib, safeSizeSel as safeSizeSelLib, safeCardQty as safeCardQtyLib } from '@/lib/selection-helpers';
+import { pageLoadMessage, runBeginPageScroll } from '@/lib/page-load';
 import { buildSeo404Entry, applyImageSeoAltTemplate } from '@/lib/seo-helpers';
 import { defaultAdminCategories, defaultAdminTags, defaultAdminBlogCategories } from '@/lib/default-taxonomy';
 import {
@@ -336,14 +338,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const [cartItemLoading, setCartItemLoading] = useStoreField(shopUiStore, 'cartItemLoading');
       const [selectedColors, setSelectedColors] = useStoreField(shopUiStore, 'selectedColors');
       const [selectedSizes, setSelectedSizes] = useStoreField(shopUiStore, 'selectedSizes');
-      const safeColorIdx = (id) => {
-        const m = selectedColors && typeof selectedColors === 'object' ? selectedColors : {};
-        return Number(m[id]) || 0;
-      };
-      const safeSizeSel = (id, fallback = '') => {
-        const m = selectedSizes && typeof selectedSizes === 'object' ? selectedSizes : {};
-        return m[id] || fallback;
-      };
+      const safeColorIdx = (id) => safeColorIdxLib(selectedColors, id);
+      const safeSizeSel = (id, fallback = '') => safeSizeSelLib(selectedSizes, id, fallback);
       const [cardQtys, setCardQtys] = useStoreField(shopUiStore, 'cardQtys');
       const [quickAdd, setQuickAdd] = useStoreField(modalUiStore, 'quickAdd');
       const [quickColorIdx, setQuickColorIdx] = useStoreField(modalUiStore, 'quickColorIdx')
@@ -370,17 +366,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const [pageLoadingText, setPageLoadingText] = useState(null);
       // PAGE_LOAD_LABELS → @/lib/app-constants
       const beginPageLoad = (key) => {
-        try {
-          const msg = PAGE_LOAD_LABELS[key] || (key ? ('در حال بارگذاری ' + key + '…') : 'در حال بارگذاری…');
-          setPageLoadingText(msg);
-        } catch (_) {}
-        // همیشه از بالای صفحه شروع شود
-        try {
-          window.scrollTo(0, 0);
-          if (document.documentElement) document.documentElement.scrollTop = 0;
-          if (document.body) document.body.scrollTop = 0;
-        } catch (_) {}
-        try { if (typeof scrollPageToTop === 'function') scrollPageToTop(); } catch (_) {}
+        try { setPageLoadingText(pageLoadMessage(key)); } catch (_) {}
+        runBeginPageScroll();
       };
       const endPageLoad = () => {
         try {
