@@ -14587,10 +14587,10 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                   ) : null}
                 </span>
               </div>
-              <div className="flex items-center justify-between gap-1.5 sm:gap-2">
+              <div className="flex items-center justify-between gap-2 sm:gap-2.5 mt-0.5">
                 <div className="min-w-0 flex items-center gap-1.5 relative">
-                  <p className="product-card-price font-bold text-sm leading-none text-primary-900 dark:!text-white">
-                    {p.priceText} <span className="font-normal dark:!text-white">تومان</span>
+                  <p className="product-card-price font-black text-[15px] sm:text-base leading-none text-primary-900 dark:!text-white tabular-nums">
+                    {p.priceText} <span className="font-medium text-[11px] sm:text-xs text-primary-500 dark:!text-white/80">تومان</span>
                   </p>
                   {p.oldPrice ? (
                     <button
@@ -14615,7 +14615,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); openQuickAdd(p); }}
-                  className="product-add-btn px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-xl border border-transparent bg-apple-blue !text-white dark:!text-white hover:bg-blue-700 hover:!text-white dark:hover:!bg-[#0f96ad] dark:hover:!text-white transition flex-shrink-0"
+                  className="product-add-btn px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-xl border border-transparent bg-apple-blue !text-white dark:!text-white hover:bg-blue-700 hover:!text-white dark:hover:!bg-[#0f96ad] dark:hover:!text-white transition flex-shrink-0 shadow-sm shadow-apple-blue/20"
                 >
                   افزودن
                 </button>
@@ -18165,7 +18165,7 @@ const params = new URLSearchParams(window.location.search);
           <button
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className={`back-to-top fixed bottom-16 sm:bottom-8 right-4 sm:right-6 z-[150] w-11 h-11 rounded-full bg-apple-blue text-white shadow-lg flex items-center justify-center hover:opacity-95 transition ${showTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+            className={`back-to-top fixed bottom-24 sm:bottom-8 right-3 sm:right-6 z-[150] w-12 h-12 rounded-full bg-apple-blue text-white shadow-xl flex items-center justify-center hover:opacity-95 active:scale-95 transition ${showTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
             title="برو بالا"
             aria-label="برو بالا"
           >

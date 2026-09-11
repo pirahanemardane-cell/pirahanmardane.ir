@@ -424,12 +424,12 @@ export default function PlpView() {
               </div>
 
               {/* Sticky bottom bar موبایل — فیلتر راست، پاکسازی چپ (RTL) */}
-              <div className="plp-mobile-bottom-bar fixed bottom-0 inset-x-0 z-40 sm:hidden bg-white/95 dark:bg-primary-950/95 backdrop-blur-xl border-t border-primary-100 dark:border-white/15 px-3 py-2.5 flex gap-2 safe-pb safe-area-pb">
-                <button type="button" onClick={() => { setPlpFilterTab('price'); setPlpFilterOpen(true); }} className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-medium border ${plpActiveChipsSafe.length ? 'bg-primary-800 text-white border-primary-800 dark:bg-[#13ABC4] dark:!text-white dark:border-[#13ABC4]' : 'bg-primary-800 text-white border-primary-800 dark:bg-primary-800 dark:text-white dark:border-primary-800'}`}>
-                  <Icon name="sliders" size={14} /> فیلتر
-                  {plpActiveChipsSafe.length > 0 && <span className="w-4 h-4 rounded-full bg-white/25 text-xs flex items-center justify-center">{toFa(plpActiveChipsSafe.length)}</span>}
+              <div className="plp-mobile-bottom-bar fixed bottom-0 inset-x-0 z-40 sm:hidden bg-white/98 dark:bg-primary-950/98 backdrop-blur-xl border-t border-primary-100 dark:border-white/15 px-3 py-3 flex gap-2 safe-pb safe-area-pb shadow-[0_-6px_20px_rgba(0,0,0,0.06)]">
+                <button type="button" onClick={() => { setPlpFilterTab('price'); setPlpFilterOpen(true); }} className={`flex-1 inline-flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-bold border ${plpActiveChipsSafe.length ? 'bg-apple-blue text-white border-apple-blue dark:bg-[#13ABC4] dark:!text-white dark:border-[#13ABC4]' : 'bg-primary-900 text-white border-primary-900 dark:bg-primary-800 dark:text-white dark:border-primary-800'}`}>
+                  <Icon name="sliders" size={15} /> فیلتر
+                  {plpActiveChipsSafe.length > 0 && <span className="min-w-[1.15rem] h-5 px-1 rounded-full bg-white/25 text-[11px] flex items-center justify-center">{toFa(plpActiveChipsSafe.length)}</span>}
                 </button>
-                <button type="button" onClick={() => setPlpSortOpen(true)} className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-medium border bg-primary-50 dark:bg-primary-900 border-primary-200 dark:border-white/30 text-primary-800 dark:text-white">
+                <button type="button" onClick={() => setPlpSortOpen(true)} className="flex-1 inline-flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-bold border bg-white dark:bg-primary-900 border-primary-200 dark:border-white/30 text-primary-900 dark:text-white">
                   مرتب‌سازی
                 </button>
                 {plpActiveChipsSafe.length > 0 && (
