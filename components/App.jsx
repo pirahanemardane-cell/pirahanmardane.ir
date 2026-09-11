@@ -42,6 +42,7 @@ import {
 } from '@/lib/gsc-analytics';
 import { parseResponseHours, smartScore, rankSellers } from '@/lib/seller-rank';
 import { generateGiftCode as generateGiftCodeLib, nextRecentSearches, removeFromRecentSearches, getUsedPromoCodes, markPromoCodeUsed } from '@/lib/promo-codes';
+import { markGiftListUsed, collectExistingPromoCodes, markPromoCodeUsed as markPromoCodeUsedLib } from '@/lib/promo-codes';
 import {
   cartItemKey,
   calcCartTotals,
@@ -4366,39 +4367,31 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const markPromoCodeUsed = (code) => {
         const c = String(code || '').toUpperCase();
         if (!c) return;
-        const used = getUsedPromoCodes();
-        if (!used.includes(c)) {
-          used.push(c);
-          try { localStorage.setItem('usedPromoCodes', JSON.stringify(used)); } catch (_) {}
-        }
-        // mark in buyerGifts / sellerGifts / adminCoupons
+        try { markPromoCodeUsedLib(c); } catch (_) {}
         try {
-          const bg = Array.isArray(buyerGifts) ? buyerGifts : [];
-          const nextBg = (bg || []).map(g => (g.code || '').toUpperCase() === c ? { ...g, status: 'used', active: false, usedAt: new Date().toISOString() } : g);
+          const nextBg = markGiftListUsed(Array.isArray(buyerGifts) ? buyerGifts : [], c);
           if (typeof setBuyerGifts === 'function') setBuyerGifts(nextBg);
-          setBuyerGifts(nextBg);
         } catch (_) {}
         try {
           const sg = JSON.parse(localStorage.getItem('sellerGifts') || '[]');
-          const nextSg = (sg || []).map(g => (g.code || '').toUpperCase() === c ? { ...g, status: 'used', active: false, usedAt: new Date().toISOString() } : g);
+          const nextSg = markGiftListUsed(sg, c);
           localStorage.setItem('sellerGifts', JSON.stringify(nextSg));
           setSellerGifts(nextSg);
         } catch (_) {}
         try {
           const ac = JSON.parse(localStorage.getItem('adminCoupons') || '[]');
-          const nextAc = (ac || []).map(g => (g.code || '').toUpperCase() === c ? { ...g, status: 'used', used: (Number(g.used) || 0) + 1 } : g);
+          const nextAc = markGiftListUsed(ac, c, { incrementUsed: true });
           localStorage.setItem('adminCoupons', JSON.stringify(nextAc));
           setAdminCoupons(nextAc);
         } catch (_) {}
       };
       const generateGiftCode = () => {
-        let existing = new Set();
+        let list = [];
         try {
           const raw = localStorage.getItem('adminCoupons');
-          const list = raw ? JSON.parse(raw) : [];
-          (list || []).forEach((c) => { if (c && c.code) existing.add(String(c.code).toUpperCase()); });
+          list = raw ? JSON.parse(raw) : [];
         } catch (_) {}
-        return generateGiftCodeLib(existing);
+        return generateGiftCodeLib(collectExistingPromoCodes(list));
       };
 
       const applyCoupon = async () => {
