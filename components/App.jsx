@@ -30,7 +30,7 @@ import { applyMarkdownFormat } from '@/lib/markdown-format';
 import { collectFullSiteBackupPayload, isValidFullSiteBackup, ADMIN_PRESET, FULL_BACKUP_KEYS } from '@/lib/site-backup';
 import { orderStatusColor, orderStatusLabel, unreadNotificationsCount } from '@/lib/order-status';
 import { logoForTheme, onProductImgError } from '@/lib/image-fallback';
-import { favIdsFromList, isFavoriteId, getFavEntry as getFavEntryLib } from '@/lib/wishlist-helpers';
+import { favIdsFromList, isFavoriteId, getFavEntry as getFavEntryLib, isInWishlist, removeFromWishlist, canAddToWishlist, addToWishlist, removeWishlistBulk } from '@/lib/wishlist-helpers';
 import { SESSION_TTL_MS, readSessionUser, writeSessionUser, clearSessionUser } from '@/lib/session-storage';
 import {
   GSC_STORAGE_KEY,
