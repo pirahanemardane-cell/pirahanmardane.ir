@@ -665,10 +665,10 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const toggleFavorite = (productId) => {
         setFavorites(prev => {
-          const exists = prev.some(f => f.id === productId);
+          const exists = isInWishlist(prev, productId);
           let next;
           if (exists) {
-            next = prev.filter(f => f.id !== productId);
+            next = removeFromWishlist(prev, productId);
             showToast({ message: 'از علاقه‌مندی‌ها حذف شد', variant: 'success', position: 'top-center' });
             try {
               fetch('/api/wishlist', {
@@ -679,12 +679,12 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               }).catch(() => {});
             } catch (_) {}
           } else {
-            if (prev.length >= WISHLIST_MAX) {
+            if (!canAddToWishlist(prev, WISHLIST_MAX)) {
               showToast({ message: `حداکثر ${WISHLIST_MAX} کالا در علاقه‌مندی`, variant: 'default', position: 'top-center' });
               return prev;
             }
             const p = products.find(x => x.id === productId);
-            next = [...prev, { id: productId, addedAt: Date.now(), priceAtAdd: p?.price ?? 0 }];
+            next = addToWishlist(prev, productId, p?.price ?? 0);
             showToast({ variant: 'success',
               message: 'به علاقه‌مندی‌ها اضافه شد',
               position: 'top-center',
@@ -712,7 +712,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       };
 
       const removeFavoritesBulk = (ids) => {
-        setFavorites(prev => persistFavorites(prev.filter(f => !ids.includes(f.id))));
+        setFavorites(prev => persistFavorites(removeWishlistBulk(prev, ids)));
         setWishlistSelected([]);
       };
 
