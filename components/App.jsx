@@ -109,7 +109,7 @@ import { buildCurrentPageSeoContext } from '@/lib/page-seo-context';
 import { normalizeProduct } from '@/lib/product-normalize';
 import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
 import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
-import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi } from '@/lib/auth-session';
+import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi } from '@/lib/auth-session';
 
 
 
@@ -7153,14 +7153,12 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         try {
           const phone = onlyDigits(authPhone || '');
           const password = (authPassword || (typeof window !== 'undefined' && window.__pmAuthPassword) || '');
-          const res = await fetch('/api/auth/login-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ phone, password, remember: !!(authRemember || (typeof window !== 'undefined' && window.__pmAuthRemember)) }),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || !data?.ok) {
+          const data = await loginWithPasswordApi(
+            phone,
+            password,
+            !!(authRemember || (typeof window !== 'undefined' && window.__pmAuthRemember)),
+          );
+          if (!data?.ok) {
             setAuthError(data?.error || 'ورود ناموفق');
             return;
           }
