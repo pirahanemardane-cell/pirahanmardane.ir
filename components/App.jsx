@@ -103,6 +103,8 @@ import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductB
 import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
 import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib, generateProductCodeFromPools, ensureProductCode as ensureProductCodeLib} from '@/lib/product-codes';
 import { normalizePath as normalizePathLib } from '@/lib/url-path';
+import { buildShippingOptions as buildShippingOptionsLib, getCheckoutShippingCostFromOptions as getCheckoutShippingCostFromOptionsLib, computeCheckoutTotals as computeCheckoutTotalsLib } from '@/lib/checkout-shipping';
+
 
 import { matchCatalogColor as matchCatalogColorLib, matchCatalogSize as matchCatalogSizeLib, matchCatalogBrand as matchCatalogBrandLib, matchCategory as matchCategoryLib } from '@/lib/catalog-match';
 import { mapProfileToSeller as mapProfileToSellerLib } from '@/lib/seller-map';
@@ -6111,49 +6113,23 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         return (adminShippingMethods || []).filter((m) => m.enabled !== false).map((m) => m.id);
       };
 
-      const getShippingOptions = () => {
-        const allowed = new Set(getSellerEnabledShippingIds());
-        return (adminShippingMethods || [])
-          .filter((m) => m.enabled !== false && allowed.has(m.id))
-          .map((m) => {
-            const isDynamic = m.priceMode === 'dynamic_cod';
-            // قیمت تقریبی لحظه‌ای برای داینامیک (شبیه‌سازی تا اتصال API واقعی)
-            const liveEstimate = isDynamic
-              ? 35000
-              : Number(m.baseCost) || 0;
-            return {
-              id: m.id,
-              label: m.name,
-              desc: isDynamic ? 'قیمت همین لحظه (تقریبی) · تسویه در مقصد' : (m.eta || ''),
-              cost: isDynamic ? liveEstimate : Number(m.baseCost) || 0,
-              eta: m.eta || '',
-              priceMode: m.priceMode || 'fixed',
-              note: m.note || '',
-              disabled: false,
-              chargeAtCheckout: !isDynamic,
-            };
-          });
-      };
-      const getCheckoutShippingCost = () => {
-        const opts = getShippingOptions();
-        if (!opts.length) return 0;
-        const m = opts.find((o) => o.id === checkoutShippingMethod) || opts[0];
-        // داینامیک: در تسویه ۰ (پرداخت در مقصد) — فقط نمایش برآورد
-        if (m.priceMode === 'dynamic_cod') return 0;
-        return m.cost;
-      };
+            // getShippingOptions → @/lib/checkout-shipping
+      const getShippingOptions = () =>
+        buildShippingOptionsLib(adminShippingMethods, getSellerEnabledShippingIds());
+            // getCheckoutShippingCost → @/lib/checkout-shipping
+      const getCheckoutShippingCost = () =>
+        getCheckoutShippingCostFromOptionsLib(getShippingOptions(), checkoutShippingMethod);
             // getCheckoutTaxRate → @/lib/product-flags
       const getCheckoutTaxRate = () => getCheckoutTaxRateLib(adminSettings?.taxRate);
-      const getCheckoutTotals = () => {
-        const subtotal = cartSubtotal;
-        const discount = couponDiscount;
-        const afterCoupon = Math.max(0, subtotal - discount);
-        const shipping = getCheckoutShippingCost();
-        const taxRate = getCheckoutTaxRate();
-        const tax = Math.round(afterCoupon * taxRate);
-        const payable = afterCoupon + shipping + tax;
-        return { subtotal, discount, productSavings: cartProductSavings, shipping, tax, taxRate, payable, afterCoupon };
-      };
+            // getCheckoutTotals → @/lib/checkout-shipping
+      const getCheckoutTotals = () =>
+        computeCheckoutTotalsLib({
+          subtotal: cartSubtotal,
+          discount: couponDiscount,
+          productSavings: cartProductSavings,
+          shipping: getCheckoutShippingCost(),
+          taxRate: getCheckoutTaxRate(),
+        });
       const validateCheckout = () => {
         const errs = {};
         if (!checkoutContact.firstName?.trim()) errs.firstName = 'نام الزامی است';
