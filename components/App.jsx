@@ -40,7 +40,8 @@ import {
   gscAggregate as gscAggregateLib,
   buildGscInspectResult,
 } from '@/lib/gsc-analytics';
-import { parseResponseHours, smartScore, rankSellers } from '@/lib/seller-rank';
+import { parseResponseHours, smartScore, rankSellers, buildSellerPriceMap, getSellerMinPrice as getSellerMinPriceLib, getSellerMaxDiscount as getSellerMaxDiscountLib, filterAndSortSellers } from '@/lib/seller-rank';
+import { emptyTaxonomyForm, taxonomyTypeLabel } from '@/lib/taxonomy-form';
 import { generateGiftCode as generateGiftCodeLib, nextRecentSearches, removeFromRecentSearches, getUsedPromoCodes, markPromoCodeUsed } from '@/lib/promo-codes';
 import { markGiftListUsed, collectExistingPromoCodes, markPromoCodeUsed as markPromoCodeUsedLib } from '@/lib/promo-codes';
 import {
@@ -2544,35 +2545,10 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }, []);
 
 
-      const emptyTaxonomyForm = (type = 'category') => ({
-        type,
-        id: null,
-        name: '',
-        slug: '',
-        url: '',
-        image: '',
-        images: [],
-        imageAlts: [],
-        featuredImageIndex: 0,
-        description: '',
-        imageAlt: '',
-        seoTitle: '',
-        seoDescription: '',
-        seoFocusKeywords: '',
-        seoCanonical: '',
-        seoNoindex: false,
-        seoFaq: [],
-        step: 1,
-      });
+      // emptyTaxonomyForm → @/lib/taxonomy-form
       const [taxonomyForm, setTaxonomyForm] = useStoreField(formsStore, 'taxonomyForm')
       const [taxonomyFormOpen, setTaxonomyFormOpen] = useStoreField(formsStore, 'taxonomyFormOpen')
-      const taxonomyTypeLabel = (t) => ({
-        category: 'دسته محصول',
-        tag: 'برچسب محصول',
-        brand: 'برند',
-        'blog-category': 'دسته مقالات',
-        'blog-tag': 'برچسب مقالات',
-      }[t] || 'مورد');
+      // taxonomyTypeLabel → @/lib/taxonomy-form
       const openTaxonomyWizard = (type, item = null) => {
         if (item) {
           const images = item.images && item.images.length ? [...item.images] : (item.image ? [item.image] : []);
@@ -3000,63 +2976,23 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         setSellerListMinProducts(0);
         setSellerCityInput('');
       };
-      // استخراج عدد ساعت از responseTime مثل «زیر ۲ ساعت»
-      const parseResponseHours = (rt) => {
-        if (!rt) return 99;
-        const m = String(rt).match(/(\d+)/);
-        return m ? Number(m[1]) : 99;
-      };
-      // امتیاز هوشمند: rating × log10(ratingCount+1)
-      const smartScore = (s) => (Number(s.rating) || 0) * Math.log10((Number(s.ratingCount) || 0) + 1) + Math.log10((Number(s.products) || 0) + 1) * 0.5;
-      // آمار قیمت/تخفیف هر فروشنده از محصولات
-      const sellerPriceMap = (() => {
-        const map = {};
-        products.forEach(p => {
-          const id = p.seller?.id || 'own';
-          if (!map[id]) map[id] = { prices: [], discounts: [] };
-          if (typeof p.price === 'number') map[id].prices.push(p.price);
-          if (typeof p.discount === 'number') map[id].discounts.push(p.discount);
-        });
-        const out = {};
-        Object.keys(map).forEach(id => {
-          const prices = map[id].prices;
-          const discounts = map[id].discounts;
-          out[id] = {
-            minPrice: prices.length ? Math.min(...prices) : 999999999,
-            maxDiscount: discounts.length ? Math.max(...discounts) : 0,
-          };
-        });
-        return out;
-      })();
-      const getSellerMinPrice = (s) => sellerPriceMap[s.id]?.minPrice ?? 999999999;
-      const getSellerMaxDiscount = (s) => sellerPriceMap[s.id]?.maxDiscount ?? 0;
+      // parseResponseHours / smartScore / buildSellerPriceMap / filterAndSortSellers → @/lib/seller-rank
+      const sellerPriceMap = buildSellerPriceMap(products);
+      const getSellerMinPrice = (s) => getSellerMinPriceLib(sellerPriceMap, s);
+      const getSellerMaxDiscount = (s) => getSellerMaxDiscountLib(sellerPriceMap, s);
       const sellerCitiesSafe = Array.isArray(sellerListCities) ? sellerListCities : [];
       const sellerQuerySafe = typeof sellerListQuery === 'string' ? sellerListQuery : '';
       const sellerMinRatingSafe = Number(sellerListMinRating) || 0;
       const sellerMaxResponseSafe = Number(sellerListMaxResponse) || 0;
       const sellerMinProductsSafe = Number(sellerListMinProducts) || 0;
-      const filteredSellersList = (topSellers || [])
-        .filter(s => {
-          if (sellerCitiesSafe.length > 0 && !sellerCitiesSafe.includes(s.city)) return false;
-          if (sellerMinRatingSafe > 0 && (Number(s.rating) || 0) < sellerMinRatingSafe) return false;
-          if (sellerMaxResponseSafe > 0 && parseResponseHours(s.responseTime) > sellerMaxResponseSafe) return false;
-          if (sellerMinProductsSafe > 0 && (Number(s.products) || 0) < sellerMinProductsSafe) return false;
-          if (sellerQuerySafe.trim()) {
-            const q = sellerQuerySafe.trim().toLowerCase();
-            const hay = `${s.name || ''} ${s.desc || ''} ${s.city || ''} ${(s.badges || []).join(' ')}`.toLowerCase();
-            if (!hay.includes(q)) return false;
-          }
-          return true;
-        })
-        .sort((a, b) => {
-          if (sellerListSort === 'products') return (b.products || 0) - (a.products || 0);
-          if (sellerListSort === 'price-asc') return getSellerMinPrice(a) - getSellerMinPrice(b);
-          if (sellerListSort === 'price-desc') return getSellerMinPrice(b) - getSellerMinPrice(a);
-          if (sellerListSort === 'discount') return getSellerMaxDiscount(b) - getSellerMaxDiscount(a);
-          if (sellerListSort === 'response') return parseResponseHours(a.responseTime) - parseResponseHours(b.responseTime);
-          if (sellerListSort === 'rating') return (b.rating || 0) - (a.rating || 0);
-          return smartScore(b) - smartScore(a); // smart default
-        });
+      const filteredSellersList = filterAndSortSellers(topSellers || [], {
+        cities: sellerCitiesSafe,
+        query: sellerQuerySafe,
+        minRating: sellerMinRatingSafe,
+        maxResponse: sellerMaxResponseSafe,
+        minProducts: sellerMinProductsSafe,
+        sort: sellerListSort,
+      }, sellerPriceMap);
       const isSellerListFilterActive = sellerCitiesSafe.length > 0 || !!sellerQuerySafe.trim() || sellerMinRatingSafe > 0 || sellerMaxResponseSafe > 0 || sellerMinProductsSafe > 0;
       const sellerFilterCount = sellerCitiesSafe.length + (sellerMinRatingSafe > 0 ? 1 : 0) + (sellerMaxResponseSafe > 0 ? 1 : 0) + (sellerMinProductsSafe > 0 ? 1 : 0);
       const sellerNameSuggestions = sellerListQuery.trim()
