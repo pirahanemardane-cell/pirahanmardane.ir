@@ -1,4 +1,12 @@
 'use client';
+import {
+  setOrCreateMeta,
+  setCanonicalLink,
+  upsertJsonLd,
+  buildLlmsTxt as buildLlmsTxtLib,
+  defaultOrganizationSchema as defaultOrganizationSchemaLib,
+  buildBreadcrumbSchema as buildBreadcrumbSchemaLib,
+} from '@/lib/seo-head';
 import { stripHtmlSeo, measureSeoPx, SEO_PX_LIMITS, SEO_FONTS, seoPixelReport, seoCharHint } from '@/lib/seo-pixel';
 import { formatPrice, plpSortLabel as plpSortLabelOf, scrollCarousel } from '@/lib/format-price';
 import { safeColorIdx as safeColorIdxLib, safeSizeSel as safeSizeSelLib, safeCardQty as safeCardQtyLib } from '@/lib/selection-helpers';
@@ -9874,83 +9882,11 @@ const verifyOtp = async () => {
         );
       };
 
-      const buildLlmsTxt = () => {
-        const s = seoCfg();
-        const base = (s.canonicalBase || 'https://pirahanemardane.ir').replace(/\/$/, '');
-        const lines = [
-          '# llms.txt — راهنمای مختصر برای دستیارهای AI',
-          `# Site: ${s.siteTitle || 'پیراهن مردانه'}`,
-          `# Base: ${base}`,
-          '',
-          '## Summary',
-          s.metaDescription || 'فروشگاه اینترنتی پیراهن مردانه',
-          '',
-          '## Key pages',
-          `- Home: ${base}/`,
-          `- Shop: ${base}/shop`,
-          `- Blog: ${base}/blog`,
-          `- About: ${base}/about`,
-          `- Contact: ${base}/contact`,
-          '',
-          '## Sitemap',
-          `- ${base}/sitemap.xml`,
-          '',
-          '## Policy',
-          '- Prefer official product pages for prices and availability.',
-          '- Do not invent stock, price, or seller claims.',
-        ];
-        if (s.llmsTxtExtra) lines.push('', '## Extra', s.llmsTxtExtra.trim());
-        return lines.join('\n');
-      };
-      const setOrCreateMeta = (attr, key, content) => {
-        if (content == null || content === '') return;
-        let el = document.querySelector(`meta[${attr}="${key}"]`);
-        if (!el) {
-          el = document.createElement('meta');
-          el.setAttribute(attr, key);
-          document.head.appendChild(el);
-        }
-        el.setAttribute('content', String(content));
-      };
-      const setCanonicalLink = (href) => {
-        if (!href) return;
-        let el = document.querySelector('link[rel="canonical"]');
-        if (!el) {
-          el = document.createElement('link');
-          el.setAttribute('rel', 'canonical');
-          document.head.appendChild(el);
-        }
-        el.setAttribute('href', href);
-      };
-      const upsertJsonLd = (id, data) => {
-        let el = document.getElementById(id);
-        if (!data) {
-          if (el) el.remove();
-          return;
-        }
-        if (!el) {
-          el = document.createElement('script');
-          el.id = id;
-          el.type = 'application/ld+json';
-          document.head.appendChild(el);
-        }
-        el.textContent = typeof data === 'string' ? data : JSON.stringify(data);
-      };
-      const defaultOrganizationSchema = () => {
-        const s = seoCfg();
-        const base = (s.canonicalBase || 'https://pirahanemardane.ir').replace(/\/$/, '');
-        if (s.schemaOrgJson && String(s.schemaOrgJson).trim().startsWith('{')) {
-          try { return JSON.parse(s.schemaOrgJson); } catch (_) {}
-        }
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'Organization',
-          name: s.siteTitle || 'پیراهن مردانه',
-          url: base,
-          logo: base + '/logo.webp',
-          description: s.metaDescription || '',
-        };
-      };
+      const buildLlmsTxt = () => buildLlmsTxtLib(seoCfg());
+      // setOrCreateMeta → @/lib/seo-head
+      // setCanonicalLink → @/lib/seo-head
+      // upsertJsonLd → @/lib/seo-head
+      const defaultOrganizationSchema = () => defaultOrganizationSchemaLib(seoCfg());
       const buildProductSchema = (p) => {
         if (!p) return null;
         const s = seoCfg();
