@@ -48,7 +48,7 @@ import {
   calcCartTotals,
   toggleInList,
   TAX_RATE,
-  FREE_SHIP_THRESHOLD, applyCartQtyDelta, removeCartLine, findCartLine } from '@/lib/cart-math';
+  FREE_SHIP_THRESHOLD, applyCartQtyDelta, removeCartLine, findCartLine, changeCartLineColor } from '@/lib/cart-math';
 import {
   setOrCreateMeta,
   setCanonicalLink,
@@ -5412,25 +5412,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         applyLocalAdd();
       };
       const changeCartColor = (id, oldColorName, newColor) => {
-        setCart(prev => {
-          const existingSame = prev.find(i => i.id === id && i.selectedColor?.name === newColor.name);
-          if (existingSame) {
-            return prev
-              .map(i => {
-                if (i.id === id && i.selectedColor?.name === oldColorName) {
-                  return { ...existingSame, qty: existingSame.qty + i.qty };
-                }
-                if (i.id === id && i.selectedColor?.name === newColor.name) return null;
-                return i;
-              })
-              .filter(Boolean);
-          }
-          return prev.map(i =>
-            (i.id === id && i.selectedColor?.name === oldColorName)
-              ? { ...i, selectedColor: newColor, image: newColor.image }
-              : i
-          );
-        });
+        setCart(prev => changeCartLineColor(prev, { id, oldColorName, newColor }));
       };
       const selectColor = (productId, colorIdx) => {
         setSelectedColors(prev => ({ ...prev, [productId]: colorIdx }));
