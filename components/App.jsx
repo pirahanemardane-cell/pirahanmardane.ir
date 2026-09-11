@@ -39,19 +39,11 @@ import Icon from './Icon';
 import { AppApiProvider } from './AppApiContext';
 import ShopShell from './panels/ShopShell';
 import { htmlToPlain } from '@/lib/html-plain';
+import { toFa, toEnDigits, onlyDigits, normalizeIranMobile } from '@/lib/format-digits';
+import { normalizeBreadcrumbs } from '@/lib/breadcrumbs';
 import EmptyState from './EmptyState';
 import { Textarea } from './ui/textarea';
 import { Breadcrumb } from './ui/breadcrumb';
-
-function normalizeBreadcrumbs(items) {
-  const list = (Array.isArray(items) ? items : []).filter(Boolean);
-  if (!list.length) return list;
-  return list.map((it, i) => ({
-    ...it,
-    current: i === list.length - 1,
-  }));
-}
-
 
 import Toaster, { showToast } from './ui/toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
@@ -133,20 +125,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
 
 
-    const toFa = (n) => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-    /** ارقام فارسی/عربی → انگلیسی */
-    const toEnDigits = (s) => String(s ?? '')
-      .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06F0))
-      .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660));
-    const onlyDigits = (v) => toEnDigits(v).replace(/\D/g, '');
-    /** یکسان‌سازی موبایل ایران: +98... / 98... / 9... → 09xxxxxxxxx */
-    const normalizeIranMobile = (v) => {
-      let d = onlyDigits(v);
-      if (d.startsWith('0098')) d = d.slice(4);
-      if (d.startsWith('98') && d.length >= 12) d = '0' + d.slice(2);
-      if (d.length === 10 && d.startsWith('9')) d = '0' + d;
-      return d;
-    };
+    // toFa/toEnDigits/onlyDigits/normalizeIranMobile → @/lib/format-digits
     // لیست ادمین فقط روی سرور (ADMIN_PHONES). کلاینت فقط فرمت را چک می‌کند.
     const isAdminPhone = (raw) => {
       const p = normalizeIranMobile(raw);
