@@ -104,6 +104,8 @@ import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/
 import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib, generateProductCodeFromPools, ensureProductCode as ensureProductCodeLib} from '@/lib/product-codes';
 import { normalizePath as normalizePathLib } from '@/lib/url-path';
 import { buildShippingOptions as buildShippingOptionsLib, getCheckoutShippingCostFromOptions as getCheckoutShippingCostFromOptionsLib, computeCheckoutTotals as computeCheckoutTotalsLib } from '@/lib/checkout-shipping';
+import { isKnownCategory as isKnownCategoryLib } from '@/lib/category-known';
+
 
 
 import { matchCatalogColor as matchCatalogColorLib, matchCatalogSize as matchCatalogSizeLib, matchCatalogBrand as matchCatalogBrandLib, matchCategory as matchCategoryLib } from '@/lib/catalog-match';
@@ -4903,32 +4905,10 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             })();
 
             // 1) آیا این اسلاگ یک دستهٔ شناخته‌شده است؟
-            const isKnownCategory = (() => {
-              if (!catLabel) return false;
-              const norm = (x) => slugifyFa(String(x || ''));
-              const target = norm(catLabel);
-              if (!target || target === 'مورد') return false;
-              // دسته‌های استاتیک UI
-              const fromUi = (Array.isArray(categories) ? categories : []).some((c) => {
-                const n = c && (c.name || c.label || c.title);
-                return n && (norm(n) === target || String(n).trim() === catLabel);
-              });
-              if (fromUi) return true;
-              // کاتالوگ ادمین
-              const fromAdmin = (Array.isArray(adminCategories) ? adminCategories : []).some((c) => {
-                const n = c && (c.name || c.label || c.title || c.slug);
-                return n && (norm(n) === target || String(c.slug || '') === catSlugRaw);
-              });
-              if (fromAdmin) return true;
-              // هر محصولی با این دسته
-              const fromProducts = pools.some((p) => {
-                const c1 = p && (p.category || '');
-                const cats = Array.isArray(p?.categories) ? p.categories : [];
-                if (c1 && (norm(c1) === target || String(c1).includes(catLabel))) return true;
-                return cats.some((c) => norm(c) === target || String(c) === catLabel);
-              });
-              return fromProducts;
-            })();
+                        // isKnownCategory → @/lib/category-known
+            const isKnownCategory = (() =>
+              isKnownCategoryLib(catLabel, catSlugRaw, categories, adminCategories, pools, slugifyFa)
+            )();
 
             // تک‌بخشی + دستهٔ شناخته‌شده → همیشه PLP (قبل از جستجوی محصول)
             if (parsed.type === 'category_or_product' && isKnownCategory) {
