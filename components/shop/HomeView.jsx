@@ -180,6 +180,26 @@ export default function HomeView() {
               </div>
             </section>
 
+            {/* pm-brand-storytelling */}
+            <section className="relative z-20 py-8 sm:py-10 bg-white dark:bg-primary-950 border-b border-primary-100 dark:border-white/10">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6">
+                <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-l from-primary-50 via-white to-primary-50 dark:from-primary-900 dark:via-primary-950 dark:to-primary-900 border border-primary-100 dark:border-white/10 p-5 sm:p-8 text-center">
+                  <p className="text-[11px] sm:text-xs font-bold tracking-wide text-apple-blue dark:text-[#13ABC4] mb-2">پیراهن مردانه</p>
+                  <h2 className="text-lg sm:text-2xl font-black text-primary-900 dark:text-white leading-snug">
+                    انتخاب دقیق‌تر، خرید مطمئن‌تر
+                  </h2>
+                  <p className="mt-2.5 sm:mt-3 text-sm sm:text-base text-primary-600 dark:text-white/75 leading-relaxed max-w-2xl mx-auto">
+                    از پیراهن رسمی تا روزمره — فروشندگان تأییدشده، قیمت شفاف، و تجربه‌ای ساده برای انتخاب سایز و رنگ مناسب شما.
+                  </p>
+                  <div className="mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[11px] sm:text-xs font-medium text-primary-700 dark:text-white/80">
+                    <span className="px-3 py-1.5 rounded-full bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15">فروشنده تأییدشده</span>
+                    <span className="px-3 py-1.5 rounded-full bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15">ضمانت اصالت</span>
+                    <span className="px-3 py-1.5 rounded-full bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15">۷ روز بازگشت</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             {/* Categories */}
             <section id="categories" className="py-8 sm:py-12 bg-primary-50 dark:bg-primary-950 transition-colors">
               <div className="max-w-7xl mx-auto px-3 sm:px-4">

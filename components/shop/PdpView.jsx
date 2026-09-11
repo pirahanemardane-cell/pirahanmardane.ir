@@ -910,28 +910,38 @@ export default function PdpView() {
                   </div>
 
                   {/* Frequently bought together */}
+                  {similar.length > 0 && (
                   <div className="mt-8 sm:mt-10">
-                    <h2 className="text-base sm:text-lg font-bold text-primary-900 dark:text-white mb-4">معمولاً با این محصول خریداری می‌شود</h2>
+                    <div className="flex items-end justify-between gap-3 mb-3 sm:mb-4">
+                      <div>
+                        <p className="text-[11px] font-bold text-apple-blue dark:text-[#13ABC4] mb-1">پیشنهاد هوشمند</p>
+                        <h2 className="text-base sm:text-lg font-black text-primary-900 dark:text-white">معمولاً کنار این محصول می‌خرند</h2>
+                      </div>
+                    </div>
                     <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-                      {similar.slice(0, 4).map(sp => (
-                        <div key={sp.id} className="flex-shrink-0 w-36 sm:w-40 cursor-pointer" onClick={() => openPDP(sp)}>
-                          <div className="aspect-[4/5] rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900 mb-2">
-                            <img src={sp.colors?.[0]?.image} alt={sp.name} className="w-full h-full object-cover" loading="lazy" />
+                      {similar.slice(0, 6).map(sp => (
+                        <div key={sp.id} className="flex-shrink-0 w-36 sm:w-40 cursor-pointer group" onClick={() => openPDP(sp)}>
+                          <div className="aspect-[4/5] rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900 mb-2 border border-primary-100 dark:border-white/10 group-hover:border-apple-blue/40 transition">
+                            <img src={sp.colors?.[0]?.image} alt={sp.name} className="w-full h-full object-cover group-hover:scale-[1.03] transition duration-300" loading="lazy" />
                           </div>
-                          <p className="text-xs font-medium text-primary-900 dark:text-white truncate">{sp.name}</p>
-                          <p className="text-xs text-primary-500">{sp.priceText} تومان</p>
+                          <p className="text-xs font-bold text-primary-900 dark:text-white truncate">{sp.name}</p>
+                          <p className="text-xs font-medium text-primary-600 dark:text-white/70">{sp.priceText} تومان</p>
                         </div>
                       ))}
                     </div>
                   </div>
+                  )}
 
 
                   {/* Similar products */}
                   {similar.length > 0 && (
                     <div className="mt-8 sm:mt-10">
-                      <h2 className="text-base sm:text-lg font-bold text-primary-900 dark:text-white mb-4">محصولات مشابه</h2>
+                      <div className="mb-3 sm:mb-4">
+                        <p className="text-[11px] font-bold text-apple-blue dark:text-[#13ABC4] mb-1">انتخاب‌های نزدیک</p>
+                        <h2 className="text-base sm:text-lg font-black text-primary-900 dark:text-white">محصولات مشابه برای شما</h2>
+                      </div>
                       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                        {similar.slice(0, 4).map(sp => (
+                        {similar.slice(0, 8).map(sp => (
                           <div key={sp.id} className="min-w-0" onClick={() => openPDP(sp)}>
                             {renderProductCard(sp, 'pdp-sim-', { grid: true })}
                           </div>
@@ -957,15 +967,18 @@ export default function PdpView() {
                   {/* Recently viewed */}
                   {recentlyViewed.filter(x => x.id !== p.id).length > 0 && (
                     <div className="mt-8 sm:mt-10">
-                      <h2 className="text-base sm:text-lg font-bold text-primary-900 dark:text-white mb-4">اخیراً دیده‌شده</h2>
+                      <div className="mb-3 sm:mb-4">
+                        <p className="text-[11px] font-bold text-apple-blue dark:text-[#13ABC4] mb-1">ادامه مرور شما</p>
+                        <h2 className="text-base sm:text-lg font-black text-primary-900 dark:text-white">اخیراً دیده‌اید</h2>
+                      </div>
                       <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-                        {recentlyViewed.filter(x => x.id !== p.id).map(sp => (
-                          <div key={sp.id} className="flex-shrink-0 w-32 sm:w-36 cursor-pointer" onClick={() => openPDP(sp)}>
-                            <div className="aspect-[4/5] rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900 mb-1.5">
-                              <img src={sp.colors?.[0]?.image} alt={sp.name} className="w-full h-full object-cover" loading="lazy" />
+                        {recentlyViewed.filter(x => x.id !== p.id).slice(0, 12).map(sp => (
+                          <div key={sp.id} className="flex-shrink-0 w-32 sm:w-36 cursor-pointer group" onClick={() => openPDP(sp)}>
+                            <div className="aspect-[4/5] rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900 mb-1.5 border border-primary-100 dark:border-white/10 group-hover:border-apple-blue/40 transition">
+                              <img src={sp.colors?.[0]?.image} alt={sp.name} className="w-full h-full object-cover group-hover:scale-[1.03] transition duration-300" loading="lazy" />
                             </div>
-                            <p className="text-xs font-medium text-primary-900 dark:text-white truncate">{sp.name}</p>
-                            <p className="text-xs text-primary-500">{sp.priceText}</p>
+                            <p className="text-xs font-bold text-primary-900 dark:text-white truncate">{sp.name}</p>
+                            <p className="text-xs font-medium text-primary-600 dark:text-white/70">{sp.priceText}</p>
                           </div>
                         ))}
                       </div>
