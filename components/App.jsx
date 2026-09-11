@@ -9809,21 +9809,6 @@ const verifyOtp = async () => {
       const aiOptimizeTextHints = (opts) => aiOptimizeTextHintsLib(opts);
       const buildImageAlt = (p) => buildImageAltFromTemplate(p, seoCfg());
       const buildFaqSchema = (faqs) => buildFaqSchemaLib(faqs);
-|/g, ' |')
-          .trim();
-      };
-      const buildFaqSchema = (faqs) => {
-        const items = (faqs || []).filter(f => f && f.q && f.a);
-        if (!items.length) return null;
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'FAQPage',
-          mainEntity: items.map(f => ({
-            '@type': 'Question',
-            name: f.q,
-            acceptedAnswer: { '@type': 'Answer', text: f.a },
-          })),
-        };
       };
       const pingIndexNow = async (urlList) => {
         const s = seoCfg();
