@@ -5091,8 +5091,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           pushLiveToast('کپی شد', { type: 'info', duration: 2000 });
           return true;
         } catch (_) {
-          showToast({ message: String('کپی ممکن نشد — متن را دستی کپی کنید:
-' + text), variant: 'error', duration: 4500, position: 'top-center' });
+          showToast({ message: 'کپی ممکن نشد — متن را دستی کپی کنید: ' + String(text), variant: 'error', duration: 4500, position: 'top-center' });
           return false;
         }
       };
