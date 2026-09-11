@@ -1,5 +1,14 @@
 'use client';
 import {
+  suggestInternalLinksFromPool,
+  getSeoAiQuotaState,
+  aiGenerateSeoMeta as aiGenerateSeoMetaLib,
+  aiSuggestFaq as aiSuggestFaqLib,
+  aiOptimizeTextHints as aiOptimizeTextHintsLib,
+  buildImageAltFromTemplate,
+  buildFaqSchema as buildFaqSchemaLib,
+} from '@/lib/seo-ai';
+import {
   getPageCmsFromMap,
   getShopSeoBodyFrom,
   mergePageCmsEntry,
@@ -9774,8 +9783,6 @@ const verifyOtp = async () => {
       };
 
       const suggestInternalLinks = ({ focusKeywords = '', bodyText = '', sellerLimited = false, sellerId = null } = {}) => {
-        const kws = String(focusKeywords || '').split(/[,،]/).map(x => x.trim()).filter(Boolean);
-        const bodyL = String(bodyText || '').toLowerCase();
         let pool = [...(catalogProducts || products || [])];
         if (sellerLimited) {
           pool = pool.filter(p => {
@@ -9783,30 +9790,12 @@ const verifyOtp = async () => {
             return sid === 'own' || sid === sellerId || (sellerUser && (sid === sellerUser.id));
           });
         }
-        const scored = pool.map(p => {
-          const name = String(p.name || '').toLowerCase();
-          let sc = 0;
-          kws.forEach(k => { if (name.includes(k.toLowerCase()) || bodyL.includes(String(p.name || '').toLowerCase())) sc += 2; });
-          if (p.discount) sc += 0.5;
-          return { p, sc };
-        }).filter(x => x.sc > 0).sort((a, b) => b.sc - a.sc).slice(0, 5);
-        return scored.map(({ p }) => ({
-          id: p.id,
-          name: p.name,
-          path: pathForProduct(p.name || p.title, p.shopName || p.sellerName || p.brand || ''),
-          label: p.name,
-        }));
+        return suggestInternalLinksFromPool(pool, { focusKeywords, bodyText, pathForProduct });
       };
 
 
       /** فاز C: پیشنهاد AI محلی (بدون API خارجی) + سقف روزانه فروشنده */
-      const getSeoAiQuota = (role = 'admin') => {
-        const day = new Date().toISOString().slice(0, 10);
-        const key = role + ':' + day;
-        const used = Number(seoAiDaily[key] || 0);
-        const limit = role === 'seller' ? 15 : 200;
-        return { day, key, used, limit, left: Math.max(0, limit - used) };
-      };
+      const getSeoAiQuota = (role = 'admin') => getSeoAiQuotaState(seoAiDaily, role);
       const consumeSeoAiQuota = (role = 'admin') => {
         const q = getSeoAiQuota(role);
         if (q.left <= 0) return false;
@@ -9815,55 +9804,12 @@ const verifyOtp = async () => {
         try { localStorage.setItem('seoAiDaily', JSON.stringify(next)); } catch (_) {}
         return true;
       };
-      const aiGenerateSeoMeta = ({ name = '', desc = '', focusKeywords = '', mode = 'product' } = {}) => {
-        const kw = String(focusKeywords || '').split(/[,،]/).map(x => x.trim()).filter(Boolean)[0] || name;
-        const cleanDesc = String(desc || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-        const title = (kw || name || 'محصول').slice(0, 55);
-        let description = cleanDesc.slice(0, 150);
-        if (description.length < 70) {
-          description = `${name || kw} — خرید آنلاین از فروشگاه پیراهن مردانه با ارسال سریع و ضمانت اصالت.`.slice(0, 155);
-        }
-        if (mode === 'article') {
-          return {
-            title: (name || kw).slice(0, 58),
-            description: (cleanDesc || `مطلب ${name} در بلاگ پیراهن مردانه`).slice(0, 155),
-            summary: (cleanDesc || name).slice(0, 220),
-          };
-        }
-        return { title, description, summary: description };
-      };
-      const aiSuggestFaq = ({ name = '', desc = '', focusKeywords = '' } = {}) => {
-        const kw = String(focusKeywords || '').split(/[,،]/).map(x => x.trim()).filter(Boolean)[0] || name;
-        return [
-          { q: `${name || kw} مناسب چه فصلی است؟`, a: `بسته به جنس پارچه، ${name || 'این محصول'} برای استفاده در فصل مناسب طراحی شده است. جزئیات در توضیحات محصول آمده است.` },
-          { q: `راهنمای سایز ${name || 'محصول'} چگونه است؟`, a: 'از جدول راهنمای سایز فروشگاه استفاده کنید و در صورت تردید با پشتیبانی فروشنده در تماس باشید.' },
-          { q: `ارسال و مرجوعی ${name || 'این کالا'} چگونه است؟`, a: 'پس از ثبت سفارش، ارسال طبق روش انتخابی انجام می‌شود. شرایط مرجوعی در صفحه قوانین مرجوعی فروشگاه آمده است.' },
-        ];
-      };
-      const aiOptimizeTextHints = ({ title = '', description = '', bodyText = '', focusKeywords = '' } = {}) => {
-        const hints = [];
-        const primary = String(focusKeywords || '').split(/[,،]/).map(x => x.trim()).filter(Boolean)[0];
-        if (!title) hints.push('یک عنوان سئو در محدوده پیکسل گوگل (دسکتاپ ≤۶۰۰px) بنویسید.');
-        else if (seoPixelReport(title, 'title').worst === 'short') hints.push('عنوان را کمی طولانی‌تر و توصیفی‌تر کنید.');
-        else if (seoPixelReport(title, 'title').deskOver) hints.push('عنوان برای دسکتاپ گوگل بلند است (≤۶۰۰px).');
-        if (!description) hints.push('توضیحات متا در محدوده پیکسل گوگل (دسکتاپ ≤۹۶۰px) اضافه کنید.');
-        else if (seoPixelReport(description, 'desc').deskOver) hints.push('توضیحات متا برای دسکتاپ بلند است (≤۹۶۰px).');
-        if (primary && title && !title.includes(primary)) hints.push(`کلمه «${primary}» را در عنوان سئو بیاورید.`);
-        if (primary && bodyText && !String(bodyText).includes(primary)) hints.push(`یک‌بار «${primary}» را طبیعی در متن توضیح بنویسید.`);
-        if (String(bodyText || '').split(/\s+/).filter(Boolean).length < 80) hints.push('توضیح محصول را به حداقل ۸۰–۱۵۰ کلمه برسانید.');
-        if (!hints.length) hints.push('وضعیت سئو قابل قبول است؛ روی لینک داخلی و تصویر با alt تمرکز کنید.');
-        return hints;
-      };
-      const buildImageAlt = (p) => {
-        const s = seoCfg();
-        if (s.imageSeoAutoAlt === false) return p?.imageAlt || p?.name || '';
-        const tpl = s.imageSeoAltTemplate || '{name} | {brand} | پیراهن مردانه';
-        return tpl
-          .replace(/\{name\}/g, p?.name || '')
-          .replace(/\{brand\}/g, p?.brand || p?.brandName || '')
-          .replace(/\{category\}/g, p?.category || '')
-          .replace(/\{keyword\}/g, String(p?.seoFocusKeywords || '').split(/[,،]/)[0] || p?.name || '')
-          .replace(/\s+\|/g, ' |')
+      const aiGenerateSeoMeta = (opts) => aiGenerateSeoMetaLib(opts);
+      const aiSuggestFaq = (opts) => aiSuggestFaqLib(opts);
+      const aiOptimizeTextHints = (opts) => aiOptimizeTextHintsLib(opts);
+      const buildImageAlt = (p) => buildImageAltFromTemplate(p, seoCfg());
+      const buildFaqSchema = (faqs) => buildFaqSchemaLib(faqs);
+|/g, ' |')
           .trim();
       };
       const buildFaqSchema = (faqs) => {
