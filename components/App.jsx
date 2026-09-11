@@ -107,6 +107,8 @@ import { mapProfileToSeller as mapProfileToSellerLib } from '@/lib/seller-map';
 import { mapAdminProductRow as mapAdminProductRowLib, mapAdminSellerRow as mapAdminSellerRowLib } from '@/lib/admin-row-map';
 import { buildRobotsTxt as buildRobotsTxtLib, buildSitemapXml as buildSitemapXmlLib, buildSitemapIndexXml as buildSitemapIndexXmlLib, buildNewsSitemapXml as buildNewsSitemapXmlLib, buildVideoSitemapXml as buildVideoSitemapXmlLib, buildLocalBusinessSchema as buildLocalBusinessSchemaLib } from '@/lib/seo-build';
 import { runSeoHealthCheck as runSeoHealthCheckLib } from '@/lib/seo-health';
+import { isDealActive as isDealActiveLib, matchSellerId as matchSellerIdLib, getCheckoutTaxRate as getCheckoutTaxRateLib } from '@/lib/product-flags';
+
 
 import { mapExternalRowToProduct as mapExternalRowToProductLib } from '@/lib/import-map';
 
@@ -3508,14 +3510,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         const sid = p.sellerId || p.seller?.id || 'own';
         return isSellerFastShipAllowed(sid);
       };
-      const isDealActive = (p) => {
-        if (!p) return false;
-        if (!p.amazing) return false;
-        if (p.dealEndsAt && Number(p.dealEndsAt) < Date.now()) return false;
-        // بدون dealEndsAt در دیتای قدیمی: فقط اگر تخفیف دارد (سازگاری)
-        if (!p.dealEndsAt) return ((Number(p.discount) || 0) > 0 || !!p.oldPrice);
-        return ((Number(p.discount) || 0) > 0 || !!p.oldPrice);
-      };
+            // isDealActive → @/lib/product-flags
+      const isDealActive = (p) => isDealActiveLib(p);
       const catalogProducts = useMemo(() => {
         // Until mount: only static demo products — same on server & client (no localStorage merge)
         const now = hasMounted ? Date.now() : 0;
@@ -6168,11 +6164,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         if (m.priceMode === 'dynamic_cod') return 0;
         return m.cost;
       };
-      const getCheckoutTaxRate = () => {
-        const r = Number(adminSettings?.taxRate);
-        if (r > 0) return r / 100;
-        return 0.09;
-      };
+            // getCheckoutTaxRate → @/lib/product-flags
+      const getCheckoutTaxRate = () => getCheckoutTaxRateLib(adminSettings?.taxRate);
       const getCheckoutTotals = () => {
         const subtotal = cartSubtotal;
         const discount = couponDiscount;
@@ -12380,17 +12373,8 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
           </div>
         );
       };
-      const matchSellerId = (p, sid) => {
-        if (!p || !sid) return false;
-        const a = String(sid);
-        const candidates = [
-          p.sellerId,
-          p.seller_id,
-          p.seller?.id,
-          p.seller?.seller_id,
-        ].filter(Boolean).map(String);
-        return candidates.includes(a);
-      };
+            // matchSellerId → @/lib/product-flags
+      const matchSellerId = (p, sid) => matchSellerIdLib(p, sid);
       const catalogPool = [
         ...(Array.isArray(catalogProducts) ? catalogProducts : []),
         ...(Array.isArray(serverProducts) ? serverProducts : []),
