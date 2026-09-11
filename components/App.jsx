@@ -1,4 +1,5 @@
 'use client';
+import { buildSeo404Entry, applyImageSeoAltTemplate } from '@/lib/seo-helpers';
 import { defaultAdminCategories, defaultAdminTags, defaultAdminBlogCategories } from '@/lib/default-taxonomy';
 import {
   loadGa4Store as loadGa4StoreLib,
@@ -10,7 +11,7 @@ import {
   ga4Aggregate as ga4AggregateLib,
 } from '@/lib/ga4-analytics';
 import { defaultSeoConfig } from '@/lib/default-seo-config';
-import { defaultShippingMethods, blankShippingMethod } from '@/lib/default-shipping-methods';
+import { defaultShippingMethods, blankShippingMethod, mapShippingMethodsFromApi, shippingMethodsToApiPayload } from '@/lib/default-shipping-methods';
 import { normalizeCategoryKey as normalizeCategoryKeyLib } from '@/lib/category-key';
 import { COMPARE_MAX, WISHLIST_MAX, PAGE_LOAD_LABELS, RT_CHANNEL_NAME, RT_KEYS } from '@/lib/app-constants';
 import { isUsableProductImage, pickProductImage, mapCatalogRow, mapServerProductToSellerUi as mapServerProductToSellerUiLib } from '@/lib/catalog-map';
@@ -256,18 +257,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           const res = await fetch('/api/shipping-methods', { credentials: 'include', cache: 'no-store' });
           const json = await res.json().catch(() => ({}));
           if (json?.ok && Array.isArray(json.items) && json.items.length) {
-            const mapped = json.items.map((m) => ({
-              id: m.code || m.id,
-              code: m.code,
-              title: m.title,
-              name: m.title,
-              price: m.price,
-              baseCost: m.price,
-              eta: m.eta || '',
-              enabled: m.enabled !== false,
-              sort_order: m.sort_order,
-              priceMode: 'fixed',
-            }));
+            const mapped = mapShippingMethodsFromApi(json.items);
             try { setAdminShippingMethods(mapped); } catch (_) {}
             try { localStorage.setItem('adminShippingMethods', JSON.stringify(mapped)); } catch (_) {}
             return true;
@@ -1873,13 +1863,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         try { localStorage.setItem('seo404Log', JSON.stringify(next)); } catch (_) {}
       };
       const logSeo404 = (path, referrer) => {
-        const entry = {
-          id: '404-' + Date.now(),
-          path: path || (typeof window !== 'undefined' ? window.location.pathname + window.location.search : ''),
-          referrer: referrer || (typeof document !== 'undefined' ? document.referrer : ''),
-          at: new Date().toISOString(),
-          atFa: new Date().toLocaleString('fa-IR'),
-        };
+        const entry = buildSeo404Entry(path, referrer);
         saveSeo404Log([entry, ...(seo404Log || [])].slice(0, 200));
       };
 
@@ -2761,14 +2745,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         setAdminShippingMethods(next);
         try { localStorage.setItem('adminShippingMethods', JSON.stringify(next)); } catch (_) {}
         try {
-          const items = (Array.isArray(next) ? next : []).map((m, i) => ({
-            code: String(m.code || m.id || `ship-${i}`),
-            title: m.title || m.name || 'ارسال',
-            price: Math.max(0, parseInt(m.baseCost ?? m.price, 10) || 0),
-            eta: m.eta || '',
-            enabled: m.enabled !== false,
-            sort_order: i,
-          }));
+          const items = shippingMethodsToApiPayload(next);
           fetch('/api/shipping-methods', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
