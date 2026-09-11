@@ -154,6 +154,7 @@ import { fetchCatalogProducts, putCatalogProducts, fetchCatalogCategories, putCa
 import { apiBlogList, apiBlogListAll, apiBlogDelete, apiBlogPatch, apiBlogCategoriesList, apiBlogCategoryCreate, apiBlogCategoryPatch, apiBlogCategoryDelete, apiBlogTagsList, apiBlogTagCreate, apiBlogTagPatch, apiBlogTagDelete } from '@/lib/api/blog';
 import { fetchAddresses, createAddress, patchAddress, deleteAddress } from '@/lib/api/addresses';
 import { fetchSiteSettings, putSiteSetting } from '@/lib/api/site-settings';
+import { fetchCouponByCode, fetchCouponsAdmin, createCoupon } from '@/lib/api/coupons';
 import {
   slugifyFa,
   FA_PATHS,
@@ -4216,8 +4217,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
         // اول از سرور (جدول coupons)
         try {
-          const res = await fetch('/api/coupons?code=' + encodeURIComponent(code), { credentials: 'include', cache: 'no-store' });
-          const json = await res.json().catch(() => ({}));
+          const json = await fetchCouponByCode(code);
           if (json?.ok && json.coupon) {
             const c = json.coupon;
             found = c.type === 'amount'
@@ -8663,8 +8663,7 @@ const verifyOtp = async () => {
       };
       const hydrateAdminCoupons = async () => {
         try {
-          const res = await fetch('/api/coupons?admin=1', { credentials: 'include', cache: 'no-store' });
-          const json = await res.json().catch(() => ({}));
+          const json = await fetchCouponsAdmin();
           if (!json?.ok || !Array.isArray(json.items)) return;
           const mapped = json.items.map((c) => ({
             id: c.id,
@@ -8685,11 +8684,7 @@ const verifyOtp = async () => {
       };
       const createAdminCouponOnServer = async (coupon) => {
         try {
-          const res = await fetch('/api/coupons', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
+          const data = await createCoupon({
               code: coupon.code,
               type: coupon.type === 'amount' ? 'amount' : 'percent',
               value: coupon.value,
