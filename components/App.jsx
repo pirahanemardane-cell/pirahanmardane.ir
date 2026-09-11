@@ -1,4 +1,5 @@
 'use client';
+import { normalizeCategoryKey as normalizeCategoryKeyLib } from '@/lib/category-key';
 import { COMPARE_MAX, WISHLIST_MAX, PAGE_LOAD_LABELS, RT_CHANNEL_NAME, RT_KEYS } from '@/lib/app-constants';
 import { isUsableProductImage, pickProductImage, mapCatalogRow, mapServerProductToSellerUi as mapServerProductToSellerUiLib } from '@/lib/catalog-map';
 import { classifyToastVariant } from '@/lib/toast-variant';
@@ -19,7 +20,7 @@ import {
 import { scrollPageToTop } from '@/lib/scroll-page-to-top';
 import { HOME_FEATURES, HOME_STATS, TREND_QUERIES, CAT_LABEL_MAP } from '@/lib/site-content';
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
-import { SIZE_GUIDE_TABLE, ALL_SIZES } from '@/lib/size-guide';
+import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
 import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath } from '@/lib/product-codes';
 import { findOpenChatConversation, conversationChannelLabel, ticketMessagesToChatUI } from '@/lib/ticket-chat';
 import { downloadBlobFile } from '@/lib/download-blob';
@@ -181,22 +182,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
     const categories = [
       { name: "همه محصولات", icon: "grid", productKey: null },
     ];
-    /** نرمال‌سازی نام دستهٔ نمایشی → کلید فیلتر محصول روی PLP */
-    const normalizeCategoryKey = (raw) => {
-      if (raw == null || raw === '') return null;
-      const s = String(raw).trim();
-      if (!s || s === 'همه' || s === 'همه محصولات') return null;
-      const found = categories.find(
-        (c) => c.name === s || c.productKey === s || c.name.replace('پیراهن ', '') === s.replace('پیراهن ', '')
-      );
-      if (found) return found.productKey; // null = همه محصولات
-      const stripped = s.replace(/^پیراهن\s+/, '');
-      if (stripped.includes('لینن') || stripped.includes('آستین بلند')) return 'آستین کوتاه';
-      if (stripped.includes('آستین کوتاه')) return 'آستین کوتاه';
-      if (stripped.includes('کروات')) return 'کروات';
-      if (stripped.includes('رسمی')) return 'رسمی';
-      return stripped;
-    };
+    const normalizeCategoryKey = (raw) => normalizeCategoryKeyLib(raw, categories);
 
     const navLinks = [
       { label: "خانه", href: "#" },
@@ -5101,20 +5087,12 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const copyTextToClipboard = async (text) => {
         try {
-          if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(text);
-          } else {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            ta.remove();
-          }
+          await copyTextSilent(text);
           pushLiveToast('کپی شد', { type: 'info', duration: 2000 });
           return true;
         } catch (_) {
-          showToast({ message: String('کپی ممکن نشد — متن را دستی کپی کنید:\n' + text), variant: 'error', duration: 4500, position: 'top-center' });
+          showToast({ message: String('کپی ممکن نشد — متن را دستی کپی کنید:
+' + text), variant: 'error', duration: 4500, position: 'top-center' });
           return false;
         }
       };
@@ -5831,15 +5809,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }, [initialBlogId]);
 
       const suggestSizeFromBody = () => {
-        const h = Number(pdpHeight);
-        const w = Number(pdpWeight);
-        if (!h || !w) { setPdpSizeRec(null); return; }
-        let s = 'M';
-        if (h < 170 || w < 65) s = 'S';
-        else if (h < 178 && w < 78) s = 'M';
-        else if (h < 185 && w < 88) s = 'L';
-        else if (h < 192 && w < 98) s = 'XL';
-        else s = 'XXL';
+        const s = suggestSizeFromHeightWeight(pdpHeight, pdpWeight);
+        if (!s) { setPdpSizeRec(null); return; }
         setPdpSizeRec(s);
         setPdpSize(s);
       };
