@@ -1,4 +1,7 @@
 'use client';
+import { shopCodePrefix } from '@/lib/product-codes';
+import { findOpenChatConversation, conversationChannelLabel, ticketMessagesToChatUI } from '@/lib/ticket-chat';
+import { downloadBlobFile } from '@/lib/download-blob';
 import { checkSellerSeoSpam } from '@/lib/seo-spam';
 import {
   ensureStorageVersion,
@@ -5203,13 +5206,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       };
 
       /** پیشوند ۴حرفی از نام فروشگاه */
-      const shopCodePrefix = (shopName) => {
-        const raw = String(shopName || 'SHOP').replace(/\s+/g, '');
-        let letters = raw.replace(/[^\u0600-\u06FFa-zA-Z0-9]/g, '');
-        if (letters.length < 4) letters = (letters + 'XXXX').slice(0, 4);
-        else letters = letters.slice(0, 4);
-        return letters.toUpperCase();
-      };
+      // shopCodePrefix → @/lib/product-codes
       /** کد یکتا: ۴حرف فروشگاه + ۹ رقم — بدون هم‌پوشانی بین همه فروشگاه‌ها */
 
       /** کد یکتای تیکت: TK + 9 رقم — بدون هم‌پوشانی بین خریدار/فروشنده/ادمین */
@@ -5241,28 +5238,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       };
 
       /** گفتگوی باز چت (یکپارچه با تیکت) */
-      const findOpenChatConversation = (list) => {
-        const arr = Array.isArray(list) ? list : [];
-        return arr.find(t => t && (t.fromChat || t.channel === 'chat') && t.status !== 'closed')
-          || arr.find(t => t && t.channel === 'chat')
-          || null;
-      };
-
-      const conversationChannelLabel = (t) => {
-        if (!t) return 'گفتگو';
-        if (t.type === 'return' || t.channel === 'return') return 'مرجوعی';
-        if (t.fromChat || t.channel === 'chat' || t.type === 'chat') return 'چت';
-        return 'تیکت';
-      };
-
-      const ticketMessagesToChatUI = (messages) => {
-        return (messages || []).map((m, i) => ({
-          id: m.id || ('m-' + i + '-' + (m.time || m.date || '')),
-          from: (m.from === 'buyer' || m.from === 'user') ? 'user' : 'agent',
-          text: m.text || '',
-          time: m.time || m.date || '',
-        }));
-      };
+      // ticket-chat helpers → @/lib/ticket-chat
 
       const mirrorConversationToAdmin = (conv, fromName) => {
         if (!conv || !conv.id) return;
@@ -9774,23 +9750,7 @@ const verifyOtp = async () => {
       const saveAdminSellers = (next) => { setAdminSellers(next); publishRealtime('adminSellers', next); };
       const saveAdminProducts = (next) => { setAdminProducts(next); publishRealtime('adminProducts', next); };
 
-      const downloadBlobFile = (filename, content, mime) => {
-        try {
-          const blob = new Blob([content], { type: mime || 'application/octet-stream' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          setTimeout(() => URL.revokeObjectURL(url), 1500);
-          return true;
-        } catch (e) {
-          showToast({ message: 'دانلود ناموفق بود', variant: 'error', duration: 4500, position: 'top-center' });
-          return false;
-        }
-      };
+      // downloadBlobFile → @/lib/download-blob
 
       const PRODUCT_BACKUP_SITE = 'pirahan-mardane';
       const PRODUCT_BACKUP_MAGIC = 'PM-PRODUCT-BACKUP-v1';
