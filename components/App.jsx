@@ -1,4 +1,10 @@
 'use client';
+import {
+  createNotification,
+  prependNotification,
+  markAllNotificationsRead,
+  markNotificationRead,
+} from '@/lib/notifications';
 import { analyzeOnPageSeo as analyzeOnPageSeoLib } from '@/lib/seo-onpage';
 import { resolvePageSeo } from '@/lib/page-seo-resolve';
 import {
@@ -4273,17 +4279,9 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       };
 
       const pushNotification = (payload, opts = {}) => {
-        const n = {
-          id: 'n-' + Date.now() + '-' + Math.random().toString(36).slice(2, 5),
-          type: payload.type || 'system',
-          title: payload.title || 'اعلان',
-          body: payload.body || '',
-          date: new Date().toLocaleDateString('fa-IR') + ' ' + new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }),
-          read: false,
-        };
+        const n = createNotification(payload, { idPrefix: 'n-' });
         setNotifications(prev => {
-          const base = Array.isArray(prev) ? prev : [];
-          const next = [n, ...base].slice(0, 60);
+          const next = prependNotification(prev, n, 60);
           publishRealtime('buyerNotifications', next);
           return next;
         });
@@ -4298,17 +4296,13 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       };
 
       const pushSellerNotification = (payload, opts = {}) => {
-        const n = {
-          id: 'sn-' + Date.now() + '-' + Math.random().toString(36).slice(2, 5),
-          type: payload.type || 'system',
-          title: payload.title || 'اعلان فروشنده',
-          body: payload.body || '',
-          date: new Date().toLocaleDateString('fa-IR') + ' ' + new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }),
-          read: false,
-        };
+        const n = createNotification(
+          { type: payload.type || 'system', title: payload.title || 'اعلان فروشنده', body: payload.body || '' },
+          { idPrefix: 'sn-' },
+        );
         try {
           const prev = JSON.parse(localStorage.getItem('sellerNotifications') || '[]');
-          const next = [n, ...(Array.isArray(prev) ? prev : [])].slice(0, 60);
+          const next = prependNotification(prev, n, 60);
           publishRealtime('sellerNotifications', next);
           window.dispatchEvent(new CustomEvent('seller-notif-update', { detail: next }));
         } catch (_) {}
