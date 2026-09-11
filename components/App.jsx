@@ -1,4 +1,5 @@
 'use client';
+import { stripHtmlSeo } from '@/lib/seo-pixel';
 import { formatPrice, plpSortLabel as plpSortLabelOf, scrollCarousel } from '@/lib/format-price';
 import { safeColorIdx as safeColorIdxLib, safeSizeSel as safeSizeSelLib, safeCardQty as safeCardQtyLib } from '@/lib/selection-helpers';
 import { pageLoadMessage, runBeginPageScroll } from '@/lib/page-load';
@@ -9842,7 +9843,7 @@ const verifyOtp = async () => {
 
 
       /** ——— فاز A: ابزارهای سئوی محتوا (باکس + head + schema + llms) ——— */
-      const stripHtmlSeo = (html) => String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      // stripHtmlSeo → @/lib/seo-pixel
       const measureSeoPx = (text, font) => {
         const str = String(text || '');
         if (typeof document === 'undefined') {
