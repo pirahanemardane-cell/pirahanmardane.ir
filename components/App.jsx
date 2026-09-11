@@ -1,4 +1,5 @@
 'use client';
+import { SESSION_TTL_MS, readSessionUser, writeSessionUser, clearSessionUser } from '@/lib/session-storage';
 import {
   GSC_STORAGE_KEY,
   buildGscSeed as buildGscSeedLib,
@@ -108,7 +109,7 @@ import Icon from './Icon';
 import { AppApiProvider } from './AppApiContext';
 import ShopShell from './panels/ShopShell';
 import { htmlToPlain } from '@/lib/html-plain';
-import { toFa, toEnDigits, onlyDigits, normalizeIranMobile, isAdminPhone } from '@/lib/format-digits';
+import { toFa, toEnDigits, onlyDigits, normalizeIranMobile, isAdminPhone, isNumericFieldEl } from '@/lib/format-digits';
 import { normalizeBreadcrumbs } from '@/lib/breadcrumbs';
 import { normalizeSearch, expandQuery, scoreProduct, SEARCH_SYNONYMS } from '@/lib/search-normalize';
 import { deriveFabric, deriveSleeve, deriveCollar } from '@/lib/product-attrs';
@@ -540,18 +541,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       /* Hydrate client-only state AFTER mount so SSR HTML matches first client render */
       useEffect(() => {
         const FA_DIGIT_RE = /[\u06F0-\u06F9\u0660-\u0669]/;
-        const isNumericField = (el) => {
-          if (!(el instanceof HTMLInputElement) && !(el instanceof HTMLTextAreaElement)) return false;
-          if (el.dataset && (el.dataset.skipDigitNormalize === 'true' || el.dataset.adminAuth === 'true')) return false;
-          const t = (el.type || '').toLowerCase();
-          const mode = String(el.getAttribute('inputMode') || el.inputMode || '').toLowerCase();
-          if (t === 'number' || t === 'tel') return true;
-          if (mode === 'numeric' || mode === 'decimal' || mode === 'tel') return true;
-          if (el.dataset && (el.dataset.digits === 'en' || el.dataset.normalizeDigits === 'true')) return true;
-          const ac = String(el.autocomplete || el.getAttribute('autocomplete') || '').toLowerCase();
-          if (ac === 'tel' || ac === 'tel-national' || ac === 'one-time-code') return true;
-          return false;
-        };
+        const isNumericField = (el) => isNumericFieldEl(el);
         const onInput = (e) => {
           const el = e.target;
           if (!isNumericField(el)) return;
@@ -1054,19 +1044,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const [authTermsAccepted, setAuthTermsAccepted] = useStoreField(shopUiStore, 'authTermsAccepted');
       const [demoOtpCode, setDemoOtpCode] = useStoreField(shopUiStore, 'demoOtpCode');
       const [cookieConsent, setCookieConsent] = useStoreField(shopUiStore, 'cookieConsent');
-      const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // ۳۰ روز
-      const readSessionUser = (key) => {
-        try {
-          const raw = localStorage.getItem(key);
-          if (!raw) return null;
-          const u = JSON.parse(raw);
-          if (u && u.sessionExpires && Date.now() > u.sessionExpires) {
-            localStorage.removeItem(key);
-            return null;
-          }
-          return u;
-        } catch { return null; }
-      };
+      // SESSION_TTL_MS / readSessionUser → @/lib/session-storage
       const [user, setUser] = useStoreField(shopUiStore, 'user');
       const [showProfilePage, setShowProfilePage] = useStoreField(shopUiStore, 'showProfilePage');
       const [profileTab, setProfileTab] = useStoreField(shopUiStore, 'profileTab');
@@ -4472,9 +4450,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         pushLiveToast('سبد خرید خالی شد', { type: 'cart' });
       };
 
-      const getUsedPromoCodes = () => {
-        try { return JSON.parse(localStorage.getItem('usedPromoCodes') || '[]'); } catch { return []; }
-      };
+      // getUsedPromoCodes → @/lib/promo-codes
       const markPromoCodeUsed = (code) => {
         const c = String(code || '').toUpperCase();
         if (!c) return;
