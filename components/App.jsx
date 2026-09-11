@@ -155,6 +155,7 @@ import { apiBlogList, apiBlogListAll, apiBlogDelete, apiBlogPatch, apiBlogCatego
 import { fetchAddresses, createAddress, patchAddress, deleteAddress } from '@/lib/api/addresses';
 import { fetchSiteSettings, putSiteSetting } from '@/lib/api/site-settings';
 import { fetchCouponByCode, fetchCouponsAdmin, createCoupon } from '@/lib/api/coupons';
+import { apiAdminProducts, apiAdminOrders, apiAdminSellers, apiAdminStats, apiAdminPatchProduct } from '@/lib/api/admin';
 import {
   slugifyFa,
   FA_PATHS,
@@ -3744,8 +3745,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                   }
                 })
                 .catch(() => {});
-              fetch('/api/admin/products?limit=200', { credentials: 'include', cache: 'no-store' })
-                .then((r) => r.json())
+              apiAdminProducts(200)
                 .then((j) => {
                   const list = j?.products || j?.data;
                   if (Array.isArray(list) && typeof setAdminProducts === 'function') {
@@ -3779,8 +3779,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                   }
                 })
                 .catch(() => {});
-              fetch('/api/admin/orders?limit=100', { credentials: 'include', cache: 'no-store' })
-                .then((r) => r.json())
+              apiAdminOrders(100)
                 .then((j) => {
                   const list = j?.orders || j?.data;
                   if (Array.isArray(list) && typeof setAdminOrders === 'function') {
@@ -3881,8 +3880,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                   }
                 })
                 .catch(() => {});
-              fetch('/api/admin/sellers', { credentials: 'include', cache: 'no-store' })
-                .then((r) => r.json())
+              apiAdminSellers()
                 .then((j) => {
                   const list = j?.sellers || j?.data;
                   if (Array.isArray(list) && typeof setAdminSellers === 'function') {
@@ -4387,13 +4385,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
 
       const approveAdminProductOnServer = async (productId, status = 'active') => {
-        const res = await fetch('/api/admin/products/' + encodeURIComponent(productId), {
-          method: 'PATCH',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status }),
-        });
-        const data = await res.json().catch(() => ({}));
+        const data = await apiAdminPatchProduct(productId, { status });
         if (!data?.ok) throw new Error(data?.error || 'تأیید محصول ناموفق');
         return data.product;
       };
@@ -6625,8 +6617,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const hydrateAdminStatsFromApi = async () => {
         try {
-          const res = await fetch('/api/admin/stats', { credentials: 'include', cache: 'no-store' });
-          const json = await res.json().catch(() => ({}));
+          const json = await apiAdminStats();
           if (!json?.ok || !json.stats) return;
           try {
             if (typeof setAdminSettings === 'function') {
@@ -7980,9 +7971,8 @@ const verifyOtp = async () => {
         let cancelled = false;
         const loadProducts = async () => {
           try {
-            const res = await fetch('/api/admin/products?limit=200', { credentials: 'include' });
-            const data = await res.json().catch(() => null);
-            if (cancelled || !res.ok || !data?.ok) return;
+            const data = await apiAdminProducts(200);
+            if (cancelled || !data?.ok) return;
             const sellersList = typeof adminSellers !== 'undefined' ? adminSellers : [];
             const mapped = (data.products || []).map((p) => mapAdminProductRow(p, sellersList)).filter(Boolean);
             try { setAdminProducts(mapped); } catch (_) {}
