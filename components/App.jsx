@@ -107,6 +107,8 @@ import { buildShippingOptions as buildShippingOptionsLib, getCheckoutShippingCos
 import { isKnownCategory as isKnownCategoryLib } from '@/lib/category-known';
 import { buildCurrentPageSeoContext } from '@/lib/page-seo-context';
 import { normalizeProduct } from '@/lib/product-normalize';
+import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib } from '@/lib/seller-helpers';
+
 
 
 
@@ -6082,14 +6084,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         if (!checkoutContact.phone || !/^09\d{9}$/.test(onlyDigits(checkoutContact.phone))) errs.phone = 'موبایل معتبر (۱۱ رقم با ۰۹) الزامی است';
         if (checkoutUseNewAddress || !(addresses || []).length) {
 
-      const buildAddressLine = (addr) => {
-        const parts = [];
-        if (addr?.street?.trim()) parts.push('خیابان ' + addr.street.trim());
-        if (addr?.plaque?.trim()) parts.push('پلاک ' + addr.plaque.trim());
-        if (addr?.unit?.trim()) parts.push('واحد (زنگ) ' + addr.unit.trim());
-        if (addr?.address?.trim()) parts.push(addr.address.trim());
-        return parts.join('، ');
-      };
+      const buildAddressLine = (addr) => buildAddressLineLib(addr);
 
       if (!checkoutNewAddress.receiver?.trim()) errs.receiver = 'نام گیرنده الزامی است';
           if (!checkoutNewAddress.phone || !/^09\d{9}$/.test(onlyDigits(checkoutNewAddress.phone))) errs.receiverPhone = 'موبایل گیرنده معتبر نیست';
@@ -7801,20 +7796,7 @@ const verifyOtp = async () => {
       };
 
       /** فقط با تأیید جواز توسط ادمین فروشنده مجاز به فروش است */
-      const sellerCanSell = () => {
-      try {
-        const u = sellerUser || {};
-        const st = String(u.status || u.shopStatus || u.sellerStatus || "").toLowerCase();
-        // تعلیق/آرشیو/مسدود اولویت دارد حتی اگر canSell قدیمی در state مانده باشد
-        if (["archived", "suspended", "blocked", "banned", "rejected"].includes(st)) return false;
-        if (u.restricted === true || st === "restricted") return false;
-        if (u.licenseApproved === true || u.canSell === true) return true;
-        if (["approved", "active", "enabled", "verified"].includes(st)) return true;
-        return false;
-      } catch (_) {
-        return false;
-      }
-    }
+      const sellerCanSell = () => sellerCanSellLib(sellerUser);
 
 
 
