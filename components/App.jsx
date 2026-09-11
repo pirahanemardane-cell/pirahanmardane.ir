@@ -102,6 +102,8 @@ import { HOME_FEATURES, HOME_STATS, CAT_LABEL_MAP, POPULAR_CITIES, OWN_SELLER, S
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
 import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib, generateProductCodeFromPools, ensureProductCode as ensureProductCodeLib} from '@/lib/product-codes';
+import { normalizePath as normalizePathLib } from '@/lib/url-path';
+
 import { matchCatalogColor as matchCatalogColorLib, matchCatalogSize as matchCatalogSizeLib, matchCatalogBrand as matchCatalogBrandLib, matchCategory as matchCategoryLib } from '@/lib/catalog-match';
 import { mapProfileToSeller as mapProfileToSellerLib } from '@/lib/seller-map';
 import { mapAdminProductRow as mapAdminProductRowLib, mapAdminSellerRow as mapAdminSellerRowLib } from '@/lib/admin-row-map';
@@ -4634,10 +4636,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           const code = p?.productCode || ensureProductCode(p);
           if (typeof window === 'undefined') return;
           const path = pathForProduct(p?.name || p?.title || code || p?.id, p?.shopName || p?.sellerName || p?.brand || '');
-          const norm = (u) => {
-            try { return decodeURIComponent(String(u || '').split('?')[0]).replace(/\/+$/, '') || '/'; }
-            catch (_) { return String(u || '').split('?')[0].replace(/\/+$/, '') || '/'; }
-          };
+                // norm → @/lib/url-path
+      const norm = (u) => normalizePathLib(u);
           const cur = norm(window.location.pathname);
           const next = norm(path);
           if (cur === next) return;
