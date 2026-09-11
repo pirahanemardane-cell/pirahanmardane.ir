@@ -152,6 +152,7 @@ import {
 import { apiSellerProducts, apiCreateSellerProduct, apiPatchSellerProduct, apiDeleteSellerProduct } from '@/lib/api/seller-products';
 import { fetchCatalogProducts, putCatalogProducts, fetchCatalogCategories, putCatalogCategories, fetchCatalogTags, putCatalogTags, fetchCatalogColors, putCatalogColors, fetchCatalogSizes, putCatalogSizes, fetchCatalogBrands, putCatalogBrands, fetchCatalogAttributes, putCatalogAttributes, fetchCatalogSellers } from '@/lib/api/catalog';
 import { apiBlogList, apiBlogListAll, apiBlogDelete, apiBlogPatch, apiBlogCategoriesList, apiBlogCategoryCreate, apiBlogCategoryPatch, apiBlogCategoryDelete, apiBlogTagsList, apiBlogTagCreate, apiBlogTagPatch, apiBlogTagDelete } from '@/lib/api/blog';
+import { fetchAddresses, createAddress, patchAddress, deleteAddress } from '@/lib/api/addresses';
 import {
   slugifyFa,
   FA_PATHS,
@@ -6503,8 +6504,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const loadAddressesFromServer = async () => {
         try {
-          const res = await fetch('/api/addresses', { credentials: 'include' });
-          const data = await res.json().catch(() => ({}));
+          const data = await fetchAddresses();
           if (data?.ok && Array.isArray(data.addresses)) {
             setAddresses(data.addresses);
             /* no localStorage (strict buyer) */
@@ -6522,7 +6522,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           // حذف از سرور
           for (const a of prev) {
             if (a?.id && !nextIds.has(a.id) && !String(a.id).startsWith('addr')) {
-              await fetch('/api/addresses/' + a.id, { method: 'DELETE', credentials: 'include' });
+              await await deleteAddress(a.id);
             }
           }
 
@@ -6546,24 +6546,12 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             };
 
             if (!a.id || String(a.id).startsWith('addr')) {
-              const res = await fetch('/api/addresses', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify(payload),
-              });
-              const data = await res.json().catch(() => ({}));
+              const data = await createAddress(payload);
               if (!data?.ok) {
                 showToast?.({ message: data?.error || 'ذخیره آدرس ناموفق بود', variant: 'default', duration: 4500, position: 'top-center' });
               }
             } else {
-              const res = await fetch('/api/addresses/' + a.id, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify(payload),
-              });
-              const data = await res.json().catch(() => ({}));
+              const data = await patchAddress(a.id, payload);
               if (!data?.ok) {
                 showToast?.({ message: data?.error || 'به‌روزرسانی آدرس ناموفق بود', variant: 'default', duration: 4500, position: 'top-center' });
               }
@@ -6571,8 +6559,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           }
 
           // همگام‌سازی نهایی از سرور
-          const listRes = await fetch('/api/addresses', { credentials: 'include' });
-          const listData = await listRes.json().catch(() => ({}));
+          const listData = await fetchAddresses();
           if (listData?.ok && Array.isArray(listData.addresses)) {
             setAddresses(listData.addresses);
             /* no localStorage (strict buyer) */
