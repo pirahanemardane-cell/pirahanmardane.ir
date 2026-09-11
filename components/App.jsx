@@ -30,7 +30,7 @@ import { applyMarkdownFormat } from '@/lib/markdown-format';
 import { collectFullSiteBackupPayload, isValidFullSiteBackup, ADMIN_PRESET, FULL_BACKUP_KEYS } from '@/lib/site-backup';
 import { orderStatusColor, orderStatusLabel, unreadNotificationsCount } from '@/lib/order-status';
 import { logoForTheme, onProductImgError } from '@/lib/image-fallback';
-import { favIdsFromList, isFavoriteId, getFavEntry as getFavEntryLib, isInWishlist, removeFromWishlist, canAddToWishlist, addToWishlist, removeWishlistBulk } from '@/lib/wishlist-helpers';
+import { favIdsFromList, isFavoriteId, getFavEntry as getFavEntryLib, isInWishlist, removeFromWishlist, canAddToWishlist, addToWishlist, removeWishlistBulk, buildWishlistProducts } from '@/lib/wishlist-helpers';
 import { SESSION_TTL_MS, readSessionUser, writeSessionUser, clearSessionUser } from '@/lib/session-storage';
 import {
   GSC_STORAGE_KEY,
@@ -12304,6 +12304,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
       const sellerUnreadTickets = (sellerTickets || []).filter(t => t.unread).length;
       // sellerOrderStatusColor → @/lib/admin-status
 
+      // buildWishlistProducts → @/lib/wishlist-helpers
       const wishlistProducts = (() => {
         const pool = (typeof catalogProducts !== 'undefined' && catalogProducts?.length)
           ? catalogProducts
@@ -12313,29 +12314,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
               ...(adminProducts || []),
               ...(products || []),
             ];
-        let list = favorites.map(f => {
-          const fid = f?.product_id || f?.product?.id || f?.id || f;
-          const p = pool.find(x => x && String(x.id) === String(fid));
-          if (!p) return { missing: true, id: fid, addedAt: f?.addedAt, priceAtAdd: f?.priceAtAdd };
-          const unavailable = p.status && p.status !== 'active' && p.contentStatus !== 'approved';
-          return {
-            ...p,
-            addedAt: f?.addedAt,
-            priceAtAdd: f?.priceAtAdd,
-            missing: !!unavailable,
-          };
-        });
-        if (wishlistFilter === 'inStock') list = list.filter(p => !p.missing && p.stock !== 0);
-        if (wishlistFilter === 'outStock') list = list.filter(p => p.missing || p.stock === 0);
-        if (wishlistFilter === 'sale') list = list.filter(p => !p.missing && p.discount > 0);
-        const sorted = [...list];
-        if (wishlistSort === 'newest') sorted.sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
-        if (wishlistSort === 'oldest') sorted.sort((a, b) => (a.addedAt || 0) - (b.addedAt || 0));
-        if (wishlistSort === 'priceAsc') sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
-        if (wishlistSort === 'priceDesc') sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
-        if (wishlistSort === 'discount') sorted.sort((a, b) => (b.discount || 0) - (a.discount || 0));
-        if (wishlistSort === 'name') sorted.sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'fa'));
-        return sorted;
+        return buildWishlistProducts(favorites, pool, wishlistFilter, wishlistSort);
       })();
       const clearPlpFilters = () => {
         setPlpQuery('');
