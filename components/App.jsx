@@ -31,7 +31,7 @@ import { collectFullSiteBackupPayload, isValidFullSiteBackup, ADMIN_PRESET, FULL
 import { orderStatusColor, orderStatusLabel, unreadNotificationsCount } from '@/lib/order-status';
 import { logoForTheme, onProductImgError } from '@/lib/image-fallback';
 import { favIdsFromList, isFavoriteId, getFavEntry as getFavEntryLib, isInWishlist, removeFromWishlist, canAddToWishlist, addToWishlist, removeWishlistBulk, buildWishlistProducts } from '@/lib/wishlist-helpers';
-import { SESSION_TTL_MS, readSessionUser, writeSessionUser, clearSessionUser } from '@/lib/session-storage';
+import { SESSION_TTL_MS, readSessionUser, writeSessionUser, clearSessionUser, persistSession as persistSessionLib } from '@/lib/session-storage';
 import {
   GSC_STORAGE_KEY,
   buildGscSeed as buildGscSeedLib,
@@ -109,7 +109,7 @@ import { buildCurrentPageSeoContext } from '@/lib/page-seo-context';
 import { normalizeProduct } from '@/lib/product-normalize';
 import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
 import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
-import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi, verifyMfaApi, completeOtpRegisterApi, setAccountPasswordApi } from '@/lib/auth-session';
+import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi, verifyMfaApi, completeOtpRegisterApi, setAccountPasswordApi, mapProfileToBuyer as mapProfileToBuyerLib } from '@/lib/auth-session';
 
 
 
@@ -6672,11 +6672,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         }
       };
 
-      const persistSession = (key, u) => {
-        const withExp = { ...u, sessionExpires: Date.now() + SESSION_TTL_MS, sessionId: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}` };
-        try { localStorage.setItem(key, JSON.stringify(withExp)); } catch (_) {}
-        return withExp;
-      };
+      const persistSession = (key, u) => persistSessionLib(key, u);
 
 
       const REFUND_POLICY_TEXT = 'شرایط بازگشت وجه: در صورت لغو سفارش توسط فروشنده قبل از ارسال، مبلغ ظرف ۱ تا ۳ روز کاری به همان حساب/کارت پرداخت‌کننده برگشت داده می‌شود. هزینه ارسال (در صورت پرداخت) طبق قوانین مرجوعی بررسی می‌شود.';
@@ -7085,17 +7081,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (_) { try { window.scrollTo(0, 0); } catch (__) {} }
       };
 
-      const mapProfileToBuyer = (user, profile) => ({
-        id: user?.id || profile?.id,
-        email: user?.email || '',
-        phone: profile?.phone || '',
-        firstName: (profile?.full_name || '').split(' ')[0] || profile?.full_name || '',
-        lastName: (profile?.full_name || '').split(' ').slice(1).join(' ') || '',
-        birthDate: '',
-        gender: '',
-        createdAt: Date.now(),
-        supabase: true,
-      });
+      const mapProfileToBuyer = (user, profile) => mapProfileToBuyerLib(user, profile);
 
       // mapProfileToSeller → @/lib/seller-map
       const mapProfileToSeller = (user, profile, extra = {}) =>
