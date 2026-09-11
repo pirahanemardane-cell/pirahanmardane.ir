@@ -393,8 +393,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               path.indexOf('/amirpnl') >= 0 ||
               path.indexOf('/ashn') >= 0;
             if (isAdminPath) return; // ریدایرکت و پنل ادمین را دست نزن
-            const r = await fetchAuthMe();
-            const j = await r.json().catch(() => ({}));
+            const j = await fetchAuthMe();
             if (cancelled) return;
             if (j && j.ok && !j.user) {
               try { localStorage.removeItem('buyerUser'); } catch (_) {}
@@ -1419,7 +1418,6 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               try { sessionStorage.setItem("pm_panel", "admin"); } catch (_) {}
               // تأیید نرم سرور — فقط اگر صریحاً غیر ادمین بود بیرون (نه خطای شبکه)
               fetchAuthMe()
-                .then((r) => r.json())
                 .then((mj) => {
                   if (!mj || mj.ok === false) return;
                   if (mj.user == null && mj.profile == null) return; // شبکه/سشن موقت — local نگه دار
@@ -1492,7 +1490,6 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         try { sessionStorage.setItem("pm_panel", "seller"); } catch (_) {}
         // تأیید سشن سرور در پس‌زمینه — شکست موقت = بیرون نینداز
         fetchAuthMe()
-          .then((r) => r.json())
           .then((me) => {
             if (me?.user?.id) {
               try {
@@ -1511,7 +1508,6 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         try { setProfileTab(tab || "dashboard"); } catch (_) {}
         try { sessionStorage.setItem("pm_panel", "account"); } catch (_) {}
         fetchAuthMe()
-          .then((r) => r.json())
           .then((me) => {
             if (me?.user?.id) {
               try {
@@ -1572,7 +1568,6 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       setShowSellerPanel(false);
       try {
         fetchAuthMe()
-          .then((r) => r.json())
           .then((me) => {
             if (me?.user?.id) {
               try {
@@ -10702,7 +10697,6 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
         (async () => {
           try {
             const me = await fetchAuthMe()
-              .then((r) => r.json())
               .catch(() => ({}));
             if (cancelled) return;
             const role = String(me?.profile?.role || me?.user?.role || '').toLowerCase();
@@ -10816,8 +10810,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 } catch (_) {}
               }
               try {
-                const me = await fetchAuthMe();
-                const mj = await me.json().catch(() => ({}));
+                const mj = await fetchAuthMe();
                 // فقط وقتی سرور صریحاً کاربر دیگری با نقش غیر ادمین برگرداند
                 if (mj && mj.ok !== false && mj.user && mj.profile) {
                   const role = String(mj.profile.role || '').toLowerCase();
