@@ -153,6 +153,7 @@ import { apiSellerProducts, apiCreateSellerProduct, apiPatchSellerProduct, apiDe
 import { fetchCatalogProducts, putCatalogProducts, fetchCatalogCategories, putCatalogCategories, fetchCatalogTags, putCatalogTags, fetchCatalogColors, putCatalogColors, fetchCatalogSizes, putCatalogSizes, fetchCatalogBrands, putCatalogBrands, fetchCatalogAttributes, putCatalogAttributes, fetchCatalogSellers } from '@/lib/api/catalog';
 import { apiBlogList, apiBlogListAll, apiBlogDelete, apiBlogPatch, apiBlogCategoriesList, apiBlogCategoryCreate, apiBlogCategoryPatch, apiBlogCategoryDelete, apiBlogTagsList, apiBlogTagCreate, apiBlogTagPatch, apiBlogTagDelete } from '@/lib/api/blog';
 import { fetchAddresses, createAddress, patchAddress, deleteAddress } from '@/lib/api/addresses';
+import { fetchSiteSettings, putSiteSetting } from '@/lib/api/site-settings';
 import {
   slugifyFa,
   FA_PATHS,
@@ -340,8 +341,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const hydrateSiteSettingsFromApi = async () => {
         try {
-          const res = await fetch('/api/site-settings', { cache: 'no-store' });
-          const json = await res.json().catch(() => ({}));
+          const json = await fetchSiteSettings();
           if (!json?.ok || !json.settings) return;
           if (Array.isArray(json.settings.faqs)) {
             setSiteFaqs(json.settings.faqs);
@@ -1677,12 +1677,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         setAdminPageContent(next || {});
         try { localStorage.setItem('adminPageContent', JSON.stringify(next || {})); } catch (_) {}
         try {
-          fetch('/api/site-settings', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ key: 'pages', value: next || {} }),
-          }).catch(() => {});
+          putSiteSetting('pages', next || {}).catch(() => {});
         } catch (_) {}
       };
       const [siteFaqs, setSiteFaqs] = useStoreField(shopUiStore, 'siteFaqs');
@@ -1691,12 +1686,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         setSiteFaqs(list);
         try { localStorage.setItem('siteFaqs', JSON.stringify(list)); } catch (_) {}
         try {
-          fetch('/api/site-settings', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ key: 'faqs', value: list }),
-          }).catch(() => {});
+          putSiteSetting('faqs', list).catch(() => {});
         } catch (_) {}
       };
       const [adminSeoHubKey, setAdminSeoHubKey] = useStoreField(adminUiStore, 'adminSeoHubKey')
@@ -3934,8 +3924,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               } catch (_) {}
             }
             if (scope === 'settings' || scope === 'all') {
-              fetch('/api/site-settings', { cache: 'no-store' })
-                .then((r) => r.json())
+              fetchSiteSettings()
                 .then((j) => {
                   try {
                     window.dispatchEvent(new CustomEvent('pm:site-settings', { detail: j, ts: Date.now() }));
