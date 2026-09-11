@@ -151,6 +151,7 @@ import {
 } from '@/lib/image-webp-client';
 import { apiSellerProducts, apiCreateSellerProduct, apiPatchSellerProduct, apiDeleteSellerProduct } from '@/lib/api/seller-products';
 import { fetchCatalogProducts, putCatalogProducts, fetchCatalogCategories, putCatalogCategories, fetchCatalogTags, putCatalogTags, fetchCatalogColors, putCatalogColors, fetchCatalogSizes, putCatalogSizes, fetchCatalogBrands, putCatalogBrands, fetchCatalogAttributes, putCatalogAttributes, fetchCatalogSellers } from '@/lib/api/catalog';
+import { apiBlogList, apiBlogListAll, apiBlogDelete, apiBlogPatch, apiBlogCategoriesList, apiBlogCategoryCreate, apiBlogCategoryPatch, apiBlogCategoryDelete, apiBlogTagsList, apiBlogTagCreate, apiBlogTagPatch, apiBlogTagDelete } from '@/lib/api/blog';
 import {
   slugifyFa,
   FA_PATHS,
@@ -1114,8 +1115,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         let cancelled = false;
         (async () => {
           try {
-            const res = await fetch('/api/blog?limit=50', { cache: 'no-store' });
-            const json = await res.json().catch(() => ({}));
+            const json = await apiBlogList(50);
             const list = json?.posts || json?.items || [];
             if (cancelled || !json?.ok || !Array.isArray(list) || !list.length) return;
                         const mapped = list.map((p) => {
@@ -1189,12 +1189,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           const nextIds = new Set(arr.map((x) => String(x.id)));
           for (const p of prev) {
             if (p?.id != null && !nextIds.has(String(p.id))) {
-              const res = await fetch('/api/blog', {
-                method: 'DELETE', credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: p.id }),
-              });
-              if (!res.ok) console.error('blog post DELETE', await res.text());
+              const data = await apiBlogDelete(p.id);
+              if (data?.ok === false) console.error('blog post DELETE', data?.error || res.text());
             }
           }
           for (const p of arr) {
@@ -1204,12 +1200,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             const st = String(p.status || '');
             const oldSt = String(old.status || '');
             if (st !== oldSt || String(p.title || '') !== String(old.title || '')) {
-              const res = await fetch('/api/blog', {
-                method: 'PATCH', credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: p.id, status: st, title: p.title }),
-              });
-              if (!res.ok) console.error('blog post PATCH', await res.text());
+              const data = await apiBlogPatch({ id: p.id, status: st, title: p.title });
+              if (data?.ok === false) console.error('blog post PATCH', await res.text());
             }
           }
         } catch (e) {
@@ -2026,10 +2018,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           const nextIds = new Set(arr.map((x) => String(x.id)));
           for (const p of prev) {
             if (!nextIds.has(String(p.id))) {
-              const res = await fetch('/api/blog/categories?id=' + encodeURIComponent(String(p.id)), {
-                method: 'DELETE', credentials: 'include',
-              });
-              if (!res.ok) console.error('blog cat DELETE', await res.text());
+              const data = await apiBlogCategoryDelete(p.id);
+              if (!data?.ok) console.error('blog cat DELETE', data?.status);
             }
           }
           for (let i = 0; i < arr.length; i++) {
@@ -2045,12 +2035,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             };
             const old = prevById.get(id);
             if (!old) {
-              const res = await fetch('/api/blog/categories', {
-                method: 'POST', credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-              });
-              const data = await res.json().catch(() => ({}));
+              const data = await apiBlogCategoryCreate(payload);
               if (res.ok && data?.item?.id) arr[i] = { ...c, ...data.item, id: data.item.id };
               else if (!res.ok) console.error('blog cat POST', data);
             } else {
@@ -2061,12 +2046,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                 Number(old.sort_order ?? old.sortOrder ?? 0) !== payload.sort_order ||
                 String(old.status || '') !== String(c.status || '');
               if (changed) {
-                const res = await fetch('/api/blog/categories', {
-                  method: 'PATCH', credentials: 'include',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ id, ...payload }),
-                });
-                if (!res.ok) console.error('blog cat PATCH', await res.text());
+                const data = await apiBlogCategoryPatch({ id, ...payload });
+                if (data?.ok === false) console.error('blog cat PATCH', await res.text());
               }
             }
           }
@@ -2089,12 +2070,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           const nextIds = new Set(arr.map((x) => String(x.id)));
           for (const p of prev) {
             if (!nextIds.has(String(p.id))) {
-              const res = await fetch('/api/blog/tags', {
-                method: 'DELETE', credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: p.id }),
-              });
-              if (!res.ok) console.error('blog tag DELETE', await res.text());
+              const data = await apiBlogTagDelete(p.id);
+              if (data?.ok === false) console.error('blog tag DELETE', await res.text());
             }
           }
           for (let i = 0; i < arr.length; i++) {
@@ -2110,12 +2087,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             };
             const old = prevById.get(id);
             if (!old) {
-              const res = await fetch('/api/blog/tags', {
-                method: 'POST', credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-              });
-              const data = await res.json().catch(() => ({}));
+              const data = await apiBlogTagCreate(payload);
               if (res.ok && data?.item?.id) arr[i] = { ...c, ...data.item, id: data.item.id };
               else if (!res.ok) console.error('blog tag POST', data);
             } else {
@@ -2126,12 +2098,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                 Number(old.sort_order ?? old.sortOrder ?? 0) !== payload.sort_order ||
                 String(old.status || '') !== String(c.status || '');
               if (changed) {
-                const res = await fetch('/api/blog/tags', {
-                  method: 'PATCH', credentials: 'include',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ id, ...payload }),
-                });
-                if (!res.ok) console.error('blog tag PATCH', await res.text());
+                const data = await apiBlogTagPatch({ id, ...payload });
+                if (data?.ok === false) console.error('blog tag PATCH', await res.text());
               }
             }
           }
@@ -8659,11 +8627,11 @@ const verifyOtp = async () => {
       const hydrateAdminBlogTaxonomyFromApi = async () => {
         try {
           const [rc, rt] = await Promise.all([
-            fetch('/api/blog/categories', { credentials: 'include', cache: 'no-store' }),
-            fetch('/api/blog/tags', { credentials: 'include', cache: 'no-store' }),
+            apiBlogCategoriesList(),
+            apiBlogTagsList(),
           ]);
-          const jc = await rc.json().catch(() => ({}));
-          const jt = await rt.json().catch(() => ({}));
+          const jc = rc;
+          const jt = rt;
           if (jc?.ok && Array.isArray(jc.items)) {
             const mapped = jc.items.map((c) => ({
               ...c,
@@ -8697,8 +8665,7 @@ const verifyOtp = async () => {
 
       const hydrateBlogPostsFromApi = async () => {
         try {
-          const res = await fetch('/api/blog?all=1', { credentials: 'include', cache: 'no-store' });
-          const json = await res.json().catch(() => ({}));
+          const json = await apiBlogListAll();
           const list = json?.posts || json?.items || [];
           if (!json?.ok || !Array.isArray(list)) return;
           const mapped = list.map((p) => ({
