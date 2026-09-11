@@ -54,7 +54,7 @@ import {
   buildVariantMatrix,
 } from '@/lib/product-variants';
 import { scrollPageToTop } from '@/lib/scroll-page-to-top';
-import { HOME_FEATURES, HOME_STATS, TREND_QUERIES, CAT_LABEL_MAP, POPULAR_CITIES } from '@/lib/site-content';
+import { HOME_FEATURES, HOME_STATS, CAT_LABEL_MAP, POPULAR_CITIES } from '@/lib/site-content';
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
 import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib } from '@/lib/product-codes';
