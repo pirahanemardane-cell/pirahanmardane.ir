@@ -102,6 +102,8 @@ import { HOME_FEATURES, HOME_STATS, CAT_LABEL_MAP, POPULAR_CITIES, OWN_SELLER, S
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
 import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib } from '@/lib/product-codes';
+import { matchCatalogColor as matchCatalogColorLib, matchCatalogSize as matchCatalogSizeLib, matchCatalogBrand as matchCatalogBrandLib, matchCategory as matchCategoryLib } from '@/lib/catalog-match';
+
 import { findOpenChatConversation, conversationChannelLabel, ticketMessagesToChatUI } from '@/lib/ticket-chat';
 import { downloadBlobFile } from '@/lib/download-blob';
 import { checkSellerSeoSpam } from '@/lib/seo-spam';
@@ -8727,33 +8729,11 @@ const verifyOtp = async () => {
       const _catTags = () => (_importCatalogSnap?.tags?.length ? _importCatalogSnap.tags : (adminTags || []));
       const _catAttrs = () => (_importCatalogSnap?.attributes?.length ? _importCatalogSnap.attributes : (adminCatalogAttributes || []));
 
-      const matchCatalogColor = (name) => {
-        const n = normKey(name);
-        return _catColors().find(c => c.active !== false && (normKey(c.name) === n || normKey(c.name).includes(n) || n.includes(normKey(c.name))));
-      };
-      const matchCatalogSize = (name) => {
-        const n = normKey(name);
-        if (!n) return null;
-        const list = _catSizes().filter(s => s.active !== false);
-        let hit = list.find(s => normKey(s.name) === n);
-        if (hit) return hit;
-        const aliases = { '2xl': 'xxl', 'xxl': '2xl', 'xxx': 'xxxl', '3xl': 'xxxl', 'xs': 'xs', 'xl': 'xl' };
-        const alt = aliases[n];
-        if (alt) hit = list.find(s => normKey(s.name) === alt);
-        if (hit) return hit;
-        return list.find(s => normKey(s.name).includes(n) || n.includes(normKey(s.name))) || null;
-      };
-      const matchCatalogBrand = (name) => {
-        const n = normKey(name);
-        if (!n) return null;
-        return _catBrands().find(b => b.active !== false && (normKey(b.name) === n || normKey(b.name).includes(n) || n.includes(normKey(b.name))));
-      };
-      const matchCategory = (name) => {
-        const n = normKey(name);
-        const cats = _catCategories().filter(c => c.active !== false);
-        const hit = cats.find(c => normKey(c.name) === n || normKey(c.name).includes(n) || n.includes(normKey(c.name)));
-        return hit ? hit.name : null;
-      };
+      // match* → @/lib/catalog-match
+      const matchCatalogColor = (name) => matchCatalogColorLib(name, _catColors());
+      const matchCatalogSize = (name) => matchCatalogSizeLib(name, _catSizes());
+      const matchCatalogBrand = (name) => matchCatalogBrandLib(name, _catBrands());
+      const matchCategory = (name) => matchCategoryLib(name, _catCategories());
 
 
       /** snapshot کاتالوگ ادمین برای ایمپورت — همیشه از API تازه می‌گیرد تا فروشنده هم داده داشته باشد */
