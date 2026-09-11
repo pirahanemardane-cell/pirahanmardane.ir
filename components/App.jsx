@@ -1,4 +1,5 @@
 'use client';
+import { COMPARE_MAX, WISHLIST_MAX, PAGE_LOAD_LABELS, RT_CHANNEL_NAME, RT_KEYS } from '@/lib/app-constants';
 import { isUsableProductImage, pickProductImage, mapCatalogRow, mapServerProductToSellerUi as mapServerProductToSellerUiLib } from '@/lib/catalog-map';
 import { classifyToastVariant } from '@/lib/toast-variant';
 import { generateTicketCode } from '@/lib/ticket-code';
@@ -19,7 +20,7 @@ import { scrollPageToTop } from '@/lib/scroll-page-to-top';
 import { HOME_FEATURES, HOME_STATS, TREND_QUERIES, CAT_LABEL_MAP } from '@/lib/site-content';
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES } from '@/lib/size-guide';
-import { shopCodePrefix, normProductCode, findProductByCode } from '@/lib/product-codes';
+import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath } from '@/lib/product-codes';
 import { findOpenChatConversation, conversationChannelLabel, ticketMessagesToChatUI } from '@/lib/ticket-chat';
 import { downloadBlobFile } from '@/lib/download-blob';
 import { checkSellerSeoSpam } from '@/lib/seo-spam';
@@ -388,38 +389,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       });
       /** متن لودینگ بین صفحات — مختص همان صفحه */
       const [pageLoadingText, setPageLoadingText] = useState(null);
-      const PAGE_LOAD_LABELS = {
-        product: 'در حال بارگذاری محصول…',
-        shop: 'در حال بارگذاری فروشگاه…',
-        cart: 'در حال بارگذاری سبد خرید…',
-        checkout: 'در حال بارگذاری تسویه حساب…',
-        wishlist: 'در حال بارگذاری علاقه‌مندی‌ها…',
-        compare: 'در حال بارگذاری مقایسه…',
-        recent: 'در حال بارگذاری بازدیدهای اخیر…',
-        profile: 'در حال بارگذاری حساب کاربری…',
-        sellers: 'در حال بارگذاری فروشندگان…',
-        categories: 'در حال بارگذاری دسته‌بندی‌ها…',
-        tags: 'در حال بارگذاری برچسب‌ها…',
-        'seller-panel': 'در حال بارگذاری پنل فروشنده…',
-        'admin-panel': 'در حال بارگذاری پنل مدیریت…',
-        about: 'در حال بارگذاری درباره ما…',
-        contact: 'در حال بارگذاری تماس با ما…',
-        faq: 'در حال بارگذاری سوالات متداول…',
-        'size-guide': 'در حال بارگذاری راهنمای سایز…',
-        'become-seller': 'در حال بارگذاری فروشنده شوید…',
-        terms: 'در حال بارگذاری قوانین…',
-        returns: 'در حال بارگذاری مرجوعی…',
-        privacy: 'در حال بارگذاری حریم خصوصی…',
-        cookies: 'در حال بارگذاری کوکی‌ها…',
-        sitemap: 'در حال بارگذاری نقشه سایت…',
-        blog: 'در حال بارگذاری مجله…',
-        'blog-post': 'در حال بارگذاری مطلب…',
-        brands: 'در حال بارگذاری برندها…',
-        brand: 'در حال بارگذاری برند…',
-        campaigns: 'در حال بارگذاری کمپین‌ها…',
-        deals: 'در حال بارگذاری پیشنهادها…',
-        home: 'در حال بارگذاری…',
-      };
+      // PAGE_LOAD_LABELS → @/lib/app-constants
       const beginPageLoad = (key) => {
         try {
           const msg = PAGE_LOAD_LABELS[key] || (key ? ('در حال بارگذاری ' + key + '…') : 'در حال بارگذاری…');
@@ -474,7 +444,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const [compareOnlyDiffs, setCompareOnlyDiffs] = useStoreField(shopUiStore, 'compareOnlyDiffs');
       const [compareToast, setCompareToast] = useStoreField(shopUiStore, 'compareToast');
       const [compareReplaceOpen, setCompareReplaceOpen] = useStoreField(modalUiStore, 'compareReplaceOpen');
-      const COMPARE_MAX = 4;
+      // COMPARE_MAX → @/lib/app-constants
       const [searchOpen, setSearchOpen] = useStoreField(modalUiStore, 'searchOpen')
       const [catOpen, setCatOpen] = useStoreField(modalUiStore, 'catOpen')
       const [mobileMenuOpen, setMobileMenuOpen] = useStoreField(modalUiStore, 'mobileMenuOpen')
@@ -632,7 +602,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const [wishlistSelected, setWishlistSelected] = useStoreField(shopUiStore, 'wishlistSelected');
       const [wishlistClearConfirm, setWishlistClearConfirm] = useStoreField(shopUiStore, 'wishlistClearConfirm');
       const [favToast, setFavToast] = useStoreField(shopUiStore, 'favToast');
-      const WISHLIST_MAX = 100;
+      // WISHLIST_MAX → @/lib/app-constants
       /* بلاگ: لایک + کامنت */
       const [likedBlogs, setLikedBlogs] = useStoreField(shopUiStore, 'likedBlogs');
       const [blogComments, setBlogComments] = useStoreField(shopUiStore, 'blogComments');
@@ -4292,23 +4262,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
          - storage event بین پنجره‌ها
          - آماده برای اتصال بعدی به WebSocket / Supabase (فاز ۲)
          ═══════════════════════════════════════════════════════════ */
-      const RT_CHANNEL_NAME = 'pirahan-realtime-v1';
-      const RT_KEYS = {
-        buyerTickets: true,
-        sellerTickets: true,
-        adminTickets: true,
-        buyerOrders: true,
-        sellerOrders: true,
-        adminOrders: true,
-        sellerProducts: true,
-        adminProducts: true,
-        adminModerationQueue: true,
-        buyerNotifications: true,
-        sellerNotifications: true,
-        adminSellers: true,
-        adminBuyers: true,
-        adminCoupons: true,
-      };
+      // RT_CHANNEL_NAME / RT_KEYS → @/lib/app-constants
       const rtTabIdRef = useRef(
         (typeof crypto !== 'undefined' && crypto.randomUUID)
           ? crypto.randomUUID()
@@ -5123,28 +5077,14 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       };
 
 
-const generateProductCode = (sellerKey, productId, shopName) => {
-        const prefix = shopCodePrefix(shopName || sellerKey || 'SHOP');
+      const generateProductCode = (sellerKey, productId, shopName) => {
         const allLists = () => [...(sellerProducts || []), ...(adminProducts || []), ...(products || [])];
         const taken = new Set(
           allLists()
             .filter(p => p && p.productCode && String(p.id) !== String(productId))
             .map(p => String(p.productCode))
         );
-        let code = '';
-        for (let attempt = 0; attempt < 80; attempt++) {
-          const now = Date.now() + attempt * 97 + Math.floor(Math.random() * 999);
-          let digits = String(now % 1000000000).padStart(9, '0');
-          if (digits.length > 9) digits = digits.slice(-9);
-          code = `${prefix}${digits}`;
-          if (!taken.has(code)) return code;
-        }
-        // fallback فوق‌العاده نادر
-        code = `${prefix}${String(Date.now()).slice(-9)}`;
-        while (taken.has(code)) {
-          code = `${prefix}${String(Math.floor(Math.random() * 1e9)).padStart(9, '0')}`;
-        }
-        return code;
+        return generateProductCodeFromTaken(shopName || sellerKey || 'SHOP', productId, taken);
       };
 
       const ensureProductCode = (p, sellerKey) => {
@@ -5153,25 +5093,11 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         return generateProductCode(sellerKey || p?.sellerId || p?.seller?.id || 'OWN', p?.id, shop);
       };
 
-      const getProductPublicPath = (p) => {
-        try {
-          const code = p?.productCode || p?.product_code || '';
-          if (code) return '/product/' + encodeURIComponent(String(code));
-        } catch (_) {}
-        return pathForProduct(
-          p?.name || p?.title || p?.id,
-          p?.shopName || p?.sellerName || p?.seller?.name || p?.brand || sellerUser?.shopName || ''
-        );
-      };
-
-      const getProductPublicUrl = (p) => {
-        try {
-          const origin = typeof window !== 'undefined' ? window.location.origin : 'https://pirahanemardane.ir';
-          return origin + getProductPublicPath(p);
-        } catch (_) {
-          return 'https://pirahanemardane.ir' + getProductPublicPath(p);
-        }
-      };
+      const getProductPublicPath = (p) => getProductPublicPathByCode(p, (prod) => pathForProduct(
+        prod?.name || prod?.title || prod?.id,
+        prod?.shopName || prod?.sellerName || prod?.seller?.name || prod?.brand || sellerUser?.shopName || ''
+      ));
+      const getProductPublicUrl = (p) => getProductPublicUrlFromPath(getProductPublicPath(p));
 
       const copyTextToClipboard = async (text) => {
         try {
