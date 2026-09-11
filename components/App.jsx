@@ -110,6 +110,7 @@ import { normalizeProduct } from '@/lib/product-normalize';
 import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
 import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
 import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi, verifyMfaApi, completeOtpRegisterApi, setAccountPasswordApi, mapProfileToBuyer as mapProfileToBuyerLib } from '@/lib/auth-session';
+import { fetchSellerMe, registerSellerApi } from '@/lib/api/seller';
 
 
 
@@ -7173,8 +7174,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
           if (authMode === 'seller' || role === 'seller') {
             try {
-              const r = await fetch('/api/seller/me', { credentials: 'include', cache: 'no-store' });
-              const j = await r.json().catch(() => ({}));
+              const j = await fetchSellerMe();
               if (j?.ok && j.seller && j.seller.id) {
                 const u = persistSession(
                   'sellerUser',
@@ -7284,8 +7284,7 @@ const verifyOtp = async () => {
               return;
             }
             try {
-              const r = await fetch('/api/seller/me', { credentials: 'include', cache: 'no-store' });
-              const j = await r.json().catch(() => ({}));
+              const j = await fetchSellerMe();
               if (j?.ok && j.seller && j.seller.id) {
                 const u = persistSession(
                   'sellerUser',
@@ -7363,19 +7362,13 @@ const verifyOtp = async () => {
             let sellerFromApi = data.seller || null;
             if (!sellerFromApi || !sellerFromApi.id) {
               try {
-                const rr = await fetch('/api/seller/register', {
-                  method: 'POST',
-                  credentials: 'include',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    shop_name: authName.trim(),
-                    shopName: authName.trim(),
-                    owner_name: authLastName.trim() || authName.trim(),
-                    phone: phoneDigits,
-                  }),
+                const rj = await registerSellerApi({
+                  shop_name: authName.trim(),
+                  shopName: authName.trim(),
+                  owner_name: authLastName.trim() || authName.trim(),
+                  phone: phoneDigits,
                 });
-                const rj = await rr.json().catch(() => ({}));
-                if (rr.ok && rj?.ok && rj.seller) sellerFromApi = rj.seller;
+                if (rj?.ok && rj.seller) sellerFromApi = rj.seller;
               } catch (_) {}
             }
             if (!sellerFromApi || !sellerFromApi.id) {
@@ -10496,8 +10489,7 @@ const downloadSeoFile = (filename, content, mime) => {
 
           if (authMode === 'seller' || role === 'seller') {
             try {
-              const r = await fetch('/api/seller/me', { credentials: 'include', cache: 'no-store' });
-              const j = await r.json().catch(() => ({}));
+              const j = await fetchSellerMe();
               if (j?.ok && j.seller && j.seller.id) {
                 const u = persistSession(
                   'sellerUser',
