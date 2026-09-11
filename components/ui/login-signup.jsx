@@ -897,28 +897,30 @@ export default function LoginCardSection({ mode = 'buyer', onClose, onContact })
 
             {view === 'sms-phone' ? (
               <>
-                <div className="grid gap-2">
-                  <Label htmlFor="sms-phone" className="text-zinc-300">شماره تماس</Label>
+                <div className="grid gap-2.5">
+                  <Label htmlFor="sms-phone" className="text-zinc-200 text-sm font-medium">شماره موبایل</Label>
                   <Input
-                    id="sms-phone" className="pm-auth-field bg-zinc-950 border-zinc-800 text-center tracking-widest"
+                    id="sms-phone"
                     type="tel"
-                    style={{ color: "#fff", WebkitTextFillColor: "#fff" }}
+                    style={{ color: "#fff", WebkitTextFillColor: "#fff", caretColor: "#fff" }}
                     inputMode="numeric"
+                    autoComplete="tel"
                     dir="ltr"
                     placeholder="09xxxxxxxxx"
                     value={smsPhone}
                     onChange={(e) => setSmsPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
-                    className="bg-zinc-950 border-zinc-800 !text-white placeholder:text-zinc-500 text-center tracking-widest caret-white"
+                    className="pm-auth-field h-12 bg-zinc-950 border-zinc-700 !text-white placeholder:text-zinc-500 text-center text-lg tracking-[0.2em] caret-white rounded-xl focus-visible:ring-2 focus-visible:ring-zinc-400"
                   />
+                  <p className="text-[11px] text-zinc-500 text-center leading-relaxed">کد ۶ رقمی پیامک می‌شود · معمولاً کمتر از ۳۰ ثانیه</p>
                 </div>
                 <Button
                   type="submit"
-                  className="w-full h-10 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200"
-                  disabled={busy}
+                  className="w-full h-12 rounded-xl bg-zinc-50 text-zinc-900 hover:bg-zinc-200 text-base font-bold"
+                  disabled={busy || String(smsPhone || '').replace(/\D/g, '').length < 11}
                 >
-                  دریافت کد تأیید
+                  {busy ? 'در حال ارسال…' : 'دریافت کد تأیید'}
                 </Button>
-                <button type="button" className="text-sm text-zinc-400 hover:text-zinc-200" onClick={() => { setMsg(''); setView('signin'); }}>
+                <button type="button" className="text-sm text-zinc-400 hover:text-zinc-200 py-1" onClick={() => { setMsg(''); setView('signin'); }}>
                   بازگشت به ورود با رمز
                 </button>
               </>

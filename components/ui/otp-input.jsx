@@ -338,7 +338,7 @@ export function OTPVerification({ phone = '', length = 6, onVerified, onResend, 
                       onPaste={(e) => onPaste(e, index)}
                       onFocus={(e) => { try { e.target.select(); } catch (_) {} }}
                       aria-label={`رقم ${index + 1}`}
-                      className="pm-otp-cell w-9 h-11 sm:w-10 sm:h-12 rounded-md border border-zinc-700 text-center text-lg sm:text-xl font-semibold outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 shrink-0"
+                      className="pm-otp-cell w-10 h-12 sm:w-11 sm:h-13 rounded-lg border border-zinc-600 text-center text-xl sm:text-2xl font-bold outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400 shrink-0"
                       style={{ color: '#fff', WebkitTextFillColor: '#fff', caretColor: '#fff', backgroundColor: '#09090b' }}
                     />
                   ))}
