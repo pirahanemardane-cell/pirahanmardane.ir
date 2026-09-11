@@ -1,4 +1,17 @@
 'use client';
+import {
+  normalizeAttrMap,
+  attrsKeyPart,
+  variantKey,
+  attrsMatch,
+  getAttrDimensions,
+  cartesianAttrCombos,
+  findProductVariant,
+  getVariantPrice,
+  getVariantStock,
+  buildVariantMatrix,
+} from '@/lib/product-variants';
+import { scrollPageToTop } from '@/lib/scroll-page-to-top';
 import { HOME_FEATURES, HOME_STATS, TREND_QUERIES, CAT_LABEL_MAP } from '@/lib/site-content';
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES } from '@/lib/size-guide';
@@ -6059,108 +6072,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         setPdpSize(s);
       };
 
-      const normalizeAttrMap = (attrs) => {
-        const out = {};
-        Object.keys(attrs || {}).sort().forEach(k => {
-          const v = attrs[k];
-          if (v == null || v === '') return;
-          out[k] = Array.isArray(v) ? String(v[0] ?? '') : String(v);
-        });
-        return out;
-      };
-      const attrsKeyPart = (attrs) => {
-        const n = normalizeAttrMap(attrs);
-        return Object.keys(n).map(k => `${k}:${n[k]}`).join('|');
-      };
-      const variantKey = (color, size, attrs) => `${String(color || '').trim()}||${String(size || '').trim()}||${attrsKeyPart(attrs)}`;
-      const attrsMatch = (a, b) => {
-        const na = normalizeAttrMap(a);
-        const nb = normalizeAttrMap(b);
-        const keys = Array.from(new Set([...Object.keys(na), ...Object.keys(nb)]));
-        if (!keys.length) return true;
-        return keys.every(k => String(na[k] || '') === String(nb[k] || ''));
-      };
-      /** ابعاد ویژگی از attributes محصول یا فرم فروشنده */
-      const getAttrDimensions = (attributes, catalogAttrs) => {
-        const dims = [];
-        const cat = catalogAttrs || [];
-        cat.filter(a => a && a.active !== false).forEach(a => {
-          const raw = (attributes || {})[a.id];
-          let opts = [];
-          if (Array.isArray(raw)) opts = raw.map(String).filter(Boolean);
-          else if (raw != null && raw !== '') opts = [String(raw)];
-          if (opts.length) dims.push({ id: a.id, name: a.name, options: opts });
-        });
-        return dims;
-      };
-      const cartesianAttrCombos = (dims) => {
-        if (!dims.length) return [{}];
-        return dims.reduce((acc, dim) => {
-          const next = [];
-          acc.forEach(prev => {
-            (dim.options || []).forEach(opt => {
-              next.push({ ...prev, [dim.id]: opt });
-            });
-          });
-          return next;
-        }, [{}]);
-      };
-      const findProductVariant = (prod, colorName, size, attrs) => {
-        const list = prod?.variants;
-        if (!Array.isArray(list) || !list.length) return null;
-        const c = String(colorName || '').trim();
-        const s = String(size || '').trim();
-        const want = normalizeAttrMap(attrs);
-        let hit = list.find(v => String(v.color || '') === c && String(v.size || '') === s && attrsMatch(v.attrs || {}, want));
-        if (hit) return hit;
-        // سازگاری با واریانت‌های قدیمی فقط رنگ×سایز
-        hit = list.find(v => String(v.color || '') === c && String(v.size || '') === s && (!v.attrs || !Object.keys(v.attrs || {}).length));
-        return hit || null;
-      };
-      const getVariantPrice = (prod, colorName, size, attrs) => {
-        const v = findProductVariant(prod, colorName, size, attrs);
-        if (v && v.price != null && v.price !== '') return Number(v.price) || 0;
-        return Number(prod?.price) || 0;
-      };
-      const getVariantStock = (prod, colorName, size, attrs) => {
-        const v = findProductVariant(prod, colorName, size, attrs);
-        if (v && v.stock != null && v.stock !== '') return Number(v.stock) || 0;
-        if (prod?.stockLeft != null) return Number(prod.stockLeft) || 0;
-        return Number(prod?.stock) || 0;
-      };
-      const buildVariantMatrix = (colorNames, sizes, attrDims, basePrice, baseStock, existing = []) => {
-        const cols = (colorNames || []).filter(Boolean);
-        const szs = (sizes || []).filter(Boolean);
-        let combos = cartesianAttrCombos(attrDims || []);
-        // سقف ترکیب برای جلوگیری از هنگ
-        const maxRows = 120;
-        const total = Math.max(1, cols.length) * Math.max(1, szs.length) * combos.length;
-        if (total > maxRows) {
-          combos = combos.slice(0, Math.max(1, Math.floor(maxRows / Math.max(1, cols.length * szs.length))));
-        }
-        const map = {};
-        (existing || []).forEach(v => { map[variantKey(v.color, v.size, v.attrs)] = v; });
-        const out = [];
-        (cols.length ? cols : ['']).forEach(color => {
-          (szs.length ? szs : ['']).forEach(size => {
-            combos.forEach(attrs => {
-              const k = variantKey(color, size, attrs);
-              const prev = map[k];
-              out.push({
-                id: prev?.id || `var-${k}`,
-                color,
-                size,
-                attrs: { ...attrs },
-                price: prev?.price != null && prev.price !== '' ? Number(prev.price) : (Number(basePrice) || 0),
-                stock: prev?.stock != null && prev.stock !== '' ? Number(prev.stock) : (Number(baseStock) || 0),
-                note: prev?.note || '',
-                image: prev?.image || '',
-              });
-            });
-          });
-        });
-        return out;
-      };
+      // product variant helpers → @/lib/product-variants
       const syncFormVariants = (f) => {
         const colorNames = (adminCatalogColors || []).filter(c => (f.colorIds || []).includes(c.id)).map(c => c.name);
         const sizes = f.sizes || [];
@@ -6376,35 +6288,7 @@ const generateProductCode = (sellerKey, productId, shopName) => {
       };
 
 
-      /** اسکرول به بالای صفحه — موبایل/سافاری: behavior:instant اغلب بی‌اثر است */
-
-
-      const scrollPageToTop = () => {
-        const go = () => {
-          try {
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-          } catch (_) {
-            try { window.scrollTo(0, 0); } catch (__) {}
-          }
-          try {
-            if (document.documentElement) document.documentElement.scrollTop = 0;
-            if (document.body) document.body.scrollTop = 0;
-            const root = document.getElementById('__next') || document.getElementById('root') || document.scrollingElement;
-            if (root) root.scrollTop = 0;
-            // هر کانتینر اسکرول‌دار اصلی صفحه
-            document.querySelectorAll('[data-scroll-root], main, .panel-content-wrap').forEach((el) => {
-              try { el.scrollTop = 0; } catch (_) {}
-            });
-          } catch (_) {}
-        };
-        go();
-        try { requestAnimationFrame(() => { go(); requestAnimationFrame(go); }); } catch (_) {}
-        try { setTimeout(go, 0); } catch (_) {}
-        try { setTimeout(go, 50); } catch (_) {}
-        try { setTimeout(go, 120); } catch (_) {}
-        try { setTimeout(go, 280); } catch (_) {}
-        try { setTimeout(go, 500); } catch (_) {}
-      };
+      // scrollPageToTop → @/lib/scroll-page-to-top
 
       // جلوگیری از برگرداندن اسکرول وسط صفحه توسط مرورگر
       useEffect(() => {
