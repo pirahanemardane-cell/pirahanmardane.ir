@@ -48,7 +48,7 @@ import {
   calcCartTotals,
   toggleInList,
   TAX_RATE,
-  FREE_SHIP_THRESHOLD,, applyCartQtyDelta, removeCartLine, findCartLine } from '@/lib/cart-math';
+  FREE_SHIP_THRESHOLD, applyCartQtyDelta, removeCartLine, findCartLine } from '@/lib/cart-math';
 import {
   setOrCreateMeta,
   setCanonicalLink,
