@@ -96,7 +96,8 @@ import {
 } from '@/lib/product-variants';
 import { scrollPageToTop } from '@/lib/scroll-page-to-top';
 import { assertNoUserLinks, textContainsForbiddenLink, stripLinksForDisplay } from '@/lib/user-link-guard';
-import { HOME_FEATURES, HOME_STATS, CAT_LABEL_MAP, POPULAR_CITIES, OWN_SELLER, SELLERS, NAV_LINKS } from '@/lib/site-content';
+import { adminStatusBadge, adminStatusLabel, sellerOrderStatusColor } from '@/lib/admin-status';
+import { HOME_FEATURES, HOME_STATS, CAT_LABEL_MAP, POPULAR_CITIES, OWN_SELLER, SELLERS, NAV_LINKS, GA4_STORAGE_KEY } from '@/lib/site-content';
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
 import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib } from '@/lib/product-codes';
@@ -12297,42 +12298,11 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
       }, [adminTab, showAdminPanel]);
 
       const adminUnreadTickets = (adminTickets || []).filter(t => t.unread || t.status === 'open').length;
-      const adminStatusBadge = (status) => {
-        const map = {
-          pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-          approved: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
-          active: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
-          rejected: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
-          blocked: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
-          inactive: 'bg-primary-100 text-primary-600 dark:bg-primary-800 dark:text-white/70',
-          expired: 'bg-primary-100 text-primary-500 dark:bg-primary-800 dark:!text-white',
-          open: 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
-          closed: 'bg-primary-100 text-primary-600 dark:bg-primary-800 dark:text-white/70',
-          shipped: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
-          preparing: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-          delivered: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
-          returned: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
-          cancelled: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
-          archived: 'bg-primary-200 text-primary-600 dark:bg-primary-800 dark:text-white/70',
-        };
-        return map[status] || 'bg-primary-100 text-primary-700 dark:bg-primary-800 dark:text-white';
-      };
-      const adminStatusLabel = (s) => ({
-        pending: 'در انتظار', approved: 'تأیید‌شده', active: 'فعال', rejected: 'رد‌شده', blocked: 'مسدود', inactive: 'غیرفعال',
-        archived: 'آرشیو شده',
-        expired: 'منقضی', open: 'باز', closed: 'بسته‌شده', shipped: 'ارسال‌شده', preparing: 'آماده‌سازی',
-        delivered: 'تحویل‌شده', returned: 'مرجوعی', cancelled: 'لغو', new: 'جدید',
-      })[s] || s;
+      // adminStatusBadge → @/lib/admin-status
+      // adminStatusLabel → @/lib/admin-status
 
       const sellerUnreadTickets = (sellerTickets || []).filter(t => t.unread).length;
-      const sellerOrderStatusColor = (s) => {
-        if (s === 'delivered') return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300';
-        if (s === 'shipped') return 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300';
-        if (s === 'preparing') return 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300';
-        if (s === 'new') return 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300';
-        if (s === 'cancelled' || s === 'returned') return 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300';
-        return 'bg-primary-100 text-primary-700 dark:bg-primary-800 dark:text-white';
-      };
+      // sellerOrderStatusColor → @/lib/admin-status
 
       const wishlistProducts = (() => {
         const pool = (typeof catalogProducts !== 'undefined' && catalogProducts?.length)
