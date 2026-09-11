@@ -7530,16 +7530,11 @@ const verifyOtp = async () => {
             }
           } catch (_) {}
           if (!sellerId) return true;
-          const res = await fetch("/api/catalog/products", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
+          const data = await putCatalogProducts({
               products: arr.filter((p) => p && !p.fromServer),
               sellerId: String(sellerId),
-            }),
-          });
-          if (!res.ok) {
+            });
+          if (data?.ok === false) {
             // silent — مسیر اصلی create/update/delete است
             return true;
           }
