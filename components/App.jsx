@@ -1,5 +1,12 @@
 'use client';
 import {
+  cartItemKey,
+  calcCartTotals,
+  toggleInList,
+  TAX_RATE,
+  FREE_SHIP_THRESHOLD,
+} from '@/lib/cart-math';
+import {
   setOrCreateMeta,
   setCanonicalLink,
   upsertJsonLd,
@@ -3194,14 +3201,10 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const toggleSearchCategory = (c) => {
         if (c === 'همه') { setSearchCategories([]); return; }
-        setSearchCategories(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
+        setSearchCategories(prev => toggleInList(prev, c));
       };
-      const toggleSearchColor = (c) => {
-        setSearchColors(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
-      };
-      const toggleSearchSize = (s) => {
-        setSearchSizes(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
-      };
+      const toggleSearchColor = (c) => setSearchColors(prev => toggleInList(prev, c));
+      const toggleSearchSize = (s) => setSearchSizes(prev => toggleInList(prev, s));
       const clearAllSearchFilters = () => {
         setSearchQuery('');
         setSearchCategories([]);
@@ -3648,28 +3651,18 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         };
       }, []);
 
-      const cartCount = (Array.isArray(cart) ? cart : []).reduce((s, i) => s + (Number(i?.qty) || 0), 0);
-      const cartSubtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-      const cartListTotal = cart.reduce((s, i) => s + (i.oldPrice ? Math.round(i.oldPrice.replace?.(/[^\d]/g, '') ? Number(String(i.oldPrice).replace(/[^\d]/g, '')) : (i.price / (1 - (i.discount || 0) / 100))) : i.price) * i.qty, 0);
-      // Savings from product discounts (list vs sale)
-      const cartProductSavings = cart.reduce((s, i) => {
-        if (!i.discount && !i.oldPrice) return s;
-        const list = i.oldPrice
-          ? (typeof i.oldPrice === 'number' ? i.oldPrice : Number(String(i.oldPrice).replace(/[^\d]/g, '')) || 0)
-          : Math.round(i.price / (1 - (i.discount || 0) / 100));
-        return s + Math.max(0, list - i.price) * i.qty;
-      }, 0);
-      const couponDiscount = couponApplied
-        ? (couponApplied.percent ? Math.round(cartSubtotal * couponApplied.percent / 100) : (couponApplied.amount || 0))
-        : 0;
-      const cartAfterCoupon = Math.max(0, cartSubtotal - couponDiscount);
-      // مالیات بر ارزش افزوده ۹٪ (قابل تغییر بعداً)
-      const TAX_RATE = 0.09;
-      const cartTax = Math.round(cartAfterCoupon * TAX_RATE);
-      const cartTotal = cartAfterCoupon + cartTax;
-      const FREE_SHIP_THRESHOLD = 2000000;
-      const freeShipRemain = Math.max(0, FREE_SHIP_THRESHOLD - cartSubtotal);
-      const freeShipProgress = Math.min(100, Math.round((cartSubtotal / FREE_SHIP_THRESHOLD) * 100));
+      const {
+        cartCount,
+        cartSubtotal,
+        cartListTotal,
+        cartProductSavings,
+        couponDiscount,
+        cartAfterCoupon,
+        cartTax,
+        cartTotal,
+        freeShipRemain,
+        freeShipProgress,
+      } = calcCartTotals(cart, couponApplied);
       const cartUpsell = products.filter(p => !cart.some(c => c.id === p.id)).slice(0, 4);
 
       /** شگفت‌انگیز فقط با درخواست فروشنده + تأیید ادمین (amazing + dealEndsAt ≤۷روز). فروشنده مستقیم اضافه نمی‌کند. */
@@ -3775,7 +3768,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       }, [hasMounted, products, serverProducts, sellerProducts, adminProducts]);
 
 
-      const cartItemKey = (id, colorName, size) => `${id}::${colorName || ''}::${size || ''}`;
+      // cartItemKey → @/lib/cart-math
 
       const updateQty = (id, colorName, delta, size) => {
         const key = cartItemKey(id, colorName, size);
