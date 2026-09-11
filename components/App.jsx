@@ -101,7 +101,7 @@ import { adminStatusBadge, adminStatusLabel, sellerOrderStatusColor } from '@/li
 import { HOME_FEATURES, HOME_STATS, CAT_LABEL_MAP, POPULAR_CITIES, OWN_SELLER, SELLERS, NAV_LINKS, GA4_STORAGE_KEY } from '@/lib/site-content';
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
-import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib } from '@/lib/product-codes';
+import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib, generateProductCodeFromPools, ensureProductCode as ensureProductCodeLib} from '@/lib/product-codes';
 import { matchCatalogColor as matchCatalogColorLib, matchCatalogSize as matchCatalogSizeLib, matchCatalogBrand as matchCatalogBrandLib, matchCategory as matchCategoryLib } from '@/lib/catalog-match';
 import { mapProfileToSeller as mapProfileToSellerLib } from '@/lib/seller-map';
 import { mapAdminProductRow as mapAdminProductRowLib, mapAdminSellerRow as mapAdminSellerRowLib } from '@/lib/admin-row-map';
@@ -4473,21 +4473,22 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       };
 
 
-      const generateProductCode = (sellerKey, productId, shopName) => {
-        const allLists = () => [...(sellerProducts || []), ...(adminProducts || []), ...(products || [])];
-        const taken = new Set(
-          allLists()
-            .filter(p => p && p.productCode && String(p.id) !== String(productId))
-            .map(p => String(p.productCode))
+            // generateProductCode → @/lib/product-codes
+      const generateProductCode = (sellerKey, productId, shopName) =>
+        generateProductCodeFromPools(
+          shopName || sellerKey || 'SHOP',
+          productId,
+          [sellerProducts || [], adminProducts || [], products || []],
         );
-        return generateProductCodeFromTaken(shopName || sellerKey || 'SHOP', productId, taken);
-      };
 
-      const ensureProductCode = (p, sellerKey) => {
-        if (p?.productCode) return p.productCode;
-        const shop = p?.seller?.name || p?.shopName || sellerUser?.shopName || sellerKey || 'SHOP';
-        return generateProductCode(sellerKey || p?.sellerId || p?.seller?.id || 'OWN', p?.id, shop);
-      };
+            // ensureProductCode → @/lib/product-codes
+      const ensureProductCode = (p, sellerKey) =>
+        ensureProductCodeLib(
+          p,
+          sellerKey,
+          sellerUser?.shopName,
+          [sellerProducts || [], adminProducts || [], products || []],
+        );
 
       const getProductPublicPath = (p) => getProductPublicPathByCode(p, (prod) => pathForProduct(
         prod?.name || prod?.title || prod?.id,
