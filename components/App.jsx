@@ -1,4 +1,5 @@
 'use client';
+import { generateGiftCode as generateGiftCodeLib, nextRecentSearches, removeFromRecentSearches } from '@/lib/promo-codes';
 import {
   cartItemKey,
   calcCartTotals,
@@ -52,7 +53,7 @@ import {
   buildVariantMatrix,
 } from '@/lib/product-variants';
 import { scrollPageToTop } from '@/lib/scroll-page-to-top';
-import { HOME_FEATURES, HOME_STATS, TREND_QUERIES, CAT_LABEL_MAP } from '@/lib/site-content';
+import { HOME_FEATURES, HOME_STATS, TREND_QUERIES, CAT_LABEL_MAP, POPULAR_CITIES } from '@/lib/site-content';
 import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductBackup, PRODUCT_BACKUP_MAGIC, PRODUCT_BACKUP_SITE } from '@/lib/product-export';
 import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
 import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib } from '@/lib/product-codes';
@@ -3189,7 +3190,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         ? IRAN_CITIES.filter(c => c.includes(sellerCityInput.trim()) || c.replace(/‌/g, '').includes(sellerCityInput.trim().replace(/‌/g, ''))).slice(0, 10)
         : IRAN_CITIES.slice(0, 10);
       // نزدیک‌ترین شهرها برای حالت خالی
-      const popularCities = ['تهران', 'مشهد', 'اصفهان', 'شیراز', 'تبریز', 'کرج'];
+      const popularCities = POPULAR_CITIES;
       const topSellersRanked = (() => {
         const list = [...topSellers];
         if (topSellersTab === 'sales') return list.sort((a, b) => (b.products || 0) - (a.products || 0)).slice(0, 20);
@@ -4561,20 +4562,13 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         } catch (_) {}
       };
       const generateGiftCode = () => {
-        const existing = new Set();
+        let existing = new Set();
         try {
-          (Array.isArray(buyerGifts) ? buyerGifts : []).forEach(g => existing.add(String(g.code || '').toUpperCase()));
-          (JSON.parse(localStorage.getItem('sellerGifts') || '[]') || []).forEach(g => existing.add(String(g.code || '').toUpperCase()));
-          (JSON.parse(localStorage.getItem('adminCoupons') || '[]') || []).forEach(g => existing.add(String(g.code || '').toUpperCase()));
-          getUsedPromoCodes().forEach(c => existing.add(String(c).toUpperCase()));
+          const raw = localStorage.getItem('adminCoupons');
+          const list = raw ? JSON.parse(raw) : [];
+          (list || []).forEach((c) => { if (c && c.code) existing.add(String(c.code).toUpperCase()); });
         } catch (_) {}
-        for (let i = 0; i < 30; i++) {
-          let digits = '';
-          for (let j = 0; j < 8; j++) digits += String(Math.floor(Math.random() * 10));
-          const code = 'GIFT' + digits;
-          if (!existing.has(code)) return code;
-        }
-        return 'GIFT' + String(Date.now()).slice(-8);
+        return generateGiftCodeLib(existing);
       };
 
       const applyCoupon = async () => {
@@ -5987,17 +5981,15 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         .slice(0, 4);
 
       const pushRecentSearch = (q) => {
-        const t = (q || '').trim();
-        if (!t) return;
         setRecentSearches(prev => {
-          const next = [t, ...prev.filter(x => x !== t)].slice(0, 8);
+          const next = nextRecentSearches(prev, q, 8);
           try { localStorage.setItem('recentSearches', JSON.stringify(next)); } catch (_) {}
           return next;
         });
       };
       const removeRecentSearch = (q) => {
         setRecentSearches(prev => {
-          const next = prev.filter(x => x !== q);
+          const next = removeFromRecentSearches(prev, q);
           try { localStorage.setItem('recentSearches', JSON.stringify(next)); } catch (_) {}
           return next;
         });
