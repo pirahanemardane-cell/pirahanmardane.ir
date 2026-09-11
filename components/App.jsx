@@ -109,7 +109,7 @@ import { buildCurrentPageSeoContext } from '@/lib/page-seo-context';
 import { normalizeProduct } from '@/lib/product-normalize';
 import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
 import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
-import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi, verifyMfaApi, completeOtpRegisterApi, setAccountPasswordApi, mapProfileToBuyer as mapProfileToBuyerLib } from '@/lib/auth-session';
+import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi, loginWithPasswordApi, verifyMfaApi, completeOtpRegisterApi, setAccountPasswordApi, mapProfileToBuyer as mapProfileToBuyerLib, fetchAuthMe } from '@/lib/auth-session';
 import { fetchSellerMe, registerSellerApi } from '@/lib/api/seller';
 
 
@@ -393,7 +393,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               path.indexOf('/amirpnl') >= 0 ||
               path.indexOf('/ashn') >= 0;
             if (isAdminPath) return; // ریدایرکت و پنل ادمین را دست نزن
-            const r = await fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' });
+            const r = await fetchAuthMe();
             const j = await r.json().catch(() => ({}));
             if (cancelled) return;
             if (j && j.ok && !j.user) {
@@ -1418,7 +1418,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               setShowProfilePage(false);
               try { sessionStorage.setItem("pm_panel", "admin"); } catch (_) {}
               // تأیید نرم سرور — فقط اگر صریحاً غیر ادمین بود بیرون (نه خطای شبکه)
-              fetch("/api/auth/me", { credentials: "include", cache: "no-store" })
+              fetchAuthMe()
                 .then((r) => r.json())
                 .then((mj) => {
                   if (!mj || mj.ok === false) return;
@@ -1491,7 +1491,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         try { setAuthOpen(false); } catch (_) {}
         try { sessionStorage.setItem("pm_panel", "seller"); } catch (_) {}
         // تأیید سشن سرور در پس‌زمینه — شکست موقت = بیرون نینداز
-        fetch("/api/auth/me", { credentials: "include", cache: "no-store" })
+        fetchAuthMe()
           .then((r) => r.json())
           .then((me) => {
             if (me?.user?.id) {
@@ -1510,7 +1510,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         const tab = url.searchParams.get("tab");
         try { setProfileTab(tab || "dashboard"); } catch (_) {}
         try { sessionStorage.setItem("pm_panel", "account"); } catch (_) {}
-        fetch("/api/auth/me", { credentials: "include", cache: "no-store" })
+        fetchAuthMe()
           .then((r) => r.json())
           .then((me) => {
             if (me?.user?.id) {
@@ -1571,7 +1571,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       openProfilePageNav();
       setShowSellerPanel(false);
       try {
-        fetch("/api/auth/me", { credentials: "include", cache: "no-store" })
+        fetchAuthMe()
           .then((r) => r.json())
           .then((me) => {
             if (me?.user?.id) {
@@ -10701,7 +10701,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
 
         (async () => {
           try {
-            const me = await fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
+            const me = await fetchAuthMe()
               .then((r) => r.json())
               .catch(() => ({}));
             if (cancelled) return;
@@ -10816,7 +10816,7 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 } catch (_) {}
               }
               try {
-                const me = await fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' });
+                const me = await fetchAuthMe();
                 const mj = await me.json().catch(() => ({}));
                 // فقط وقتی سرور صریحاً کاربر دیگری با نقش غیر ادمین برگرداند
                 if (mj && mj.ok !== false && mj.user && mj.profile) {
