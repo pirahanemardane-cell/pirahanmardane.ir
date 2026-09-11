@@ -109,7 +109,7 @@ import { buildCurrentPageSeoContext } from '@/lib/page-seo-context';
 import { normalizeProduct } from '@/lib/product-normalize';
 import { buildAddressLine as buildAddressLineLib, sellerCanSell as sellerCanSellLib, findSeller as findSellerLib } from '@/lib/seller-helpers';
 import { syncFormVariants as syncFormVariantsLib } from '@/lib/form-variants';
-import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout } from '@/lib/auth-session';
+import { clearAuthLocal as clearAuthLocalLib, requestOtp, postLogout, verifyOtpApi } from '@/lib/auth-session';
 
 
 
@@ -7285,17 +7285,11 @@ const verifyOtp = async () => {
         setAuthError('');
         setAuthLoading(true);
         try {
-          const res = await fetch('/api/auth/otp/verify', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              phone: phoneDigits,
-              code,
-              role: authMode === 'seller' ? 'seller' : 'buyer',
-            }),
-          });
-          const data = await res.json();
+          const data = await verifyOtpApi(
+            phoneDigits,
+            code,
+            authMode === 'seller' ? 'seller' : 'buyer',
+          );
           if (!data.ok) {
             setAuthError(data.error || 'تأیید ناموفق بود');
             setAuthLoading(false);
