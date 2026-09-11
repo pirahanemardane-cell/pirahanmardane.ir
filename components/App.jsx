@@ -1,4 +1,5 @@
 'use client';
+import { applyMarkdownFormat } from '@/lib/markdown-format';
 import { collectFullSiteBackupPayload, isValidFullSiteBackup, ADMIN_PRESET, FULL_BACKUP_KEYS } from '@/lib/site-backup';
 import { orderStatusColor, orderStatusLabel, unreadNotificationsCount } from '@/lib/order-status';
 import { logoForTheme, onProductImgError } from '@/lib/image-fallback';
@@ -1795,42 +1796,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         if (!el) return;
         const start = el.selectionStart ?? 0;
         const end = el.selectionEnd ?? 0;
-        const val = sellerDescDraft || '';
-        const selected = val.slice(start, end);
-        let next = val;
-        let caret = end;
-        const wrap = (before, after = before) => {
-          const body = selected || 'متن';
-          next = val.slice(0, start) + before + body + after + val.slice(end);
-          caret = start + before.length + body.length + after.length;
-        };
-        if (type === 'bold') wrap('**', '**');
-        else if (type === 'italic') wrap('*', '*');
-        else if (type === 'h2') {
-          const body = selected || 'عنوان بخش';
-          const line = `## ${body}`;
-          next = val.slice(0, start) + (start > 0 && val[start-1] !== '\n' ? '\n' : '') + line + '\n' + val.slice(end);
-          caret = start + line.length + 2;
-        }
-        else if (type === 'ul') {
-          const lines = (selected || 'مورد').split('\n').map(l => l.trim() ? (l.startsWith('• ') ? l : `• ${l}`) : '• ');
-          next = val.slice(0, start) + lines.join('\n') + val.slice(end);
-          caret = start + lines.join('\n').length;
-        }
-        else if (type === 'ol') {
-          const lines = (selected || 'مورد').split('\n').map((l, i) => l.trim() ? `${i+1}. ${l.replace(/^\d+\.\s*/, '')}` : `${i+1}. `);
-          next = val.slice(0, start) + lines.join('\n') + val.slice(end);
-          caret = start + lines.join('\n').length;
-        }
-        else if (type === 'quote') {
-          const body = selected || 'نکته';
-          next = val.slice(0, start) + `> ${body}` + val.slice(end);
-          caret = start + body.length + 2;
-        }
-        else if (type === 'hr') {
-          next = val.slice(0, start) + '\n———\n' + val.slice(end);
-          caret = start + 5;
-        }
+        const { next, caret } = applyMarkdownFormat(sellerDescDraft || '', start, end, type);
         setSellerDescDraft(next);
         setSellerDescError('');
         requestAnimationFrame(() => {
