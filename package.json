@@ -9,7 +9,9 @@
     "lint": "next lint",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test e2e/smoke.spec.js",
-    "test:e2e:critical": "playwright test e2e/critical.spec.js"
+    "test:e2e:critical": "playwright test e2e/critical.spec.js",
+    "test:e2e:security": "playwright test e2e/security.spec.js",
+    "test:e2e:all-safe": "playwright test e2e/critical.spec.js e2e/security.spec.js e2e/smoke.spec.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",

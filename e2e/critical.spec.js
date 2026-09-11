@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test')
 
 const BASE = process.env.PLAYWRIGHT_BASE_URL || 'https://pirahanmardane.ir'
 
-test.describe('critical paths — pre-gateway', () => {
+test.describe('critical paths', () => {
   test('home page loads (not 5xx)', async ({ page }) => {
     const res = await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 60000 })
     expect(res).toBeTruthy()
@@ -29,25 +29,6 @@ test.describe('critical paths — pre-gateway', () => {
 
   test('catalog categories API responds', async ({ request }) => {
     const res = await request.get(BASE + '/api/catalog/categories')
-    expect(res.status()).toBeLessThan(500)
-  })
-
-  test('admin sellers API without auth is blocked (401/403)', async ({ request }) => {
-    const res = await request.get(BASE + '/api/admin/sellers')
-    expect([401, 403]).toContain(res.status())
-  })
-
-  test('admin orders API without auth is blocked (401/403)', async ({ request }) => {
-    const res = await request.get(BASE + '/api/admin/orders')
-    expect([401, 403]).toContain(res.status())
-  })
-
-  test('payment request without auth is blocked (401/403)', async ({ request }) => {
-    const res = await request.post(BASE + '/api/payments/request', {
-      data: {},
-      headers: { 'Content-Type': 'application/json' },
-    })
-    expect([401, 403, 400, 405, 429]).toContain(res.status())
     expect(res.status()).toBeLessThan(500)
   })
 })
