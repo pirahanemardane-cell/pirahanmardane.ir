@@ -130,12 +130,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
 
     // toFa/toEnDigits/onlyDigits/normalizeIranMobile → @/lib/format-digits
-    // لیست ادمین فقط روی سرور (ADMIN_PHONES). کلاینت فقط فرمت را چک می‌کند.
-    const isAdminPhone = (raw) => {
-      const p = normalizeIranMobile(raw);
-      return p.length === 11 && p.startsWith('09');
-    };
-
+    // isAdminPhone → @/lib/format-digits
         // user-link-guard → @/lib/user-link-guard
     const allSizes = ALL_SIZES;
 
