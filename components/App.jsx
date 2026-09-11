@@ -1,4 +1,6 @@
 'use client';
+import { logoForTheme, onProductImgError } from '@/lib/image-fallback';
+import { favIdsFromList, isFavoriteId, getFavEntry as getFavEntryLib } from '@/lib/wishlist-helpers';
 import { SESSION_TTL_MS, readSessionUser, writeSessionUser, clearSessionUser } from '@/lib/session-storage';
 import {
   GSC_STORAGE_KEY,
@@ -457,30 +459,8 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       useEffect(() => { setHasMounted(true); }, []);
       // تصویر شکسته/لودنشده → لوگوی تم (هدر/فوتر/favicon دست نخورده)
       useEffect(() => {
-        const logoForTheme = () => {
-          try {
-            const dark = document.documentElement.classList.contains("dark");
-            return dark ? "/blue_w_bg.webp" : "/red_w_bg.webp";
-          } catch (_) {
-            return "/red_w_bg.webp";
-          }
-        };
-        const onImgError = (e) => {
-          const el = e.target;
-          if (!el || el.tagName !== "IMG") return;
-          if (el.dataset.pmLogoFallback === "1") return;
-          if (el.closest("header, footer, .site-header, .site-footer")) return;
-          const src = el.getAttribute("src") || "";
-          if (/red_w_bg\.webp|blue_w_bg\.webp|favicon|apple-touch|icon-192|icon-512/i.test(src)) {
-            el.dataset.pmLogoFallback = "1";
-            return;
-          }
-          el.dataset.pmLogoFallback = "1";
-          el.classList.add("img-broken");
-          el.src = logoForTheme();
-        };
-        document.addEventListener("error", onImgError, true);
-        return () => document.removeEventListener("error", onImgError, true);
+        document.addEventListener("error", onProductImgError, true);
+        return () => document.removeEventListener("error", onProductImgError, true);
       }, []);
 
       // محصولات فعال از سرور (Supabase) — تا در فروشگاه دیده شوند
@@ -644,9 +624,9 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         showToast({ message: 'دیدگاه شما ثبت شد', variant: 'success', position: 'top-center' });
       };
 
-      const favIds = favorites.map(f => f.id);
-      const isFavorite = (productId) => favIds.includes(productId);
-      const getFavEntry = (productId) => favorites.find(f => f.id === productId);
+      const favIds = favIdsFromList(favorites);
+      const isFavorite = (productId) => isFavoriteId(favorites, productId);
+      const getFavEntry = (productId) => getFavEntryLib(favorites, productId);
 
       const persistFavorites = (next) => {
         try { setWishlistIds(Array.isArray(next) ? next : []); } catch (_) { /* no localStorage (strict buyer) */ }
