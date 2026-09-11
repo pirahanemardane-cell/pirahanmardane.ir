@@ -106,6 +106,8 @@ import { matchCatalogColor as matchCatalogColorLib, matchCatalogSize as matchCat
 import { mapProfileToSeller as mapProfileToSellerLib } from '@/lib/seller-map';
 import { mapAdminProductRow as mapAdminProductRowLib, mapAdminSellerRow as mapAdminSellerRowLib } from '@/lib/admin-row-map';
 import { buildRobotsTxt as buildRobotsTxtLib, buildSitemapXml as buildSitemapXmlLib, buildSitemapIndexXml as buildSitemapIndexXmlLib, buildNewsSitemapXml as buildNewsSitemapXmlLib, buildVideoSitemapXml as buildVideoSitemapXmlLib, buildLocalBusinessSchema as buildLocalBusinessSchemaLib } from '@/lib/seo-build';
+import { runSeoHealthCheck as runSeoHealthCheckLib } from '@/lib/seo-health';
+
 import { mapExternalRowToProduct as mapExternalRowToProductLib } from '@/lib/import-map';
 
 
@@ -10164,20 +10166,13 @@ const verifyOtp = async () => {
         pushLiveToast('فایل را در public/seo-redirects.json قرار دهید تا ریدایرکت سروری فعال شود', { type: 'info' });
       };
 
-      const runSeoHealthCheck = () => {
-        const s = seoCfg();
-        const issues = [];
-        if (!s.canonicalBase) issues.push('آدرس canonical پایه خالی است');
-        if (!s.siteTitle) issues.push('عنوان سایت خالی است');
-        if (!s.metaDescription || String(s.metaDescription).length < 50) issues.push('توضیحات متای سراسری کوتاه یا خالی است');
-        if (!s.organizationName) issues.push('نام سازمان برای Schema خالی است');
-        const pending = [...(sellerProducts || []), ...(adminProducts || [])].filter(p => p && (p.status === 'pending' || p.status === 'awaiting'));
-        if (pending.length) issues.push(`${pending.length} محصول در انتظار تأیید (نباید در sitemap ایندکس شوند)`);
-        const redirs = seoRedirects || [];
-        const dangling = redirs.filter(r => r.type !== '410' && !r.to);
-        if (dangling.length) issues.push(`${dangling.length} ریدایرکت بدون مقصد`);
-        return { ok: issues.length === 0, issues };
-      };
+            // runSeoHealthCheck → @/lib/seo-health
+      const runSeoHealthCheck = () =>
+        runSeoHealthCheckLib(
+          seoCfg(),
+          [...(sellerProducts || []), ...(adminProducts || [])],
+          seoRedirects || [],
+        );
 
 const downloadSeoFile = (filename, content, mime) => {
         downloadBlobFile(filename, content, mime);
