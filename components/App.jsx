@@ -5473,6 +5473,16 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         try { const _arg = arguments.length ? arguments[0] : null; const _pid = _arg && (typeof _arg === 'object' ? _arg.id : _arg); if (_pid) pushProductView(_pid); } catch (_) {}
 
         if (!p || p.id == null) return;
+        try {
+          if (!(opts && opts.silent)) {
+            trackGa4Event('view_item', {
+              item_id: String(p.id),
+              item_name: String(p.name || ''),
+              item_category: String(p.category || ''),
+              price: Number(p.price) || undefined,
+            });
+          }
+        } catch (_) {}
         try { setAwaitingDeepProduct(false); } catch (_) {}
         const silent = !!(opts && opts.silent);
         try {
@@ -6241,6 +6251,13 @@ const generateProductCode = (sellerKey, productId, shopName) => {
 
       const addToCart = (p, opts = {}) => {
         if (!p) return;
+        try {
+          trackGa4Event('add_to_cart', {
+            item_id: String(p.id),
+            item_name: String(p.name || ''),
+            quantity: Number(opts.qty) || 1,
+          });
+        } catch (_) {}
         const colorIdx = opts.colorIdx ?? selectedColors[p.id] ?? 0;
         const selectedColor = opts.selectedColor || p.colors?.[colorIdx] || p.selectedColor || { name: 'پیش‌فرض', image: p.image || p.cover_image || '/logo.webp' };
         const sizeList = (p.sizes && p.sizes.length) ? p.sizes : [];
@@ -6840,6 +6857,10 @@ const generateProductCode = (sellerKey, productId, shopName) => {
         try { localStorage.removeItem('recentSearches'); } catch (_) {}
       };
       const submitSearch = (q) => {
+        try {
+          const term = String(q != null ? q : (searchQuery || '')).trim();
+          if (term) trackGa4Event('search', { search_term: term });
+        } catch (_) {}
         const query = (q != null ? q : searchQuery).trim();
         setSearchSuggestOpen(false);
         setSearchActiveIdx(-1);
@@ -7156,6 +7177,11 @@ const generateProductCode = (sellerKey, productId, shopName) => {
           openCartPage();
           return;
         }
+        try {
+          trackGa4Event('begin_checkout', {
+            items_count: Array.isArray(cart) ? cart.length : 0,
+          });
+        } catch (_) {}
         // userOverride: بعد از لاگین همان لحظه (قبل از re-render) معتبر است
         const activeUser = opts.userOverride || user || readSessionUser('buyerUser');
         if (!activeUser) {
