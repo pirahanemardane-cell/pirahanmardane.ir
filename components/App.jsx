@@ -103,6 +103,8 @@ import { productBackupPayload, productsToCsv, productsToWooCsv, validateProductB
 import { SIZE_GUIDE_TABLE, ALL_SIZES, suggestSizeFromHeightWeight } from '@/lib/size-guide';
 import { shopCodePrefix, normProductCode, findProductByCode, generateProductCodeFromTaken, getProductPublicPathByCode, getProductPublicUrlFromPath, productSlugFromNameAndShop as productSlugFromNameAndShopLib } from '@/lib/product-codes';
 import { matchCatalogColor as matchCatalogColorLib, matchCatalogSize as matchCatalogSizeLib, matchCatalogBrand as matchCatalogBrandLib, matchCategory as matchCategoryLib } from '@/lib/catalog-match';
+import { mapProfileToSeller as mapProfileToSellerLib } from '@/lib/seller-map';
+
 
 import { findOpenChatConversation, conversationChannelLabel, ticketMessagesToChatUI } from '@/lib/ticket-chat';
 import { downloadBlobFile } from '@/lib/download-blob';
@@ -7196,33 +7198,9 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         supabase: true,
       });
 
-      const mapProfileToSeller = (user, profile, extra = {}) => {
-        const shopId = extra.id || extra.sellerId || profile?.seller_id || null;
-        return {
-          // فقط id واقعی فروشگاه از جدول sellers — نه id کاربر
-          id: shopId || null,
-          ownerId: user?.id || profile?.id || null,
-          email: user?.email || '',
-          phone: profile?.phone || extra.phone || '',
-          shopName: extra.shopName || extra.shop_name || profile?.full_name || 'فروشگاه من',
-          ownerName: extra.ownerName || profile?.full_name || '',
-          city: extra.city || '',
-          province: extra.province || '',
-          address: extra.address || '',
-          about: extra.about || '',
-          logo: extra.logoUrl || extra.logo_url || extra.logo || '',
-          banner: extra.bannerUrl || extra.banner_url || '',
-          instagram: '',
-          sheba: extra.sheba || '',
-          card: '',
-          status: extra.status || 'pending',
-          licenseApproved: extra.licenseApproved === true || extra.status === 'approved',
-          canSell: extra.canSell === true || extra.status === 'approved',
-          createdAt: Date.now(),
-          supabase: true,
-          _needsShop: !shopId,
-        };
-      };
+      // mapProfileToSeller → @/lib/seller-map
+      const mapProfileToSeller = (user, profile, extra = {}) =>
+        mapProfileToSellerLib(user, profile, extra);
 
       /** ورود فقط با OTP پیامک — ایمیل/رمز از UI حذف شده */
       const sendOtp = async () => {
