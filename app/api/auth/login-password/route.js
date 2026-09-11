@@ -162,10 +162,9 @@ export async function POST(req) {
       }
     }
 
-        // ===== MFA ادمین — موقتاً غیرفعال =====
-    const role = profile?.role || 'buyer'
-    // قبلاً: const needsMfa = role === 'admin'
-    const needsMfa = false // TODO: بعداً دوباره true کنید
+        // ===== MFA ادمین (خریدار/فروشنده با رمز: بدون MFA اضافه) =====
+    const role = String(profile?.role || 'buyer').toLowerCase()
+    const needsMfa = role === 'admin' || role === 'superadmin'
 
     if (needsMfa) {
       try {
