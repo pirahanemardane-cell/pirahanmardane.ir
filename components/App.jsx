@@ -8684,7 +8684,7 @@ const verifyOtp = async () => {
       };
       const createAdminCouponOnServer = async (coupon) => {
         try {
-          const data = await createCoupon({
+          const json = await createCoupon({
               code: coupon.code,
               type: coupon.type === 'amount' ? 'amount' : 'percent',
               value: coupon.value,
@@ -8692,9 +8692,7 @@ const verifyOtp = async () => {
               active: coupon.status !== 'inactive',
               min_cart: coupon.min_cart || 0,
               max_uses: coupon.max_uses ?? null,
-            }),
-          });
-          const json = await res.json().catch(() => ({}));
+            });
           return json?.ok ? json.coupon : null;
         } catch (_) {
           return null;
