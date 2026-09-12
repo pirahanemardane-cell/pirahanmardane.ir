@@ -4,8 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useAppApi } from '../AppApiContext';
 import Hero from '../Hero';
 import Avatar from '../ui/Avatar';
-import { Features4 } from '../ui/features-4';
-import { FeatureCardsGrid } from '../ui/grid-feature-cards';
+import { FeaturesTrust } from '../ui/features-trust';
 
 /** HomeView — code-split from App.jsx */
 export default function HomeView() {
@@ -163,9 +162,10 @@ export default function HomeView() {
               if (p >= 0.98) setHeaderRevealedAfterHero(true);
             }} />
 
-                                    <Features4
+                                                <FeaturesTrust
               items={features}
-              renderIcon={(f) => <Icon name={f.icon} size={16} />}
+              renderIcon={(f) => <Icon name={f.icon} size={18} />}
+            />}
             />
 
             {/* Categories */}
