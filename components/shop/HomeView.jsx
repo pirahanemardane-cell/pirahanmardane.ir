@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useAppApi } from '../AppApiContext';
 import Hero from '../Hero';
 import Avatar from '../ui/Avatar';
+import { FeatureCardsGrid } from '../ui/grid-feature-cards';
 
 /** HomeView — code-split from App.jsx */
 export default function HomeView() {
@@ -161,37 +162,26 @@ export default function HomeView() {
               if (p >= 0.98) setHeaderRevealedAfterHero(true);
             }} />
 
-                        {/* Trust + story — یک سکشن ترکیبی */}
-            <section className="relative z-20 py-6 sm:py-10 bg-white dark:bg-primary-950 border-b border-primary-100 dark:border-white/10">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                <div className="rounded-2xl sm:rounded-3xl border border-primary-100 dark:border-white/10 bg-gradient-to-b from-primary-50/90 to-white dark:from-primary-900 dark:to-primary-950 p-5 sm:p-8 shadow-sm">
-                  <div className="text-center max-w-2xl mx-auto">
-                    <p className="text-[11px] sm:text-xs font-bold tracking-wide text-[#FF0000] dark:text-[#13ABC4] mb-2">پیراهن مردانه</p>
-                    <h2 className="text-lg sm:text-2xl font-black text-primary-900 dark:text-white leading-snug">
-                      انتخاب دقیق‌تر، خرید مطمئن‌تر
-                    </h2>
-                    <p className="mt-2.5 sm:mt-3 text-sm sm:text-base text-primary-600 dark:text-white/75 leading-relaxed">
-                      از پیراهن رسمی تا روزمره — فروشندگان تأییدشده، قیمت شفاف، و تجربه‌ای ساده برای انتخاب سایز و رنگ مناسب شما.
-                    </p>
-                  </div>
-
-                  <div className="mt-6 sm:mt-8 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    {features.map((f, i) => (
-                      <div
-                        key={i}
-                        className="flex flex-col sm:flex-row items-center sm:items-start gap-2.5 rounded-xl sm:rounded-2xl bg-white/90 dark:bg-primary-900/80 border border-primary-100 dark:border-white/10 px-3 py-3.5 sm:px-4 sm:py-4 text-center sm:text-right shadow-sm"
-                      >
-                        <div className="w-10 h-10 rounded-full bg-primary-50 dark:bg-primary-800 text-primary-800 dark:text-[#13ABC4] flex items-center justify-center flex-shrink-0 border border-primary-100 dark:border-white/15">
-                          <Icon name={f.icon} size={18} />
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="font-bold text-xs sm:text-sm text-primary-900 dark:text-white leading-snug">{f.title}</h3>
-                          <p className="text-[11px] sm:text-xs text-primary-500 dark:text-white/70 mt-0.5 leading-snug line-clamp-2">{f.desc}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                        {/* Trust features — grid feature cards */}
+            <section className="relative z-20 py-8 sm:py-12 bg-white dark:bg-primary-950 border-b border-primary-100 dark:border-white/10">
+              <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8">
+                <div className="text-center max-w-2xl mx-auto">
+                  <p className="text-[11px] sm:text-xs font-bold tracking-wide text-[#FF0000] dark:text-[#13ABC4] mb-2">پیراهن مردانه</p>
+                  <h2 className="text-xl sm:text-3xl font-black text-primary-900 dark:text-white tracking-wide">
+                    انتخاب دقیق‌تر، خرید مطمئن‌تر
+                  </h2>
+                  <p className="mt-3 text-sm sm:text-base text-primary-600 dark:text-white/70 leading-relaxed">
+                    از پیراهن رسمی تا روزمره — فروشندگان تأییدشده، قیمت شفاف، و تجربه‌ای ساده برای انتخاب سایز و رنگ مناسب شما.
+                  </p>
                 </div>
+                <FeatureCardsGrid
+                  items={features}
+                  renderIcon={(f) => (
+                    <span className="inline-flex text-primary-800 dark:text-[#13ABC4]">
+                      <Icon name={f.icon} size={22} />
+                    </span>
+                  )}
+                />
               </div>
             </section>
 
