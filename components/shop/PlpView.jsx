@@ -191,7 +191,7 @@ export default function PlpView() {
                 <div className="flex gap-5 items-start">
                   {/* سایدبار فیلتر دسکتاپ */}
                   {plpSidebarOpen && (
-                    <aside className="hidden md:block plp-filter-aside w-56 md:w-56 lg:w-64 flex-shrink-0 sticky top-[130px] max-h-[calc(100vh-150px)] overflow-y-auto rounded-2xl bg-white/80 dark:bg-black/80 backdrop-blur-xl backdrop-saturate-150 border border-primary-100/70 dark:border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] p-4 space-y-5">
+                    <aside className="hidden md:block plp-filter-aside w-56 md:w-56 lg:w-64 flex-shrink-0 sticky top-[calc(var(--site-header-h,4.5rem)+0.75rem)] max-h-[calc(100vh-var(--site-header-h,4.5rem)-2rem)] overflow-y-auto rounded-2xl bg-white/80 dark:bg-black/80 backdrop-blur-xl backdrop-saturate-150 border border-primary-100/70 dark:border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] p-4 space-y-5">
                       <div className="flex items-center justify-between">
                         <h2 className="text-sm font-bold text-primary-900 dark:text-white">فیلترها</h2>
                         {plpActiveChipsSafe.length > 0 && (

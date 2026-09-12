@@ -1499,7 +1499,7 @@ export default function SellerPanelContent() {
                           <h3 className="text-sm font-bold text-primary-900 dark:text-white">وضعیت تیکت‌ها</h3>
                           <button type="button" onClick={() => setSellerTab('support')} className="text-xs text-apple-blue dark:text-[#018383] hover:underline">مشاهده همه</button>
                         </div>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                           {(() => {
                             const tickets = sellerTickets || [];
                             const openN = tickets.filter(t => t.status === 'open').length;
@@ -3222,7 +3222,7 @@ export default function SellerPanelContent() {
           <div className="site-modal-panel bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15 p-4 max-w-sm mx-auto rounded-2xl">
             <h3 className="text-base font-bold text-primary-900 dark:text-white mb-1">انتشار زمان‌بندی‌شده</h3>
             <p className="text-xs text-primary-500 dark:text-white/60 mb-4">تاریخ و ساعت به‌وقت ایران (تقویم شمسی)</p>
-            <div className="grid grid-cols-3 gap-2 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
               <div>
                 <label className="text-[10px] text-primary-500 block mb-1">روز</label>
                 <select

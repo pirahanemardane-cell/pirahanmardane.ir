@@ -305,7 +305,7 @@ export default function PdpView() {
 
                       {/* دسکتاپ: اعتماد + ارسال + فروشنده زیر تامبنیل */}
                       <div className="hidden lg:block mt-5 space-y-3">
-                        <div className="grid grid-cols-4 gap-2">
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                           {[
                             { icon: 'badge', t: 'ضمانت اصالت' },
                             { icon: 'refresh', t: '۷ روز بازگشت' },

@@ -518,7 +518,7 @@ export default function CheckoutView() {
                               </div>
                             );
                           })()}
-                          <div className="grid grid-cols-3 gap-2 pt-1">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
                             {[{ icon: 'shield', t: 'پرداخت امن' }, { icon: 'refresh', t: '۷ روز بازگشت' }, { icon: 'badge', t: 'ضمانت اصالت' }].map((x) => (
                               <div key={x.t} className="flex flex-col items-center gap-1.5 text-center">
                                 <span className="trust-icon-wrap inline-flex items-center justify-center w-9 h-9 rounded-full bg-primary-100 dark:bg-primary-800 border border-primary-200 dark:border-white/30">
