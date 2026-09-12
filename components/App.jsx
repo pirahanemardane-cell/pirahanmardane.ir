@@ -162,7 +162,6 @@ import { fetchCampaigns, saveCampaign } from '@/lib/api/campaigns';
 import { postSeoRedirects, postIndexNow } from '@/lib/api/seo';
 import { fetchSellerFollows, toggleSellerFollow } from '@/lib/api/seller-follows';
 import { fetchNotifications, postRecentView, trackOrder } from '@/lib/api/misc';
-import { fetchTickets } from '@/lib/api/tickets';
 import {
   slugifyFa,
   FA_PATHS,
@@ -3725,7 +3724,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               try { window.dispatchEvent(new Event('admin-products-refetch')); } catch (_) {}
             }
             if (scope === 'orders' || scope === 'all') {
-              fetchOrdersList()
+              apiGetOrders()
                 .then((j) => {
                   const list = j?.orders || j?.data;
                   if (Array.isArray(list)) {
@@ -3853,7 +3852,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                 .catch(() => {});
             }
             if (scope === 'tickets' || scope === 'all') {
-              fetchTickets()
+              apiTickets()
                 .then((j) => {
                   const list = j?.tickets || j?.data;
                   if (Array.isArray(list)) {
@@ -7294,7 +7293,7 @@ const verifyOtp = async () => {
             }
           } catch (_) {}
           try {
-            const j = await fetchTickets();
+            const j = await apiTickets();
             if (!cancelled && j?.ok && Array.isArray(j.tickets) && typeof setBuyerTickets === "function") {
               setBuyerTickets(j.tickets);
             }
