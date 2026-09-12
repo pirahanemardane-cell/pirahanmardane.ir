@@ -5513,6 +5513,7 @@ img, video, canvas, svg {
 }
 
 /* === hero-accent-word light/dark (forced) === */
+/* لایت: بک‌گراند قرمز + متن سفید */
 html:not(.dark) .hero-accent-word {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
@@ -5520,12 +5521,14 @@ html:not(.dark) .hero-accent-word {
   border-color: #FF0000 !important;
   opacity: 1 !important;
 }
+/* دارک: بک‌گراند فیروزه‌ای + متن سفید */
 html.dark .hero-accent-word {
-  color: #0A0A0A !important;
-  -webkit-text-fill-color: #0A0A0A !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   background-color: #13ABC4 !important;
   border-color: #13ABC4 !important;
   opacity: 1 !important;
 }
 /* === end hero-accent-word forced === */
+
 
