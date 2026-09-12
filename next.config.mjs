@@ -28,7 +28,7 @@ const nextConfig = {
     // Keep using native <img> tags exactly as before — no next/image forced conversion
     unoptimized: true,
   },
-  async headers() {
+    async headers() {
     return [
       {
         source: '/:path*',
@@ -59,7 +59,6 @@ const nextConfig = {
               "upgrade-insecure-requests",
             ].join('; '),
           },
-          // Full noindex until soft-launch ends
           { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
         ],
       },
@@ -81,7 +80,6 @@ const nextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
-      // Stage24-cache
       {
         source: '/_next/static/:path*',
         headers: [
@@ -122,7 +120,9 @@ const nextConfig = {
         source: '/:path*.woff2',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-      // Public catalog API — short cache, stale-while-revalidate
+        ],
+      },
+      // Public catalog API — short cache
       {
         source: '/api/catalog/:path*',
         headers: [
@@ -141,10 +141,6 @@ const nextConfig = {
           { key: 'Cache-Control', value: 'public, s-maxage=60, stale-while-revalidate=300' },
         ],
       },
-
-        ],
-      },
-
     ];
   },
 };
