@@ -1,4 +1,5 @@
 import './globals.css';
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 const SITE_URL = 'https://pirahanmardane.ir';
 const SITE_NAME = 'پیراهن مردانه';
@@ -109,7 +110,7 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body>{children}</body>
+      <body><ErrorBoundary>{children}</ErrorBoundary></body>
     </html>
   );
 }

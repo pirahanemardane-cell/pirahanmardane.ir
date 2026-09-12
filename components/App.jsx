@@ -156,6 +156,7 @@ import { fetchAddresses, createAddress, patchAddress, deleteAddress } from '@/li
 import { fetchSiteSettings, putSiteSetting } from '@/lib/api/site-settings';
 import { fetchCouponByCode, fetchCouponsAdmin, createCoupon } from '@/lib/api/coupons';
 import { apiAdminProducts, apiAdminOrders, apiAdminSellers, apiAdminStats, apiAdminPatchProduct } from '@/lib/api/admin';
+import { downloadServerBackup, restoreServerBackup, fetchAdminErrors } from '@/lib/api/admin-ops';
 import { fetchShippingMethods, postShippingMethods } from '@/lib/api/shipping';
 import { addWishlist, removeWishlist } from '@/lib/api/wishlist';
 import { fetchCampaigns, saveCampaign } from '@/lib/api/campaigns';
@@ -8161,6 +8162,42 @@ const verifyOtp = async () => {
 
       // productsToCsv/Woo/validate → @/lib/product-export
 
+      
+      const runServerBackupDownload = async () => {
+        try {
+          const { res, json } = await downloadServerBackup();
+          if (!res.ok || !json?.ok || !json.backup) {
+            if (typeof showToast === 'function') showToast({ message: json?.error || 'بکاپ سرور ناموفق', variant: 'error' });
+            return;
+          }
+          const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+          const blob = new Blob([JSON.stringify(json.backup, null, 2)], { type: 'application/json;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `server-backup-${stamp}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+          if (typeof showToast === 'function') showToast({ message: 'بکاپ سرور دانلود شد', variant: 'success' });
+        } catch (e) {
+          if (typeof showToast === 'function') showToast({ message: String(e?.message || e), variant: 'error' });
+        }
+      };
+
+      const loadAdminErrorLogs = async () => {
+        try {
+          const json = await fetchAdminErrors(50);
+          if (!json?.ok) {
+            if (typeof showToast === 'function') showToast({ message: json?.error || 'خطا در دریافت لاگ', variant: 'error' });
+            return [];
+          }
+          return Array.isArray(json.items) ? json.items : [];
+        } catch (_) {
+          return [];
+        }
+      };
+
+
       const backupAdminProducts = (fmt = 'json') => {
         const list = adminProducts || [];
         if (!list.length) { showToast({ message: 'محصولی برای بک‌آپ نیست', variant: 'error', duration: 4500, position: 'top-center' }); return; }
@@ -9035,7 +9072,7 @@ const verifyOtp = async () => {
                 <p className="text-xs font-semibold text-primary-600 dark:!text-white/90 px-3 pt-2.5 pb-1.5">پیش‌نمایش شبکه اجتماعی</p>
                 <div className="aspect-[1.91/1] max-h-28 bg-primary-100 dark:bg-[#1A1C20] flex flex-col items-center justify-center gap-1.5 overflow-hidden border-y border-primary-100 dark:border-white/15">
                   {ogImage || hasImage ? (
-                    <img src={ogImage || undefined} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    <img loading="lazy" decoding="async" src={ogImage || undefined} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                   ) : (
                     <>
                       <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary-200 dark:bg-primary-700 border border-primary-300 dark:border-white/30">
@@ -9202,7 +9239,7 @@ const verifyOtp = async () => {
                 <p className="text-xs font-semibold text-primary-600 dark:!text-white/90 px-3 pt-2.5 pb-1.5">پیش‌نمایش شبکه اجتماعی</p>
                 <div className="aspect-[1.91/1] max-h-28 bg-primary-100 dark:bg-[#1A1C20] flex items-center justify-center overflow-hidden border-y border-primary-100 dark:border-white/15">
                   {(ogImage || hasImage) ? (
-                    <img src={ogImage || undefined} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    <img loading="lazy" decoding="async" src={ogImage || undefined} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                   ) : (
                     <span className="text-xs text-primary-400 dark:text-white/50 flex flex-col items-center gap-1"><Icon name="image" size={22} /> بدون تصویر OG</span>
                   )}
@@ -9275,7 +9312,7 @@ const verifyOtp = async () => {
               <p className="text-xs font-semibold text-primary-600 dark:!text-white/90 px-3 pt-2.5 pb-1.5">پیش‌نمایش شبکه اجتماعی</p>
               <div className="aspect-[1.91/1] max-h-28 bg-primary-100 dark:bg-[#1A1C20] flex flex-col items-center justify-center gap-1.5 overflow-hidden border-y border-primary-100 dark:border-white/15">
                 {ogImage || hasImage ? (
-                  <img src={ogImage || undefined} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  <img loading="lazy" decoding="async" src={ogImage || undefined} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                 ) : (
                   <>
                     <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary-200 dark:bg-primary-700 border border-primary-300 dark:border-white/30">
@@ -9378,7 +9415,7 @@ const verifyOtp = async () => {
               <div className="flex flex-wrap items-start gap-3">
                 <div className="w-28 h-28 rounded-xl border border-primary-200 dark:border-white/15 bg-primary-100 dark:bg-primary-900 overflow-hidden flex items-center justify-center flex-shrink-0">
                   {ogImage ? (
-                    <img src={ogImage} alt={imageAlt || ''} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    <img loading="lazy" decoding="async" src={ogImage} alt={imageAlt || ''} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                   ) : (
                     <span className="text-[10px] text-primary-400 text-center px-1">بدون تصویر</span>
                   )}
@@ -12590,6 +12627,8 @@ const params = new URLSearchParams(window.location.search);
         authStep,
         authTermsAccepted,
         backupAdminProducts,
+        runServerBackupDownload,
+        loadAdminErrorLogs,
         backupDestPath,
         backupSellerProducts,
         blankShippingMethod,
@@ -13883,7 +13922,7 @@ const params = new URLSearchParams(window.location.search);
                           </div>
                           <div className="col-span-3">
                             <button type="button" onClick={() => { setMegaOpen(null); try { openStaticPage('deals'); } catch (_) {} }} className="block w-full h-full min-h-[220px] rounded-2xl overflow-hidden relative group text-right isolate ring-1 ring-black/5 dark:ring-white/10">
-                              <img
+                              <img loading="lazy" decoding="async"
                                 src={(() => { try { const c = getPageCms && getPageCms('deals'); return (c && (c.image || c.banner || c.cover)) || '/logo.svg'; } catch (_) { return '/logo.svg'; } })()}
                                 alt="پیشنهاد ویژه"
                                 className="absolute inset-0 w-full h-full object-cover group-hover:opacity-95 transition duration-700 rounded-2xl"
@@ -13951,7 +13990,7 @@ const params = new URLSearchParams(window.location.search);
               <div className="flex items-center gap-1.5 sm:gap-2 flex-row w-full">
                 {/* Logo — right side in RTL */}
                 <a href="#" onClick={(e) => { e.preventDefault(); setActiveSellerId(null); setShowSellersList(false); setShowPLP(false); setShowCartPage(false); setShowWishlistPage(false); setShowComparePage(false); setShowProfilePage(false); setShowSellerPanel(false); setShowAdminPanel(false); setMobileMenuOpen(false); scrollPageToTop(); }} className="flex items-center flex-shrink-0 order-1" aria-label="پیراهن مردانه — خانه">
-                  <img src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"} alt="پیراهن مردانه" className="site-logo-img h-8 sm:h-10 md:h-11 w-auto max-w-[148px] sm:max-w-[180px] md:max-w-[200px] object-contain object-right" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/blue_t_bg.webp'; }} />
+                  <img loading="lazy" decoding="async" src={dark ? "/blue_t_bg.webp" : "/red_t_bg.webp"} alt="پیراهن مردانه" className="site-logo-img h-8 sm:h-10 md:h-11 w-auto max-w-[148px] sm:max-w-[180px] md:max-w-[200px] object-contain object-right" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/blue_t_bg.webp'; }} />
                 </a>
 
                 {/* Search box with category tab — desktop */}
@@ -14178,7 +14217,7 @@ const params = new URLSearchParams(window.location.search);
                           محصولی یافت نشد
                           <button onClick={() => setSearchQuery('')} className="block mx-auto mt-2 text-primary-700 dark:text-[#13ABC4] underline text-xs">پاک کردن</button>
                         </div>
-                      ) : filteredProducts.map(p => {
+                      ) : filteredProducts.slice(0, 48).map(p => {
                         const cIdx = selectedColors[p.id] ?? 0;
                         const col = (p.colors && p.colors[cIdx]) || (p.colors && p.colors[0]) || { name: '', image: p.image || p.cover_image || '/logo.webp' };
                         const seller = p.seller || OWN_SELLER;
@@ -14963,13 +15002,13 @@ const params = new URLSearchParams(window.location.search);
                       {/* تصویر */}
                       <div className="relative">
                         <div className="aspect-[4/5] sm:aspect-square rounded-2xl overflow-hidden bg-[#f0f0f2] dark:bg-primary-900">
-                          <img src={qMain} alt={qp.name} className="w-full h-full object-cover" draggable={false} />
+                          <img loading="lazy" decoding="async" src={qMain} alt={qp.name} className="w-full h-full object-cover" draggable={false} />
                         </div>
                         {qImgs.length > 1 && (
                           <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar">
                             {qImgs.map((img, i) => (
                               <button key={i} type="button" onClick={() => setQuickGalleryIdx(i)} className={`flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition ${quickGalleryIdx === i ? 'border-apple-blue' : 'border-transparent opacity-70'}`}>
-                                <img src={img} alt="" className="w-full h-full object-cover" />
+                                <img loading="lazy" decoding="async" src={img} alt="" className="w-full h-full object-cover" />
                               </button>
                             ))}
                           </div>
