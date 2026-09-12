@@ -8765,9 +8765,7 @@ const verifyOtp = async () => {
               host: base.replace(/^https?:\/\//, ''),
               key: s.indexNowKey,
               urlList: urls,
-            }),
-          });
-          const data = await res.json().catch(() => ({}));
+            });
           if (data.dryRun) {
             showToast({ message: `IndexNow dry-run: ${urls.length} آدرس (برای ارسال واقعی INDEXNOW_KEY در env)`, variant: 'success', duration: 4500, position: 'top-center' });
           } else if (data.ok) {
