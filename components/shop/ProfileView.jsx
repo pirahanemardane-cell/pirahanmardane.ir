@@ -373,7 +373,7 @@ export default function ProfileView() {
                       src={user.avatarUrl || user.avatar_url || user.image || "/default-avatar.svg"}
                       alt=""
                       className="w-full h-full object-cover"
-                      onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
+                      onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
                     />
                   </div>
                   <div>
@@ -473,7 +473,7 @@ export default function ProfileView() {
                           <div className="space-y-2">
                             {(orders || []).slice(0, 3).map(o => (
                               <button key={o.id} type="button" onClick={() => { setProfileTab('orders'); setOrderDetailId(o.id); }} className="w-full flex items-center gap-3 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 hover:border-apple-blue/40 transition text-right">
-                                <img src={(o.items && o.items[0]?.image) || '/logo.webp'} alt="" className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
+                                <img src={(o.items && o.items[0]?.image) || '/logo.webp'} alt="" className="w-12 h-12 rounded-lg object-cover flex-shrink-0"  loading="lazy" decoding="async" />
                                 <div className="flex-1 min-w-0">
                                   <p className="text-xs font-medium text-primary-900 dark:text-white truncate">{o.order_number || o.id}</p>
                                   <p className="text-xs text-primary-500 dark:!text-white">{o.date} · {toFa((o.items || []).reduce((s,i)=>s+(i.qty||0),0))} کالا · {formatPrice?.(o.total) || o.total}</p>
@@ -493,7 +493,7 @@ export default function ProfileView() {
                           <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1 justify-start" dir="rtl">
                             {recentlyViewed.slice(0, 12).map(p => (
                               <button key={p.id} type="button" onClick={() => { closeProfilePage(); openPDP(p); }} className="flex-shrink-0 w-28 text-right">
-                                <img src={p.colors?.[0]?.image || p.image} alt={p.name} className="w-28 h-28 rounded-xl object-cover border border-primary-100 dark:border-white/10" />
+                                <img src={p.colors?.[0]?.image || p.image} alt={p.name} className="w-28 h-28 rounded-xl object-cover border border-primary-100 dark:border-white/10"  loading="lazy" decoding="async" />
                                 <p className="text-xs mt-1.5 line-clamp-2 text-primary-800 dark:text-white">{p.name}</p>
                                 <p className="text-xs font-bold text-primary-700 dark:text-white/80">{p.priceText} ت</p>
                               </button>
@@ -545,7 +545,7 @@ export default function ProfileView() {
                                   <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${orderStatusColor(o.status)}`}>{o.statusLabel}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  {(o.items || []).slice(0, 3).map((it, i) => (<img key={i} src={it.image || '/logo.webp'} alt="" className="w-10 h-10 rounded-lg object-cover border border-primary-100 dark:border-white/10" />))}
+                                  {(o.items || []).slice(0, 3).map((it, i) => (<img key={i} src={it.image || '/logo.webp'} alt="" className="w-10 h-10 rounded-lg object-cover border border-primary-100 dark:border-white/10"  loading="lazy" decoding="async" />))}
                                   <div className="flex-1" />
                                   <p className="text-sm font-bold text-primary-900 dark:text-white">{toFa(Number(o.total || 0).toLocaleString())} <span className="text-xs font-normal text-primary-500">تومان</span></p>
                                 </div>
@@ -610,7 +610,7 @@ export default function ProfileView() {
                           <div className="space-y-3">
                             {items.map((it, i) => (
                               <div key={i} className="flex gap-3">
-                                <img src={it.image || it.image_url || "/logo.webp"} alt="" className="w-16 h-16 rounded-xl object-cover border border-primary-100 dark:border-white/10" />
+                                <img src={it.image || it.image_url || "/logo.webp"} alt="" className="w-16 h-16 rounded-xl object-cover border border-primary-100 dark:border-white/10"  loading="lazy" decoding="async" />
                                 <div className="flex-1 min-w-0">
                                   <p className="text-xs font-medium text-primary-900 dark:text-white line-clamp-2">{it.name}</p>
                                   <p className="text-xs text-primary-500 dark:!text-white mt-0.5">{it.color || it.color_name || '—'} · سایز {it.size || '—'} · {toFa(it.qty || 1)} عدد</p>
@@ -1021,7 +1021,7 @@ export default function ProfileView() {
                                     {p.missing ? (
                                       <div className="w-16 h-20 rounded-lg bg-primary-200/50 dark:bg-primary-800 flex items-center justify-center text-xs text-primary-500">حذف شده</div>
                                     ) : (
-                                      <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) => { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
+                                      <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
                                     )}
                                   </button>
                                   <div className="flex-1 min-w-0 text-right">
@@ -1086,7 +1086,7 @@ export default function ProfileView() {
                           {compare.map(p => (
                             <div key={p.id} className="flex gap-3 p-3 rounded-xl border border-primary-100 dark:border-white/10 bg-primary-50/40 dark:bg-primary-900/30">
                               <button type="button" onClick={() => { closeProfilePage(); openPDP(p); }} className="flex-shrink-0">
-                                <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) => { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
+                                <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
                               </button>
                               <div className="flex-1 min-w-0 text-right">
                                 <button type="button" onClick={() => { closeProfilePage(); openPDP(p); }} className="w-full text-right">
@@ -1118,7 +1118,7 @@ export default function ProfileView() {
                         <div className="space-y-3">
                           {(recentlyViewed || []).map(p => (
                             <button key={p.id} type="button" onClick={() => { closeProfilePage(); openPDP(p); }} className="w-full flex gap-3 p-3 rounded-xl border border-primary-100 dark:border-white/10 bg-primary-50/40 dark:bg-primary-900/30 text-right">
-                              <img src={p.colors?.[0]?.image || p.image} alt="" className="w-16 h-20 object-cover rounded-lg flex-shrink-0" />
+                              <img src={p.colors?.[0]?.image || p.image} alt="" className="w-16 h-20 object-cover rounded-lg flex-shrink-0"  loading="lazy" decoding="async" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-xs font-medium text-primary-900 dark:text-white line-clamp-2">{p.name}</p>
                                 <p className="text-xs font-bold mt-1 text-primary-900 dark:text-white">{p.priceText} تومان</p>
@@ -1141,7 +1141,7 @@ export default function ProfileView() {
                         <div className="space-y-3">
                           {cart.map((item, idx) => (
                             <div key={idx} className="flex gap-3 p-3 rounded-xl border border-primary-100 dark:border-white/10 bg-primary-50/40 dark:bg-primary-900/30">
-                              <img src={item.selectedColor?.image || item.image} alt="" className="w-16 h-20 object-cover rounded-lg flex-shrink-0" />
+                              <img src={item.selectedColor?.image || item.image} alt="" className="w-16 h-20 object-cover rounded-lg flex-shrink-0"  loading="lazy" decoding="async" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-xs font-medium text-primary-900 dark:text-white line-clamp-2">{item.name}</p>
                                 <p className="text-xs text-primary-500 mt-0.5">{item.selectedColor?.name}{item.size ? ` · ${item.size}` : ''}</p>

@@ -143,7 +143,7 @@ export default function PlpView() {
                 {/* هدر دسته / برچسب با تصویر شاخص */}
                 {(activePlpCategorySafe?.image || activePlpTagSafe?.image) && (
                   <div className="mb-4 rounded-2xl overflow-hidden border border-primary-100 dark:border-white/10 relative h-36 sm:h-48">
-                    <img src={activePlpTagSafe?.image || activePlpCategorySafe?.image} alt="" className="w-full h-full object-cover" />
+                    <img src={activePlpTagSafe?.image || activePlpCategorySafe?.image} alt="" className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute bottom-3 right-3 left-3">
                       <h1 className="text-xl sm:text-2xl font-bold text-white drop-shadow">{plpH1Safe}</h1>
@@ -360,7 +360,7 @@ export default function PlpView() {
                           {plpVisibleProductsSafe.map(p => (
                               <div key={p.id} className="flex gap-3 bg-white dark:bg-black rounded-xl border border-primary-100 dark:border-white/15 p-3 hover:shadow-md transition">
                                 <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 rounded-lg overflow-hidden bg-primary-50 dark:bg-primary-950">
-                                  <img src={p.colors?.[0]?.image} alt="" className="w-full h-full object-cover" />
+                                  <img src={p.colors?.[0]?.image} alt="" className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                                   {p.discount ? (
                                     <span className="absolute top-1 right-1 bg-apple-blue text-white text-xs font-bold px-1.5 py-0.5 rounded text-right">{toFa(p.discount)}٪</span>
                                   ) : null}

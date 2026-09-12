@@ -160,7 +160,7 @@ function AdminMediaTab({ showToast }) {
           {items.map((it) => (
             <div key={it.id} className="rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 overflow-hidden flex flex-col">
               <div className="aspect-square bg-primary-50 dark:bg-primary-950 relative">
-                <img src={it.url} alt="" className="w-full h-full object-cover" onError={(e) => { try { e.currentTarget.style.opacity = '0.3'; } catch (_) {} }} />
+                <img src={it.url} alt="" className="w-full h-full object-cover" onError={(e) = loading="lazy" decoding="async"> { try { e.currentTarget.style.opacity = '0.3'; } catch (_) {} }} />
               </div>
               <div className="p-2 space-y-1 text-right">
                 <p className="text-[11px] font-medium text-primary-900 dark:text-white truncate">{it.ownerName}</p>
@@ -1459,7 +1459,7 @@ export default function AdminPanelContent() {
               <button type="button" onClick={()=>setAdminSellerDetailId(s.id)} className="flex-1 text-right min-w-0">
                <div className="flex items-start gap-3">
                 {s.logo ? (
-                 <img src={s.logo} alt="" className="w-12 h-12 rounded-xl object-cover border border-primary-100 dark:border-white/10 flex-shrink-0" onError={(e)=>{e.currentTarget.style.display='none'}} />
+                 <img src={s.logo} alt="" className="w-12 h-12 rounded-xl object-cover border border-primary-100 dark:border-white/10 flex-shrink-0" onError={(e)= loading="lazy" decoding="async">{e.currentTarget.style.display='none'}} />
                 ) : (
                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-800 flex items-center justify-center text-sm font-bold text-primary-500 flex-shrink-0">{(s.shopName||'ف').slice(0,1)}</div>
                 )}
@@ -1608,7 +1608,7 @@ export default function AdminPanelContent() {
                <p className="text-xs text-primary-500">پروفایل · {logoSt === 'pending' || pendLogo ? 'در انتظار تأیید' : logoSt === 'approved' ? 'منتشر شده' : '—'}</p>
                <div className="w-20 h-20 rounded-full overflow-visible border border-primary-200 bg-primary-50 flex items-center justify-center">
                 {(pendLogo || pubLogo) ? (
-                 <img src={pendLogo || pubLogo} alt="" className="w-full h-full object-cover" onError={(e) => { try { e.currentTarget.removeAttribute('src'); } catch (_) {} }} />
+                 <img src={pendLogo || pubLogo} alt="" className="w-full h-full object-cover" onError={(e) = loading="lazy" decoding="async"> { try { e.currentTarget.removeAttribute('src'); } catch (_) {} }} />
                 ) : <span className="text-[11px] text-primary-400">ندارد</span>}
                </div>
                {(logoSt === 'pending' || pendLogo) ? (
@@ -1622,7 +1622,7 @@ export default function AdminPanelContent() {
                <p className="text-xs text-primary-500">کاور · {bannerSt === 'pending' || pendBanner ? 'در انتظار تأیید' : bannerSt === 'approved' ? 'منتشر شده' : '—'}</p>
                <div className="w-full h-20 rounded-xl overflow-visible border border-primary-200 bg-primary-50 flex items-center justify-center">
                 {(pendBanner || pubBanner) ? (
-                 <img src={pendBanner || pubBanner} alt="" className="w-full h-full object-cover" onError={(e) => { try { e.currentTarget.removeAttribute('src'); } catch (_) {} }} />
+                 <img src={pendBanner || pubBanner} alt="" className="w-full h-full object-cover" onError={(e) = loading="lazy" decoding="async"> { try { e.currentTarget.removeAttribute('src'); } catch (_) {} }} />
                 ) : <span className="text-[11px] text-primary-400">ندارد</span>}
                </div>
                {(bannerSt === 'pending' || pendBanner) ? (
@@ -1680,7 +1680,7 @@ export default function AdminPanelContent() {
                 src={String((p.image || (Array.isArray(p.images) && p.images[0]) || '/logo.webp'))}
                 alt=""
                 className="w-16 h-20 object-cover rounded-lg flex-shrink-0 bg-primary-50"
-                onError={(e) => { try { e.currentTarget.src = '/logo.webp'; } catch (_) {} }}
+                onError={(e) = loading="lazy" decoding="async"> { try { e.currentTarget.src = '/logo.webp'; } catch (_) {} }}
                />
                <div className="flex-1 min-w-0 text-right">
                 <p className="text-sm font-medium text-primary-900 dark:text-white truncate">{String(p.name || p.title || 'محصول')}</p>
@@ -1823,7 +1823,7 @@ export default function AdminPanelContent() {
                src={p.image || (Array.isArray(p.images) && p.images[0]) || '/logo.webp'}
                alt=""
                className="w-full sm:w-20 h-40 sm:h-24 object-cover rounded-xl flex-shrink-0 bg-primary-50 dark:bg-primary-800"
-               onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }}
+               onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }}
               />
               </div>
               <div className="flex-1 min-w-0 text-right space-y-1">
@@ -2106,7 +2106,7 @@ export default function AdminPanelContent() {
             </div>
 
             <div className="flex flex-wrap items-start gap-4 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-             <img src={p.image || (p.images && p.images[0]) || '/logo.webp'} alt="" className="w-28 h-36 object-cover rounded-xl bg-primary-50" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }} />
+             <img src={p.image || (p.images && p.images[0]) || '/logo.webp'} alt="" className="w-28 h-36 object-cover rounded-xl bg-primary-50" onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }} />
              <div className="flex-1 min-w-0 space-y-1 text-right">
               <h2 className="text-base font-bold text-primary-900 dark:text-white">{p.name || p.title}</h2>
               <p className="text-xs text-primary-500">فروشگاه: {p.sellerName || '—'} · <span dir="ltr">{p.productCode || p.id}</span></p>
@@ -2803,7 +2803,7 @@ export default function AdminPanelContent() {
             {filterTaxCategories(adminCategories).map((c) => (
               <div key={c.id} className={`flex flex-wrap items-center gap-3 p-3 rounded-xl border bg-white dark:bg-primary-900 ${taxSelectedIds.includes(String(c.id)) ? 'border-apple-blue ring-1 ring-apple-blue/30' : 'border-primary-200 dark:border-white/15'}`}>
                 <input type="checkbox" checked={taxSelectedIds.includes(String(c.id))} onChange={() => toggleTaxSelect(c.id)} className="rounded border-primary-300 flex-shrink-0" aria-label="انتخاب" />
-                {c.image ? <img src={c.image} alt="" className="w-14 h-14 rounded-lg object-cover flex-shrink-0" /> : <div className="w-14 h-14 rounded-lg bg-primary-100 dark:bg-primary-800 flex-shrink-0" />}
+                {c.image ? <img src={c.image} alt="" className="w-14 h-14 rounded-lg object-cover flex-shrink-0"  loading="lazy" decoding="async" /> : <div className="w-14 h-14 rounded-lg bg-primary-100 dark:bg-primary-800 flex-shrink-0" />}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-primary-900 dark:text-white">{c.name}</p>
                   <p className="text-xs text-primary-500 dark:!text-white mt-0.5 font-latin" dir="ltr">{c.url || `/${c.slug || c.name}`}</p>
@@ -3184,7 +3184,7 @@ export default function AdminPanelContent() {
                     </div>
                     {cms.image ? (
                       <div className="w-full max-w-xs h-28 rounded-2xl overflow-hidden border border-primary-200 dark:border-white/15 relative">
-                        <img src={cms.image} alt="" className="w-full h-full object-cover rounded-2xl" onError={(e) => { try { e.currentTarget.style.display = 'none'; } catch (_) {} }} />
+                        <img src={cms.image} alt="" className="w-full h-full object-cover rounded-2xl" onError={(e) = loading="lazy" decoding="async"> { try { e.currentTarget.style.display = 'none'; } catch (_) {} }} />
                       </div>
                     ) : null}
                    </div>
@@ -3958,7 +3958,7 @@ export default function AdminPanelContent() {
                    <div className="flex flex-wrap gap-2">
                     {images.map((src, i) => (
                      <div key={i} className={`relative w-24 rounded-xl border p-1 ${taxonomyForm.featuredImageIndex === i ? 'border-apple-blue ring-1 ring-apple-blue/40' : 'border-primary-200 dark:border-white/20'}`}>
-                      <img src={src} alt="" className="w-full h-20 object-cover rounded-lg" />
+                      <img src={src} alt="" className="w-full h-20 object-cover rounded-lg"  loading="lazy" decoding="async" />
                       <input
                        value={imageAlts[i] || ''}
                        onChange={(e) => {
@@ -4138,7 +4138,7 @@ export default function AdminPanelContent() {
              )}
              {(adminModerationQueue||[]).filter(x=>x.status==='pending').map(item => (
               <div key={item.id} className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 flex flex-wrap gap-3 items-start">
-               {item.preview && <img src={item.preview} alt="" className="w-16 h-20 object-cover rounded-lg" />}
+               {item.preview && <img src={item.preview} alt="" className="w-16 h-20 object-cover rounded-lg"  loading="lazy" decoding="async" />}
                <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-primary-900 dark:text-white">{item.productName || item.type}</p>
                 <p className="text-xs text-primary-500 mt-0.5">{item.type === 'product_image' ? 'تصویر محصول' : item.type === 'product' ? 'محصول / متن' : item.type === 'seller_location' ? 'لوکیشن فروشنده' : item.type === 'seller_kyc' ? 'احراز هویت فروشنده' : item.type === 'seller_sheba' ? 'شبا فروشنده' : item.type === 'seller_payout' ? 'درخواست مالی' : item.type === 'seller_discount' ? 'تخفیف فروشنده' : item.type}</p>
@@ -4360,7 +4360,7 @@ export default function AdminPanelContent() {
                <p className="text-xs text-primary-500">روی ویرایش بزنید تا نام، تصویر شاخص و توضیح همان دسته را عوض کنید.</p>
                {(adminCategories||[]).map(c => (
                 <div key={c.id} className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15">
-                 {c.image && <img src={c.image} alt="" className="w-12 h-12 rounded object-cover" />}
+                 {c.image && <img src={c.image} alt="" className="w-12 h-12 rounded object-cover"  loading="lazy" decoding="async" />}
                  <div className="flex-1 min-w-0"><p className="text-sm font-bold text-primary-900 dark:text-white">{c.name}</p><p className="text-xs text-primary-400 line-clamp-1">{c.description}</p></div>
                  <button type="button" onClick={() => { setAdminTab('product-categories'); openTaxonomyWizard('category', c); }} className="text-xs px-2 py-1 rounded-full border border-primary-200 dark:border-white/30">ویرایش</button>
                  <button type="button" onClick={() => openCategory(c.name)} className="text-xs px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-800">مشاهده صفحه</button>
@@ -4372,7 +4372,7 @@ export default function AdminPanelContent() {
               <div className="space-y-2">
                {(adminTags||[]).map(tg => (
                 <div key={tg.id} className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15">
-                 {tg.image && <img src={tg.image} alt="" className="w-12 h-12 rounded object-cover" />}
+                 {tg.image && <img src={tg.image} alt="" className="w-12 h-12 rounded object-cover"  loading="lazy" decoding="async" />}
                  <div className="flex-1 min-w-0"><p className="text-sm font-bold text-primary-900 dark:text-white">{tg.name}</p><p className="text-xs text-primary-400 line-clamp-1">{tg.description}</p></div>
                  <button type="button" onClick={() => { setAdminTab('product-tags'); openTaxonomyWizard('tag', tg); }} className="text-xs px-2 py-1 rounded-full border border-primary-200 dark:border-white/30">ویرایش</button>
                  <button type="button" onClick={() => openTagPage(tg.name)} className="text-xs px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-800">مشاهده صفحه</button>

@@ -144,7 +144,7 @@ export function ModemAnimatedFooter({
                 src={dark ? '/blue_t_bg.webp' : '/red_t_bg.webp'}
                 alt={brandName}
                 className="w-full h-full object-contain bg-transparent"
-                onError={(e) => {
+                onError={(e) = loading="lazy" decoding="async"> {
                   try {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = dark ? '/blue_t_bg.webp' : '/red_t_bg.webp';

@@ -46,7 +46,7 @@ export default function TaxonomyHubView() {
                     >
                       <div className="aspect-[16/9] bg-primary-100 dark:bg-primary-900 overflow-hidden">
                         {item.image ? (
-                          <img src={item.image} alt="" className="w-full h-full object-cover group-hover:opacity-95 transition duration-500" />
+                          <img src={item.image} alt="" className="w-full h-full object-cover group-hover:opacity-95 transition duration-500"  loading="lazy" decoding="async" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-primary-300"><Icon name="grid" size={28} /></div>
                         )}

@@ -1578,7 +1578,7 @@ export default function SellerPanelContent() {
                             <div className="space-y-2">
                               {out.slice(0, 6).map(p => (
                                 <div key={'o'+p.id} className="flex items-center gap-3 p-2.5 rounded-xl border border-red-200/60 dark:border-red-800/40 bg-red-50/50 dark:bg-red-900/10">
-                                  <img src={p.colors?.[0]?.image || p.image || p.images?.[0]} alt="" className="w-10 h-12 object-cover rounded-lg flex-shrink-0" />
+                                  <img src={p.colors?.[0]?.image || p.image || p.images?.[0]} alt="" className="w-10 h-12 object-cover rounded-lg flex-shrink-0"  loading="lazy" decoding="async" />
                                   <div className="flex-1 min-w-0">
                                     <p className="text-xs font-medium text-primary-900 dark:text-white truncate">{p.name}</p>
                                     <p className="text-xs text-red-600 dark:text-red-400">تمام شده</p>
@@ -1588,7 +1588,7 @@ export default function SellerPanelContent() {
                               ))}
                               {low.slice(0, 6).map(p => (
                                 <div key={'l'+p.id} className="flex items-center gap-3 p-2.5 rounded-xl border border-amber-200/60 dark:border-amber-800/40 bg-amber-50/40 dark:bg-amber-900/10">
-                                  <img src={p.colors?.[0]?.image || p.image || p.images?.[0]} alt="" className="w-10 h-12 object-cover rounded-lg flex-shrink-0" />
+                                  <img src={p.colors?.[0]?.image || p.image || p.images?.[0]} alt="" className="w-10 h-12 object-cover rounded-lg flex-shrink-0"  loading="lazy" decoding="async" />
                                   <div className="flex-1 min-w-0">
                                     <p className="text-xs font-medium text-primary-900 dark:text-white truncate">{p.name}</p>
                                     <p className="text-xs text-amber-700 dark:text-amber-300">نزدیک نقطه سفارش</p>
@@ -1664,7 +1664,7 @@ export default function SellerPanelContent() {
                                   src={p.image || p.colors?.[0]?.image || (Array.isArray(p.images) && p.images[0]) || '/logo.webp'}
                                   alt=""
                                   className="w-16 h-20 sm:w-20 sm:h-24 rounded-xl object-cover flex-shrink-0 bg-primary-50 dark:bg-primary-800"
-                                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }}
+                                  onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }}
                                 />
                                 <div className="flex-1 min-w-0 text-right space-y-0.5">
                                   <p className="text-sm font-bold text-primary-900 dark:text-white line-clamp-2">{p.name || 'بدون نام'}</p>
@@ -2042,7 +2042,7 @@ export default function SellerPanelContent() {
                                   {(sellerProductForm.images || []).map((im, idx) => (
                                     <div key={idx} className="w-[7.5rem] space-y-1.5">
                                       <div className="relative w-full aspect-[4/5] rounded-lg overflow-visible border border-primary-200 dark:border-white/20">
-                                        <img src={im} alt={(sellerProductForm.imageAlts || [])[idx] || sellerProductForm.imageAlt || ''} className="w-full h-full object-cover" />
+                                        <img src={im} alt={(sellerProductForm.imageAlts || [])[idx] || sellerProductForm.imageAlt || ''} className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                                         <button type="button" onClick={() => setSellerProductForm(f => ({ ...f, featuredImageIndex: idx, imageAlt: (f.imageAlts || [])[idx] || f.imageAlt || '', seoOgImage: (f.images || [])[idx] || f.seoOgImage }))} className={`absolute top-0.5 right-0.5 text-xs px-1 rounded ${(sellerProductForm.featuredImageIndex || 0) === idx ? 'bg-apple-blue text-white' : 'bg-black/50 text-white'}`}>شاخص</button>
                                         <button type="button" onClick={() => setSellerProductForm(f => {
                                           const imgs = (f.images || []).filter((_, i) => i !== idx);
@@ -2447,7 +2447,7 @@ export default function SellerPanelContent() {
                                           <div className="flex items-center gap-2">
                                             {row.image ? (
                                               <div className="relative w-12 h-14 rounded-lg overflow-visible border border-primary-200 dark:border-white/20 flex-shrink-0">
-                                                <img src={row.image} alt="" className="w-full h-full object-cover" />
+                                                <img src={row.image} alt="" className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                                                 <button type="button" className="absolute inset-x-0 bottom-0 bg-black/60 text-white text-[9px] py-0.5" onClick={() => setSellerProductForm(f => {
                                                   const base = (f.variants && f.variants.length) ? f.variants : syncFormVariants(f);
                                                   return { ...f, variants: base.map((r, i) => i === ri ? { ...r, image: '' } : r) };
@@ -3730,7 +3730,7 @@ export default function SellerPanelContent() {
                         <div className="mb-4 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-3">
                           {items.length === 0 && <EmptyStateBox title="آیتمی ثبت نشده" className="py-4 border-0 bg-transparent" />}
                           {items.map((it,i) => (
-                            <div key={i} className="flex gap-3"><img src={it.image || ''} alt="" className="w-14 h-14 rounded-lg object-cover bg-primary-100" /><div className="flex-1"><p className="text-xs font-medium text-primary-900 dark:text-white">{it.name}</p><p className="text-xs text-primary-500">{it.color || '—'} · {it.size || '—'} · {toFa(it.qty || 1)} عدد</p><p className="text-xs font-bold mt-0.5">{toFa(Number(it.price || 0).toLocaleString())} ت</p></div></div>
+                            <div key={i} className="flex gap-3"><img src={it.image || ''} alt="" className="w-14 h-14 rounded-lg object-cover bg-primary-100"  loading="lazy" decoding="async" /><div className="flex-1"><p className="text-xs font-medium text-primary-900 dark:text-white">{it.name}</p><p className="text-xs text-primary-500">{it.color || '—'} · {it.size || '—'} · {toFa(it.qty || 1)} عدد</p><p className="text-xs font-bold mt-0.5">{toFa(Number(it.price || 0).toLocaleString())} ت</p></div></div>
                           ))}
                         </div>
                         <div className="mb-4 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
@@ -4309,7 +4309,7 @@ export default function SellerPanelContent() {
                         <div className="space-y-2">
                           {[...(sellerProducts||[])].sort((a,b)=>(b.salesCount||0)-(a.salesCount||0)).slice(0,5).map(p => (
                             <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                              <img src={p.colors?.[0]?.image} alt="" className="w-10 h-10 rounded-lg object-cover" />
+                              <img src={p.colors?.[0]?.image} alt="" className="w-10 h-10 rounded-lg object-cover"  loading="lazy" decoding="async" />
                               <p className="flex-1 text-xs font-medium text-primary-900 dark:text-white line-clamp-1">{p.name}</p>
                               <p className="text-xs text-primary-500">{toFa(p.salesCount||0)} فروش</p>
                             </div>
@@ -4321,7 +4321,7 @@ export default function SellerPanelContent() {
                         <div className="space-y-2">
                           {[...(sellerProducts||[])].filter(p => p.discount || p.oldPrice).sort((a,b)=>(b.salesCount||0)-(a.salesCount||0)).slice(0,3).map(p => (
                             <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl border border-amber-200/60 dark:border-amber-800/40 bg-amber-50/50 dark:bg-amber-900/10">
-                              <img src={p.colors?.[0]?.image} alt="" className="w-10 h-10 rounded-lg object-cover" />
+                              <img src={p.colors?.[0]?.image} alt="" className="w-10 h-10 rounded-lg object-cover"  loading="lazy" decoding="async" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-xs font-medium text-primary-900 dark:text-white line-clamp-1">{p.name}</p>
                                 <p className="text-xs text-amber-600">{p.discount ? `${toFa(p.discount)}٪ تخفیف` : 'تخفیف‌دار'}</p>
@@ -4400,7 +4400,7 @@ export default function SellerPanelContent() {
                                 window.addEventListener('mouseup', up);
                               }}
                             >
-                              <img src={mediaToolSrc} alt="" draggable={false} style={{ transform: `translate(${mediaToolOffset.x}px, ${mediaToolOffset.y}px) scale(${mediaToolScale})`, transformOrigin: 'center center', width: '100%', height: 'auto', minHeight: '100%', objectFit: 'cover', pointerEvents: 'none' }} />
+                              <img src={mediaToolSrc} alt="" draggable={false} style={{ transform: `translate(${mediaToolOffset.x}px, ${mediaToolOffset.y}px) scale(${mediaToolScale})`, transformOrigin: 'center center', width: '100%', height: 'auto', minHeight: '100%', objectFit: 'cover', pointerEvents: 'none' }}  loading="lazy" decoding="async" />
                               <div className="absolute inset-0 pointer-events-none border border-white/40" />
                             </div>
                             <div className="flex items-center justify-center gap-2">
@@ -4460,7 +4460,7 @@ export default function SellerPanelContent() {
                         {mediaToolStep === 'assign' && mediaToolResult && (
                           <div className="space-y-3">
                             <div className="flex gap-3 items-start">
-                              <img src={mediaToolResult.dataUrl} alt="" className="w-24 h-30 rounded-lg object-cover border border-primary-200 dark:border-white/20" style={{ height: 120 }} />
+                              <img src={mediaToolResult.dataUrl} alt="" className="w-24 h-30 rounded-lg object-cover border border-primary-200 dark:border-white/20" style={{ height: 120 }}  loading="lazy" decoding="async" />
                               <div className="text-xs text-primary-500">
                                 <p>۸۰۰×۱۰۰۰ WebP</p>
                                 <p>حجم ≈ {toFa(Math.round(mediaToolResult.bytes/1024))} کیلوبایت</p>
@@ -4484,7 +4484,7 @@ export default function SellerPanelContent() {
                                 .map((pr) => (
                                 <label key={pr.id} className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer ${mediaToolAssign.productId === pr.id ? 'bg-apple-blue/10 border border-apple-blue' : 'hover:bg-primary-50 dark:hover:bg-primary-900'}`}>
                                   <input type="radio" name="media-prod" checked={mediaToolAssign.productId === pr.id} onChange={() => setMediaToolAssign({ productId: pr.id, colorName: pr.colors?.[0]?.name || '', size: (pr.sizes||[])[0] || '' })} />
-                                  <img src={pr.colors?.[0]?.image || pr.images?.[0]} alt="" className="w-8 h-8 rounded object-cover" />
+                                  <img src={pr.colors?.[0]?.image || pr.images?.[0]} alt="" className="w-8 h-8 rounded object-cover"  loading="lazy" decoding="async" />
                                   <span className="text-xs text-primary-900 dark:text-white line-clamp-1">{pr.name}</span>
                                   <span className="text-xs text-primary-400 mr-auto">{toFa((pr.images || pr.colors || []).length)}/۳</span>
                                 </label>
@@ -4767,7 +4767,7 @@ export default function SellerPanelContent() {
                                   src={sellerLogoUrl || ""}
                                   alt=""
                                   className="w-full h-full object-cover"
-                                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
+                                  onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
                                 />
                               </div>
                               <div className="flex flex-col gap-1.5">
@@ -4802,7 +4802,7 @@ export default function SellerPanelContent() {
                             <div className="space-y-2">
                               <div className="w-full h-24 rounded-xl border border-primary-200 dark:border-white/20 overflow-visible bg-primary-50 dark:bg-primary-800 flex items-center justify-center">
                                 {sellerBannerUrl ? (
-                                  <img src={sellerBannerUrl} alt="" className="w-full h-full object-cover" />
+                                  <img src={sellerBannerUrl} alt="" className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                                 ) : (
                                   <span className="text-xs text-primary-400">کاور انتخاب نشده</span>
                                 )}

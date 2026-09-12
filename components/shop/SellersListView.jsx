@@ -598,7 +598,7 @@ export default function SellersListView() {
                           </div>
                           <div className="p-3.5 sm:p-4 flex gap-3 items-start">
                             <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-white dark:border-primary-800 shadow -mt-8 relative z-10 flex-shrink-0 bg-primary-100">
-                              <img src={s.image} alt={s.name} className="w-full h-full object-cover" />
+                              <img src={s.image} alt={s.name} className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                             </div>
                             <div className="min-w-0 flex-1 pt-0.5">
                               <h3 className="font-bold text-sm text-primary-900 dark:text-white truncate">{s.name}</h3>

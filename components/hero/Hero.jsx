@@ -616,7 +616,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
               objectFit: 'cover',
               opacity: 0.35,
             }}
-          />
+           loading="lazy" decoding="async" />
           <div
             style={{
               position: 'relative',
@@ -701,7 +701,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
             src={HERO_POSTER}
             alt=""
             draggable={false}
-          />
+           loading="lazy" decoding="async" />
         ) : (
           <video
             ref={videoRef}
@@ -743,7 +743,7 @@ export default function Hero({ onShopClick, onHeroProgress } = {}) {
           src={HERO_POSTER}
           alt={HERO_COPY.alt}
           style={{ width: '100%', height: '100svh', objectFit: 'cover' }}
-        />
+         loading="lazy" decoding="async" />
         <div
           style={{
             position: 'absolute',

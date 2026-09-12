@@ -215,7 +215,7 @@ export default function SimpleEditor({
           document.execCommand(
             'insertHTML',
             false,
-            `<img src="${url.trim().replace(/"/g, '')}" alt="" style="max-width:100%;height:auto;border-radius:8px;margin:8px 0;" />`
+            `<img src="${url.trim().replace(/"/g, '')}" alt="" style="max-width:100%;height:auto;border-radius:8px;margin:8px 0;"  loading="lazy" decoding="async" />`
           );
           emit();
         } catch (_) {}

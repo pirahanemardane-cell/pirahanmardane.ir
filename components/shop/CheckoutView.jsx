@@ -483,7 +483,7 @@ export default function CheckoutView() {
                                 <div key={`co-${item.id}-${item.selectedColor?.name || ''}-${item.selectedSize || ''}-${idx}`} className="flex gap-3">
                                   <div className="w-14 h-14 rounded-lg overflow-hidden bg-primary-100 dark:bg-primary-900 flex-shrink-0">
                                     {(item.selectedColor?.image || item.image) ? (
-                                      <img src={item.selectedColor?.image || item.image} alt="" className="w-full h-full object-cover" />
+                                      <img src={item.selectedColor?.image || item.image} alt="" className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                                     ) : null}
                                   </div>
                                   <div className="flex-1 min-w-0">

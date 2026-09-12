@@ -22,7 +22,7 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   experimental: {
-    optimizePackageImports: ['gsap', 'lenis', 'framer-motion', 'sonner'],
+    optimizePackageImports: ['gsap', 'lenis', 'framer-motion', 'motion', 'sonner', 'lucide-react'],
   },
   images: {
     // Keep using native <img> tags exactly as before — no next/image forced conversion
@@ -122,6 +122,26 @@ const nextConfig = {
         source: '/:path*.woff2',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+      // Public catalog API — short cache, stale-while-revalidate
+      {
+        source: '/api/catalog/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, s-maxage=60, stale-while-revalidate=300' },
+        ],
+      },
+      {
+        source: '/api/site-settings',
+        headers: [
+          { key: 'Cache-Control', value: 'public, s-maxage=30, stale-while-revalidate=120' },
+        ],
+      },
+      {
+        source: '/api/campaigns',
+        headers: [
+          { key: 'Cache-Control', value: 'public, s-maxage=60, stale-while-revalidate=300' },
+        ],
+      },
+
         ],
       },
 

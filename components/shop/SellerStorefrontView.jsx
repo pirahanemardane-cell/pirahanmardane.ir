@@ -64,7 +64,7 @@ export default function SellerStorefrontView() {
               {sellerStickyBar && (
                 <div className="sticky top-[52px] sm:top-[60px] z-40 bg-white/90 dark:bg-primary-950/90 backdrop-blur-xl border-b border-primary-100 dark:border-white/15 shadow-sm">
                   <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 flex items-center gap-3">
-                    <img src={activeSeller.image} alt="" className="w-9 h-9 rounded-lg object-cover flex-shrink-0" />
+                    <img src={activeSeller.image} alt="" className="w-9 h-9 rounded-lg object-cover flex-shrink-0"  loading="lazy" decoding="async" />
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-bold text-primary-900 dark:text-white truncate">{activeSeller.name}</p>
                       <p className="text-xs text-primary-500 dark:!text-white">{toFa(activeSeller.products)} محصول · {toFa(Number(activeSeller.rating).toFixed(1))}★</p>
@@ -86,7 +86,7 @@ export default function SellerStorefrontView() {
                   src={(activeSeller.banners || [activeSeller.banner || activeSeller.image])[sellerBannerIdx % (activeSeller.banners?.length || 1)]}
                   alt=""
                   className="absolute inset-0 w-full h-full object-cover transition duration-500"
-                />
+                 loading="lazy" decoding="async" />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary-950/70 via-primary-950/20 to-transparent" />
                 {(activeSeller.banners?.length || 0) > 1 && (
                   <>
@@ -125,7 +125,7 @@ export default function SellerStorefrontView() {
                 <div className="bg-white dark:bg-primary-900 rounded-2xl shadow-sm border border-primary-200 dark:border-white/15 p-4 sm:p-6">
                   <div className="flex flex-col sm:flex-row sm:items-end gap-4">
                     <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-primary-900 shadow-md flex-shrink-0 -mt-12 sm:-mt-14 bg-primary-100">
-                      <img src={activeSeller.image} alt={activeSeller.name} className="w-full h-full object-cover" />
+                      <img src={activeSeller.image} alt={activeSeller.name} className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1">

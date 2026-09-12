@@ -221,7 +221,7 @@ export default function WishlistPageView() {
                             return (
                               <div key={post.id} className="flex gap-3 p-3 rounded-xl border border-primary-100 dark:border-white/10 bg-primary-50/40 dark:bg-primary-900/30">
                                 <button type="button" onClick={() => openStaticPage('blog-post', { blogId: post.id })} className="flex-shrink-0">
-                                  <img src={post.image} alt="" className="w-20 h-16 object-cover rounded-lg" />
+                                  <img src={post.image} alt="" className="w-20 h-16 object-cover rounded-lg"  loading="lazy" decoding="async" />
                                 </button>
                                 <div className="flex-1 min-w-0 text-right">
                                   <button type="button" onClick={() => openStaticPage('blog-post', { blogId: post.id })} className="w-full text-right">

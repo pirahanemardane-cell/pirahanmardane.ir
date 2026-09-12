@@ -41,7 +41,7 @@ export default function EnamadFooterBadge() {
       title="نماد اعتماد الکترونیکی"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt="اینماد" width={80} height={80} className="w-16 h-16 object-contain" style={{ cursor: 'pointer' }} referrerPolicy="origin" />
+      <img src={src} alt="اینماد" width={80} height={80} className="w-16 h-16 object-contain" style={{ cursor: 'pointer' }} referrerPolicy="origin"  loading="lazy" decoding="async" />
     </a>
   );
 }

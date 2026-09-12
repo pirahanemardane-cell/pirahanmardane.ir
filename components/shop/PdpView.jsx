@@ -222,7 +222,7 @@ export default function PdpView() {
                 {pdpSticky && (
                   <div className="hidden sm:block sticky top-[52px] sm:top-[60px] z-40 bg-white/95 dark:bg-primary-950/95 backdrop-blur-xl border-b border-primary-100 dark:border-white/15 shadow-sm">
                     <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-4">
-                      <img src={mainImg} alt="" className="w-10 h-10 rounded-lg object-cover" />
+                      <img src={mainImg} alt="" className="w-10 h-10 rounded-lg object-cover"  loading="lazy" decoding="async" />
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-bold text-primary-900 dark:text-white truncate">{p.name}</p>
                         <p className="text-xs text-primary-500">{p.priceText} تومان</p>
@@ -253,7 +253,7 @@ export default function PdpView() {
                           src={mainImg}
                           alt={`${p.name} - ${activeColor.name}`}
                           className={`w-full h-full object-cover transition duration-300 cursor-zoom-in origin-center sm: ${pdpZoom ? 'scale-150 sm:scale-[1.75]' : ''}`}
-                          onClick={() => setPdpZoom(z => !z)}
+                          onClick={() = loading="lazy" decoding="async"> setPdpZoom(z => !z)}
                           onMouseLeave={() => { if (pdpZoom) setPdpZoom(false); }}
                           draggable={false}
                         />
@@ -327,7 +327,7 @@ export default function PdpView() {
                         </div>
                         <div className="p-4 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10">
                           <div className="flex items-center gap-3">
-                            <img src={fullSeller.image || fullSeller.banner} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                            <img src={fullSeller.image || fullSeller.banner} alt="" className="w-12 h-12 rounded-xl object-cover"  loading="lazy" decoding="async" />
                             <div className="min-w-0 flex-1">
                               <p className="text-sm font-bold text-primary-900 dark:text-white truncate">{fullSeller.name}</p>
                               <p className="text-xs text-primary-500 dark:!text-white">{toFa(Number(fullSeller.rating || seller.rating || 0).toFixed(1))}★ · {toFa(fullSeller.products || 0)} محصول</p>
@@ -685,7 +685,7 @@ export default function PdpView() {
                       {/* Seller card — موبایل/تبلت */}
                       <div className="mt-4 p-4 rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 lg:hidden">
                         <div className="flex items-center gap-3">
-                          <img src={fullSeller.image || fullSeller.banner} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                          <img src={fullSeller.image || fullSeller.banner} alt="" className="w-12 h-12 rounded-xl object-cover"  loading="lazy" decoding="async" />
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-bold text-primary-900 dark:text-white truncate">{fullSeller.name}</p>
                             <p className="text-xs text-primary-500 dark:!text-white">{toFa(Number(fullSeller.rating || seller.rating || 0).toFixed(1))}★ · {toFa(fullSeller.products || 0)} محصول</p>

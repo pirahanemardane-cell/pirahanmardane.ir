@@ -71,7 +71,7 @@ export default function StaticPagesView() {
                     if (!cms || (!cms.body && !cms.image && !cms.video)) return null;
                     return (
                       <div className="space-y-3 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl" /> : null}
+                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl"  loading="lazy" decoding="async" /> : null}
                         {cms.video ? <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900"><iframe title="ویدیو" src={cms.video} className="w-full h-full border-0" allowFullScreen /></div> : null}
                         {cms.body ? <div className="text-sm leading-7 text-primary-700 dark:text-white/80 prose prose-sm dark:prose- max-w-none" dangerouslySetInnerHTML={{ __html: cms.body }} /> : null}
                       </div>
@@ -108,7 +108,7 @@ export default function StaticPagesView() {
                     if (!cms || (!cms.body && !cms.image && !cms.video)) return null;
                     return (
                       <div className="space-y-3 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl" /> : null}
+                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl"  loading="lazy" decoding="async" /> : null}
                         {cms.video ? <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900"><iframe title="ویدیو" src={cms.video} className="w-full h-full border-0" allowFullScreen /></div> : null}
                         {cms.body ? <div className="text-sm leading-7 text-primary-700 dark:text-white/80 prose prose-sm dark:prose- max-w-none" dangerouslySetInnerHTML={{ __html: cms.body }} /> : null}
                       </div>
@@ -152,7 +152,7 @@ export default function StaticPagesView() {
                     if (!cms || (!cms.body && !cms.image && !cms.video)) return null;
                     return (
                       <div className="space-y-3 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl" /> : null}
+                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl"  loading="lazy" decoding="async" /> : null}
                         {cms.video ? <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900"><iframe title="ویدیو" src={cms.video} className="w-full h-full border-0" allowFullScreen /></div> : null}
                         {cms.body ? <div className="text-sm leading-7 text-primary-700 dark:text-white/80 prose prose-sm dark:prose- max-w-none" dangerouslySetInnerHTML={{ __html: cms.body }} /> : null}
                       </div>
@@ -190,7 +190,7 @@ export default function StaticPagesView() {
                     if (!cms || (!cms.body && !cms.image && !cms.video)) return null;
                     return (
                       <div className="space-y-3 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl" /> : null}
+                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl"  loading="lazy" decoding="async" /> : null}
                         {cms.video ? <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900"><iframe title="ویدیو" src={cms.video} className="w-full h-full border-0" allowFullScreen /></div> : null}
                         {cms.body ? <div className="text-sm leading-7 text-primary-700 dark:text-white/80 prose prose-sm dark:prose- max-w-none" dangerouslySetInnerHTML={{ __html: cms.body }} /> : null}
                       </div>
@@ -242,7 +242,7 @@ export default function StaticPagesView() {
                     if (!cms || (!cms.body && !cms.image && !cms.video)) return null;
                     return (
                       <div className="space-y-3 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl" /> : null}
+                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl"  loading="lazy" decoding="async" /> : null}
                         {cms.video ? <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900"><iframe title="ویدیو" src={cms.video} className="w-full h-full border-0" allowFullScreen /></div> : null}
                         {cms.body ? <div className="text-sm leading-7 text-primary-700 dark:text-white/80 prose prose-sm dark:prose- max-w-none" dangerouslySetInnerHTML={{ __html: cms.body }} /> : null}
                       </div>
@@ -285,7 +285,7 @@ export default function StaticPagesView() {
                     if (!cms || (!cms.body && !cms.image && !cms.video)) return null;
                     return (
                       <div className="space-y-3 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl" /> : null}
+                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl"  loading="lazy" decoding="async" /> : null}
                         {cms.video ? <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900"><iframe title="ویدیو" src={cms.video} className="w-full h-full border-0" allowFullScreen /></div> : null}
                         {cms.body ? <div className="text-sm leading-7 text-primary-700 dark:text-white/80 prose prose-sm dark:prose- max-w-none" dangerouslySetInnerHTML={{ __html: cms.body }} /> : null}
                       </div>
@@ -311,7 +311,7 @@ export default function StaticPagesView() {
                     if (!cms || (!cms.body && !cms.image && !cms.video)) return null;
                     return (
                       <div className="space-y-3 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl" /> : null}
+                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl"  loading="lazy" decoding="async" /> : null}
                         {cms.video ? <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900"><iframe title="ویدیو" src={cms.video} className="w-full h-full border-0" allowFullScreen /></div> : null}
                         {cms.body ? <div className="text-sm leading-7 text-primary-700 dark:text-white/80 prose prose-sm dark:prose- max-w-none" dangerouslySetInnerHTML={{ __html: cms.body }} /> : null}
                       </div>
@@ -338,7 +338,7 @@ export default function StaticPagesView() {
                     if (!cms || (!cms.body && !cms.image && !cms.video)) return null;
                     return (
                       <div className="space-y-3 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl" /> : null}
+                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl"  loading="lazy" decoding="async" /> : null}
                         {cms.video ? <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900"><iframe title="ویدیو" src={cms.video} className="w-full h-full border-0" allowFullScreen /></div> : null}
                         {cms.body ? <div className="text-sm leading-7 text-primary-700 dark:text-white/80 prose prose-sm dark:prose- max-w-none" dangerouslySetInnerHTML={{ __html: cms.body }} /> : null}
                       </div>
@@ -362,7 +362,7 @@ export default function StaticPagesView() {
                     if (!cms || (!cms.body && !cms.image && !cms.video)) return null;
                     return (
                       <div className="space-y-3 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl" /> : null}
+                        {cms.image ? <img src={cms.image} alt="" className="w-full max-h-64 object-cover rounded-xl"  loading="lazy" decoding="async" /> : null}
                         {cms.video ? <div className="aspect-video rounded-xl overflow-hidden bg-primary-100 dark:bg-primary-900"><iframe title="ویدیو" src={cms.video} className="w-full h-full border-0" allowFullScreen /></div> : null}
                         {cms.body ? <div className="text-sm leading-7 text-primary-700 dark:text-white/80 prose prose-sm dark:prose- max-w-none" dangerouslySetInnerHTML={{ __html: cms.body }} /> : null}
                       </div>
@@ -509,7 +509,7 @@ export default function StaticPagesView() {
                   <article className="w-full space-y-6">
                     <button type="button" onClick={() => openStaticPage('blog')} className="text-xs text-apple-blue hover:underline flex items-center gap-1"><Icon name="arrowRight" size={14} /> بازگشت به مجله</button>
                     <div className="rounded-3xl overflow-hidden aspect-[21/9] sm:aspect-[2.4/1] bg-primary-100 dark:bg-primary-900 border border-primary-100 dark:border-white/10">
-                      <img src={post.image || 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=1200&h=500&fit=crop&q=80'} alt="" className="w-full h-full object-cover" />
+                      <img src={post.image || 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=1200&h=500&fit=crop&q=80'} alt="" className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                     </div>
                     <h1 className="text-xl sm:text-2xl font-bold text-primary-900 dark:text-white leading-snug">{post.title}</h1>
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-primary-500 dark:!text-white pb-4 border-b border-primary-100 dark:border-white/10">
@@ -721,7 +721,7 @@ export default function StaticPagesView() {
                             >
                               <div className="w-full aspect-square mx-auto mb-2 rounded-xl bg-primary-50 dark:bg-primary-800 flex items-center justify-center text-2xl font-bold text-primary-900 dark:!text-white border border-primary-100 dark:border-white/15 overflow-hidden">
                                 {(b.logoUrl || b.logo_url || b.image)
-                                  ? <img src={b.logoUrl || b.logo_url || b.image} alt="" className="w-full h-full object-cover" />
+                                  ? <img src={b.logoUrl || b.logo_url || b.image} alt="" className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                                   : (b.name?.[0] || 'ب')}
                               </div>
                               <p className="text-sm font-bold text-primary-900 dark:text-white">{b.name}</p>
@@ -770,7 +770,7 @@ export default function StaticPagesView() {
                     <div className="flex items-center gap-4">
                       <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-primary-100 dark:bg-primary-700 flex items-center justify-center text-2xl font-bold text-primary-800 dark:!text-white border border-primary-200 dark:border-white/25 shadow-sm overflow-hidden shrink-0">
                         {b.logoUrl || b.logo_url || b.image ? (
-                          <img src={b.logoUrl || b.logo_url || b.image} alt="" className="w-full h-full object-cover" />
+                          <img src={b.logoUrl || b.logo_url || b.image} alt="" className="w-full h-full object-cover"  loading="lazy" decoding="async" />
                         ) : (b.name?.[0] || 'ب')}
                       </div>
                       <div>
@@ -1026,7 +1026,7 @@ export default function StaticPagesView() {
                           src={dark ? "/logo-white.webp" : "/logo-dark.webp"}
                           alt="پیراهن مردانه"
                           className="site-logo-img h-8 w-auto max-w-[140px] object-contain flex-shrink-0"
-                          onError={(e) => {
+                          onError={(e) = loading="lazy" decoding="async"> {
                             try {
                               e.currentTarget.onerror = null;
                               e.currentTarget.src = dark ? "/blue_t_bg.webp" : "/red_t_bg.webp";
@@ -1338,7 +1338,7 @@ export default function StaticPagesView() {
                 {/* بنر تخفیف */}
                 <button type="button" onClick={() => { setMobileMenuOpen(false); try { openStaticPage('deals'); } catch (_) { openPLP(); } }} className="w-full block rounded-2xl overflow-hidden relative h-28 text-right shadow-sm isolate ring-1 ring-black/5 dark:ring-white/10">
                   <img
-                    src={(() => { try { const c = typeof getPageCms === 'function' ? getPageCms('deals') : null; return (c && (c.image || c.banner || c.cover)) || 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp'; } catch (_) { return 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp'; } })()}
+                    src={(() = loading="lazy" decoding="async"> { try { const c = typeof getPageCms === 'function' ? getPageCms('deals') : null; return (c && (c.image || c.banner || c.cover)) || 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp'; } catch (_) { return 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp'; } })()}
                     alt=""
                     className="absolute inset-0 w-full h-full object-cover rounded-2xl"
                     loading="lazy"
@@ -1602,7 +1602,7 @@ export default function StaticPagesView() {
                 <div className="flex -space-x-2 space-x-reverse flex-shrink-0">
                   {compare.map(p => (
                     <div key={p.id} className="relative">
-                      <img src={p.colors?.[0]?.image || p.image} alt="" className="w-10 h-12 sm:w-12 sm:h-14 object-cover rounded-lg border-2 border-white dark:border-primary-900 shadow" />
+                      <img src={p.colors?.[0]?.image || p.image} alt="" className="w-10 h-12 sm:w-12 sm:h-14 object-cover rounded-lg border-2 border-white dark:border-primary-900 shadow"  loading="lazy" decoding="async" />
                       <button type="button" onClick={() => toggleCompare(p)} className="absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-primary-800 text-white flex items-center justify-center text-xs" aria-label="حذف">×</button>
                     </div>
                   ))}
@@ -1629,7 +1629,7 @@ export default function StaticPagesView() {
                 <div className="space-y-2 mb-4 max-h-60 overflow-y-auto">
                   {compare.map(p => (
                     <button key={p.id} type="button" onClick={() => replaceCompareAt(p.id, compareReplaceOpen)} className="w-full flex items-center gap-3 p-2 rounded-xl bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/20 hover:border-apple-blue text-right transition">
-                      <img src={p.colors?.[0]?.image || p.image} alt="" className="w-12 h-14 object-cover rounded-lg" />
+                      <img src={p.colors?.[0]?.image || p.image} alt="" className="w-12 h-14 object-cover rounded-lg"  loading="lazy" decoding="async" />
                       <div className="min-w-0 flex-1">
                         <p className="text-sm sm:text-base font-medium text-primary-900 dark:!text-white line-clamp-2">{p.name}</p>
                         <p className="text-xs text-primary-500 mt-0.5">ضربه برای جایگزینی</p>
@@ -1828,7 +1828,7 @@ export default function StaticPagesView() {
                     compare.map(p => (
                       <div key={p.id} className="flex gap-3 p-2.5 rounded-xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900/40">
                         <button type="button" className="flex-shrink-0 p-0 border-0 bg-transparent" onClick={() => { setCompareOpen(false); openPDP(p); }}>
-                          <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) => { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
+                          <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
                         </button>
                         <div className="min-w-0 flex-1 flex flex-col">
                           <button type="button" className="text-right w-full p-0 border-0 bg-transparent" onClick={() => { setCompareOpen(false); openPDP(p); }}>
@@ -1899,7 +1899,7 @@ export default function StaticPagesView() {
                     recentlyViewed.map(p => (
                       <div key={p.id} className="flex gap-3 p-2.5 rounded-xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900/40">
                         <button type="button" className="flex-shrink-0 p-0 border-0 bg-transparent" onClick={() => { setRecentOpen(false); openPDP(p); }}>
-                          <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) => { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
+                          <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
                         </button>
                         <div className="min-w-0 flex-1 flex flex-col">
                           <button type="button" className="text-right w-full p-0 border-0 bg-transparent" onClick={() => { setRecentOpen(false); openPDP(p); }}>
