@@ -2716,11 +2716,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           }
 
           const data = await toggleSellerFollow(sid, was);
-            /* legacy res unused */
-            const res = { ok: data?.ok !== false, json: async () => data };
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || data?.ok === false) {
+          if (data?.ok === false) {
             // rollback
             setSellerFollowed((prev) => {
               const base = prev && typeof prev === 'object' && !Array.isArray(prev) ? { ...prev } : {};
