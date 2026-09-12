@@ -229,6 +229,7 @@ import { sellerUiStore } from '@/lib/stores/sellerUiStore';
 import { formsStore } from '@/lib/stores/formsStore';
 import FocusTrap from './a11y/FocusTrap';
 import { LoadingState, ErrorState, EmptyStateBox } from './ui/async-state';
+import DealCountdown from './ui/DealCountdown';
 /* —— Code-split heavy UI (PageSpeed: smaller initial JS) —— */
 const Hero = dynamic(() => import('./Hero'), {
   ssr: false,
@@ -11513,6 +11514,11 @@ const openAdminPanel = (tab = 'dashboard', opts = {}) => {
                 ) : null}
                 {p.amazing && (
                   <span className="product-card-badge bg-gradient-to-l from-amber-500 to-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-md shadow-sm text-center whitespace-nowrap">شگفت‌انگیز</span>
+                )}
+                {p.amazing && p.dealEndsAt && Number(p.dealEndsAt) > Date.now() && (
+                  <div className="product-card-deal-timer mt-1">
+                    <DealCountdown endsAt={p.dealEndsAt} toFa={toFa} />
+                  </div>
                 )}
                 {p.popular && !p.amazing && (
                   <span className="product-card-badge bg-amber-500 !text-white text-xs font-semibold px-1.5 py-0.5 rounded-md shadow-sm text-center whitespace-nowrap">پرفروش</span>

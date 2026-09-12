@@ -389,23 +389,7 @@ export default function HomeView() {
                     </div>
                     <h3 className="font-bold text-base sm:text-lg mb-1">آفرتایم</h3>
                     <p className="offer-time-sub text-xs sm:text-xs text-white/85 mb-4 pointer-events-none select-none">تخفیف‌های ویژه در مدتی</p>
-                    <div className="flex gap-1.5 mb-4 font-mono text-sm sm:text-base font-bold tracking-wider" dir="ltr">
-                      <div className="bg-white/20 rounded-md px-1.5 py-1 min-w-[2rem]">
-                        <span>۰۵</span>
-                        <div className="text-xs font-normal opacity-80">ساعت</div>
-                      </div>
-                      <span className="self-center">:</span>
-                      <div className="bg-white/20 rounded-md px-1.5 py-1 min-w-[2rem]">
-                        <span>۲۲</span>
-                        <div className="text-xs font-normal opacity-80">دقیقه</div>
-                      </div>
-                      <span className="self-center">:</span>
-                      <div className="bg-white/20 rounded-md px-1.5 py-1 min-w-[2rem]">
-                        <span>۰۹</span>
-                        <div className="text-xs font-normal opacity-80">ثانیه</div>
-                      </div>
-                    </div>
-                    <a href="#" onClick={(e) => { e.preventDefault(); openPLP(); }} className="offer-view-all-btn inline-flex items-center gap-1 bg-white !text-[#0A0A0A] hover:!text-[#0A0A0A] active:!text-[#0A0A0A] text-xs font-semibold px-4 py-2 rounded-full shadow-md hover:bg-[#F3F4F6] active:bg-[#E5E7EB] transition border border-white">
+                    <a href="#" onClick={(e) => { e.preventDefault(); openStaticPage('deals'); }} className="offer-view-all-btn inline-flex items-center gap-1 bg-white !text-[#0A0A0A] hover:!text-[#0A0A0A] active:!text-[#0A0A0A] text-xs font-semibold px-4 py-2 rounded-full shadow-md hover:bg-[#F3F4F6] active:bg-[#E5E7EB] transition border border-white">
                       مشاهده همه
                       <Icon name="chevronLeft" size={14} />
                     </a>
