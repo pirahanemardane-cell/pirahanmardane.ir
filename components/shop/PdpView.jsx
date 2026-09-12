@@ -253,7 +253,7 @@ export default function PdpView() {
                           src={mainImg}
                           alt={`${p.name} - ${activeColor.name}`}
                           className={`w-full h-full object-cover transition duration-300 cursor-zoom-in origin-center sm: ${pdpZoom ? 'scale-150 sm:scale-[1.75]' : ''}`}
-                          onClick={() = loading="lazy" decoding="async"> setPdpZoom(z => !z)}
+                          onClick={() => setPdpZoom(z => !z)}
                           onMouseLeave={() => { if (pdpZoom) setPdpZoom(false); }}
                           draggable={false}
                         />

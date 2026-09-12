@@ -373,7 +373,7 @@ export default function ProfileView() {
                       src={user.avatarUrl || user.avatar_url || user.image || "/default-avatar.svg"}
                       alt=""
                       className="w-full h-full object-cover"
-                      onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
+                      onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
                     />
                   </div>
                   <div>
@@ -1021,7 +1021,7 @@ export default function ProfileView() {
                                     {p.missing ? (
                                       <div className="w-16 h-20 rounded-lg bg-primary-200/50 dark:bg-primary-800 flex items-center justify-center text-xs text-primary-500">حذف شده</div>
                                     ) : (
-                                      <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
+                                      <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) => { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
                                     )}
                                   </button>
                                   <div className="flex-1 min-w-0 text-right">
@@ -1086,7 +1086,7 @@ export default function ProfileView() {
                           {compare.map(p => (
                             <div key={p.id} className="flex gap-3 p-3 rounded-xl border border-primary-100 dark:border-white/10 bg-primary-50/40 dark:bg-primary-900/30">
                               <button type="button" onClick={() => { closeProfilePage(); openPDP(p); }} className="flex-shrink-0">
-                                <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
+                                <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) => { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
                               </button>
                               <div className="flex-1 min-w-0 text-right">
                                 <button type="button" onClick={() => { closeProfilePage(); openPDP(p); }} className="w-full text-right">

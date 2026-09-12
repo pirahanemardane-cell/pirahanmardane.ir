@@ -160,7 +160,7 @@ function AdminMediaTab({ showToast }) {
           {items.map((it) => (
             <div key={it.id} className="rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 overflow-hidden flex flex-col">
               <div className="aspect-square bg-primary-50 dark:bg-primary-950 relative">
-                <img src={it.url} alt="" className="w-full h-full object-cover" onError={(e) = loading="lazy" decoding="async"> { try { e.currentTarget.style.opacity = '0.3'; } catch (_) {} }} />
+                <img src={it.url} alt="" className="w-full h-full object-cover" onError={(e) => { try { e.currentTarget.style.opacity = '0.3'; } catch (_) {} }} />
               </div>
               <div className="p-2 space-y-1 text-right">
                 <p className="text-[11px] font-medium text-primary-900 dark:text-white truncate">{it.ownerName}</p>
@@ -1459,7 +1459,7 @@ export default function AdminPanelContent() {
               <button type="button" onClick={()=>setAdminSellerDetailId(s.id)} className="flex-1 text-right min-w-0">
                <div className="flex items-start gap-3">
                 {s.logo ? (
-                 <img src={s.logo} alt="" className="w-12 h-12 rounded-xl object-cover border border-primary-100 dark:border-white/10 flex-shrink-0" onError={(e)= loading="lazy" decoding="async">{e.currentTarget.style.display='none'}} />
+                 <img src={s.logo} alt="" className="w-12 h-12 rounded-xl object-cover border border-primary-100 dark:border-white/10 flex-shrink-0" onError={(e)=>{e.currentTarget.style.display='none'}} />
                 ) : (
                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-800 flex items-center justify-center text-sm font-bold text-primary-500 flex-shrink-0">{(s.shopName||'ف').slice(0,1)}</div>
                 )}
@@ -1608,7 +1608,7 @@ export default function AdminPanelContent() {
                <p className="text-xs text-primary-500">پروفایل · {logoSt === 'pending' || pendLogo ? 'در انتظار تأیید' : logoSt === 'approved' ? 'منتشر شده' : '—'}</p>
                <div className="w-20 h-20 rounded-full overflow-visible border border-primary-200 bg-primary-50 flex items-center justify-center">
                 {(pendLogo || pubLogo) ? (
-                 <img src={pendLogo || pubLogo} alt="" className="w-full h-full object-cover" onError={(e) = loading="lazy" decoding="async"> { try { e.currentTarget.removeAttribute('src'); } catch (_) {} }} />
+                 <img src={pendLogo || pubLogo} alt="" className="w-full h-full object-cover" onError={(e) => { try { e.currentTarget.removeAttribute('src'); } catch (_) {} }} />
                 ) : <span className="text-[11px] text-primary-400">ندارد</span>}
                </div>
                {(logoSt === 'pending' || pendLogo) ? (
@@ -1622,7 +1622,7 @@ export default function AdminPanelContent() {
                <p className="text-xs text-primary-500">کاور · {bannerSt === 'pending' || pendBanner ? 'در انتظار تأیید' : bannerSt === 'approved' ? 'منتشر شده' : '—'}</p>
                <div className="w-full h-20 rounded-xl overflow-visible border border-primary-200 bg-primary-50 flex items-center justify-center">
                 {(pendBanner || pubBanner) ? (
-                 <img src={pendBanner || pubBanner} alt="" className="w-full h-full object-cover" onError={(e) = loading="lazy" decoding="async"> { try { e.currentTarget.removeAttribute('src'); } catch (_) {} }} />
+                 <img src={pendBanner || pubBanner} alt="" className="w-full h-full object-cover" onError={(e) => { try { e.currentTarget.removeAttribute('src'); } catch (_) {} }} />
                 ) : <span className="text-[11px] text-primary-400">ندارد</span>}
                </div>
                {(bannerSt === 'pending' || pendBanner) ? (
@@ -1680,7 +1680,7 @@ export default function AdminPanelContent() {
                 src={String((p.image || (Array.isArray(p.images) && p.images[0]) || '/logo.webp'))}
                 alt=""
                 className="w-16 h-20 object-cover rounded-lg flex-shrink-0 bg-primary-50"
-                onError={(e) = loading="lazy" decoding="async"> { try { e.currentTarget.src = '/logo.webp'; } catch (_) {} }}
+                onError={(e) => { try { e.currentTarget.src = '/logo.webp'; } catch (_) {} }}
                />
                <div className="flex-1 min-w-0 text-right">
                 <p className="text-sm font-medium text-primary-900 dark:text-white truncate">{String(p.name || p.title || 'محصول')}</p>
@@ -1823,7 +1823,7 @@ export default function AdminPanelContent() {
                src={p.image || (Array.isArray(p.images) && p.images[0]) || '/logo.webp'}
                alt=""
                className="w-full sm:w-20 h-40 sm:h-24 object-cover rounded-xl flex-shrink-0 bg-primary-50 dark:bg-primary-800"
-               onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }}
+               onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }}
               />
               </div>
               <div className="flex-1 min-w-0 text-right space-y-1">
@@ -2106,7 +2106,7 @@ export default function AdminPanelContent() {
             </div>
 
             <div className="flex flex-wrap items-start gap-4 p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
-             <img src={p.image || (p.images && p.images[0]) || '/logo.webp'} alt="" className="w-28 h-36 object-cover rounded-xl bg-primary-50" onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }} />
+             <img src={p.image || (p.images && p.images[0]) || '/logo.webp'} alt="" className="w-28 h-36 object-cover rounded-xl bg-primary-50" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }} />
              <div className="flex-1 min-w-0 space-y-1 text-right">
               <h2 className="text-base font-bold text-primary-900 dark:text-white">{p.name || p.title}</h2>
               <p className="text-xs text-primary-500">فروشگاه: {p.sellerName || '—'} · <span dir="ltr">{p.productCode || p.id}</span></p>
@@ -3184,7 +3184,7 @@ export default function AdminPanelContent() {
                     </div>
                     {cms.image ? (
                       <div className="w-full max-w-xs h-28 rounded-2xl overflow-hidden border border-primary-200 dark:border-white/15 relative">
-                        <img src={cms.image} alt="" className="w-full h-full object-cover rounded-2xl" onError={(e) = loading="lazy" decoding="async"> { try { e.currentTarget.style.display = 'none'; } catch (_) {} }} />
+                        <img src={cms.image} alt="" className="w-full h-full object-cover rounded-2xl" onError={(e) => { try { e.currentTarget.style.display = 'none'; } catch (_) {} }} />
                       </div>
                     ) : null}
                    </div>

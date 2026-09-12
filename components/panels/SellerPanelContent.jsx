@@ -1664,7 +1664,7 @@ export default function SellerPanelContent() {
                                   src={p.image || p.colors?.[0]?.image || (Array.isArray(p.images) && p.images[0]) || '/logo.webp'}
                                   alt=""
                                   className="w-16 h-20 sm:w-20 sm:h-24 rounded-xl object-cover flex-shrink-0 bg-primary-50 dark:bg-primary-800"
-                                  onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }}
+                                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo.webp'; }}
                                 />
                                 <div className="flex-1 min-w-0 text-right space-y-0.5">
                                   <p className="text-sm font-bold text-primary-900 dark:text-white line-clamp-2">{p.name || 'بدون نام'}</p>
@@ -4767,7 +4767,7 @@ export default function SellerPanelContent() {
                                   src={sellerLogoUrl || ""}
                                   alt=""
                                   className="w-full h-full object-cover"
-                                  onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
+                                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/default-avatar.svg"; }}
                                 />
                               </div>
                               <div className="flex flex-col gap-1.5">

@@ -1026,7 +1026,7 @@ export default function StaticPagesView() {
                           src={dark ? "/logo-white.webp" : "/logo-dark.webp"}
                           alt="پیراهن مردانه"
                           className="site-logo-img h-8 w-auto max-w-[140px] object-contain flex-shrink-0"
-                          onError={(e) = loading="lazy" decoding="async"> {
+                          onError={(e) => {
                             try {
                               e.currentTarget.onerror = null;
                               e.currentTarget.src = dark ? "/blue_t_bg.webp" : "/red_t_bg.webp";
@@ -1338,7 +1338,7 @@ export default function StaticPagesView() {
                 {/* بنر تخفیف */}
                 <button type="button" onClick={() => { setMobileMenuOpen(false); try { openStaticPage('deals'); } catch (_) { openPLP(); } }} className="w-full block rounded-2xl overflow-hidden relative h-28 text-right shadow-sm isolate ring-1 ring-black/5 dark:ring-white/10">
                   <img
-                    src={(() = loading="lazy" decoding="async"> { try { const c = typeof getPageCms === 'function' ? getPageCms('deals') : null; return (c && (c.image || c.banner || c.cover)) || 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp'; } catch (_) { return 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp'; } })()}
+                    src={(() => { try { const c = typeof getPageCms === 'function' ? getPageCms('deals') : null; return (c && (c.image || c.banner || c.cover)) || 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp'; } catch (_) { return 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=600&h=300&fit=crop&q=80&fm=webp'; } })()}
                     alt=""
                     className="absolute inset-0 w-full h-full object-cover rounded-2xl"
                     loading="lazy"
@@ -1828,7 +1828,7 @@ export default function StaticPagesView() {
                     compare.map(p => (
                       <div key={p.id} className="flex gap-3 p-2.5 rounded-xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900/40">
                         <button type="button" className="flex-shrink-0 p-0 border-0 bg-transparent" onClick={() => { setCompareOpen(false); openPDP(p); }}>
-                          <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
+                          <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) => { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
                         </button>
                         <div className="min-w-0 flex-1 flex flex-col">
                           <button type="button" className="text-right w-full p-0 border-0 bg-transparent" onClick={() => { setCompareOpen(false); openPDP(p); }}>
@@ -1899,7 +1899,7 @@ export default function StaticPagesView() {
                     recentlyViewed.map(p => (
                       <div key={p.id} className="flex gap-3 p-2.5 rounded-xl border border-primary-100 dark:border-white/10 bg-white dark:bg-primary-900/40">
                         <button type="button" className="flex-shrink-0 p-0 border-0 bg-transparent" onClick={() => { setRecentOpen(false); openPDP(p); }}>
-                          <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) = loading="lazy" decoding="async"> { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
+                          <img src={p.colors?.[0]?.image || p.image} alt={p.name || "محصول"} className="w-16 h-20 object-cover rounded-lg" onError={(e) => { e.currentTarget.classList.add("img-broken"); e.currentTarget.src = "/logo.webp"; }} />
                         </button>
                         <div className="min-w-0 flex-1 flex flex-col">
                           <button type="button" className="text-right w-full p-0 border-0 bg-transparent" onClick={() => { setRecentOpen(false); openPDP(p); }}>
