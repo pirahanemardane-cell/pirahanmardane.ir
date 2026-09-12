@@ -5513,17 +5513,19 @@ img, video, canvas, svg {
 }
 
 /* === hero-accent-word light/dark (forced) === */
-/* لایت: متن سفید + کادر و بردر قرمز */
 html:not(.dark) .hero-accent-word {
   color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   background-color: #FF0000 !important;
-  border: 1px solid #FF0000 !important;
-  box-shadow: none !important;
+  border-color: #FF0000 !important;
+  opacity: 1 !important;
 }
-/* دارک: دست‌نخورده‌تر — فیروزه‌ای معمول سایت */
 html.dark .hero-accent-word {
   color: #0A0A0A !important;
+  -webkit-text-fill-color: #0A0A0A !important;
   background-color: #13ABC4 !important;
-  border: 1px solid #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  opacity: 1 !important;
 }
 /* === end hero-accent-word forced === */
+
