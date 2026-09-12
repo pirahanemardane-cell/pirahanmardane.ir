@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useAppApi } from '../AppApiContext';
 import Hero from '../Hero';
 import Avatar from '../ui/Avatar';
+import { Features4 } from '../ui/features-4';
 import { FeatureCardsGrid } from '../ui/grid-feature-cards';
 
 /** HomeView — code-split from App.jsx */
@@ -162,28 +163,10 @@ export default function HomeView() {
               if (p >= 0.98) setHeaderRevealedAfterHero(true);
             }} />
 
-                        {/* Trust features — grid feature cards */}
-            <section className="relative z-20 py-8 sm:py-12 bg-white dark:bg-primary-950 border-b border-primary-100 dark:border-white/10">
-              <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8">
-                <div className="text-center max-w-2xl mx-auto">
-                  <p className="text-[11px] sm:text-xs font-bold tracking-wide text-[#FF0000] dark:text-[#13ABC4] mb-2">پیراهن مردانه</p>
-                  <h2 className="text-xl sm:text-3xl font-black text-primary-900 dark:text-white tracking-wide">
-                    انتخاب دقیق‌تر، خرید مطمئن‌تر
-                  </h2>
-                  <p className="mt-3 text-sm sm:text-base text-primary-600 dark:text-white/70 leading-relaxed">
-                    از پیراهن رسمی تا روزمره — فروشندگان تأییدشده، قیمت شفاف، و تجربه‌ای ساده برای انتخاب سایز و رنگ مناسب شما.
-                  </p>
-                </div>
-                <FeatureCardsGrid
-                  items={features}
-                  renderIcon={(f) => (
-                    <span className="inline-flex text-primary-800 dark:text-[#13ABC4]">
-                      <Icon name={f.icon} size={22} />
-                    </span>
-                  )}
-                />
-              </div>
-            </section>
+                                    <Features4
+              items={features}
+              renderIcon={(f) => <Icon name={f.icon} size={16} />}
+            />
 
             {/* Categories */}
             <section id="categories" className="py-8 sm:py-12 bg-primary-50 dark:bg-primary-950 transition-colors">
