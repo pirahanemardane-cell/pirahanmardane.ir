@@ -435,6 +435,29 @@ export default function AdminPanelContent() {
  const api = useAppApi();
  const [sellerRankRange, setSellerRankRange] = useState('month'); // day|week|month|year
 
+  const [adminErrorLogs, setAdminErrorLogs] = useState([]);
+  const [adminErrorLogsLoading, setAdminErrorLogsLoading] = useState(false);
+  const [adminErrorLogsOpen, setAdminErrorLogsOpen] = useState(false);
+  const loadAdminErrorLogsUi = async () => {
+    setAdminErrorLogsLoading(true);
+    try {
+      const res = await fetch('/api/admin/errors?limit=50', { credentials: 'include', cache: 'no-store' });
+      const json = await res.json().catch(() => ({}));
+      if (!json?.ok) {
+        showToast?.({ message: json?.error || 'دریافت لاگ خطا ناموفق', variant: 'error', duration: 4500, position: 'top-center' });
+        setAdminErrorLogs([]);
+      } else {
+        setAdminErrorLogs(Array.isArray(json.items) ? json.items : []);
+        setAdminErrorLogsOpen(true);
+      }
+    } catch (e) {
+      showToast?.({ message: String(e?.message || e), variant: 'error', duration: 4500, position: 'top-center' });
+      setAdminErrorLogs([]);
+    } finally {
+      setAdminErrorLogsLoading(false);
+    }
+  };
+
   const runServerBackupDownload = async () => {
     const toEn = (s) => String(s || '')
       .replace(/[\u06F0-\u06F9]/g, (c) => String(c.charCodeAt(0) - 0x06F0))
@@ -6450,6 +6473,35 @@ export default function AdminPanelContent() {
          {!adminLoading && adminTab === 'backup' && (
           <div className="space-y-4 p-4 sm:p-5 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900">
            <h2 className="text-base font-bold text-primary-900 dark:text-white">بک‌آپ و بازیابی کامل سایت</h2>
+            <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-2 mb-4">
+              <p className="text-sm font-bold text-primary-900 dark:text-white">خطاهای سیستم</p>
+              <p className="text-xs text-primary-500">آخرین لاگ‌های critical از سرور (حداکثر ۵۰).</p>
+              <button
+                type="button"
+                className="btn-cta text-xs px-3 py-1.5 rounded-full border border-primary-200 dark:border-white/30 text-primary-800 dark:text-white font-bold"
+                onClick={loadAdminErrorLogsUi}
+                disabled={adminErrorLogsLoading}
+              >
+                {adminErrorLogsLoading ? 'در حال بارگذاری…' : 'نمایش خطاهای سیستم'}
+              </button>
+              {adminErrorLogsOpen && (
+                <div className="max-h-64 overflow-y-auto space-y-2 mt-2">
+                  {!adminErrorLogs.length && (
+                    <p className="text-xs text-primary-400">موردی نیست یا جدول لاگ خالی است.</p>
+                  )}
+                  {adminErrorLogs.map((row, i) => (
+                    <div key={row.id || i} className="text-[11px] p-2 rounded-xl border border-primary-100 dark:border-white/10">
+                      <div className="flex justify-between gap-2 text-primary-500">
+                        <span className="font-latin truncate">{String(row.source || '—')}</span>
+                        <span className="flex-shrink-0">{row.created_at ? new Date(row.created_at).toLocaleString('fa-IR') : (row.at || '')}</span>
+                      </div>
+                      <p className="text-primary-800 dark:text-white/90 mt-1 break-words">{String(row.message || '')}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
            <div className="p-4 rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 space-y-2 mb-4">
             <p className="text-sm font-bold text-primary-900 dark:text-white">بکاپ سرور (JSON)</p>
             <p className="text-xs text-primary-500">خروجی جداول اصلی از Supabase — فقط ادمین.</p>
