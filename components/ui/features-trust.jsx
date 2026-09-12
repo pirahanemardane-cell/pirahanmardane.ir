@@ -1,8 +1,8 @@
 'use client';
 
 /**
- * FeaturesTrust — مینیمال، خوانا، لایت/دارک
- * ۴ مزیت در یک ردیف تمیز
+ * FeaturesTrust — مینیمال
+ * دارک: کارت خاکستری سایت + متن سفید
  */
 export function FeaturesTrust({ items = [], renderIcon }) {
   return (
@@ -21,15 +21,15 @@ export function FeaturesTrust({ items = [], renderIcon }) {
           {(items || []).map((f, i) => (
             <li
               key={i}
-              className="group flex flex-col items-center text-center rounded-2xl bg-white dark:bg-primary-900/70 border border-primary-100/80 dark:border-white/10 px-3 py-5 sm:px-4 sm:py-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-primary-200 dark:hover:border-white/20 transition-all duration-200"
+              className="group flex flex-col items-center text-center rounded-2xl bg-white dark:bg-primary-800 border border-primary-100/80 dark:border-white/10 px-3 py-5 sm:px-4 sm:py-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-primary-200 dark:hover:border-white/20 transition-all duration-200"
             >
-              <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-800 text-primary-800 dark:text-[#13ABC4] ring-1 ring-primary-100 dark:ring-white/10 group-hover:scale-105 transition-transform">
+              <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-700 text-primary-800 dark:text-white ring-1 ring-primary-100 dark:ring-white/15 group-hover:scale-105 transition-transform">
                 {renderIcon ? renderIcon(f) : null}
               </span>
               <h3 className="text-xs sm:text-sm font-bold text-primary-900 dark:text-white leading-snug">
                 {f.title}
               </h3>
-              <p className="mt-1.5 text-[11px] sm:text-xs text-primary-500 dark:text-white/60 leading-relaxed line-clamp-2">
+              <p className="mt-1.5 text-[11px] sm:text-xs text-primary-500 dark:text-white leading-relaxed line-clamp-2">
                 {f.desc || f.description || ''}
               </p>
             </li>
