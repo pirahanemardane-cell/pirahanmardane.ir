@@ -156,6 +156,13 @@ import { fetchAddresses, createAddress, patchAddress, deleteAddress } from '@/li
 import { fetchSiteSettings, putSiteSetting } from '@/lib/api/site-settings';
 import { fetchCouponByCode, fetchCouponsAdmin, createCoupon } from '@/lib/api/coupons';
 import { apiAdminProducts, apiAdminOrders, apiAdminSellers, apiAdminStats, apiAdminPatchProduct } from '@/lib/api/admin';
+import { fetchShippingMethods, postShippingMethods } from '@/lib/api/shipping';
+import { addWishlist, removeWishlist } from '@/lib/api/wishlist';
+import { fetchCampaigns, saveCampaign } from '@/lib/api/campaigns';
+import { postSeoRedirects, postIndexNow } from '@/lib/api/seo';
+import { fetchSellerFollows, toggleSellerFollow } from '@/lib/api/seller-follows';
+import { fetchNotifications, postRecentView, trackOrder } from '@/lib/api/misc';
+import { fetchTickets } from '@/lib/api/tickets';
 import {
   slugifyFa,
   FA_PATHS,
@@ -358,8 +365,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
 
       const hydrateShippingMethodsFromApi = async () => {
         try {
-          const res = await fetch('/api/shipping-methods', { credentials: 'include', cache: 'no-store' });
-          const json = await res.json().catch(() => ({}));
+          const json = await fetchShippingMethods();
           if (json?.ok && Array.isArray(json.items) && json.items.length) {
             const mapped = mapShippingMethodsFromApi(json.items);
             try { setAdminShippingMethods(mapped); } catch (_) {}
@@ -693,12 +699,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             next = removeFromWishlist(prev, productId);
             showToast({ message: 'از علاقه‌مندی‌ها حذف شد', variant: 'success', position: 'top-center' });
             try {
-              fetch('/api/wishlist', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ product_id: String(productId) }),
-              }).catch(() => {});
+              removeWishlist(productId).catch(() => {});
             } catch (_) {}
           } else {
             if (!canAddToWishlist(prev, WISHLIST_MAX)) {
@@ -713,12 +714,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               actions: { label: 'مشاهده', onClick: () => { setCompareOpen(false); setCartOpen(false); setWishlistOpen(true); }, variant: 'outline' },
             });
             try {
-              fetch('/api/wishlist', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ product_id: String(productId) }),
-              }).catch(() => {});
+              addWishlist(productId).catch(() => {});
             } catch (_) {}
           }
           return persistFavorites(next);
@@ -1242,21 +1238,14 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       };
       const hydrateCampaignsFromApi = async (all = false) => {
         try {
-          const res = await fetch('/api/campaigns' + (all ? '?all=1' : ''), { credentials: 'include', cache: 'no-store' });
-          const json = await res.json().catch(() => ({}));
+          const json = await fetchCampaigns(all);
           if (!json?.ok || !Array.isArray(json.items)) return;
           setCampaignsList(json.items);
         } catch (_) {}
       };
       const persistCampaignOnServer = async (item, method = 'POST') => {
         try {
-          const res = await fetch('/api/campaigns', {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(item),
-          });
-          return await res.json().catch(() => ({}));
+          return await saveCampaign(item, method);
         } catch (_) {
           return { ok: false };
         }
@@ -1766,11 +1755,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         setSeoRedirects(next);
         try { localStorage.setItem('seoRedirects', JSON.stringify(next)); } catch (_) {}
         try {
-          fetch('/api/seo/redirects', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ redirects: next || [] }),
-          }).catch(() => {});
+          postSeoRedirects(next || []).catch(() => {});
         } catch (_) {}
       };
 
@@ -1780,11 +1765,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
           if (!raw) return;
           const list = JSON.parse(raw);
           if (!Array.isArray(list) || !list.length) return;
-          fetch('/api/seo/redirects', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ redirects: list }),
-          }).catch(() => {});
+          postSeoRedirects(list).catch(() => {});
         } catch (_) {}
       }, []);
       const saveSeo404Log = (next) => {
@@ -2554,12 +2535,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         try { localStorage.setItem('adminShippingMethods', JSON.stringify(next)); } catch (_) {}
         try {
           const items = shippingMethodsToApiPayload(next);
-          fetch('/api/shipping-methods', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ items }),
-          }).catch(() => {});
+          postShippingMethods(items).catch(() => {});
         } catch (_) {}
       };
       /* TEMP / پیش‌فرض: روش‌های ارسال فرضی برای تست خرید */
@@ -2739,11 +2715,9 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
             return;
           }
 
-          const res = await fetch('/api/seller-follows', {
-            method: was ? 'DELETE' : 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify({ seller_id: sid }),
+          const data = await toggleSellerFollow(sid, was);
+            /* legacy res unused */
+            const res = { ok: data?.ok !== false, json: async () => data };
           });
           const data = await res.json().catch(() => ({}));
           if (!res.ok || data?.ok === false) {
@@ -2794,12 +2768,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
         }
         (async () => {
           try {
-            const res = await fetch('/api/seller-follows', {
-              credentials: 'include',
-              cache: 'no-store',
-              headers: { Accept: 'application/json' },
-            });
-            const data = await res.json().catch(() => null);
+            const data = await fetchSellerFollows();
             if (cancelled || !data?.ok) return;
             const map = {};
             for (const id of data.ids || []) {
@@ -3760,8 +3729,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
               try { window.dispatchEvent(new Event('admin-products-refetch')); } catch (_) {}
             }
             if (scope === 'orders' || scope === 'all') {
-              fetch('/api/orders', { credentials: 'include', cache: 'no-store' })
-                .then((r) => r.json())
+              fetchOrdersList()
                 .then((j) => {
                   const list = j?.orders || j?.data;
                   if (Array.isArray(list)) {
@@ -3789,8 +3757,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                 .catch(() => {});
             }
             if (scope === 'notifications' || scope === 'all') {
-              fetch('/api/notifications', { credentials: 'include', cache: 'no-store' })
-                .then((r) => r.json())
+              fetchNotifications()
                 .then((j) => {
                   const list = j?.notifications || j?.data;
                   if (Array.isArray(list)) {
@@ -3890,8 +3857,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
                 .catch(() => {});
             }
             if (scope === 'tickets' || scope === 'all') {
-              fetch('/api/tickets', { credentials: 'include', cache: 'no-store' })
-                .then((r) => r.json())
+              fetchTickets()
                 .then((j) => {
                   const list = j?.tickets || j?.data;
                   if (Array.isArray(list)) {
@@ -6474,12 +6440,7 @@ const SimpleEditor = dynamic(() => import('./SimpleEditor'), {
       const pushProductView = async (productId) => {
         if (!user || !productId) return;
         try {
-          await fetch('/api/recent-views', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ product_id: String(productId) }),
-          });
+          await postRecentView(productId);
         } catch (_) {}
       };
 
@@ -7337,8 +7298,7 @@ const verifyOtp = async () => {
             }
           } catch (_) {}
           try {
-            const r = await fetch("/api/tickets", { credentials: "include", cache: "no-store" });
-            const j = await r.json().catch(() => ({}));
+            const j = await fetchTickets();
             if (!cancelled && j?.ok && Array.isArray(j.tickets) && typeof setBuyerTickets === "function") {
               setBuyerTickets(j.tickets);
             }
@@ -8805,10 +8765,7 @@ const verifyOtp = async () => {
         const base = (s.canonicalBase || 'https://pirahanemardane.ir').replace(/\/$/, '');
         const urls = (urlList || []).map(u => (u.startsWith('http') ? u : base + u));
         try {
-          const res = await fetch('/api/seo/indexnow', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+          const data = await postIndexNow({
               host: base.replace(/^https?:\/\//, ''),
               key: s.indexNowKey,
               urlList: urls,
@@ -14511,12 +14468,7 @@ const params = new URLSearchParams(window.location.search);
                   setPublicTrackError('');
                   setPublicTrackResult(null);
                   try {
-                    const res = await fetch('/api/orders/track', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ code }),
-                    });
-                    const data = await res.json().catch(() => ({}));
+                    const data = await trackOrder(code);
                     if (!data?.ok) {
                       setPublicTrackError(data?.error || 'سفارشی یافت نشد');
                     } else {
