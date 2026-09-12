@@ -3,12 +3,12 @@
 /** قرارداد یکشکل empty / loading / error */
 export function LoadingState({ label = 'در حال بارگذاری…', className = '' }) {
   return (
-    <div className={`flex flex-col items-center justify-center gap-2 py-12 px-4 ${className}`} role="status" aria-live="polite">
-      <div className="w-8 h-8 rounded-full border-2 border-primary-200 dark:border-white/20 border-t-apple-blue animate-spin" aria-hidden />
-      <p className="text-xs text-primary-500 dark:text-white/60">{label}</p>
+    <div className={`py-8 text-center text-sm text-primary-500 dark:text-primary-400 animate-pulse ${className}`.trim()} role="status" aria-live="polite">
+      {label}
     </div>
   );
 }
+
 
 export function ErrorState({ title = 'خطایی رخ داد', description = '', onRetry, className = '' }) {
   return (

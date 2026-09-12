@@ -228,7 +228,7 @@ export default function AdminReviewsTab({ showToast }) {
           <button type="button" onClick={loadAvatars} className="text-xs text-apple-blue">تازه‌سازی</button>
         </div>
         {avatarsLoading ? (
-          <p className="text-xs text-primary-500">در حال بارگذاری...</p>
+          <p className="text-xs text-primary-500 animate-pulse">در حال بارگذاری...</p>
         ) : avatars.length === 0 ? (
           <p className="text-xs text-primary-500">موردی در انتظار نیست.</p>
         ) : (
@@ -335,7 +335,7 @@ export default function AdminReviewsTab({ showToast }) {
 
       <div className="rounded-2xl border border-primary-200 dark:border-white/15 bg-white dark:bg-primary-900 overflow-hidden">
         {loading ? (
-          <p className="p-6 text-sm text-primary-500">در حال بارگذاری...</p>
+          <p className="p-6 text-sm text-primary-500 animate-pulse">در حال بارگذاری...</p>
         ) : list.length === 0 ? (
           <p className="p-6 text-sm text-primary-500">نظری یافت نشد.</p>
         ) : (

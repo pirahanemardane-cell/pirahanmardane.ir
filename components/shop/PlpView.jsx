@@ -4,7 +4,7 @@
 import { useEffect } from 'react';
 import { useAppApi } from '../AppApiContext';
 import dynamic from 'next/dynamic';
-const VirtualProductGrid = dynamic(() => import('../VirtualProductGrid'), { ssr: false, loading: () => <div className="min-h-[200px] animate-pulse rounded-2xl bg-primary-100 dark:bg-primary-900" aria-hidden /> });
+const VirtualProductGrid = dynamic(() => import('../VirtualProductGrid'), { ssr: false, loading: () => <div className="min-h-[120px] flex items-center justify-center" role="status"><span className="text-sm text-primary-500 animate-pulse">در حال بارگذاری…</span></div> });
 
 /** PlpView — code-split from App.jsx */
 export default function PlpView() {
@@ -306,42 +306,8 @@ export default function PlpView() {
                   {/* گرید / لیست محصولات */}
                   <div className="flex-1 min-w-0">
                     {plpSkeleton ? (
-                      <div className={`grid gap-3 sm:gap-4 ${plpView === 'grid' ? 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'}`}>
-                        {Array.from({ length: 8 }).map((_, i) => (
-                          <div key={i} className="rounded-2xl bg-white dark:bg-primary-900 border border-primary-100 dark:border-white/10 overflow-hidden animate-pulse">
-                            <div className="aspect-[4/5] bg-primary-100 dark:bg-primary-800" />
-                            <div className="p-3 space-y-2">
-                              <div className="h-3 bg-primary-100 dark:bg-primary-800 rounded w-3/4" />
-                              <div className="h-3 bg-primary-100 dark:bg-primary-800 rounded w-1/2" />
-                              <div className="h-3 bg-primary-100 dark:bg-primary-800 rounded w-1/3" />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : plpFilteredSafe.length === 0 ? (
-                      <div className="text-center py-12">
-                        <p className="font-medium text-primary-800 dark:text-white mb-2">محصولی با این فیلتر یافت نشد</p>
-                        <p className="text-xs text-primary-500 dark:!text-white mb-4">فیلترها را کم کنید یا این پیشنهادها را ببینید</p>
-                        {plpEmptyHintsSafe.length > 0 && (
-                          <div className="flex flex-wrap justify-center gap-2 mb-4">
-                            {plpEmptyHintsSafe.map(ch => (
-                              <button key={ch.key} type="button" onClick={() => { ch.clear(); setPlpVisible(8); }}
-                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border plp-filter-chip border-primary-300 dark:border-white/50 !text-primary-900 dark:!text-white bg-white dark:bg-[#2A2C30] font-medium bg-white dark:bg-primary-900">
-                                حذف «{ch.label}»
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                        <p className="text-sm text-primary-500 dark:text-white/70 mb-3">با فیلترهای فعلی نتیجه‌ای پیدا نشد. فیلترها را کم کنید یا پاک کنید.</p>
-                        <button type="button" onClick={clearPlpFilters} className="text-sm text-apple-blue dark:text-[#13ABC4] underline mb-6">پاک کردن فیلترها</button>
-                        <h2 className="text-sm font-bold text-primary-900 dark:text-white mb-3">شاید این‌ها را بپسندید</h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                          {productsSafe.slice(0, 4).map(p => (
-                            <div key={p.id} className="min-w-0">{renderProductCard(p, 'plp-sugg-', { grid: true })}</div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
+                    <div className="py-16 text-center text-sm text-primary-500 animate-pulse" role="status">در حال بارگذاری…</div>
+                  ) : (
                       <>
                         {plpView === 'grid' ? (
                           <VirtualProductGrid
@@ -394,7 +360,7 @@ export default function PlpView() {
                         )}
                                                 {plpHasMoreSafe && (
                           <div ref={plpSentinelRef} className="py-8 flex justify-center">
-                            <div className="w-6 h-6 border-2 border-primary-300 border-t-apple-blue rounded-full animate-spin" />
+                            <span className="text-xs text-primary-500 animate-pulse">در حال بارگذاری…</span>
                           </div>
                         )}
                         {!plpHasMoreSafe && plpFilteredSafe.length > 8 && (

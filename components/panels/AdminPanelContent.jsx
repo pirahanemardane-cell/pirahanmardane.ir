@@ -152,7 +152,7 @@ function AdminMediaTab({ showToast }) {
         ))}
       </div>
       {loading ? (
-        <p className="text-sm text-primary-500 py-8 text-center">در حال بارگذاری…</p>
+        <p className="text-sm text-primary-500 py-8 text-center animate-pulse">در حال بارگذاری…</p>
       ) : items.length === 0 ? (
         <p className="text-sm text-primary-500 py-8 text-center">موردی نیست</p>
       ) : (
@@ -258,7 +258,7 @@ function AdminCustomerClubTab() {
       </div>
       <p className="text-xs text-primary-400">تعداد: {items.length}</p>
       {loading ? (
-        <p className="text-sm text-primary-500 py-8 text-center">در حال بارگذاری…</p>
+        <p className="text-sm text-primary-500 py-8 text-center animate-pulse">در حال بارگذاری…</p>
       ) : !items.length ? (
         <p className="text-sm text-primary-500 py-10 text-center">موردی ثبت نشده</p>
       ) : (
@@ -1400,7 +1400,7 @@ export default function AdminPanelContent() {
             </div>
            )}
            {(adminListLoading && adminListLoading.sellers) && (
-            <p className="text-center text-sm text-primary-400 py-6">در حال بارگذاری فروشندگان…</p>
+            <p className="text-center text-sm text-primary-400 py-6 animate-pulse">در حال بارگذاری فروشندگان…</p>
            )}
            <div className="space-y-2">
             {adminSelectedSellerIds.length > 0 && (
