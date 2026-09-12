@@ -1,4 +1,4 @@
-use client'
+'use client'
 
 import React from 'react'
 
@@ -13,32 +13,27 @@ export default class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, info) {
+    try { console.error('[ErrorBoundary]', error, info?.componentStack) } catch (_) {}
     try {
-      console.error('[ErrorBoundary]', error, info?.componentStack)
-    } catch (_) {}
-    try {
-      fetch('/api/admin/errors', { method: 'GET', credentials: 'include' }).catch(() => {})
-      // best-effort client ping — real log via dedicated endpoint if exists
-      if (typeof window !== 'undefined') {
-        const payload = {
-          source: 'ErrorBoundary',
-          message: String(error?.message || error || '').slice(0, 500),
-          stack: String(info?.componentStack || '').slice(0, 1500),
-          href: String(window.location?.href || '').slice(0, 300),
-          at: new Date().toISOString(),
-        }
-        navigator.sendBeacon?.(
-          '/api/client-error',
-          new Blob([JSON.stringify(payload)], { type: 'application/json' }),
-        )
-        fetch('/api/client-error', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          credentials: 'include',
-          keepalive: true,
-        }).catch(() => {})
+      if (typeof window === 'undefined') return
+      const payload = {
+        source: 'ErrorBoundary',
+        message: String(error?.message || error || '').slice(0, 500),
+        stack: String(info?.componentStack || '').slice(0, 1500),
+        href: String(window.location?.href || '').slice(0, 300),
+        at: new Date().toISOString(),
       }
+      const body = JSON.stringify(payload)
+      try {
+        navigator.sendBeacon?.('/api/client-error', new Blob([body], { type: 'application/json' }))
+      } catch (_) {}
+      fetch('/api/client-error', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        credentials: 'include',
+        keepalive: true,
+      }).catch(() => {})
     } catch (_) {}
   }
 
@@ -48,14 +43,11 @@ export default class ErrorBoundary extends React.Component {
         <div dir="rtl" style={{ padding: 24, fontFamily: 'sans-serif', maxWidth: 480, margin: '40px auto' }}>
           <h1 style={{ fontSize: 18, marginBottom: 8 }}>خطایی در نمایش صفحه رخ داد</h1>
           <p style={{ color: '#666', fontSize: 14, marginBottom: 16 }}>
-            لطفاً صفحه را تازه کنید. اگر تکرار شد، از پشتیبانی بگویید.
+            لطفاً صفحه را تازه کنید. اگر تکرار شد با پشتیبانی تماس بگیرید.
           </p>
           <button
             type="button"
-            onClick={() => {
-              try { this.setState({ hasError: false, message: '' }) } catch (_) {}
-              try { window.location.reload() } catch (_) {}
-            }}
+            onClick={() => { try { window.location.reload() } catch (_) {} }}
             style={{ padding: '10px 16px', borderRadius: 8, border: '1px solid #ccc', cursor: 'pointer' }}
           >
             تلاش دوباره
