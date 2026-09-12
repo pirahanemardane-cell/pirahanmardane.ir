@@ -14707,7 +14707,7 @@ const params = new URLSearchParams(window.location.search);
                       <div className="mt-5 grid grid-cols-3 gap-2">
                         {[
                           { icon: 'shield', t: 'پرداخت امن' },
-                          { icon: 'refresh', t: '۷ روز بازگشت' },
+                          { icon: 'refresh', t: 'ضمانت بازگشت' },
                           { icon: 'badge', t: 'ضمانت اصالت' },
                         ].map((x) => (
                           <div key={x.t} className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-primary-50 dark:bg-primary-900 text-center border border-primary-100 dark:border-white/15">

@@ -193,7 +193,7 @@ export default function SellerStorefrontView() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                   {[
                     { icon: 'truck', title: 'ارسال', desc: `میانگین ${toFa(activeSeller.avgShipDays)} روز · ${toFa(activeSeller.onTimeRate)}٪ تحویل به‌موقع` },
-                    { icon: 'refresh', title: 'مرجوعی', desc: '۷ روز ضمانت بازگشت کالا در صورت مشکل' },
+                    { icon: 'refresh', title: 'مرجوعی', desc: 'ضمانت بازگشت کالا در صورت مشکل' },
                     { icon: 'headphones', title: 'پاسخگویی', desc: activeSeller.responseTime ? `میانگین پاسخ ${activeSeller.responseTime}` : 'پاسخگویی در ساعات کاری' },
                   ].map(item => (
                     <div key={item.title} className="flex items-start gap-2.5 bg-white dark:bg-primary-900 rounded-xl border border-primary-100 dark:border-white/15 px-3.5 py-3">
@@ -357,7 +357,7 @@ export default function SellerStorefrontView() {
                   <p className="text-xs sm:text-sm text-primary-600 dark:text-white/80 leading-relaxed">{activeSeller.about}</p>
                   <div className="mt-4 pt-4 border-t border-primary-100 dark:border-white/15 grid sm:grid-cols-3 gap-3 text-xs sm:text-xs text-primary-500 dark:!text-white">
                     <div className="flex items-center gap-2"><Icon name="truck" size={14} /><span>ارسال به سراسر ایران</span></div>
-                    <div className="flex items-center gap-2"><Icon name="refresh" size={14} /><span>۷ روز ضمانت مرجوعی</span></div>
+                    <div className="flex items-center gap-2"><Icon name="refresh" size={14} /><span>ضمانت بازگشت مرجوعی</span></div>
                     <div className="flex items-center gap-2"><Icon name="shield" size={14} /><span>پرداخت امن</span></div>
                   </div>
                 </div>

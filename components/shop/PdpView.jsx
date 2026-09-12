@@ -308,7 +308,7 @@ export default function PdpView() {
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                           {[
                             { icon: 'badge', t: 'ضمانت اصالت' },
-                            { icon: 'refresh', t: '۷ روز بازگشت' },
+                            { icon: 'refresh', t: 'ضمانت بازگشت' },
                             { icon: 'truck', t: 'ارسال سریع' },
                             { icon: 'shield', t: 'پرداخت امن' },
                           ].map(item => (
@@ -628,7 +628,7 @@ export default function PdpView() {
                             خبرم کن وقتی موجود شد
                           </button>
                         )}
-                        <p className="text-[11px] sm:text-xs text-center text-primary-500 dark:text-white/60">پرداخت امن · ارسال سریع · ۷ روز ضمانت بازگشت</p>
+                        <p className="text-[11px] sm:text-xs text-center text-primary-500 dark:text-white/60">پرداخت امن · ارسال سریع · ضمانت بازگشت</p>
                       </div>
                       {pdpNotifyOpen && (
                         <div className="mt-2 p-3 rounded-xl border border-primary-200 dark:border-white/20 bg-white dark:bg-primary-900">
@@ -654,7 +654,7 @@ export default function PdpView() {
                       {/* Return summary under CTA */}
                       <div className="mt-3 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/40">
                         <p className="text-xs sm:text-sm font-medium text-emerald-800 dark:text-emerald-300 leading-relaxed text-center">
-                          ✓ ۷ روز ضمانت بازگشت · ✓ ضمانت اصالت · ✓ ارسال از {fullSeller.city || 'تهران'}
+                          ✓ ضمانت بازگشت · ✓ ضمانت اصالت · ✓ ارسال از {fullSeller.city || 'تهران'}
                         </p>
                       </div>
 
@@ -662,7 +662,7 @@ export default function PdpView() {
                       <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-2 lg:hidden">
                         {[
                           { icon: 'badge', t: 'ضمانت اصالت' },
-                          { icon: 'refresh', t: '۷ روز بازگشت' },
+                          { icon: 'refresh', t: 'ضمانت بازگشت' },
                           { icon: 'truck', t: 'ارسال سریع' },
                           { icon: 'shield', t: 'پرداخت امن' },
                         ].map(item => (
