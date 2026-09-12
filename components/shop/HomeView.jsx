@@ -162,10 +162,9 @@ export default function HomeView() {
               if (p >= 0.98) setHeaderRevealedAfterHero(true);
             }} />
 
-                                                <FeaturesTrust
+            <FeaturesTrust
               items={features}
               renderIcon={(f) => <Icon name={f.icon} size={18} />}
-            />}
             />
 
             {/* Categories */}
