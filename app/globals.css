@@ -42,6 +42,125 @@ html.dark {
 @tailwind components;
 @tailwind utilities;
 
+/* === TYPOGRAPHY SCALE (قدم ۱۰۰) === */
+:root {
+  /* Mobile base → tablet → desktop via clamp where useful */
+  --fs-h1: clamp(1.75rem, 1.5rem + 1.2vw, 2.75rem);   /* 28 → 44 */
+  --fs-h2: clamp(1.5rem, 1.35rem + 0.9vw, 2.15rem);    /* 24 → 34 */
+  --fs-h3: clamp(1.25rem, 1.15rem + 0.7vw, 1.8rem);    /* 20 → 29 */
+  --fs-h4: clamp(1.125rem, 1.05rem + 0.45vw, 1.5rem);  /* 18 → 24 */
+  --fs-h5: clamp(1.0625rem, 1rem + 0.35vw, 1.35rem);   /* 17 → 22 */
+  --fs-h6: clamp(1rem, 0.98rem + 0.25vw, 1.2rem);      /* 16 → 19 */
+  --fs-body: clamp(1rem, 0.98rem + 0.2vw, 1.125rem);   /* 16 → 18 */
+  --fs-btn: clamp(0.9375rem, 0.92rem + 0.15vw, 1rem);  /* 15 → 16 */
+  --fs-caption: 0.875rem;  /* 14 */
+  --fs-meta: 0.8125rem;    /* 13 */
+  --fs-nav: clamp(0.9375rem, 0.92rem + 0.15vw, 1rem);  /* 15 → 16 */
+
+  --lh-h1: 1.2;
+  --lh-h2: 1.25;
+  --lh-h3: 1.3;
+  --lh-h4: 1.35;
+  --lh-h5: 1.4;
+  --lh-h6: 1.4;
+  --lh-body: 1.75;
+  --lh-btn: 1.4;
+  --lh-caption: 1.55;
+  --lh-meta: 1.5;
+  --lh-nav: 1.45;
+}
+
+/* Semantic headings — only pure heading tags (not every text-2xl utility) */
+.prose-site h1, main h1, .page-title, [data-typo="h1"] {
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  line-height: var(--lh-h1);
+}
+.prose-site h2, main h2, .section-title, [data-typo="h2"] {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: var(--lh-h2);
+}
+.prose-site h3, main h3, .card-title, [data-typo="h3"] {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  line-height: var(--lh-h3);
+}
+.prose-site h4, main h4, [data-typo="h4"] {
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  line-height: var(--lh-h4);
+}
+.prose-site h5, main h5, [data-typo="h5"] {
+  font-size: var(--fs-h5);
+  font-weight: 600;
+  line-height: var(--lh-h5);
+}
+.prose-site h6, main h6, [data-typo="h6"] {
+  font-size: var(--fs-h6);
+  font-weight: 600;
+  line-height: var(--lh-h6);
+}
+
+/* Body default for main content areas */
+body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: 400;
+}
+
+/* CTA / primary buttons that use these classes */
+.btn-cta,
+.btn-primary,
+button.rounded-full.bg-apple-blue,
+a.rounded-full.bg-apple-blue {
+  font-size: var(--fs-btn);
+  font-weight: 600;
+  line-height: var(--lh-btn);
+}
+
+/* Caption / image notes */
+.caption, [data-typo="caption"] {
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: var(--lh-caption);
+}
+
+/* Meta / small secondary */
+.meta, [data-typo="meta"] {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  line-height: var(--lh-meta);
+}
+
+/* Desktop top nav text links (not icons) */
+.site-header nav button,
+.site-header nav a,
+header.site-header .hidden.md\:flex button,
+header [data-site-header] nav button {
+  font-size: var(--fs-nav);
+  font-weight: 500;
+  line-height: var(--lh-nav);
+}
+
+/* Keep badges / chips / counters intentionally small — do not inflate */
+.badge, .chip, [class*="badge"], .cart-count, .notif-count {
+  /* leave utility classes in control */
+}
+
+/* Utility aliases for gradual adoption */
+.text-typo-h1 { font-size: var(--fs-h1); font-weight: 700; line-height: var(--lh-h1); }
+.text-typo-h2 { font-size: var(--fs-h2); font-weight: 700; line-height: var(--lh-h2); }
+.text-typo-h3 { font-size: var(--fs-h3); font-weight: 700; line-height: var(--lh-h3); }
+.text-typo-body { font-size: var(--fs-body); font-weight: 400; line-height: var(--lh-body); }
+.text-typo-btn { font-size: var(--fs-btn); font-weight: 600; line-height: var(--lh-btn); }
+.text-typo-caption { font-size: var(--fs-caption); line-height: var(--lh-caption); }
+.text-typo-meta { font-size: var(--fs-meta); line-height: var(--lh-meta); }
+.text-typo-nav { font-size: var(--fs-nav); font-weight: 500; line-height: var(--lh-nav); }
+/* === END TYPOGRAPHY SCALE === */
+
+
+
 
 /* ========== Dark mode — mint / cyan / blue palette ========== */
 .dark {
