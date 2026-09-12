@@ -161,40 +161,35 @@ export default function HomeView() {
               if (p >= 0.98) setHeaderRevealedAfterHero(true);
             }} />
 
-                        {/* Features — full-width · فاصله چپ/راست متقارن */}
-            <section className="relative z-20 bg-primary-50 dark:bg-primary-900 py-3 sm:py-4 border-b border-primary-200 dark:border-white/30 transition-colors overflow-hidden">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 w-full items-stretch justify-items-stretch sm:justify-items-center">
-                  {features.map((f, i) => (
-                    <div key={i} className="flex items-center justify-start sm:justify-center gap-2 sm:gap-2.5 min-w-0 w-full max-w-full h-full">
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white dark:bg-primary-800 text-primary-800 dark:text-white flex items-center justify-center flex-shrink-0 border border-primary-200 dark:border-white/30">
-                        <Icon name={f.icon} size={16} />
-                      </div>
-                      <div className="min-w-0 overflow-hidden text-right flex-1 sm:flex-none">
-                        <h3 className="font-semibold text-xs text-primary-900 dark:text-white leading-snug whitespace-nowrap">{f.title}</h3>
-                        <p className="text-xs text-primary-500 dark:text-white/80 mt-0.5 leading-snug line-clamp-2">{f.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* pm-brand-storytelling */}
-            <section className="relative z-20 py-8 sm:py-10 bg-white dark:bg-primary-950 border-b border-primary-100 dark:border-white/10">
+                        {/* Trust + story — یک سکشن ترکیبی */}
+            <section className="relative z-20 py-6 sm:py-10 bg-white dark:bg-primary-950 border-b border-primary-100 dark:border-white/10">
               <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-l from-primary-50 via-white to-primary-50 dark:from-primary-900 dark:via-primary-950 dark:to-primary-900 border border-primary-100 dark:border-white/10 p-5 sm:p-8 text-center">
-                  <p className="text-[11px] sm:text-xs font-bold tracking-wide text-apple-blue dark:text-[#13ABC4] mb-2">پیراهن مردانه</p>
-                  <h2 className="text-lg sm:text-2xl font-black text-primary-900 dark:text-white leading-snug">
-                    انتخاب دقیق‌تر، خرید مطمئن‌تر
-                  </h2>
-                  <p className="mt-2.5 sm:mt-3 text-sm sm:text-base text-primary-600 dark:text-white/75 leading-relaxed max-w-2xl mx-auto">
-                    از پیراهن رسمی تا روزمره — فروشندگان تأییدشده، قیمت شفاف، و تجربه‌ای ساده برای انتخاب سایز و رنگ مناسب شما.
-                  </p>
-                  <div className="mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[11px] sm:text-xs font-medium text-primary-700 dark:text-white/80">
-                    <span className="px-3 py-1.5 rounded-full bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15">فروشنده تأییدشده</span>
-                    <span className="px-3 py-1.5 rounded-full bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15">ضمانت اصالت</span>
-                    <span className="px-3 py-1.5 rounded-full bg-white dark:bg-primary-900 border border-primary-200 dark:border-white/15">۷ روز بازگشت</span>
+                <div className="rounded-2xl sm:rounded-3xl border border-primary-100 dark:border-white/10 bg-gradient-to-b from-primary-50/90 to-white dark:from-primary-900 dark:to-primary-950 p-5 sm:p-8 shadow-sm">
+                  <div className="text-center max-w-2xl mx-auto">
+                    <p className="text-[11px] sm:text-xs font-bold tracking-wide text-[#FF0000] dark:text-[#13ABC4] mb-2">پیراهن مردانه</p>
+                    <h2 className="text-lg sm:text-2xl font-black text-primary-900 dark:text-white leading-snug">
+                      انتخاب دقیق‌تر، خرید مطمئن‌تر
+                    </h2>
+                    <p className="mt-2.5 sm:mt-3 text-sm sm:text-base text-primary-600 dark:text-white/75 leading-relaxed">
+                      از پیراهن رسمی تا روزمره — فروشندگان تأییدشده، قیمت شفاف، و تجربه‌ای ساده برای انتخاب سایز و رنگ مناسب شما.
+                    </p>
+                  </div>
+
+                  <div className="mt-6 sm:mt-8 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    {features.map((f, i) => (
+                      <div
+                        key={i}
+                        className="flex flex-col sm:flex-row items-center sm:items-start gap-2.5 rounded-xl sm:rounded-2xl bg-white/90 dark:bg-primary-900/80 border border-primary-100 dark:border-white/10 px-3 py-3.5 sm:px-4 sm:py-4 text-center sm:text-right shadow-sm"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-primary-50 dark:bg-primary-800 text-primary-800 dark:text-[#13ABC4] flex items-center justify-center flex-shrink-0 border border-primary-100 dark:border-white/15">
+                          <Icon name={f.icon} size={18} />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-bold text-xs sm:text-sm text-primary-900 dark:text-white leading-snug">{f.title}</h3>
+                          <p className="text-[11px] sm:text-xs text-primary-500 dark:text-white/70 mt-0.5 leading-snug line-clamp-2">{f.desc}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
