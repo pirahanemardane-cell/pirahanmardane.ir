@@ -92,6 +92,21 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <head>
+        <link
+          rel="preload"
+          href="/fonts/IRANYekanX-Regular.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/IRANYekanX-Medium.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+
         <meta name="fontiran.com:license" content="E0QI1G9U" />
         <script
           dangerouslySetInnerHTML={{
