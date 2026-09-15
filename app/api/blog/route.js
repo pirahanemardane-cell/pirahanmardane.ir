@@ -1,0 +1,199 @@
+import { createClient } from '../../../lib/supabase/server'
+import { createAdminClient } from '../../../lib/supabase/admin'
+import { NextResponse } from 'next/server'
+import { logCritical } from '../../../lib/critical-log'
+
+/** GET /api/blog — پست‌های published؛ ?all=1 فقط ادمین همه وضعیت‌ها */
+export async function GET(request) {
+  try {
+    const url = new URL(request.url)
+    const all = url.searchParams.get('all') === '1'
+    const limit = Math.min(Number(url.searchParams.get('limit') || (all ? 100 : 20)), 100)
+    let db
+    try {
+      db = createAdminClient()
+    } catch {
+      db = await createClient()
+    }
+
+    if (all) {
+      const supabase = await createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return NextResponse.json({ ok: false, error: 'وارد نشده‌اید' }, { status: 401 })
+      const admin = createAdminClient()
+      const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).maybeSingle()
+      if (profile?.role !== 'admin') {
+        return NextResponse.json({ ok: false, error: 'فقط ادمین' }, { status: 403 })
+      }
+      const { data, error } = await admin
+        .from('blog_posts')
+        .select('id, slug, title, excerpt, body, cover_image, cover_url, status, published_at, created_at, category_id, tag_names')
+        .order('created_at', { ascending: false })
+        .limit(limit)
+      if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+      return NextResponse.json({ ok: true, posts: data || [] })
+    }
+
+    const { data, error } = await db
+      .from('blog_posts')
+      .select('id, slug, title, excerpt, body, cover_image, cover_url, status, published_at, created_at, category_id, tag_names')
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
+      .limit(limit)
+    if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+    let catMap = {}
+    try {
+      const { data: cats } = await db.from('blog_categories').select('id, name, slug, active')
+      for (const c of cats || []) catMap[c.id] = c
+    } catch (_) {}
+    const posts = (data || []).map((p) => {
+      const c = p.category_id ? catMap[p.category_id] : null
+      const tags = Array.isArray(p.tag_names) ? p.tag_names.filter(Boolean) : []
+      return {
+        ...p,
+        category: c?.name || null,
+        category_name: c?.name || null,
+        category_slug: c?.slug || null,
+        cat: c?.name || null,
+        tags,
+        tag_names: tags,
+      }
+    })
+    return NextResponse.json(
+      { ok: true, posts },
+      { headers: { 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' } },
+    )
+  } catch (e) { try { await logCritical('app/api/blog/route.js', e) } catch (_lc) {}
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
+  }
+}
+
+/** POST /api/blog — فقط ادمین */
+export async function POST(request) {
+  try {
+    const supabase = await createClient()
+    const {
+      data: { user },
+      error: authErr,
+    } = await supabase.auth.getUser()
+    if (authErr || !user) return NextResponse.json({ ok: false, error: 'وارد نشده‌اید' }, { status: 401 })
+    const admin = createAdminClient()
+    const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).maybeSingle()
+    if (profile?.role !== 'admin') {
+      return NextResponse.json({ ok: false, error: 'فقط ادمین' }, { status: 403 })
+    }
+    const body = await request.json().catch(() => ({}))
+    const title = String(body.title || '').trim()
+    if (!title) return NextResponse.json({ ok: false, error: 'عنوان لازم است' }, { status: 400 })
+    const rawSlugSrc = String(body.slug || body.title || '').trim()
+    const slug =
+      rawSlugSrc
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9\u0600-\u06ff\-]/gi, '')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '') || `post-${Date.now().toString(36)}`
+    let categoryId = body.category_id || null
+    if (!categoryId && (body.cat || body.category)) {
+      const catName = String(body.cat || body.category).trim()
+      if (catName) {
+        const { data: catRow } = await admin
+          .from('blog_categories')
+          .select('id')
+          .eq('name', catName)
+          .maybeSingle()
+        if (catRow?.id) categoryId = catRow.id
+      }
+    }
+    const row = {
+      title,
+      slug,
+      excerpt: body.excerpt || null,
+      body: body.body || body.content || null,
+      cover_image: body.cover_image || body.cover_url || null,
+      cover_url: body.cover_url || body.cover_image || null,
+      status: ['draft','scheduled','archived'].includes(String(body.status||'')) ? String(body.status) : 'published',
+      published_at: new Date().toISOString(),
+      category_id: categoryId,
+      tag_names: Array.isArray(body.tags)
+        ? body.tags.map((t) => String(t).trim()).filter(Boolean)
+        : (Array.isArray(body.tag_names) ? body.tag_names.map((t) => String(t).trim()).filter(Boolean) : []),
+    }
+    const { data, error } = await admin.from('blog_posts').insert(row).select('*').single()
+    if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+    return NextResponse.json({ ok: true, post: data })
+  } catch (e) {
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
+  }
+}
+
+
+/** PATCH — ادمین: بروزرسانی پست body: { id, ...fields } */
+export async function PATCH(request) {
+  try {
+    const supabase = await createClient()
+    const { data: { user }, error: authErr } = await supabase.auth.getUser()
+    if (authErr || !user) return NextResponse.json({ ok: false, error: 'وارد نشده‌اید' }, { status: 401 })
+    const admin = createAdminClient()
+    const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).maybeSingle()
+    if (profile?.role !== 'admin') return NextResponse.json({ ok: false, error: 'فقط ادمین' }, { status: 403 })
+    const body = await request.json().catch(() => ({}))
+    const id = body.id
+    if (!id) return NextResponse.json({ ok: false, error: 'id لازم است' }, { status: 400 })
+    const patch = { updated_at: new Date().toISOString() }
+    if (body.title != null) patch.title = String(body.title).trim()
+    if (body.slug != null) patch.slug = String(body.slug).trim()
+    if (body.excerpt != null) patch.excerpt = body.excerpt
+    if (body.body != null || body.content != null) patch.body = body.body || body.content
+    if (body.cover_image != null || body.cover_url != null) {
+      patch.cover_url = body.cover_url || body.cover_image
+      patch.cover_image = body.cover_image || body.cover_url
+    }
+    if (body.status != null) { const st = String(body.status); patch.status = ['draft','scheduled','archived','published'].includes(st) ? st : 'published'; }
+    if (body.category_id != null) patch.category_id = body.category_id || null
+    if (body.category_id == null && (body.cat != null || body.category != null)) {
+      const catName = String(body.cat || body.category || '').trim()
+      if (catName) {
+        const { data: catRow } = await admin
+          .from('blog_categories')
+          .select('id')
+          .eq('name', catName)
+          .maybeSingle()
+        patch.category_id = catRow?.id || null
+      } else {
+        patch.category_id = null
+      }
+    }
+    if (body.tags != null || body.tag_names != null) {
+      const raw = body.tags != null ? body.tags : body.tag_names
+      patch.tag_names = Array.isArray(raw)
+        ? raw.map((t) => String(t).trim()).filter(Boolean)
+        : []
+    }
+    const { data, error } = await admin.from('blog_posts').update(patch).eq('id', id).select('*').maybeSingle()
+    if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+    return NextResponse.json({ ok: true, post: data })
+  } catch (e) {
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
+  }
+}
+
+/** DELETE body: { id } */
+export async function DELETE(request) {
+  try {
+    const supabase = await createClient()
+    const { data: { user }, error: authErr } = await supabase.auth.getUser()
+    if (authErr || !user) return NextResponse.json({ ok: false, error: 'وارد نشده‌اید' }, { status: 401 })
+    const admin = createAdminClient()
+    const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).maybeSingle()
+    if (profile?.role !== 'admin') return NextResponse.json({ ok: false, error: 'فقط ادمین' }, { status: 403 })
+    const body = await request.json().catch(() => ({}))
+    const id = body.id || new URL(request.url).searchParams.get('id')
+    if (!id) return NextResponse.json({ ok: false, error: 'id لازم است' }, { status: 400 })
+    const { error } = await admin.from('blog_posts').delete().eq('id', id)
+    if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 })
+    return NextResponse.json({ ok: true })
+  } catch (e) {
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
+  }
+}

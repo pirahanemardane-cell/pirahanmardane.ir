@@ -1,0 +1,302 @@
+
+
+.bg-apple-blue,
+button.bg-apple-blue,
+a.bg-apple-blue,
+.bg-\[\#023047\],
+button.bg-\[\#023047\],
+a.bg-\[\#023047\] {
+  background-color: var(--pm-button-primary-bg) !important;
+  color: var(--pm-button-primary-fg) !important;
+  -webkit-text-fill-color: var(--pm-button-primary-fg) !important;
+}
+.bg-apple-blue:hover,
+button.bg-apple-blue:hover,
+a.bg-apple-blue:hover {
+  background-color: var(--pm-button-primary-hover) !important;
+  color: var(--pm-button-primary-fg) !important;
+  -webkit-text-fill-color: var(--pm-button-primary-fg) !important;
+}
+
+
+.checkout-step-chip--todo {
+  background-color: #F3F4F6;
+  color: #1F2937 !important;
+  -webkit-text-fill-color: #1F2937 !important;
+  border-color: #D1D5DB;
+}
+ .checkout-step-chip--todo {
+  background-color: #2A2C30 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+ .checkout-step-chip--todo .checkout-step-num {
+  background-color: #3F3F46 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+}
+
+.color-swatch {
+  border: 2px solid rgba(0, 0, 0, 0.2) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+html:not() .color-swatch {
+  border-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  outline: 1px solid rgba(255, 255, 255, 0.2);
+  outline-offset: 1px;
+}
+html:not() .color-swatch.color-swatch--active {
+  border-color: #13ABC4 !important;
+  box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.55);
+  outline-color: #13ABC4;
+}
+.color-swatch.color-swatch--active {
+  border-color: #023047 !important;
+  box-shadow: 0 0 0 2px rgba(2, 48, 71, 0.35);
+  outline-color: #023047;
+}
+
+
+
+html:not() button.seller-follow-on,
+html:not() .seller-follow-on {
+  background-color: #D1FAE5 !important;
+  border-color: #34D399 !important;
+  color: #065F46 !important;
+  -webkit-text-fill-color: #065F46 !important;
+}
+html:not() button.seller-follow-on:hover,
+html:not() .seller-follow-on:hover {
+  background-color: #A7F3D0 !important;
+  border-color: #10B981 !important;
+  color: #064E3B !important;
+  -webkit-text-fill-color: #064E3B !important;
+}
+html:not() button.seller-follow-on,
+html:not() .seller-follow-on {
+  background-color: #13ABC4 !important;
+  border-color: #13ABC4 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  box-shadow: 0 0 0 1px rgba(2, 48, 71, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+
+html:not() [class*="bg-apple-blue"]:hover .product-card-price,
+html:not() .bg-apple-blue:hover .product-card-price {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+
+
+html:not() button.text-apple-blue,
+html:not() .text-apple-blue.underline,
+html:not() a.text-apple-blue {
+  color: #13ABC4 !important;
+}
+
+
+/* ==========================================================================
+   FORCE DARK ONLY: Cookie banner text + link
+   متن اصلی سفید | لینک سیاست کوکی #13ABC4 | لایت دست‌نخورده
+   ========================================================================== */
+html:not() .fixed.bottom-\[10vh\] p,
+html:not() .fixed.bottom-\[10vh\] p.flex-1 {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+html:not() .fixed.bottom-\[10vh\] button.text-apple-blue,
+html:not() .fixed.bottom-\[10vh\] button.underline {
+  color: #13ABC4 !important;
+}
+html:not() .fixed.bottom-\[10vh\] > div {
+  border-color: #13ABC4 !important;
+}
+
+/* ==========================================================================
+   FORCE DARK ONLY: PIRAHANMARDANE gradient → #13ABC4
+   لایت عمداً دست‌نخورده
+   ========================================================================== */
+html:not() .hero-brand-text,
+html:not() div[style*="rgba(2, 48, 71"],
+html:not() div[style*="PIRAHANMARDANE"],
+html:not() [class*="tracking-tighter"][class*="bg-clip-text"] {
+  background-image: linear-gradient(
+    rgba(19, 171, 196, 0.55),
+    rgba(19, 171, 196, 0.18),
+    transparent
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ==========================================================================
+   FORCE DARK ONLY: Footer links → #13ABC4
+   لایت عمداً دست‌نخورده
+   ========================================================================== */
+html:not() footer a,
+html:not() footer button,
+html:not() .footer-link,
+html:not() [class*="footer"] a,
+html:not() [class*="Footer"] a,
+html:not() nav a[href*="order"],
+html:not() a[href*="faq"],
+html:not() a[href*="size"],
+html:not() a[href*="return"],
+html:not() a[href*="privacy"],
+html:not() a[href*="terms"],
+html:not() a[href*="blog"],
+html:not() a[href*="sitemap"],
+html:not() a[href*="seller"] {
+  color: #13ABC4 !important;
+}
+html:not() footer a:hover,
+html:not() .footer-link:hover {
+  color: #2CC4DD !important;
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   FORCE DARK ONLY: Footer brand name «پیراهن مردانه» → #13ABC4
+   لایت عمداً دست‌نخورده
+   ========================================================================== */
+html:not() footer h1,
+html:not() footer h2,
+html:not() footer h3,
+html:not() footer .footer-brand-name,
+html:not() footer [class*="logo"] + *,
+html:not() footer span.font-bold,
+html:not() footer .font-extrabold,
+html:not() footer .font-black {
+  color: #13ABC4 !important;
+}
+
+/* ==========================================================================
+   FORCE DARK ONLY: Footer icons → #13ABC4
+   لایت عمداً دست‌نخورده
+   ========================================================================== */
+html:not() footer svg,
+html:not() footer svg path,
+html:not() footer svg circle,
+html:not() footer svg line,
+html:not() footer svg polyline,
+html:not() footer svg rect,
+html:not() footer [class*="icon"] svg,
+html:not() footer button svg,
+html:not() footer a svg,
+html:not() .footer-icon svg,
+html:not() [class*="Footer"] svg {
+  color: #13ABC4 !important;
+  stroke: #13ABC4 !important;
+  fill: #13ABC4 !important;
+}
+
+/* برای آیکون‌هایی که با currentColor کار می‌کنن */
+html:not() footer .text-primary-500,
+html:not() footer .text-primary-400,
+html:not() footer .text-primary-600,
+html:not() footer .text-white\/60,
+html:not() footer .text-white\/70,
+html:not() footer .text-white\/80 {
+  color: #13ABC4 !important;
+}
+
+/* ==========================================================================
+   FORCE DARK ONLY: All icons & buttons → #13ABC4
+   لایت عمداً دست‌نخورده
+   ========================================================================== */
+html:not() svg,
+html:not() svg path,
+html:not() svg circle,
+html:not() svg line,
+html:not() svg rect,
+html:not() .text-[#13ABC4],
+html:not() [class*="text-primary"],
+html:not() button,
+html:not() [class*="rounded"],
+html:not() [class*="bg-black"],
+html:not() [class*="bg-[#023047"] {
+  color: #13ABC4 !important;
+  stroke: #13ABC4 !important;
+  fill: #13ABC4 !important;
+}
+
+html:not() [class*="text-"], html:not() [class*="bg-"] {
+  color: #13ABC4 !important;
+  background-color: #13ABC4 !important;
+}
+
+/* آیکون‌های خاص صفحه (از اسکرین‌شات‌ها) */
+html:not() .icon,
+html:not() [class*="Icon"],
+html:not() [class*="avatar"],
+html:not() [class*="cart"],
+html:not() [class*="order"],
+html:not() [class*="profile"] {
+  color: #13ABC4 !important;
+}
+
+/* ==========================================================================
+   FORCE DARK ONLY: برگرداندن بک‌گراند به #023047
+   لایت دست‌نخورده — فقط html:not()
+   ========================================================================== */
+html:not() {
+  background-color: #023047 !important;
+}
+
+/* بک‌گراند همه المان‌های main */
+html:not() main,
+html:not() #__next,
+html:not() .relative,
+html:not() .min-h-screen,
+html:not() [class*="bg-[#13ABC4"] {
+  background-color: #023047 !important;
+}
+
+/* بک‌گراند لایت هم دست‌نخورده بمونه */
+html:not() {
+  background-color: #023047 !important;
+}
+
+/* ==========================================================================
+   FORCE DARK ONLY: تغییر رنگ متن به #FFFFFF
+   لایت دست‌نخورده
+   ========================================================================== */
+html:not() .text-primary-700,
+html:not() .text-primary-600,
+html:not() .text-primary-500,
+html:not() .text-gray-700,
+html:not() .text-gray-600,
+html:not() .text-gray-500,
+html:not() .text-slate-700,
+html:not() .text-slate-600,
+html:not() .text-slate-500,
+html:not() .text-white\/80,
+html:not() .text-white\/70,
+html:not() .text-white\/60 {
+  color: #FFFFFF !important;
+}
+
+/* انتخاب‌گر قوی‌تر برای متن‌های مهم */
+html:not() [class*="text-primary-7"],
+html:not() [class*="text-gray-7"],
+html:not() [class*="text-slate-7"],
+html:not() [class*="text-white\/"] {
+  color: #FFFFFF !important;
+}
+
+
+/* FOOTER DESC WHITE DARK-ONLY — فقط دارک، لایت دست نخورده */
+html.dark footer p,
+html.dark footer .text-primary-500,
+html.dark section footer p {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  opacity: 1 !important;
+}
+

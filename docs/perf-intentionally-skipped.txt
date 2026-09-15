@@ -1,0 +1,7 @@
+Intentionally NOT implemented (too early / not needed yet):
+- Heavy job queue
+- Read replica
+- Separate worker service
+- Dedicated search engine (Meilisearch/Typesense/Algolia)
+
+Revisit only when traffic or product count justifies cost.
