@@ -175,7 +175,7 @@ export default function HomeView() {
               <div className="max-w-7xl mx-auto px-3 sm:px-4">
                 <h2 className="gsap-reveal text-xl font-medium leading-7 sm:text-[22px] sm:leading-7 mb-6 sm:mb-8">دسته بندی محصولات</h2>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-x-3 gap-y-5 sm:gap-x-6 md:gap-x-8 justify-items-center">
-                  {categories.map((cat, i) => (
+                  (categories || []).map((cat, i) => (
                     <button key={i} type="button" onClick={() => openPLP({ cat: cat.name })} className="gsap-cat flex flex-col items-center gap-1.5 sm:gap-3 group w-full max-w-[140px] md:max-w-none">
                       <div className="category-icon w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl border border-[#023047] border-[#13ABC4] flex items-center justify-center text-[#023047] text-white bg-white bg-primary-900">
                         <Icon name={cat.icon} size={22} />
@@ -188,7 +188,7 @@ export default function HomeView() {
             </section>
 
             {/* Featured brands */}
-            {featuredHomeBrands.length > 0 && (
+            (featuredHomeBrands || []).length > 0 && (
             <section className="py-8 sm:py-10 bg-white bg-primary-900 border-y border-primary-200 border-white/30 transition-colors">
               <div className="max-w-7xl mx-auto px-3 sm:px-4">
                 <div className="flex items-center justify-between mb-5 sm:mb-6 gap-3">
